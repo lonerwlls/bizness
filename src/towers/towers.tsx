@@ -447,7 +447,7 @@ const Waiting: React.FC<{ f: number }> = ({ f }) => {
         <line x1={800} y1={420} x2={800 + Math.sin(f * 6 * D) * 50} y2={420 - Math.cos(f * 6 * D) * 50} stroke={INK} strokeWidth={5} strokeLinecap="round" />
         <line x1={800} y1={420} x2={830} y2={400} stroke={INK} strokeWidth={7} strokeLinecap="round" />
         <rect x={150} y={330} width={330} height={110} rx={10} fill="#e8ecf4" />
-        <text x={315} y={402} textAnchor="middle" fontFamily={MONT} fontWeight={900} fontSize={44} fill={INK}>DENTISTE</text>
+        <text x={315} y={402} textAnchor="middle" fontFamily={MONT} fontWeight={900} fontSize={44} fill={INK}>DENTIST</text>
         <rect x={940} y={860} width={70} height={90} rx={8} fill="#a0603e" />
         {[0, 1, 2, 3].map((i) => <ellipse key={i} cx={975 + (i - 1.5) * 22} cy={820 - (i % 2) * 30} rx={20} ry={50} fill="#4f7d63" transform={`rotate(${(i - 1.5) * 18 + Math.sin(f / 10 + i) * 3} ${975 + (i - 1.5) * 22} 860)`} />)}
         <rect x={60} y={seatY} width={960} height={26} rx={8} fill="#7a5a44" />
@@ -502,7 +502,7 @@ const Magazine: React.FC<{ f: number }> = ({ f }) => {
             {Array.from({ length: 16 }, (_, i) => <rect key={i} x={100} y={690 + i * 42} width={i % 5 === 4 ? 240 : 400} height={12} rx={6} fill="#cbbd9e" />)}
             <rect x={540} y={520} width={480} height={900} rx={6} fill="#f4ecdb" />
             <text x={570} y={590} fontFamily={ANTON} fontSize={44} fill={INK}>NEW YORK</text>
-            <text x={570} y={630} fontFamily={ELITE} fontSize={22} fill="#6a5a4a">les tours jumelles — projet</text>
+            <text x={570} y={630} fontFamily={ELITE} fontSize={22} fill="#6a5a4a">the twin towers — project</text>
             <rect x={570} y={660} width={420} height={600} rx={6} fill="#1f2c58" />
             {tower(604, 70)}
             {tower(860, 50)}
@@ -788,7 +788,7 @@ const Scene5: React.FC = () => {
 // =============== СЦЕНА 6 (48–55 c): арест и газеты ===============
 const PAPERS = [
   { at: 54, x: 540, y: 1600, r: -8, name: "THE DAILY SKY", head: "MAN WALKS ON AIR!", sub: "Frenchman crosses between the Twin Towers" },
-  { at: 87, x: 520, y: 1780, r: 7, name: "LE CIEL DE PARIS", head: "FUNAMBULE ENTRE LES TOURS", sub: "45 minutes au-dessus de New York" },
+  { at: 87, x: 520, y: 1780, r: 7, name: "PARIS HERALD", head: "WIRE WALKER CONQUERS TOWERS", sub: "45 minutes above New York" },
   { at: 120, x: 560, y: 1680, r: -3, name: "EVENING STAR", head: "ARRESTED… AND ADORED", sub: "Police: “He was dancing on the wire”" },
   { at: 150, x: 545, y: 1840, r: 9, name: "NEW YORK DAILY", head: "1,350 FT. HIGH WIRE WALK", sub: "The city stops to look up" },
 ];
