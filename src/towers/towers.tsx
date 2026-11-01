@@ -3,7 +3,7 @@
 // Персонажи — куклы из src/characters/Rig.tsx (MASCOT — герой канала, PETIT, друзья, полиция).
 import React from "react";
 import { AbsoluteFill, Audio, Easing, Img, continueRender, delayRender, interpolate, staticFile, useCurrentFrame, Sequence } from "remotion";
-import { BODY, COP, D, FRIEND1, FRIEND2, Look, MASCOT, PASSER, PETIT, Person, Pose, STAND, Shadow, V, go, lerp, stepFoot } from "../characters/Rig";
+import { BODY, COP, D, FRIEND1, FRIEND2, Look, MASCOT, PASSER, Person, Pose, STAND, Shadow, V, go, lerp, stepFoot } from "../characters/Rig";
 
 // ---------- шрифты (локально, без интернета) ----------
 const FONTS: [string, string, string?][] = [
@@ -125,50 +125,6 @@ const walkRig = (xw: number, ground: (x: number) => number, s: number, S: number
 };
 const toLocal = (world: V, hip: V, s: number): V => [(world[0] - hip[0]) / s, (world[1] - hip[1]) / s];
 
-// ---------- титры и рубрики ----------
-const CAPS: [number, number, string][] = [
-  [0.2, 1.9, "ВЫСОТА — *400 МЕТРОВ*"], [1.9, 3.4, "ПОД НОГАМИ — *ТОЛЬКО ТРОС*"], [3.4, 5.0, "И *НИКАКОЙ* СТРАХОВКИ"],
-  [5.0, 6.4, "ОДИН НЕВЕРНЫЙ ШАГ —"], [6.4, 7.7, "И *ВСЁ*."], [7.9, 9.3, "*СТОП.*"], [9.3, 10.6, "ОДИН ЧЕЛОВЕК"], [10.6, 12.0, "УЖЕ *ПРОШЁЛ* ЗДЕСЬ"],
-  [12.2, 14.0, "ФИЛИПП ПЕТИ́, *18 ЛЕТ*"], [14.0, 15.4, "УЛИЧНЫЙ *ЖОНГЛЁР*"], [15.4, 17.1, "В ПРИЁМНОЙ *У ДАНТИСТА*"],
-  [17.1, 18.9, "ОН ВИДИТ *БАШНИ-БЛИЗНЕЦЫ*"], [18.9, 20.4, "ИХ ЕЩЁ *НЕ ДОСТРОИЛИ*"], [20.4, 22.0, "А ОН УЖЕ *РИСУЕТ ТРОС*"],
-  [22.2, 24.0, "*ШЕСТЬ ЛЕТ* СПУСТЯ"], [24.0, 26.0, "НОЧЬЮ, *ТАЙНО*,"], [26.0, 28.0, "ОНИ НЕСУТ НАВЕРХ *200 КГ* СТАЛИ"],
-  [28.0, 29.6, "МЕЖДУ КРЫШАМИ — *43 МЕТРА*"], [29.6, 31.6, "ДРУГ СТРЕЛЯЕТ *ИЗ ЛУКА*"], [31.6, 34.0, "ЛЕСКА → ВЕРЁВКА → *ТРОС*"],
-  [34.2, 35.6, "РАССВЕТ."], [35.6, 37.5, "ОН *ДЕЛАЕТ ШАГ*"], [37.5, 39.5, "*400 МЕТРОВ* НАД УЛИЦЕЙ"], [39.5, 41.5, "ОН *САДИТСЯ* НА ТРОС"],
-  [41.5, 43.7, "И *ЛОЖИТСЯ*"], [43.7, 45.4, "ВНИЗУ — *ТЫСЯЧИ* ЛЮДЕЙ"], [45.4, 48.0, "А ОН *МАШЕТ* ПОЛИЦИИ"],
-  [48.2, 50.0, "ЕГО *АРЕСТОВЫВАЮТ*"], [50.0, 51.8, "А ОН *УЛЫБАЕТСЯ*"], [51.8, 53.4, "*8 ПРОХОДОВ* ЗА 45 МИНУТ"], [53.4, 55.0, "О НЁМ ПИШЕТ *ВЕСЬ МИР*"],
-  [55.2, 57.0, "СТРАХ *НЕ ИСЧЕЗНЕТ*"], [57.0, 58.6, "НО ПЕРВЫЙ ШАГ — *ТВОЙ*"],
-];
-const RUBRICS: [number, number, string][] = [
-  [0, 236, "ВЫСОТА · 400 М"], [360, 460, "ПАРИЖ · 1968"], [460, 510, "ПРИЁМНАЯ ДАНТИСТА"], [510, 660, "ЖУРНАЛ · 1968"],
-  [660, 840, "НЬЮ-ЙОРК · 6 АВГУСТА 1974"], [840, 1020, "КРЫША · НОЧЬ"], [1020, 1310, "7 АВГУСТА · 7:15 УТРА"],
-  [1310, 1350, "УЛИЦА · ВНИЗУ"], [1350, 1440, "КРЫША · ПОЛИЦИЯ"], [1440, 1650, "АРЕСТ"], [1650, 1745, "СЕЙЧАС"],
-];
-const Subs: React.FC<{ f: number }> = ({ f }) => {
-  const s = f / 30;
-  const c = CAPS.find((c) => s >= c[0] && s < c[1]);
-  if (!c) return null;
-  const local = f - c[0] * 30;
-  const pop = ip(local, [0, 6], [0.82, 1], Easing.out(Easing.back(3)));
-  const parts = c[2].split("*");
-  return (
-    <div style={{ position: "absolute", top: 1170, left: 60, right: 60, textAlign: "center", transform: `scale(${pop})`, opacity: ip(local, [0, 3], [0, 1]) }}>
-      <span style={{ fontFamily: MONT, fontWeight: 900, fontSize: 66, lineHeight: 1.14, color: WH, WebkitTextStroke: "12px rgba(14,22,40,0.85)", paintOrder: "stroke fill", textShadow: "0 6px 0 rgba(0,0,0,.3)" }}>
-        {parts.map((p, i) => <span key={i} style={{ color: i % 2 ? YEL : WH }}>{p}</span>)}
-      </span>
-    </div>
-  );
-};
-const Rubric: React.FC<{ f: number }> = ({ f }) => {
-  const r = RUBRICS.find((r) => f >= r[0] && f < r[1]);
-  if (!r) return null;
-  const o = ip(f, [r[0], r[0] + 6, r[1] - 6, r[1]], [0, 1, 1, 0]);
-  return (
-    <div style={{ position: "absolute", top: 150, left: 0, right: 0, textAlign: "center", opacity: o }}>
-      <span style={{ fontFamily: MONT, fontWeight: 900, fontSize: 30, letterSpacing: 6, color: WH, background: "rgba(8,12,24,0.6)", padding: "10px 22px", borderRadius: 10 }}>{r[2]}</span>
-    </div>
-  );
-};
-
 // пульс сердца (как в звуке)
 const BEATS: number[] = (() => {
   const b: number[] = [];
@@ -184,6 +140,11 @@ const pulse = (absF: number) => {
   for (const b of BEATS) if (s >= b && s < b + 0.5) v = Math.max(v, Math.exp(-(s - b) * 9));
   return v;
 };
+
+// камера: приблизить и опустить действие к центру кадра (верх кадра остаётся закрыт фоном при ty ≤ 960·(k−1))
+const Cam: React.FC<{ k: number; ty: number; children: React.ReactNode }> = ({ k, ty, children }) => (
+  <AbsoluteFill style={{ transform: `translateY(${ty}px) scale(${k})`, transformOrigin: "540px 960px" }}>{children}</AbsoluteFill>
+);
 
 // =============== СЦЕНА 1 (0–5 c): ноги героя на тросе → взгляд вниз ===============
 const CityTop: React.FC<{ f: number }> = ({ f }) => {
@@ -346,11 +307,8 @@ const TitleCard: React.FC<{ f: number }> = ({ f }) => {
         <Tower x={300} y={WY} w={170} h={1400} antenna />
         <Tower x={610} y={WY + 6} w={170} h={1400} />
         <Wire x1={470} x2={610} y={WY} sag={2} w={3} />
-        <Person x={w.hip[0]} y={w.hip[1]} s={s} turn={1} pose={w.pose} feet={w.feet} look={PETIT} t={f} pole={{ c: [50, -80], a: 0 }} />
+        <Person x={w.hip[0]} y={w.hip[1]} s={s} turn={1} pose={w.pose} feet={w.feet} look={MASCOT} t={f} pole={{ c: [50, -80], a: 0 }} />
       </Full>
-      <div style={{ position: "absolute", top: 300, left: 50, right: 50, textAlign: "center", fontFamily: MONT, fontWeight: 900, fontSize: 70, lineHeight: 1.08, color: WH, transform: `scale(${ip(f, [0, 12], [1.25, 1], Easing.out(Easing.back(2)))})`, textShadow: "0 6px 0 rgba(0,0,0,.35)" }}>
-        THE MAN WHO WALKED BETWEEN THE <span style={{ color: YEL }}>TOWERS</span>
-      </div>
     </AbsoluteFill>
   );
 };
@@ -363,7 +321,7 @@ const Scene2: React.FC = () => {
   const crack2 = ip(f, [112, 118], [0, 1]);
   const fall = f - 138;
   const grade = frozen ? "grayscale(0.7) contrast(1.15) brightness(0.9)" : "none";
-  const scene = <S2Frame f={Math.min(f, FREEZE)} abs={150 + Math.min(f, FREEZE)} />;
+  const scene = <Cam k={1.12} ty={115}><S2Frame f={Math.min(f, FREEZE)} abs={150 + Math.min(f, FREEZE)} /></Cam>;
   const crackLines = (
     <Full>
       {RAYS.map((r, i) => {
@@ -465,7 +423,7 @@ const Paris: React.FC<{ f: number }> = ({ f }) => {
         <ellipse cx={720} cy={GY + 4} rx={56} ry={16} fill="#151d33" />
         {[0, 1, 2].map((i) => <circle key={i} cx={700 + i * 20} cy={GY - 2} r={6} fill={YEL} />)}
         <Shadow x={540} y={GY} w={80} />
-        <Person x={hip[0]} y={hip[1] + bob} s={s} turn={0.12} pose={STAND} hands={{ l: hL, r: hR }} look={PETIT} t={f} face={{ mouth: "grin", eyes: "happy" }} />
+        <Person x={hip[0]} y={hip[1] + bob} s={s} turn={0.12} pose={STAND} hands={{ l: hL, r: hR }} look={MASCOT} t={f} face={{ mouth: "grin", eyes: "happy" }} />
         {balls.map((b, i) => <circle key={i} cx={b[0]} cy={b[1]} r={19} fill={[YEL, RED, "#7fc4ff"][i]} />)}
       </Full>
     </AbsoluteFill>
@@ -498,7 +456,7 @@ const Waiting: React.FC<{ f: number }> = ({ f }) => {
         <Person x={260} y={seatY - 4} s={s * 0.95} turn={0.4} pose={{ ...sitPose, lean: -2 }} hands={{ l: [10, -70], r: [30, -152] }} look={PASSER[3]} t={f + 100} seed={9} face={{ eyes: "closed", brows: 1, mouth: "fear" }}>
           <circle cx={28} cy={-150} r={17} fill="#e8a088" />
         </Person>
-        <Person x={600} y={seatY - 4} s={s} turn={0.7} pose={{ ...sitPose, lean }} hands={{ l: [mag[0] - 34, mag[1]], r: [mag[0] + 30, mag[1] + 4] }} look={PETIT} t={f + 100} face={shock ? { eyes: "wide", brows: 1, mouth: "o" } : { mouth: "flat" }}>
+        <Person x={600} y={seatY - 4} s={s} turn={0.7} pose={{ ...sitPose, lean }} hands={{ l: [mag[0] - 34, mag[1]], r: [mag[0] + 30, mag[1] + 4] }} look={MASCOT} t={f + 100} face={shock ? { eyes: "wide", brows: 1, mouth: "o" } : { mouth: "flat" }}>
           <g transform={`translate(${mag[0]} ${mag[1]})`}>
             <rect x={-48} y={-46} width={96} height={70} rx={4} fill="#efe6d2" />
             <rect x={-2} y={-46} width={50 * (1 - flip) + 2} height={70} fill="#d9cfb8" />
@@ -533,10 +491,10 @@ const Magazine: React.FC<{ f: number }> = ({ f }) => {
   );
   return (
     <AbsoluteFill style={{ background: "#3a2e2a" }}>
-      <AbsoluteFill style={{ transform: `scale(${push})`, transformOrigin: "752px 520px" }}>
+      <AbsoluteFill style={{ transform: `scale(${push})`, transformOrigin: "752px 760px" }}>
         <Full>
           {Array.from({ length: 10 }, (_, i) => <rect key={i} x={0} y={i * 200} width={1080} height={196} fill={i % 2 ? "#4a3a32" : "#44352e"} />)}
-          <g transform="translate(0 -300) rotate(-4 540 960)">
+          <g transform="translate(0 -60) rotate(-4 540 960)">
             <rect x={86} y={540} width={950} height={900} rx={8} fill="#000" opacity={0.25} />
             <rect x={70} y={520} width={470} height={900} rx={6} fill="#efe6d2" />
             <text x={100} y={600} fontFamily={PLAYFAIR} fontSize={52} fill={INK}>L&apos;ILLUSTRÉ</text>
@@ -569,8 +527,8 @@ const Magazine: React.FC<{ f: number }> = ({ f }) => {
               <path d="M -7 0 L 0 -26 L 7 0 Z" fill="#e8c9a0" />
               <path d="M -2.5 -16 L 0 -26 L 2.5 -16 Z" fill={INK} />
               <rect x={-7} y={196} width={14} height={20} rx={3} fill="#e88aa0" />
-              <ellipse cx={14} cy={120} rx={44} ry={60} fill={PETIT.skin} />
-              <rect x={-40} y={165} width={110} height={240} rx={30} fill={PETIT.top} />
+              <ellipse cx={14} cy={120} rx={44} ry={60} fill={MASCOT.skin} />
+              <rect x={-40} y={165} width={110} height={240} rx={30} fill={MASCOT.top} />
             </g>
           </g>
         </Full>
@@ -581,8 +539,8 @@ const Magazine: React.FC<{ f: number }> = ({ f }) => {
 
 const Scene3: React.FC = () => {
   const f = useCurrentFrame();
-  if (f < 100) return <Paris f={f} />;
-  if (f < 150) return <Waiting f={f - 100} />;
+  if (f < 100) return <Cam k={1.2} ty={190}><Paris f={f} /></Cam>;
+  if (f < 150) return <Cam k={1.25} ty={240}><Waiting f={f - 100} /></Cam>;
   return <Magazine f={f - 100} />;
 };
 
@@ -594,7 +552,7 @@ const Stairs: React.FC<{ f: number }> = ({ f }) => {
   const slopeY = (x: number) => base - (x / RUN) * RISE;
   const lead = 420 + f * 4.2;
   const camX = lead - 640, camY = slopeY(lead) - 880;
-  const people: [number, Look, number][] = [[lead, PETIT, 0], [lead - 200, FRIEND1, 1], [lead - 400, FRIEND2, 2]];
+  const people: [number, Look, number][] = [[lead, MASCOT, 0], [lead - 200, FRIEND1, 1], [lead - 400, FRIEND2, 2]];
   const shoulders: V[] = [];
   const figs = people.map(([x, look, i]) => {
     const w = walkRig(x + i * 13, ground, s, 2 * RUN, 128, 30);
@@ -677,7 +635,7 @@ const Roof: React.FC<{ f: number }> = ({ f }) => {
         <ellipse cx={130} cy={RY - 6} rx={70} ry={20} fill="#6a7694" />
         <ellipse cx={130} cy={RY - 14} rx={46} ry={12} fill="none" stroke="#aab6cc" strokeWidth={8} />
         <Shadow x={200} y={RY} w={60} />
-        <Person x={200} y={RY - (cheer ? 138 * 1.15 + jump : 96 * 1.15)} s={1.15} turn={cheer ? 0.4 : 1} pose={cheer ? cheerPose : crouch} look={PETIT} t={f} face={cheer ? { eyes: "happy", mouth: "grin" } : { eyes: "wide", mouth: "flat" }} />
+        <Person x={200} y={RY - (cheer ? 138 * 1.15 + jump : 96 * 1.15)} s={1.15} turn={cheer ? 0.4 : 1} pose={cheer ? cheerPose : crouch} look={MASCOT} t={f} face={cheer ? { eyes: "happy", mouth: "grin" } : { eyes: "wide", mouth: "flat" }} />
         <Shadow x={360} y={RY} w={70} />
         <Person x={archerHip[0]} y={archerHip[1]} s={s} turn={1} pose={archer} look={FRIEND1} t={f} seed={2} bow={released ? 0 : drawT} face={{ eyes: f > 18 && f < 48 ? "closed" : "open", mouth: cheer ? "grin" : "flat" }} />
         {f >= 48 ? <path d={linePath} stroke={WH} strokeWidth={2.5 + thick * 8} fill="none" opacity={0.9} strokeLinecap="round" /> : null}
@@ -696,7 +654,7 @@ const Roof: React.FC<{ f: number }> = ({ f }) => {
 
 const Scene4: React.FC = () => {
   const f = useCurrentFrame();
-  return f < 180 ? <Stairs f={f} /> : <Roof f={f - 180} />;
+  return f < 180 ? <Cam k={1.15} ty={140}><Stairs f={f} /></Cam> : <Cam k={1.15} ty={140}><Roof f={f - 180} /></Cam>;
 };
 
 // =============== СЦЕНА 5 (34–48 c): проход по тросу ===============
@@ -719,7 +677,7 @@ const WideTowers: React.FC<{ f: number }> = ({ f }) => {
         <Tower x={650} y={WY + 4} w={280} h={1500} warm />
         <Wire x1={430} x2={650} y={WY} sag={2} w={3} />
         {[0, 1, 2].map((i) => <Cloud key={i} x={((i * 420 + f * 1.4) % 1500) - 200} y={1150 + i * 90} s={1.6} o={0.55} col="#b07a90" />)}
-        <Person x={w.hip[0]} y={w.hip[1]} s={s} turn={1} pose={w.pose} feet={w.feet} look={PETIT} t={f} pole={{ c: [50, -80], a: Math.sin(f / 8) * 5 }} />
+        <Person x={w.hip[0]} y={w.hip[1]} s={s} turn={1} pose={w.pose} feet={w.feet} look={MASCOT} t={f} pole={{ c: [50, -80], a: Math.sin(f / 8) * 5 }} />
         {[0, 1, 2, 3].map((i) => <Bird key={i} x={((i * 290 + f * 3) % 1300) - 100} y={760 + i * 60 + Math.sin(f / 5 + i) * 8} f={f + i * 7} />)}
       </Full>
     </AbsoluteFill>
@@ -760,7 +718,7 @@ const WalkSitLie: React.FC<{ g: number }> = ({ g }) => {
         <g transform={`translate(${-camX} 0)`}>
           <Tower x={-280} y={WY + 6} w={300} h={900} warm />
           <Wire x1={20} x2={1700} y={WY} sag={8 + 4 * Math.sin(g / 6)} mid={xw} w={7} />
-          <Person x={xw} y={hipY} s={s} rot={rot} turn={1} pose={pose} feet={{ l: fL, r: fR }} look={PETIT} t={g} face={face} pole={pole} />
+          <Person x={xw} y={hipY} s={s} rot={rot} turn={1} pose={pose} feet={{ l: fL, r: fR }} look={MASCOT} t={g} face={face} pole={pole} />
           {gull ? <Bird x={xw + Math.cos(g / 12) * 160} y={WY - 330 + Math.sin(g / 12) * 40} f={g} s={1.6} /> : null}
         </g>
       </Full>
@@ -813,7 +771,7 @@ const WavePolice: React.FC<{ g: number }> = ({ g }) => {
         <Wire x1={-20} x2={790} y={WY} sag={10 + bounce * 0.4} mid={420} w={7} />
         <Person x={870 + copIn} y={RY - 138 * rs} s={rs} turn={0.5} dir={-1} pose={STAND} hands={{ r: [70 + call * 20, -110 + call * 30] }} look={COP} t={g} seed={4} face={{ brows: -0.8, mouth: "flat" }} />
         <Person x={1000 + copIn} y={RY - 138 * rs} s={rs} turn={0.5} dir={-1} pose={STAND} hands={{ r: [26, -150], l: [10, -146] }} look={COP} t={g} seed={6} face={{ brows: -0.6, mouth: "o" }} />
-        <Person x={hip[0]} y={hip[1]} s={s} turn={0.5} pose={{ ...STAND, lean: -3 }} feet={feet} hands={{ r: [60 + wave * 22, -250 + Math.abs(wave) * 10] }} look={PETIT} t={g} face={{ eyes: "happy", mouth: "grin" }} pole={{ c: [-10, -70], a: Math.sin(g / 8) * 6 }} />
+        <Person x={hip[0]} y={hip[1]} s={s} turn={0.5} pose={{ ...STAND, lean: -3 }} feet={feet} hands={{ r: [60 + wave * 22, -250 + Math.abs(wave) * 10] }} look={MASCOT} t={g} face={{ eyes: "happy", mouth: "grin" }} pole={{ c: [-10, -70], a: Math.sin(g / 8) * 6 }} />
       </Full>
     </AbsoluteFill>
   );
@@ -822,9 +780,9 @@ const WavePolice: React.FC<{ g: number }> = ({ g }) => {
 const Scene5: React.FC = () => {
   const f = useCurrentFrame();
   if (f < 90) return <WideTowers f={f} />;
-  if (f < 290) return <WalkSitLie g={f - 90} />;
+  if (f < 290) return <Cam k={1.15} ty={140}><WalkSitLie g={f - 90} /></Cam>;
   if (f < 330) return <Crowd g={f - 290} />;
-  return <WavePolice g={f - 330} />;
+  return <Cam k={1.15} ty={140}><WavePolice g={f - 330} /></Cam>;
 };
 
 // =============== СЦЕНА 6 (48–55 c): арест и газеты ===============
@@ -922,7 +880,7 @@ const Scene6: React.FC = () => {
           <Shadow x={pw.hip[0]} y={GY} w={60} />
           <Shadow x={c2.hip[0]} y={GY} w={60} />
           <Person x={c1.hip[0]} y={c1.hip[1]} s={s} turn={0.7} pose={c1.pose} feet={c1.feet} hands={{ r: toLocal(petSh, c1.hip, s) }} look={COP} t={f} seed={1} face={{ brows: -0.6, mouth: "flat" }} />
-          <Person x={pw.hip[0]} y={pw.hip[1]} s={s} turn={0.4} pose={{ ...pw.pose, head: Math.sin(f / 10) * 8 }} feet={pw.feet} hands={{ l: [-34, -54], r: [-22, -50] }} cuffs look={PETIT} t={f} face={{ eyes: "happy", mouth: "grin" }} />
+          <Person x={pw.hip[0]} y={pw.hip[1]} s={s} turn={0.4} pose={{ ...pw.pose, head: Math.sin(f / 10) * 8 }} feet={pw.feet} hands={{ l: [-34, -54], r: [-22, -50] }} cuffs look={MASCOT} t={f} face={{ eyes: "happy", mouth: "grin" }} />
           <Person x={c2.hip[0]} y={c2.hip[1]} s={s} turn={0.7} pose={c2.pose} feet={c2.feet} look={COP} t={f} seed={2} face={{ brows: -0.6, mouth: "flat" }} />
           {glint > 0 ? <path d="M 0 -40 L 8 -8 L 40 0 L 8 8 L 0 40 L -8 8 L -40 0 L -8 -8 Z" fill="#fff" transform={`translate(${xw - 40} ${pw.hip[1] - 70}) scale(${glint * 1.3})`} /> : null}
         </g>
@@ -947,7 +905,6 @@ const Scene7: React.FC = () => {
   const arms = Math.sin(f / 14) * 6;
   const pose: Pose = { lean: Math.sin(f / 16) * 2, aL: [-82 + arms - inhale * 8, -96 + arms], aR: [82 - arms + inhale * 8, 96 - arms], lL: [0, 0], lR: [0, 0] };
   const white = ip(f, [100, 132], [0, 1], Easing.in(Easing.quad));
-  const title = ip(f, [124, 140], [0, 1]);
   const puff = ip(f, [50, 64, 86], [0, 1, 0]);
   const face = f < 20 ? { mouth: "flat" as const } : f < 62 ? { eyes: "closed" as const, mouth: "flat" as const } : { brows: -0.4, mouth: "smile" as const };
   return (
@@ -968,11 +925,6 @@ const Scene7: React.FC = () => {
         </Full>
       </AbsoluteFill>
       <AbsoluteFill style={{ background: "#fff", opacity: white }} />
-      <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", opacity: title }}>
-        <div style={{ fontFamily: MONT, fontWeight: 900, fontSize: 70, color: "#1d2b4a", textAlign: "center", padding: "0 70px", lineHeight: 1.1 }}>
-          THE MAN WHO WALKED BETWEEN THE <span style={{ color: "#d9a02a" }}>TOWERS</span>
-        </div>
-      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
@@ -998,15 +950,13 @@ export const TowersFilm: React.FC = () => {
         <Sequence from={360} durationInFrames={300}><Scene3 /></Sequence>
         <Sequence from={660} durationInFrames={360}><Scene4 /></Sequence>
         <Sequence from={1020} durationInFrames={420}><Scene5 /></Sequence>
-        <Sequence from={1440} durationInFrames={210}><Scene6 /></Sequence>
-        <Sequence from={1650} durationInFrames={150}><Scene7 /></Sequence>
+        <Sequence from={1440} durationInFrames={210}><Cam k={1.1} ty={96}><Scene6 /></Cam></Sequence>
+        <Sequence from={1650} durationInFrames={150}><Cam k={1.12} ty={115}><Scene7 /></Cam></Sequence>
       </AbsoluteFill>
       {night ? <AbsoluteFill><Full><Dust f={f} /></Full></AbsoluteFill> : null}
       <AbsoluteFill style={{ boxShadow: "inset 0 0 220px 50px rgba(5,8,18,0.7)", pointerEvents: "none", opacity: ip(f, [1745, 1775], [1, 0]) }} />
       <Grain f={f} o={0.1} />
       <AbsoluteFill style={{ background: "#fff", opacity: whip * 0.18 }} />
-      <Rubric f={f} />
-      {f < 1750 ? <Subs f={f} /> : null}
       <Audio src={staticFile("towers/sound.wav")} />
     </AbsoluteFill>
   );
