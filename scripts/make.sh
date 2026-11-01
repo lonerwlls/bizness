@@ -11,7 +11,8 @@ mkdir -p out videos
 
 for ID in "$@"; do
   RAW="out/_raw_$ID.mp4"
-  npx remotion render "Fin-$ID" "$RAW" --crf=18 --log=error
+  ENTRY=""; [ -f "src/$ID/index.ts" ] && ENTRY="src/$ID/index.ts"  # у отдельных роликов (towers) своя точка входа
+  npx remotion render $ENTRY "Fin-$ID" "$RAW" --crf=18 --log=error
   if [ -f "$AD" ] && ! grep -q "export const AD_FRAMES = 0;" src/finance/engine.tsx; then
     # Начало рекламы: конец предложения, ближайший к середине озвучки (как buildTopic в engine.tsx).
     AT=$(node -e '
@@ -26,10 +27,10 @@ for ID in "$@"; do
       [1:a]aformat=sample_rates=48000:channel_layouts=stereo,atempo=$AD_SPEED,volume=8dB,adelay=$MS|$MS[va];
       [0:a]aformat=sample_rates=48000:channel_layouts=stereo[a0];
       [a0][va]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]" \
-      -map "[v]" -map "[a]" -c:v libx264 -preset veryfast -crf 23 -c:a aac -b:a 160k -movflags +faststart "videos/$ID.mp4"
+      -map "[v]" -map "[a]" -c:v libx264 -preset veryfast -crf 23 -maxrate 11M -bufsize 18M -c:a aac -b:a 160k -movflags +faststart "videos/$ID.mp4"
   else
     $FF -nostdin -v error -y -i "$RAW" -af "loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000" \
-      -c:v libx264 -preset veryfast -crf 23 -c:a aac -b:a 160k -movflags +faststart "videos/$ID.mp4"
+      -c:v libx264 -preset veryfast -crf 23 -maxrate 11M -bufsize 18M -c:a aac -b:a 160k -movflags +faststart "videos/$ID.mp4"
   fi
   rm -f "$RAW"
   echo "готово: videos/$ID.mp4"
