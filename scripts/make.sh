@@ -8,10 +8,12 @@ FF=ffmpeg; command -v ffmpeg >/dev/null || FF="npx remotion ffmpeg"
 AD=ads/ad.mp4
 AD_SPEED=1.3
 mkdir -p out videos
+# В облаке Claude Chrome ходит в интернет через прокси с собственным сертификатом: берём обёртку.
+BR=""; [ -f /root/.ccr/ca-bundle.crt ] && [ -n "$HTTPS_PROXY" ] && BR="--browser-executable=$PWD/scripts/chrome-proxy.sh"
 
 for ID in "$@"; do
   RAW="out/_raw_$ID.mp4"
-  npx remotion render "Fin-$ID" "$RAW" --crf=18 --log=error
+  npx remotion render "Fin-$ID" "$RAW" --crf=18 --log=error $BR
   if [ -f "$AD" ] && ! grep -q "export const AD_FRAMES = 0;" src/finance/engine.tsx; then
     # Начало рекламы: конец предложения, ближайший к середине озвучки (как buildTopic в engine.tsx).
     AT=$(node -e '
