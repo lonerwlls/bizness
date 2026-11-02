@@ -9,8 +9,8 @@ export type StyleName = "flat" | "neon" | "comic" | "paper" | "clay" | "watercol
 export const STYLES: StyleName[] = ["flat", "neon", "comic", "paper", "clay", "watercolor", "noir"];
 export const EAT_FRAMES = 150;
 
-type Theme = { wall: string; wall2: string; sky: string; table: string; table2: string; floor: string; plate: string; look: Look; bun: string; patty: string; lettuce: string; drink: string };
-const BASE: Theme = { wall: "#2f3d63", wall2: "#36456e", sky: "#9cc0e6", table: "#b07a52", table2: "#8a5a3c", floor: "#1e2a48", plate: "#e8ecf4", look: MASCOT, bun: "#e0a050", patty: "#6a3a22", lettuce: "#7fc06a", drink: "#e0524a" };
+export type Theme = { wall: string; wall2: string; sky: string; table: string; table2: string; floor: string; plate: string; look: Look; bun: string; patty: string; lettuce: string; drink: string };
+export const BASE: Theme = { wall: "#2f3d63", wall2: "#36456e", sky: "#9cc0e6", table: "#b07a52", table2: "#8a5a3c", floor: "#1e2a48", plate: "#e8ecf4", look: MASCOT, bun: "#e0a050", patty: "#6a3a22", lettuce: "#7fc06a", drink: "#e0524a" };
 const BLACK = "#0b0b10";
 const THEMES: Record<StyleName, Theme> = {
   flat: BASE,
@@ -23,7 +23,7 @@ const THEMES: Record<StyleName, Theme> = {
 };
 
 // бургер в локальных координатах (центр), с укусами
-const Burger: React.FC<{ th: Theme; bites: number; uid: string; k?: number }> = ({ th, bites, uid, k = 1 }) => (
+export const Burger: React.FC<{ th: Theme; bites: number; uid: string; k?: number }> = ({ th, bites, uid, k = 1 }) => (
   <g transform={`scale(${k})`}>
     <defs>
       <mask id={uid}>
