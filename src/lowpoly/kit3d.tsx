@@ -370,7 +370,7 @@ export const Radio3D: React.FC<{ p: V3; f: number; on?: boolean }> = ({ p, f, on
     <mesh position={[0.15, 0.17, 0]} rotation={[0, 0, -0.4]}><cylinderGeometry args={[0.005, 0.005, 0.3, 4]} /><Mat c="#aab0b8" /></mesh>
     {on ? [0, 1, 2].map((k) => {
       const t = ((f / 40 + k / 3) % 1);
-      return <mesh key={k} position={[-0.08, 0, 0.1]} scale={0.1 + t * 0.6}><torusGeometry args={[1, 0.02, 6, 24]} /><meshBasicMaterial color="#ffd27a" transparent opacity={(1 - t) * 0.6} /></mesh>;
+      return <mesh key={k} position={[-0.08, 0, 0.1]} scale={0.08 + t * 0.3}><torusGeometry args={[1, 0.04, 6, 24]} /><meshBasicMaterial color="#ffb040" transparent opacity={(1 - t) * 0.7} /></mesh>;
     }) : null}
   </group>
 );

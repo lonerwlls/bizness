@@ -66,7 +66,7 @@ const S2: React.FC<{ g: number }> = ({ g }) => {
   const tip = holder === 0 ? hand.clone().add(new THREE.Vector3(-0.05, -0.9, 0.25)) : caneTip(hPos, hRot, g, ip(g, [130, 160], [0, 0.6])).setY(0.01);
   return (
     <Canvas3D>
-      <CamRig pos={[1.6, 1.5, 1.4]} look={[-0.1, 1.0, -0.8]} fov={42} />
+      <CamRig pos={[2.0, 1.55, 2.1]} look={[-0.1, 0.95, -0.8]} fov={44} />
       <hemisphereLight args={["#f0e4d8", "#6a5040", 0.9]} />
       <directionalLight position={[2, 4, -4]} intensity={1.6} color="#ffe2c0" castShadow shadow-mapSize={[1024, 1024]} />
       <color attach="background" args={["#d8c4b0"]} />
@@ -165,17 +165,17 @@ const S5: React.FC<{ g: number }> = ({ g }) => {
 const S6: React.FC<{ g: number }> = ({ g }) => {
   const turn = ip(g, [30, 90], [0, 1], Easing.inOut(Easing.quad));
   const hPos: V3 = [1.0, WALK_Y, 0];
-  const hp: Pose3D = { ...STAND3D, armR: CANE_ARM, headYaw: lerp(30, -40, turn), headPitch: -8 };
+  const hp: Pose3D = { ...STAND3D, armR: CANE_ARM, headYaw: lerp(-35, 25, turn), headPitch: lerp(5, -12, turn) };
   return (
     <>
       <Canvas3D>
-        <CamRig pos={[1.0 + 0.6, 1.62, 1.25]} look={[1.0, 1.52, 0]} fov={34} />
-        <World m={MOODS.sunset} focus={[1, 0, 0]} />
+        <CamRig pos={[1.0 - 0.25, 1.58, 1.5]} look={[1.0, 1.45, 0]} fov={36} />
+        <World m={{ ...MOODS.sunset, sunDir: [9, 5, 22], sunI: 3.6 }} focus={[1, 0, 0]} />
         <Street />
         <Human p={hPos} pose={hp} eyes={0} f={g} mouth={turn > 0.7 ? "smile" : "flat"} />
         <Cane hand={handWorld(hPos, 0, hp, 1)} tip={caneTip(hPos, 0, g, 0)} />
       </Canvas3D>
-      <div style={{ position: "absolute", top: 1320, left: 0, right: 0, display: "flex", justifyContent: "center", opacity: ip(g, [90, 105], [0, 1]) }}>
+      <div style={{ position: "absolute", top: 300, right: 60, display: "flex", justifyContent: "center", opacity: ip(g, [90, 105], [0, 1]) }}>
         <svg width={260} height={260} viewBox="-130 -130 260 260">
           <circle r={110} fill="rgba(10,10,20,.7)" stroke={YEL} strokeWidth={4} />
           {["N", "E", "S", "W"].map((t, i) => <text key={t} x={Math.sin(i * Math.PI / 2) * 82} y={-Math.cos(i * Math.PI / 2) * 82 + 12} textAnchor="middle" fontFamily={MONT} fontWeight={900} fontSize={30} fill={t === "W" ? YEL : WH}>{t}</text>)}
@@ -213,7 +213,7 @@ const S8: React.FC<{ g: number }> = ({ g }) => {
   const people = [MAYA3D, HOME, NPCS[0], NPCS[1], NPCS[3], NPCS[2], NPCS[4]];
   return (
     <Canvas3D>
-      <CamRig pos={[-3.6, 2.2, lead - 1.0]} look={[1.2, 0.7, lead - 3.2]} fov={44} />
+      <CamRig pos={[-3.2, 1.9, lead + 2.8]} look={[1.25, 0.8, lead - 1.1]} fov={50} />
       <World m={MOODS.sunset} focus={[1.2, 0, lead - 2]} />
       <Street />
       {people.map((look, i) => {
@@ -258,8 +258,8 @@ const S10: React.FC<{ g: number }> = ({ g }) => {
   return (
     <Canvas3D>
       <CamRig pos={[1.2, 1.25, 1.2]} look={[-0.8, 0.75, -1.6]} fov={46} />
-      <hemisphereLight args={[lit ? "#806a5a" : "#20284a", "#1a1420", lit ? 0.5 : 0.25]} />
-      <directionalLight position={[2, 3, -4]} intensity={lit ? 0.3 : 0.5} color={lit ? "#ffd8b0" : "#7a90d0"} castShadow shadow-mapSize={[1024, 1024]} />
+      <hemisphereLight args={[lit ? "#806a5a" : "#4a5a9a", "#1a1420", lit ? 0.5 : 0.6]} />
+      <directionalLight position={[2, 3, -4]} intensity={lit ? 0.3 : 1.3} color={lit ? "#ffd8b0" : "#8aa0e0"} castShadow shadow-mapSize={[1024, 1024]} />
       <color attach="background" args={["#141420"]} />
       <Room night={lit} dark={lit ? 0 : 1} />
       <Fridge p={[2.6, 0, -2.4]} on={lit} />
