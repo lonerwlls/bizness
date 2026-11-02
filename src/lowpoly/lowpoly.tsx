@@ -9,6 +9,8 @@ import { BODY, D, ik, stepFoot } from "../characters/Rig";
 import { Grain, ip, rnd } from "../characters/kit";
 
 export const LOWPOLY_FRAMES = 150;
+// высота верха тротуара: по ней ходит герой (иначе ноги уходят в плитку)
+const WALK_Y = 0.121;
 const COL = { jacket: "#ee7a36", jacket2: "#c8602a", limb: "#1d1d26", shoe: "#f2f2ee", skin: "#f0c49c", hat: "#2f3d63", hat2: "#eef1f6", pack: "#f2c84c" };
 const Mat: React.FC<{ c: string; flat?: boolean; r?: number }> = ({ c, flat = true, r = 0.85 }) => <meshStandardMaterial color={c} roughness={r} metalness={0} flatShading={flat} />;
 
@@ -102,7 +104,7 @@ const Street: React.FC = () => {
 };
 
 // ---------- герой ----------
-const L1 = 0.4, L2 = 0.4, A1 = 0.26, A2 = 0.26, HIP = 0.76;
+const L1 = 0.4, L2 = 0.4, A1 = 0.26, A2 = 0.26, HIP = 0.82;
 type Limb = [number, number]; // абсолютные углы (0 = вниз, + = вперёд), градусы
 const Leg: React.FC<{ x: number; a: Limb }> = ({ x, a }) => (
   <group position={[x, 0, 0]} rotation={[-a[0] * D, 0, 0]}>
@@ -193,12 +195,12 @@ const Scene: React.FC = () => {
   if (kick > 0) legR = [lerp(legR[0], 55, kick), lerp(legR[1], 40, kick)];
   const swL = (fr[0] - dist) / S, swR = (fl[0] - dist) / S;
   const armL: Limb = [swL * 70, swL * 70 + 35], armR: Limb = [swR * 70, swR * 70 + 35];
-  const hero = new THREE.Vector3(1.3, 0, -12 + dist);
+  const hero = new THREE.Vector3(1.3, WALK_Y, -12 + dist);
   // мяч: лежит впереди, после удара катится и прыгает
   const ball0 = -12 + kickF * speed + 0.36;
   const t = Math.max(0, f - kickF) / 30;
   const bz = f < kickF ? ball0 : ball0 + Math.max(0, 6.5 * t - 1.1 * t * t);
-  const by = 0.11 + (f >= kickF ? Math.abs(Math.sin(t * 5)) * 0.35 * Math.exp(-t * 1.6) : 0);
+  const by = WALK_Y + 0.11 + (f >= kickF ? Math.abs(Math.sin(t * 5)) * 0.35 * Math.exp(-t * 1.6) : 0);
   const roll = -(bz - ball0) / 0.11;
   return (
     <>
