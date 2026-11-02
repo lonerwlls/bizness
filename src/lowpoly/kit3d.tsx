@@ -262,7 +262,7 @@ export const KNEEL: Pose3D = { legL: [80, 0], legR: [15, -90], armL: [10, 20], a
 export const SIT: Pose3D = { legL: [86, 6], legR: [84, 2], armL: [20, 70], armR: [20, 70], hip: 0.47, lean: -4 }; // сидеть на сиденье высотой 0.42, ступни на полу
 
 // ---------- собака-напарник (Бадди) ----------
-export const Dog3D: React.FC<{ p: V3; rotY?: number; f: number; walk?: number; sit?: boolean; bark?: number; wag?: number; headTilt?: number; color?: string }> = ({ p, rotY = 0, f, walk = 0, sit, bark = 0, wag = 0.5, headTilt = 0, color = "#c08a52" }) => {
+export const Dog3D: React.FC<{ p: V3; rotY?: number; f: number; walk?: number; sit?: boolean; bark?: number; wag?: number; headTilt?: number; color?: string; muzzle?: string }> = ({ p, rotY = 0, f, walk = 0, sit, bark = 0, wag = 0.5, headTilt = 0, color = "#c08a52", muzzle }) => {
   const C2 = "#8a5a32";
   const ph = walk * 9;
   const legA = (k: number) => (sit ? 0 : Math.sin(ph + k) * 32 * Math.min(1, walk > 0 ? 1 : 0));
@@ -285,7 +285,7 @@ export const Dog3D: React.FC<{ p: V3; rotY?: number; f: number; walk?: number; s
       <mesh position={[0, sit ? 0.56 : 0.52, sit ? 0.16 : 0.24]} rotation={[sit ? 0.35 : 0.75, 0, 0]} castShadow><capsuleGeometry args={[0.075, 0.13, 6, 10]} /><Mat c={color} flat={false} /></mesh>
       <group position={[0, sit ? 0.66 : 0.6, sit ? 0.22 : 0.3]} rotation={[-0.1, 0, headTilt * D]}>
         <mesh castShadow><sphereGeometry args={[0.14, 16, 12]} /><Mat c={color} flat={false} /></mesh>
-        <mesh position={[0, -0.03, 0.14]} castShadow><boxGeometry args={[0.12, 0.1, 0.16]} /><Mat c={color} /></mesh>
+        <mesh position={[0, -0.03, 0.14]} castShadow><boxGeometry args={[0.12, 0.1, 0.16]} /><Mat c={muzzle ?? color} /></mesh>
         <mesh position={[0, -0.0, 0.225]}><sphereGeometry args={[0.03, 8, 8]} /><Mat c="#141418" flat={false} /></mesh>
         <mesh position={[0, -0.09 - bark * 0.04, 0.15]} rotation={[bark * 0.4, 0, 0]}><boxGeometry args={[0.1, 0.03, 0.12]} /><Mat c={bark > 0.1 ? "#7a2a2a" : color} /></mesh>
         {[-1, 1].map((s) => <mesh key={s} position={[s * 0.05, 0.04, 0.12]}><sphereGeometry args={[0.02, 8, 8]} /><Mat c="#141418" flat={false} r={0.3} /></mesh>)}
