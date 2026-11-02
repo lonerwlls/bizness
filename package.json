@@ -9,16 +9,20 @@
   },
   "private": true,
   "dependencies": {
+    "@react-three/fiber": "9.1.2",
     "@remotion/cli": "4.0.538",
     "@remotion/google-fonts": "4.0.538",
     "@remotion/media": "4.0.538",
+    "@remotion/three": "4.0.538",
+    "msedge-tts": "^2.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.538",
-    "msedge-tts": "^2.1.1"
+    "three": "0.170.0"
   },
   "devDependencies": {
     "@types/react": "19.2.7",
+    "@types/three": "0.170.0",
     "@types/web": "0.0.166",
     "prettier": "3.8.1",
     "typescript": "5.9.3"
