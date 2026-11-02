@@ -281,6 +281,8 @@ export const Dog3D: React.FC<{ p: V3; rotY?: number; f: number; walk?: number; s
           </group>
         ))}
       </group>
+      {/* шея: от груди к голове */}
+      <mesh position={[0, sit ? 0.56 : 0.52, sit ? 0.16 : 0.24]} rotation={[sit ? 0.35 : 0.75, 0, 0]} castShadow><capsuleGeometry args={[0.075, 0.13, 6, 10]} /><Mat c={color} flat={false} /></mesh>
       <group position={[0, sit ? 0.66 : 0.6, sit ? 0.22 : 0.3]} rotation={[-0.1, 0, headTilt * D]}>
         <mesh castShadow><sphereGeometry args={[0.14, 16, 12]} /><Mat c={color} flat={false} /></mesh>
         <mesh position={[0, -0.03, 0.14]} castShadow><boxGeometry args={[0.12, 0.1, 0.16]} /><Mat c={color} /></mesh>

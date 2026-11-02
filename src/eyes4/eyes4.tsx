@@ -54,7 +54,7 @@ const S1: React.FC<{ g: number }> = ({ g }) => {
       <Glow p={[car[0], 0.7, car[2]]} s={[1.9, 1.3, 4.1]} k={hitGlow(hPos, car, g, clicks)} />
       <Human p={hPos} rotY={-2.4} pose={{ ...STAND3D, armR: CANE_ARM, headPitch: -4 }} eyes={0} f={g} mouth={clickMouth(g, clicks)} />
       <EchoWave from={hPos} g={g} clicks={clicks} />
-      <Dog3D p={[1.9, WALK_Y, 0.5]} rotY={-2.4} f={g} sit wag={0.4} headTilt={g > 30 ? 15 : 0} />
+      <Dog3D p={[1.75, WALK_Y, -0.9]} rotY={-2.0} f={g} sit wag={0.4} headTilt={g > 30 ? 15 : 0} />
     </Canvas3D>
   );
 };
@@ -195,7 +195,7 @@ const S7: React.FC<{ g: number }> = ({ g }) => {
   const rows = [6, 7.3, 8.6];
   return (
     <Canvas3D>
-      <CamRig pos={[3.2, 2.6, 6.5]} look={[7.5, 0.4, 0.5]} fov={46} />
+      <CamRig pos={[2.3, 2.1, 5.4]} look={[6.6, 0.6, 0.9]} fov={48} />
       <World m={MOODS.morning} focus={[7, 0, 1]} />
       <Street />
       {rows.map((x, r) => (
@@ -209,10 +209,13 @@ const S7: React.FC<{ g: number }> = ({ g }) => {
           })}
         </group>
       ))}
-      <Human p={[6.0, 0.03, 0.4 + g * 0.004]} rotY={-Math.PI / 2} pose={{ ...crouch(0.5), armL: [70, 40], armR: [55 + Math.sin(g / 4) * 10, 30] }} eyes={0} f={g} mouth="smile" />
-      <Human p={[7.3, 0.03, 2.4]} rotY={-Math.PI / 2} look={NPCS[3]} pose={{ ...crouch(0.5), armL: [70, 40], armR: [60, 30] }} eyes={0} f={g + 7} />
-      <Human p={[8.6, 0.03, -0.6]} rotY={-Math.PI / 2} look={MAYA3D} glasses pose={{ ...crouch(0.5), armL: [70, 40], armR: [58 + Math.sin(g / 5) * 8, 30] }} f={g + 3} mouth="smile" />
-      <Dog3D p={[5.3, 0.03, 3]} rotY={2} f={g} sit wag={0.6} />
+      {/* люди стоят ровно сбоку от грядок, на газоне */}
+      <Human p={[5.3, 0.03, 0.6 + g * 0.006]} rotY={Math.PI / 2} pose={{ ...STAND3D, armR: [70, 75], armL: [10, 16], headPitch: 15 }} eyes={0} f={g} mouth="smile"
+        handR={<group rotation={[-0.9, 0, 0]}><mesh position={[0, -0.05, 0.08]}><cylinderGeometry args={[0.07, 0.08, 0.16, 12]} /><Mat c="#5f8fb5" /></mesh><mesh position={[0, -0.02, 0.22]} rotation={[1.1, 0, 0]}><cylinderGeometry args={[0.012, 0.016, 0.18, 6]} /><Mat c="#5f8fb5" /></mesh></group>} />
+      {Array.from({ length: 8 }, (_, i) => { const t = ((g * 0.05 + i / 8) % 1); return <mesh key={i} position={[5.75 + t * 0.15, 0.85 - t * 0.7, 0.6 + g * 0.006 + 0.0]}><sphereGeometry args={[0.012, 6, 6]} /><meshStandardMaterial color="#9cd0f0" /></mesh>; })}
+      <Human p={[6.65, 0.03, 2.2]} rotY={Math.PI / 2} look={NPCS[3]} pose={{ ...STAND3D, armR: [38 + Math.sin(g / 6) * 4, 46], armL: [10, 16], headPitch: 12 }} eyes={0} f={g + 7} mouth="smile" />
+      <Human p={[7.95, 0.03, -0.4]} rotY={-Math.PI / 2} look={MAYA3D} glasses pose={{ ...STAND3D, armR: CANE_ARM, armL: [36, 46], headPitch: 8 }} f={g + 3} mouth="smile" />
+      <Dog3D p={[4.6, 0.03, 2.4]} rotY={2} f={g} sit wag={0.6} />
     </Canvas3D>
   );
 };
