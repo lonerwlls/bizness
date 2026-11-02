@@ -12,7 +12,8 @@ mkdir -p out videos
 for ID in "$@"; do
   RAW="out/_raw_$ID.mp4"
   ENTRY=""; [ -f "src/$ID/index.ts" ] && ENTRY="src/$ID/index.ts"  # у отдельных роликов (towers) своя точка входа
-  npx remotion render $ENTRY "Fin-$ID" "$RAW" --crf=18 --log=error
+  GL=""; grep -rqs "ThreeCanvas" "src/$ID" && GL="--gl=swangle"  # 3D-ролики рендерим программным WebGL (в облаке нет видеокарты)
+  npx remotion render $ENTRY "Fin-$ID" "$RAW" --crf=18 --log=error $GL
   if [ -f "$AD" ] && ! grep -q "export const AD_FRAMES = 0;" src/finance/engine.tsx; then
     # Начало рекламы: конец предложения, ближайший к середине озвучки (как buildTopic в engine.tsx).
     AT=$(node -e '
