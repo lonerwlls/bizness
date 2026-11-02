@@ -259,7 +259,7 @@ export const crouch = (h: number): Pose3D => {
   return { legL: leg(0.05), legR: leg(0.08), armL: [10, 30], armR: [10, 30], hip: h, lean: 18 };
 };
 export const KNEEL: Pose3D = { legL: [80, 0], legR: [15, -90], armL: [10, 20], armR: [10, 20], hip: 0.47, lean: 6 };
-export const SIT: Pose3D = { legL: [88, 4], legR: [86, 0], armL: [20, 70], armR: [20, 70], hip: 0.48, lean: -4 };
+export const SIT: Pose3D = { legL: [86, 6], legR: [84, 2], armL: [20, 70], armR: [20, 70], hip: 0.47, lean: -4 }; // сидеть на сиденье высотой 0.42, ступни на полу
 
 // ---------- собака-напарник (Бадди) ----------
 export const Dog3D: React.FC<{ p: V3; rotY?: number; f: number; walk?: number; sit?: boolean; bark?: number; wag?: number; headTilt?: number; color?: string }> = ({ p, rotY = 0, f, walk = 0, sit, bark = 0, wag = 0.5, headTilt = 0, color = "#c08a52" }) => {
@@ -306,12 +306,12 @@ export const Room: React.FC<{ night?: boolean; f?: number; children?: React.Reac
     {[[0.6, 1.05, 1.9, 0.08], [0.6, 2.35, 1.9, 0.08], [-0.3, 1.7, 0.08, 1.3], [1.5, 1.7, 0.08, 1.3], [0.6, 1.7, 0.06, 1.3]].map(([x, y, w, h], i) => <mesh key={i} position={[x, y, -2.92]}><boxGeometry args={[w, h, 0.05]} /><Mat c="#f2ece0" /></mesh>)}
     {/* диван, столик, ковёр, торшер */}
     <group position={[-1.2, 0, -1.9]}>
-      <mesh position={[0, 0.25, 0]} castShadow receiveShadow><boxGeometry args={[2.2, 0.5, 0.9]} /><Mat c="#4a6a9a" /></mesh>
-      <mesh position={[0, 0.65, -0.35]} castShadow><boxGeometry args={[2.2, 0.6, 0.2]} /><Mat c="#4a6a9a" /></mesh>
+      <mesh position={[0, 0.21, 0]} castShadow receiveShadow><boxGeometry args={[2.2, 0.42, 0.9]} /><Mat c="#6a8ab8" /></mesh>
+      <mesh position={[0, 0.65, -0.38]} castShadow><boxGeometry args={[2.2, 0.7, 0.16]} /><Mat c="#5a7aa8" /></mesh>
       {[-1.05, 1.05].map((x) => <mesh key={x} position={[x, 0.45, 0]} castShadow><boxGeometry args={[0.2, 0.4, 0.9]} /><Mat c="#3a5a88" /></mesh>)}
     </group>
     <mesh position={[-1.2, 0.01, -0.6]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><circleGeometry args={[1.2, 24]} /><Mat c="#c86a4a" /></mesh>
-    <group position={[-1.1, 0, -0.55]}>
+    <group position={[-0.2, 0, -0.35]}>
       <mesh position={[0, 0.4, 0]} castShadow receiveShadow><boxGeometry args={[1.0, 0.06, 0.55]} /><Mat c="#7a4a2a" /></mesh>
       {[[-0.45, -0.22], [0.45, -0.22], [-0.45, 0.22], [0.45, 0.22]].map(([x, z], i) => <mesh key={i} position={[x, 0.2, z]}><boxGeometry args={[0.05, 0.4, 0.05]} /><Mat c="#5a3420" /></mesh>)}
     </group>
@@ -321,5 +321,64 @@ export const Room: React.FC<{ night?: boolean; f?: number; children?: React.Reac
       {night ? <pointLight position={[0, 1.5, 0]} intensity={5} distance={6} color="#ffd8a0" /> : null}
     </group>
     {children}
+  </group>
+);
+
+// ---------- где кисть / ошейник в мире (для поводка, трости) ----------
+export const handWorld = (p: V3, rotY: number, pose: Pose3D, side: 1 | -1): THREE.Vector3 => {
+  const a = side > 0 ? pose.armR : pose.armL, sp = (pose.spread ?? [0.12, 0.12])[side > 0 ? 1 : 0];
+  const M = new THREE.Matrix4().makeTranslation(p[0], p[1] + (pose.bob ?? 0), p[2])
+    .multiply(new THREE.Matrix4().makeRotationY(rotY))
+    .multiply(new THREE.Matrix4().makeTranslation(0, pose.hip ?? HIP, 0))
+    .multiply(new THREE.Matrix4().makeRotationX((pose.lean ?? 4) * D))
+    .multiply(new THREE.Matrix4().makeTranslation(side * 0.15, 0.4, 0))
+    .multiply(new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(-a[0] * D, 0, side * sp)))
+    .multiply(new THREE.Matrix4().makeTranslation(0, -A1, 0))
+    .multiply(new THREE.Matrix4().makeRotationX(-(a[1] - a[0]) * D))
+    .multiply(new THREE.Matrix4().makeTranslation(0, -A2 - 0.03, 0));
+  return new THREE.Vector3().applyMatrix4(M);
+};
+export const collarWorld = (p: V3, rotY: number, sit?: boolean): THREE.Vector3 =>
+  new THREE.Vector3(0, sit ? 0.52 : 0.5, sit ? 0.14 : 0.2).applyAxisAngle(new THREE.Vector3(0, 1, 0), rotY).add(new THREE.Vector3(p[0], p[1], p[2]));
+// палка между двумя точками
+export const Stick: React.FC<{ a: THREE.Vector3; b: THREE.Vector3; r?: number; c: string }> = ({ a, b, r = 0.012, c }) => {
+  const d = b.clone().sub(a), len = d.length();
+  const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize());
+  return <mesh position={a.clone().add(b).multiplyScalar(0.5)} quaternion={q} castShadow><cylinderGeometry args={[r, r, len, 6]} /><Mat c={c} flat={false} /></mesh>;
+};
+// поводок с провисом
+export const Leash: React.FC<{ a: THREE.Vector3; b: THREE.Vector3; sag?: number; c?: string }> = ({ a, b, sag = 0.12, c = "#e0524a" }) => {
+  const mid = a.clone().add(b).multiplyScalar(0.5).add(new THREE.Vector3(0, -sag, 0));
+  const geo = useMemo(() => new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(a, mid, b), 16, 0.009, 5, false), [a.x, a.y, a.z, b.x, b.y, b.z, mid.y]);
+  return <mesh geometry={geo} castShadow><Mat c={c} flat={false} /></mesh>;
+};
+// белая трость: от кисти к кончику на земле
+export const Cane: React.FC<{ hand: THREE.Vector3; tip: THREE.Vector3 }> = ({ hand, tip }) => {
+  const red = tip.clone().lerp(hand, 0.22);
+  return (
+    <>
+      <Stick a={hand} b={red} r={0.011} c="#f4f4f0" />
+      <Stick a={red} b={tip} r={0.011} c="#d83a3a" />
+    </>
+  );
+};
+export const Radio3D: React.FC<{ p: V3; f: number; on?: boolean }> = ({ p, f, on = true }) => (
+  <group position={p}>
+    <mesh castShadow><boxGeometry args={[0.42, 0.24, 0.16]} /><Mat c="#8a5a3a" /></mesh>
+    <mesh position={[-0.08, 0, 0.081]}><circleGeometry args={[0.08, 16]} /><Mat c="#3a2a20" /></mesh>
+    <mesh position={[0.13, 0.04, 0.085]}><boxGeometry args={[0.1, 0.05, 0.01]} /><Mat c={on ? "#ffd27a" : "#3a3a30"} e={on ? "#ffb040" : undefined} ei={on ? 1 : 0} /></mesh>
+    <mesh position={[0.15, 0.17, 0]} rotation={[0, 0, -0.4]}><cylinderGeometry args={[0.005, 0.005, 0.3, 4]} /><Mat c="#aab0b8" /></mesh>
+    {on ? [0, 1, 2].map((k) => {
+      const t = ((f / 40 + k / 3) % 1);
+      return <mesh key={k} position={[-0.08, 0, 0.1]} scale={0.1 + t * 0.6}><torusGeometry args={[1, 0.02, 6, 24]} /><meshBasicMaterial color="#ffd27a" transparent opacity={(1 - t) * 0.6} /></mesh>;
+    }) : null}
+  </group>
+);
+export const Fridge: React.FC<{ p: V3; on: boolean }> = ({ p, on }) => (
+  <group position={p}>
+    <mesh position={[0, 0.9, 0]} castShadow><boxGeometry args={[0.8, 1.8, 0.7]} /><Mat c="#e8ecf2" /></mesh>
+    <mesh position={[0, 1.15, 0.351]}><boxGeometry args={[0.8, 0.02, 0.01]} /><Mat c="#aab0b8" /></mesh>
+    <mesh position={[0.3, 1.3, 0.36]}><boxGeometry args={[0.04, 0.3, 0.03]} /><Mat c="#8a96b0" /></mesh>
+    <mesh position={[-0.28, 1.65, 0.36]}><sphereGeometry args={[0.018, 8, 8]} /><Mat c={on ? "#3ad08a" : "#2a2a2a"} e={on ? "#3ad08a" : undefined} ei={on ? 2 : 0} /></mesh>
   </group>
 );

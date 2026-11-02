@@ -5,7 +5,7 @@ import React from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { Grain, MONT, RED, WH, YEL, ip } from "../characters/kit";
 import { ChapterCard, Counter, GREEN, Tag } from "../characters/hud";
-import { CamRig, Car3D, Dog3D, Human, KNEEL, Limb, MASCOT3D, MOODS, NPCS, Pose3D, Room, SIT, STAND3D, Street, V3, WALK_Y, World, crouch, lerp, rnd, walkPose } from "../lowpoly/kit3d";
+import { CamRig, Car3D, Dog3D, Human, Leash, collarWorld, handWorld, KNEEL, Limb, MASCOT3D, MOODS, NPCS, Pose3D, Room, SIT, STAND3D, Street, V3, WALK_Y, World, crouch, lerp, rnd, walkPose } from "../lowpoly/kit3d";
 
 export const EYES1_FRAMES = 1800;
 const SC = 180;
@@ -179,7 +179,8 @@ const S7: React.FC<{ g: number }> = ({ g }) => {
       })}
       <Human p={[0.6, WALK_Y, 5.5]} rotY={-1.2} look={NPCS[3]} eyes={0} f={g} pose={{ ...crouch(0.4), armL: [40, 120], armR: [40, 120], headPitch: 30 }} />
       <Human p={[HERO_X, WALK_Y, STOP_Z]} rotY={0.5} pose={{ ...STAND3D, armR: [28, 32] }} eyes={0} f={g} />
-      <Dog3D p={[HERO_X + 0.45, WALK_Y, STOP_Z + 0.55]} rotY={-2.2} f={g} sit wag={0.6} />
+      <Dog3D p={[HERO_X + 0.45, WALK_Y, STOP_Z + 0.75]} rotY={-2.2} f={g} sit wag={0.6} />
+      <Leash a={handWorld([HERO_X, WALK_Y, STOP_Z], 0.5, { ...STAND3D, armR: [28, 32] }, 1)} b={collarWorld([HERO_X + 0.45, WALK_Y, STOP_Z + 0.75], -2.2, true)} sag={0.15} />
       <Human p={[2.2, 0.03, -12]} rotY={0.4} look={NPCS[2]} eyes={0} f={g + 3} pose={walkPose(g * 0.012, 0.7, 0.05)} />
       <Human p={[5.6, 0.03, -2.5]} rotY={-1.6} look={NPCS[0]} eyes={0} f={g + 30} pose={grope(g + 99)} />
       <Human p={[1.8, WALK_Y, 9]} rotY={2.6} look={NPCS[4]} eyes={0} f={g + 13} pose={{ ...STAND3D, armL: [150, 170], armR: [150, 170], spread: [-0.2, -0.2], headPitch: -10 }} />
@@ -199,7 +200,8 @@ const S8: React.FC<{ g: number }> = ({ g }) => {
       <World m={M} focus={[HERO_X, 0, hz]} />
       <Street />
       <Human p={[HERO_X, WALK_Y, hz]} pose={pose} eyes={0} f={g} />
-      <Dog3D p={[HERO_X - 0.05, WALK_Y, hz + 0.55]} f={g} walk={g * 0.18} wag={0.7} />
+      <Dog3D p={[HERO_X - 0.05, WALK_Y, hz + 0.9]} f={g} walk={g * 0.18} wag={0.7} />
+      <Leash a={handWorld([HERO_X, WALK_Y, hz], 0, pose, 1)} b={collarWorld([HERO_X - 0.05, WALK_Y, hz + 0.9], 0)} sag={0.08} />
     </Canvas3D>
   );
 };
@@ -225,8 +227,8 @@ const Home: React.FC<{ g: number; ring?: boolean }> = ({ g, ring }) => {
       <directionalLight position={[2, 4, -4]} intensity={1.6} color="#ffe2c0" castShadow shadow-mapSize={[1024, 1024]} />
       <color attach="background" args={["#d8c4b0"]} />
       <Room />
-      <Human p={[-1.2, 0, -1.75]} look={{ ...MASCOT3D, pack: null }} pose={pose} eyes={0} f={g} handR={answer ? <Phone3D p={[0, -0.02, 0.03]} glow={0.6} buzz={0} rot={[0, 0, 0]} /> : null} />
-      {!answer ? <Phone3D p={[-0.9, 0.44, -0.55]} glow={glow} buzz={buzz} /> : null}
+      <Human p={[-1.2, 0, -1.78]} look={{ ...MASCOT3D, pack: null }} pose={pose} eyes={0} f={g} handR={answer ? <Phone3D p={[0, -0.02, 0.03]} glow={0.6} buzz={0} rot={[0, 0, 0]} /> : null} />
+      {!answer ? <Phone3D p={[-0.3, 0.44, -0.35]} glow={glow} buzz={buzz} /> : null}
       <Dog3D p={[0.35, 0, -1.55]} rotY={-1.75} f={g} sit wag={ring ? 0.8 : 0.3} headTilt={ring ? 20 : 0} />
     </Canvas3D>
   );
