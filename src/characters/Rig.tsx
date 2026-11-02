@@ -66,8 +66,8 @@ export const stepFoot = (xh: number, S: number, off: number, ground: (x: number)
 // ---------- внешность ----------
 export type Look = {
   skin: string; top: string; pants: string; shoes: string; hair: string;
-  hairStyle: "messy" | "blond" | "short" | "none";
-  hat?: "beanie" | "cap" | "police";
+  hairStyle: "messy" | "blond" | "short" | "long" | "pigtails" | "none";
+  hat?: "beanie" | "cap" | "police" | "chef";
   hatColor?: string; hatColor2?: string; neck?: string; slim?: number; belt?: string; badge?: boolean; zip?: string;
 };
 export const MASCOT: Look = { skin: "#e8c2a0", top: "#e47a3c", pants: "#26304a", shoes: "#eef1f6", hair: "#5a3a28", hairStyle: "messy", hat: "beanie", hatColor: "#2f3d63", hatColor2: "#e8edf5", zip: "#c5612b" };
@@ -81,6 +81,14 @@ export const PASSER: Look[] = [
   { skin: "#ecc9a6", top: "#b5814a", pants: "#2c2c38", shoes: "#20232c", hair: "#8a6a3a", hairStyle: "short", hat: "cap", hatColor: "#3d5a7a" },
   { skin: "#c99a76", top: "#a0464a", pants: "#2a2f40", shoes: "#20232c", hair: "#151212", hairStyle: "short" },
 ];
+
+export const GIRL: Look = { skin: "#ecc9a6", top: "#e0607a", pants: "#3a4a7a", shoes: "#f2c84c", hair: "#6a3a22", hairStyle: "pigtails", slim: 0.9 };
+export const MOM: Look = { skin: "#e3bd98", top: "#5a8fae", pants: "#2c3348", shoes: "#20232c", hair: "#3a2418", hairStyle: "long" };
+export const BAKER: Look = { skin: "#dcae88", top: "#eef1f6", pants: "#3a4258", shoes: "#20232c", hair: "#2b2020", hairStyle: "short", hat: "chef", hatColor: "#ffffff" };
+export const KID: Look = { skin: "#d6a882", top: "#4fa36a", pants: "#2a3a6a", shoes: "#e0524a", hair: "#2b1d14", hairStyle: "messy", slim: 0.9 };
+export const FRIEND3: Look = { skin: "#e8c2a0", top: "#c9a03a", pants: "#2a2f40", shoes: "#20232c", hair: "#b0602a", hairStyle: "long" };
+// «невидимка»: тот же герой, но светлым полупрозрачным силуэтом (для зрителя)
+export const GHOST: Look = { skin: "#cfe6ff", top: "#cfe6ff", pants: "#cfe6ff", shoes: "#cfe6ff", hair: "#cfe6ff", hairStyle: "messy", hat: "beanie", hatColor: "#cfe6ff", hatColor2: "#ffffff", zip: "#b4d6ff" };
 
 export type Face = { eyes?: "open" | "wide" | "happy" | "closed"; brows?: number; mouth?: "none" | "smile" | "grin" | "o" | "flat" | "fear" };
 
@@ -175,6 +183,9 @@ export const Person: React.FC<{
         return <path d={`M ${-R - 1 + m} 0 C ${-R - 4 + m} -32 ${-8 + m} -44 ${10 + m} -39 C ${28 + m} -35 ${R + 4 + m} -20 ${R + m} -2 C ${20 + m} -18 ${6 + m} -22 ${-6 + m} -16 C ${-16 + m} -12 ${-24 + m} -8 ${-R - 1 + m} 0 Z`} fill={look.hair} />;
       case "short":
         return <path d={`M ${-R} -2 C ${-R - 2} -34 ${R + 2} -34 ${R} -2 C ${R - 8} -16 ${-R + 8} -16 ${-R} -2 Z`} fill={look.hair} />;
+      case "long":
+      case "pigtails":
+        return <path d={`M ${-R - 2} 2 C ${-R - 4} -36 ${R + 4} -36 ${R + 2} 2 C ${R - 6} -14 ${-R + 6} -14 ${-R - 2} 2 Z`} fill={look.hair} />;
       case "messy":
         return <path d={`M ${-R - 1} -4 L ${-R + 4} -14 L ${-R + 10} -6 L ${-R + 14} -16 L ${-R + 20} -8 Z M ${R + 1} -4 L ${R - 6} -15 L ${R - 11} -7 Z`} fill={look.hair} />;
       default:
@@ -198,6 +209,15 @@ export const Person: React.FC<{
           <g>
             <path d={`M ${-R - 1} -8 C ${-R - 1} -42 ${R + 1} -42 ${R + 1} -8 Z`} fill={hc} />
             <path d={`M ${-6 + turn * 10} -10 L ${R + 4 + turn * 20} -9 Q ${R + 10 + turn * 20} -4 ${R - 4 + turn * 10} -3 L ${-12 + turn * 10} -4 Z`} fill={shade(hc, 0.8)} />
+          </g>
+        );
+      case "chef":
+        return (
+          <g fill={hc}>
+            <rect x={-R + 2} y={-30} width={2 * R - 4} height={20} rx={4} />
+            <circle cx={-14} cy={-40} r={17} />
+            <circle cx={6} cy={-46} r={19} />
+            <circle cx={20} cy={-36} r={15} />
           </g>
         );
       case "police":
@@ -250,6 +270,13 @@ export const Person: React.FC<{
       {/* голова */}
       <g transform={`translate(${headC[0]} ${headC[1]}) rotate(${pose.lean * 0.5 + (pose.head ?? 0)})`}>
         {turn > 0.3 ? <circle cx={-turn * 6} cy={4} r={7} fill={shade(look.skin, 0.9)} /> : null}
+        {look.hairStyle === "long" ? <path d={`M ${-R - 4} -6 Q ${-R - 8} 40 ${-R + 6} 52 L ${R - 6} 52 Q ${R + 8} 40 ${R + 4} -6 Z`} fill={shade(look.hair, 0.85)} /> : null}
+        {look.hairStyle === "pigtails" ? (
+          <g fill={look.hair}>
+            <circle cx={-R - 10} cy={-4} r={13} />
+            <circle cx={R + 10} cy={-4} r={13} />
+          </g>
+        ) : null}
         <circle r={R} fill={look.skin} />
         {hair}
         {hat}
