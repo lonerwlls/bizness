@@ -295,7 +295,7 @@ export const Dog3D: React.FC<{ p: V3; rotY?: number; f: number; walk?: number; s
 };
 
 // ---------- комната (вид изнутри; стена с окном — сзади, по -z) ----------
-export const Room: React.FC<{ night?: boolean; f?: number; children?: React.ReactNode; dark?: number }> = ({ night, children, dark = 0 }) => (
+export const Room: React.FC<{ night?: boolean; f?: number; children?: React.ReactNode; dark?: number; lamp?: boolean }> = ({ night, children, dark = 0, lamp = true }) => (
   <group>
     <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow><planeGeometry args={[10, 10]} /><Mat c="#9a6a44" /></mesh>
     {Array.from({ length: 12 }, (_, i) => <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[-5 + i * 0.85, 0.002, 0]}><planeGeometry args={[0.02, 10]} /><Mat c="#7a5234" /></mesh>)}
@@ -315,11 +315,11 @@ export const Room: React.FC<{ night?: boolean; f?: number; children?: React.Reac
       <mesh position={[0, 0.4, 0]} castShadow receiveShadow><boxGeometry args={[1.0, 0.06, 0.55]} /><Mat c="#7a4a2a" /></mesh>
       {[[-0.45, -0.22], [0.45, -0.22], [-0.45, 0.22], [0.45, 0.22]].map(([x, z], i) => <mesh key={i} position={[x, 0.2, z]}><boxGeometry args={[0.05, 0.4, 0.05]} /><Mat c="#5a3420" /></mesh>)}
     </group>
-    <group position={[1.9, 0, -2.4]}>
+    {lamp ? <group position={[1.9, 0, -2.4]}>
       <mesh position={[0, 0.8, 0]}><cylinderGeometry args={[0.02, 0.02, 1.6, 6]} /><Mat c="#2a2a2a" /></mesh>
       <mesh position={[0, 1.65, 0]}><coneGeometry args={[0.22, 0.3, 12, 1, true]} /><Mat c="#f2d27a" e={night ? "#ffd27a" : undefined} ei={night ? 1 : 0} /></mesh>
       {night ? <pointLight position={[0, 1.5, 0]} intensity={5} distance={6} color="#ffd8a0" /> : null}
-    </group>
+    </group> : null}
     {children}
   </group>
 );

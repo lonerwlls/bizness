@@ -40,7 +40,7 @@ const Kitchen: React.FC = () => (
     <mesh position={[0.1, 1.24, -0.12]} rotation={[Math.PI / 2, 0, 0]}><cylinderGeometry args={[0.018, 0.018, 0.22, 8]} /><Mat c="#c8ccd2" r={0.2} /></mesh>
   </group>
 );
-const TAP: V3 = [1.7, 1.22, -2.45];
+const TAP: V3 = [1.7, 1.225, -2.56]; // конец носика крана
 
 // ---------- 1. Тёплый холодильник ----------
 const S1: React.FC<{ g: number }> = ({ g }) => {
@@ -51,7 +51,7 @@ const S1: React.FC<{ g: number }> = ({ g }) => {
     <Canvas3D>
       <CamRig pos={[4.0, 1.45, -0.35]} look={[2.6, 1.1, -2.0]} fov={46} />
       <IndoorLight dim={0.75} />
-      <Room />
+      <Room lamp={false} />
       <group position={[2.6, 0, -2.4]}>
         <mesh position={[0, 0.9, 0]} castShadow><boxGeometry args={[0.8, 1.8, 0.7]} /><Mat c="#e8ecf2" /></mesh>
         <mesh position={[0, 0.9, 0.2]}><boxGeometry args={[0.7, 1.7, 0.4]} /><Mat c="#3a3e48" /></mesh>
@@ -72,20 +72,28 @@ const S1: React.FC<{ g: number }> = ({ g }) => {
 // ---------- 2. Последняя капля ----------
 const S2: React.FC<{ g: number }> = ({ g }) => {
   const flow = g < 50 ? 1 : g < 100 ? (rnd(Math.floor(g / 3)) > 0.5 ? 1 : 0) : 0;
-  const drip = g >= 100 && g < 160 ? ((g - 100) % 22) / 22 : -1;
-  const hPos: V3 = [1.75, 0, -1.75];
-  const hp: Pose3D = { ...STAND3D, armR: [62, 78], armL: g > 130 ? [70, 96 + Math.abs(Math.sin(g / 2)) * 10] : [8, 14], lean: 10, headPitch: 10, spread: [0.12, -0.05] };
+  const drip = g >= 100 && g < 125 ? ((g - 100) % 22) / 22 : -1;
+  const knock = g >= 128 && g < 165 ? Math.abs(Math.sin((g - 128) / 2.6)) : 0;
+  const base: Pose3D = { ...STAND3D, armR: [62, 78], armL: [8, 14], lean: 10, headPitch: 10, spread: [0.12, -0.05] };
+  const glassAt = new THREE.Vector3(TAP[0], TAP[1] - 0.26, TAP[2]);
+  // ставим тело так, чтобы кисть со стаканом была ровно под краном
+  const off = handWorld([0, 0, 0], Math.PI, base, 1);
+  const hPos: V3 = [glassAt.x - off.x, 0, glassAt.z - off.z];
+  const hp: Pose3D = { ...base, armR: [62 + knock * 9, 78 + knock * 9] };
   const glass = handWorld(hPos, Math.PI, hp, 1);
+  const fill = ip(g, [0, 50], [0.15, 0.6]);
+  const top = glass.y + 0.14;
   return (
     <Canvas3D>
-      <CamRig pos={[3.0, 1.45, -1.3]} look={[1.75, 1.1, -2.3]} fov={44} />
+      <CamRig pos={[3.3, 1.55, -1.2]} look={[1.72, 1.05, -2.5]} fov={42} />
       <IndoorLight dim={0.8} />
-      <Room />
+      <Room lamp={false} />
       <Kitchen />
       <Human p={hPos} rotY={Math.PI} look={HOME_IN} pose={hp} eyes={0} f={g} mouth={g > 100 ? "o" : "flat"} />
-      <mesh position={[glass.x, glass.y + 0.07, glass.z]}><cylinderGeometry args={[0.04, 0.035, 0.13, 12]} /><meshStandardMaterial color="#cfe8f8" transparent opacity={0.5} /></mesh>
-      {flow ? <mesh position={[TAP[0], (TAP[1] + glass.y + 0.12) / 2, TAP[2]]}><cylinderGeometry args={[0.008, 0.008, TAP[1] - glass.y - 0.12, 6]} /><meshStandardMaterial color="#9cd0f0" transparent opacity={0.8} /></mesh> : null}
-      {drip >= 0 ? <mesh position={[TAP[0], TAP[1] - drip * (TAP[1] - glass.y - 0.1), TAP[2]]}><sphereGeometry args={[0.012, 8, 8]} /><meshStandardMaterial color="#9cd0f0" /></mesh> : null}
+      <mesh position={[glass.x, glass.y + 0.07, glass.z]}><cylinderGeometry args={[0.045, 0.04, 0.14, 14]} /><meshStandardMaterial color="#cfe8f8" transparent opacity={0.45} /></mesh>
+      <mesh position={[glass.x, glass.y + 0.005 + 0.065 * fill, glass.z]}><cylinderGeometry args={[0.038, 0.036, 0.13 * fill, 14]} /><meshStandardMaterial color="#7ab8e0" transparent opacity={0.8} /></mesh>
+      {flow ? <mesh position={[TAP[0], (TAP[1] + top) / 2, TAP[2]]}><cylinderGeometry args={[0.008, 0.008, Math.max(0.01, TAP[1] - top), 6]} /><meshStandardMaterial color="#9cd0f0" transparent opacity={0.85} /></mesh> : null}
+      {drip >= 0 ? <mesh position={[TAP[0], TAP[1] - drip * (TAP[1] - top), TAP[2]]}><sphereGeometry args={[0.012, 8, 8]} /><meshStandardMaterial color="#9cd0f0" /></mesh> : null}
     </Canvas3D>
   );
 };
@@ -227,37 +235,49 @@ const S7: React.FC<{ g: number }> = ({ g }) => {
   const listen = Math.sin(g / 20) > 0;
   return (
     <Canvas3D>
-      <CamRig pos={[fx - 2.4, 1.35, fz + 2.6]} look={[fx, 0.75, fz]} fov={42} />
+      <CamRig pos={[fx - 1.5, 1.45, fz + 1.7]} look={[fx, 0.6, fz]} fov={42} />
       <World m={MOODS.sunset} focus={[fx, 0, fz]} />
       <Street />
       <Fire p={[fx, 0.03, fz]} f={g} />
       <mesh position={[fx, 0.5, fz]}><boxGeometry args={[0.7, 0.03, 0.5]} /><Mat c="#3a3a40" /></mesh>
-      <mesh position={[fx, 0.53, fz]} rotation={[0, 0, 0]}><cylinderGeometry args={[0.16, 0.14, 0.04, 16]} /><Mat c="#2a2a2e" /></mesh>
+      <mesh position={[fx, 0.53, fz]}><cylinderGeometry args={[0.24, 0.2, 0.05, 20]} /><Mat c="#2a2a2e" /></mesh>
+      <mesh position={[fx + 0.32, 0.54, fz]} rotation={[0, 0, Math.PI / 2]}><cylinderGeometry args={[0.015, 0.015, 0.3, 6]} /><Mat c="#1a1a1e" /></mesh>
+      {[[-0.1, -0.06], [0.0, 0.04], [0.1, -0.03], [-0.04, 0.11], [0.08, 0.1]].map(([dx, dz], i) => (
+        <mesh key={i} position={[fx + dx, 0.575, fz + dz]} rotation={[Math.PI / 2, 0, i * 0.7 + Math.sin(g / 9 + i) * 0.05]} castShadow><capsuleGeometry args={[0.025, 0.12, 4, 8]} /><Mat c={i % 2 ? "#b8603a" : "#a04a2a"} flat={false} r={0.5} /></mesh>
+      ))}
+      {[[-0.12, 0.1], [0.13, -0.1]].map(([dx, dz], i) => <mesh key={"m" + i} position={[fx + dx, 0.57, fz + dz]} scale={[1, 0.35, 1]}><sphereGeometry args={[0.06, 10, 8]} /><Mat c="#8a4a2a" /></mesh>)}
       {Array.from({ length: 6 }, (_, i) => { const t = ((g / 50 + i / 6) % 1); return <mesh key={i} position={[fx + Math.sin(i * 2 + g / 20) * 0.08, 0.6 + t * 0.9, fz]} scale={0.05 + t * 0.12}><icosahedronGeometry args={[1, 0]} /><meshStandardMaterial color="#d8d4d0" transparent opacity={0.5 * (1 - t)} flatShading /></mesh>; })}
       <Human p={[fx - 0.7, 0.03, fz + 0.1]} rotY={Math.PI / 2} look={MASCOT3D} pose={{ ...STAND3D, armR: [60, 70], headYaw: listen ? 30 : 0, headPitch: 15, lean: 10 }} eyes={0} f={g} mouth={listen ? "flat" : "smile"} />
       <Human p={[fx + 0.4, 0.03, fz + 0.75]} rotY={-2.5} look={MAYA3D} pose={{ ...STAND3D, armR: CANE_ARM, headPitch: 10 }} glasses f={g + 9} mouth="smile" />
-      <Dog3D p={[fx + 0.9, 0.03, fz - 0.7]} rotY={-2.2} f={g} sit wag={0.8} headTilt={15} />
+      <Dog3D p={[fx - 0.3, 0.03, fz - 1.3]} rotY={0.3} f={g} sit wag={0.8} headTilt={15} />
     </Canvas3D>
   );
 };
 
 // ---------- 8. Радио с ручкой ----------
+const crankPose = (a: number): Pose3D => ({ ...SIT, armR: [55 + Math.sin(a) * 14, 85 + Math.cos(a) * 14], armL: [40, 80], headPitch: 12, headYaw: 10 });
 const S8: React.FC<{ g: number }> = ({ g }) => {
   const a = g * 0.35;
-  const hp: Pose3D = { ...SIT, armR: [55 + Math.sin(a) * 14, 85 + Math.cos(a) * 14], armL: [40, 80], headPitch: 12, headYaw: 10 };
   const hPos: V3 = [-1.2, 0, -1.78];
+  const hp = crankPose(a);
   const hand = handWorld(hPos, 0, hp, 1);
+  // центр круга, который описывает кисть = ось ручки
+  const ring = Array.from({ length: 16 }, (_, i) => handWorld(hPos, 0, crankPose((i / 16) * Math.PI * 2), 1));
+  const c = ring.reduce((m, p) => m.add(p), new THREE.Vector3()).multiplyScalar(1 / ring.length);
+  const radio: V3 = [c.x + 0.33, c.y, c.z];
+  const arm = hand.clone().sub(c);
   return (
     <Canvas3D>
-      <CamRig pos={[0.4, 1.2, 0.5]} look={[-1.1, 0.75, -1.5]} fov={42} />
+      <CamRig pos={[-0.75, 1.15, -0.15]} look={[-0.85, 0.78, -1.7]} fov={44} />
       <IndoorLight dim={0.65} />
       <Room />
       <Human p={hPos} look={HOME_IN} pose={hp} eyes={0} f={g} mouth="smile" />
-      <Radio3D p={[-1.18, 0.66, -1.38]} f={g} on={g > 40} />
-      <mesh position={[hand.x, hand.y, hand.z]}><cylinderGeometry args={[0.012, 0.012, 0.1, 6]} /><Mat c="#3a3a40" /></mesh>
-      <mesh position={[-1.05, 0.66, -1.38]} rotation={[0, 0, a]}><boxGeometry args={[0.02, 0.16, 0.02]} /><Mat c="#3a3a40" /></mesh>
-      <mesh position={[-0.3, 0.44, -0.35]} rotation={[-Math.PI / 2, 0, 0.3]}><boxGeometry args={[0.08, 0.16, 0.012]} /><Mat c="#141418" /></mesh>
-      <Dog3D p={[0.3, 0, -1.4]} rotY={-1.9} f={g} sit wag={0.4} headTilt={g > 40 ? 18 : 0} />
+      <mesh position={[radio[0], (radio[1] - 0.12) / 2, radio[2]]} castShadow><boxGeometry args={[0.36, radio[1] - 0.12, 0.36]} /><Mat c="#6a4a30" /></mesh>
+      <Radio3D p={radio} f={g} on={g > 40} />
+      <mesh position={[c.x + 0.06, c.y, c.z]} rotation={[0, 0, Math.PI / 2]}><cylinderGeometry args={[0.012, 0.012, 0.18, 6]} /><Mat c="#3a3a40" /></mesh>
+      <mesh position={[c.x - 0.02 + 0, c.y + arm.y / 2, c.z + arm.z / 2]} quaternion={new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, arm.y, arm.z).normalize())}><boxGeometry args={[0.02, Math.hypot(arm.y, arm.z), 0.02]} /><Mat c="#3a3a40" /></mesh>
+      <mesh position={[hand.x, hand.y, hand.z]} rotation={[0, 0, Math.PI / 2]}><cylinderGeometry args={[0.014, 0.014, 0.08, 6]} /><Mat c="#8a3a2a" /></mesh>
+      <Dog3D p={[0.4, 0, -1.3]} rotY={-1.9} f={g} sit wag={0.4} headTilt={g > 40 ? 18 : 0} />
     </Canvas3D>
   );
 };
