@@ -217,8 +217,9 @@ const S8: React.FC<{ g: number }> = ({ g }) => {
       <World m={MOODS.sunset} focus={[1.2, 0, lead - 2]} />
       <Street />
       {people.map((look, i) => {
-        const z = lead - i * 0.85, p: V3 = [1.25, WALK_Y, z];
-        const pose: Pose3D = { ...walkPose(dist + i * 0.23, 0.62, 0.05), armL: i > 0 ? [72, 82] : [6, 12], armR: i <= 1 ? CANE_ARM : [6, 14], headPitch: 5 };
+        const z = lead - i * 0.5, p: V3 = [1.25, WALK_Y, z];
+        // рука на плече впереди идущего: люди идут в ногу, на расстоянии вытянутой руки
+        const pose: Pose3D = { ...walkPose(dist, 0.62, 0.05), armL: i > 0 ? [80, 70] : [6, 12], armR: i <= 1 ? CANE_ARM : [6, 14], headPitch: 5, spread: [0.02, 0.12] };
         return (
           <React.Fragment key={i}>
             <Human p={p} look={look} pose={pose} glasses={i === 0} eyes={0} f={g + i * 9} mouth={i === 0 || i === 1 ? "smile" : "flat"} />
