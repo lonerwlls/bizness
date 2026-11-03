@@ -2,3 +2,6 @@ node_modules/
 out/
 .env
 **/_tmp/
+# кадры чужого канала — только для изучения стиля, в репозиторий не выкладываем
+.claude/skills/cartoon-3d-short/references/frames/
+.claude/skills/cartoon-3d-short/references/sheets/
