@@ -1,8 +1,8 @@
 // «What if everyone lost their eyes» — часть 4/6: THE FIRST MONTHS (месяцы 1–6). 60 сек, low-poly 3D, рассказ на «ты».
-import { ThreeCanvas } from "@remotion/three";
+import { Canvas3D, Stage } from "../lowpoly/wide";
 import React from "react";
 import * as THREE from "three";
-import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { Grain, MONT, RED, WH, YEL, ip } from "../characters/kit";
 import { ChapterCard, Counter, GREEN, Tag } from "../characters/hud";
 import {
@@ -12,10 +12,6 @@ import {
 
 export const EYES4_FRAMES = 1800;
 const SC = 180;
-const Canvas3D: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { width, height } = useVideoConfig();
-  return <ThreeCanvas width={width} height={height} shadows gl={{ antialias: true }} camera={{ fov: 42, near: 0.05, far: 1000 }}>{children}</ThreeCanvas>;
-};
 const v = (p: V3) => new THREE.Vector3(...p);
 const CANE_ARM: [number, number] = [32, 44];
 const clickMouth = (g: number, clicks: number[]) => (clicks.some((c) => g >= c && g < c + 6) ? "o" : "flat");
@@ -314,8 +310,8 @@ export const Eyes4: React.FC = () => {
   const f = useCurrentFrame();
   const scenes = [S1, S2, S3, S4, S5, S6, S7, S8, S9, S10];
   return (
-    <AbsoluteFill style={{ background: "#000" }}>
-      {scenes.map((S, i) => <Sequence key={i} from={i * SC} durationInFrames={SC}><Scn S={S} /></Sequence>)}
+    <AbsoluteFill style={{ background: "#0b1020" }}>
+      <Stage>{scenes.map((S, i) => <Sequence key={i} from={i * SC} durationInFrames={SC}><Scn S={S} /></Sequence>)}</Stage>
       <AbsoluteFill style={{ boxShadow: "inset 0 0 260px 80px rgba(20,10,20,0.55)", pointerEvents: "none" }} />
       <Grain f={f} o={0.08} />
       <Hud f={f} />

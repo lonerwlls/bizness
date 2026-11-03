@@ -1,9 +1,9 @@
 // «What if everyone lost their eyes» — часть 2/6: THE FIRST HOURS. 60 сек, low-poly 3D, рассказ на «ты».
 // Майя (слепая с рождения) учит героя: трость, шаги, солнце, радио. В конце отключается электричество.
-import { ThreeCanvas } from "@remotion/three";
+import { Canvas3D, Stage } from "../lowpoly/wide";
 import React from "react";
 import * as THREE from "three";
-import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { Grain, MONT, RED, WH, YEL, ip } from "../characters/kit";
 import { ChapterCard, Counter, GREEN, Tag } from "../characters/hud";
 import {
@@ -14,10 +14,6 @@ import {
 export const EYES2_FRAMES = 1800;
 const SC = 180;
 const HOME = MASCOT3D, HOME_IN = { ...MASCOT3D, pack: null };
-const Canvas3D: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { width, height } = useVideoConfig();
-  return <ThreeCanvas width={width} height={height} shadows gl={{ antialias: true }} camera={{ fov: 42, near: 0.05, far: 1000 }}>{children}</ThreeCanvas>;
-};
 // дом героя на улице (№4)
 const HI = 4, HZ = 44 - HI * 13, HX = 11 + rnd(HI + 3) * 1.5, HW = 5.5 + rnd(HI) * 1.5;
 const DOOR: V3 = [HX - 3.05, 0.03, HZ - HW * 0.18];
@@ -291,8 +287,8 @@ export const Eyes2: React.FC = () => {
   const f = useCurrentFrame();
   const scenes = [S1, S2, S3, S4, S5, S6, S7, S8, S9, S10];
   return (
-    <AbsoluteFill style={{ background: "#000" }}>
-      {scenes.map((S, i) => <Sequence key={i} from={i * SC} durationInFrames={SC}><Scn S={S} /></Sequence>)}
+    <AbsoluteFill style={{ background: "#0b1020" }}>
+      <Stage>{scenes.map((S, i) => <Sequence key={i} from={i * SC} durationInFrames={SC}><Scn S={S} /></Sequence>)}</Stage>
       <AbsoluteFill style={{ boxShadow: "inset 0 0 260px 80px rgba(20,10,20,0.55)", pointerEvents: "none" }} />
       <Grain f={f} o={0.08} />
       <Hud f={f} />

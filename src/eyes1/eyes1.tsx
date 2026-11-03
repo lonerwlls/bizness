@@ -1,8 +1,8 @@
 // «What if everyone lost their eyes» — часть 1/6: THE MOMENT. 60 сек, low-poly 3D, рассказ на «ты».
 // Надписи: счётчик сверху + плашки (без субтитров). Озвучку пользователь пишет сам: текст в public/eyes1/voiceover.txt
-import { ThreeCanvas } from "@remotion/three";
+import { Canvas3D, Stage } from "../lowpoly/wide";
 import React from "react";
-import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { Grain, MONT, RED, WH, YEL, ip } from "../characters/kit";
 import { ChapterCard, Counter, GREEN, Tag } from "../characters/hud";
 import { CamRig, Car3D, Dog3D, Human, Leash, collarWorld, handWorld, KNEEL, Limb, MASCOT3D, MOODS, NPCS, Pose3D, Room, SIT, STAND3D, Street, V3, WALK_Y, World, crouch, lerp, rnd, walkPose } from "../lowpoly/kit3d";
@@ -11,10 +11,6 @@ export const EYES1_FRAMES = 1800;
 const SC = 180;
 const M = MOODS.morning;
 
-const Canvas3D: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { width, height } = useVideoConfig();
-  return <ThreeCanvas width={width} height={height} shadows gl={{ antialias: true }} camera={{ fov: 42, near: 0.05, far: 1000 }}>{children}</ThreeCanvas>;
-};
 const STOP_Z = -6 + 45 * 0.042; // где герой замер
 const HERO_X = 1.3;
 const grope = (g: number): Pose3D => ({ ...STAND3D, armL: [70 + Math.sin(g / 7) * 8, 85], armR: [75 + Math.sin(g / 7 + 1) * 8, 90], lean: -4, headYaw: Math.sin(g / 18) * 35, spread: [0.05, 0.05] });
@@ -274,8 +270,8 @@ export const Eyes1: React.FC = () => {
   const blink = ip(f, [44, 45, 49, 52], [0, 1, 1, 0]);
   const scenes = [S1, S2, S3, S4, S5, S6, S7, S8, HomeA, HomeB];
   return (
-    <AbsoluteFill style={{ background: "#000" }}>
-      {scenes.map((S, i) => <Sequence key={i} from={i * SC} durationInFrames={SC}><Scn S={S} /></Sequence>)}
+    <AbsoluteFill style={{ background: "#0b1020" }}>
+      <Stage>{scenes.map((S, i) => <Sequence key={i} from={i * SC} durationInFrames={SC}><Scn S={S} /></Sequence>)}</Stage>
       <AbsoluteFill style={{ background: "#000", opacity: blink }} />
       <AbsoluteFill style={{ boxShadow: "inset 0 0 260px 80px rgba(20,10,20,0.55)", pointerEvents: "none" }} />
       <Grain f={f} o={0.08} />

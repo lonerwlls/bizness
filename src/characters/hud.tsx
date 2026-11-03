@@ -1,13 +1,15 @@
 // Надписи поверх кадра для серий: счётчик сверху, плашка сцены, карточка главы (без субтитров).
 import React from "react";
-import { AbsoluteFill, Easing } from "remotion";
+import { AbsoluteFill, Easing, useVideoConfig } from "remotion";
+const useTop = (portrait: number, wide: number) => { const { width, height } = useVideoConfig(); return width > height ? wide : portrait; };
 import { MONT, RED, WH, YEL, ip } from "./kit";
 
 export const GREEN = "#3ad08a";
 export const Counter: React.FC<{ f: number; text: string; alarm?: boolean }> = ({ f, text, alarm }) => {
   const blink = Math.floor(f / 15) % 2 === 0;
+  const top = useTop(120, 40);
   return (
-    <div style={{ position: "absolute", top: 120, left: 0, right: 0, textAlign: "center" }}>
+    <div style={{ position: "absolute", top, left: 0, right: 0, textAlign: "center" }}>
       <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 36, letterSpacing: 4, color: alarm ? "#ffb0b0" : "#ffe9b0", background: "rgba(10,10,20,0.72)", border: `3px solid ${alarm ? RED : YEL}`, borderRadius: 8, padding: "6px 20px" }}>
         <span style={{ color: RED, opacity: blink ? 1 : 0.2 }}>● </span>{text}
       </span>
@@ -16,9 +18,10 @@ export const Counter: React.FC<{ f: number; text: string; alarm?: boolean }> = (
 };
 export const Tag: React.FC<{ local: number; text: string; col?: string }> = ({ local, text, col = RED }) => {
   const o = ip(local, [4, 10], [0, 1]);
+  const top = useTop(202, 96);
   const bg = col === YEL ? "rgba(120,90,10,0.85)" : col === GREEN ? "rgba(20,110,70,0.85)" : "rgba(150,25,35,0.85)";
   return (
-    <div style={{ position: "absolute", top: 202, left: 0, right: 0, textAlign: "center", opacity: o, transform: `translateY(${(1 - o) * -10}px)` }}>
+    <div style={{ position: "absolute", top, left: 0, right: 0, textAlign: "center", opacity: o, transform: `translateY(${(1 - o) * -10}px)` }}>
       <span style={{ fontFamily: MONT, fontWeight: 900, fontSize: 27, letterSpacing: 3, color: WH, background: bg, border: `2px solid ${col}`, borderRadius: 6, padding: "5px 14px" }}>{text}</span>
     </div>
   );

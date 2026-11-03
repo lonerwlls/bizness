@@ -1,8 +1,8 @@
 // «What if everyone lost their eyes» — часть 6/6: A NEW GENERATION (годы 10–20). Счастливый финал. 60 сек, low-poly 3D.
-import { ThreeCanvas } from "@remotion/three";
+import { Canvas3D, Stage } from "../lowpoly/wide";
 import React from "react";
 import * as THREE from "three";
-import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { Grain, MONT, RED, WH, YEL, ip } from "../characters/kit";
 import { ChapterCard, Counter, GREEN, Tag } from "../characters/hud";
 import {
@@ -12,10 +12,6 @@ import {
 
 export const EYES6_FRAMES = 1800;
 const SC = 180;
-const Canvas3D: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { width, height } = useVideoConfig();
-  return <ThreeCanvas width={width} height={height} shadows gl={{ antialias: true }} camera={{ fov: 42, near: 0.05, far: 1000 }}>{children}</ThreeCanvas>;
-};
 const OLD_DOG = { color: "#c8a07a", muzzle: "#d8d0c4" };
 const HOME_IN = { ...MASCOT3D, pack: null };
 // дочка: розовая куртка, хвостики; у неё есть глаза
@@ -342,8 +338,8 @@ export const Eyes6: React.FC = () => {
   const white = ip(f, [1745, 1772], [0, 1]);
   const end = ip(f, [1765, 1780], [0, 1]);
   return (
-    <AbsoluteFill style={{ background: "#000" }}>
-      {scenes.map((S, i) => <Sequence key={i} from={i * SC} durationInFrames={SC}><Scn S={S} /></Sequence>)}
+    <AbsoluteFill style={{ background: "#0b1020" }}>
+      <Stage>{scenes.map((S, i) => <Sequence key={i} from={i * SC} durationInFrames={SC}><Scn S={S} /></Sequence>)}</Stage>
       <AbsoluteFill style={{ boxShadow: "inset 0 0 260px 80px rgba(20,10,20,0.5)", pointerEvents: "none" }} />
       <Grain f={f} o={0.08} />
       <Hud f={f} />
