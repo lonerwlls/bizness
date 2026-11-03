@@ -143,7 +143,7 @@ const build = () => {
   shot(E("phone"), "golden", 13, mv([-3.0, 2.5, 2.0], [-3.1, 2.5, 2.0], [-5.7, 2.35, 2.2], [-5.7, 2.35, 2.2], 42, 0.02));
   shot(E("that", 1), "golden", 13, mv([-2.9, 2.45, 2.6], [-3.05, 2.46, 2.55], [-5.7, 2.35, 2.2], [-5.7, 2.35, 2.2], 40, -0.03));
   shot(E("maybe"), "golden", 14, mv([-2.8, 2.42, 2.3], [-3.5, 2.4, 2.25], [-5.7, 2.35, 2.2], [-5.7, 2.35, 2.2], 38, 0.04, true));
-  shot(E("so", 2), "golden", 10, mv([-3.2, 1.0, 3.6], [-3.4, 1.05, 3.4], [-5.7, 1.5, 2.2], [-5.7, 1.6, 2.2], 44, 0.05));
+  shot(E("so", 2), "golden", 10, mv([-2.6, 1.0, 3.9], [-2.8, 1.05, 3.7], [-5.1, 1.35, 2.1], [-5.1, 1.45, 2.1], 46, 0.05));
   shot(E("off"), "golden", 6, (u, f) => { const h = hp(f / FPS); return { pos: [h[0] + 3.2, 1.3, h[2] + 5.0], look: [h[0], 1.25, h[2]], fov: 40, roll: 0.02 }; });
   // the thing: everyone has one
   shot(E("here"), "golden", 0, mv([4, 3, 22], [3, 15, 30], [-1, 1.6, 6], [-1, 1.0, -8], 46, 0.0, true));
@@ -221,10 +221,11 @@ export function heroAt(t: number): Pose {
     if (t >= T("twenty")) expr = "shock";
     return { p: [COUCH[0], COUCH[1] + SEAT, COUCH[2]], fo: { mode: "sit", expr, prop: pr, blink }, sit: true, show: true };
   }
-  if (t < T("off")) return { p: [COUCH[0] + 0.55, WALK, COUCH[2] - 0.2], fo: { mode: "stand", expr: "stern", tilt: -3 }, show: true };
+  if (t < T("off")) return { p: [COUCH[0] + 0.85, WALK, COUCH[2] - 0.2], fo: { mode: "stand", expr: "stern", tilt: -3 }, show: true };
   if (t < T("subscribe")) {
     const d = (t - T("off")) * 1.35;
-    return { p: [-5.6, WALK, COUCH[2] + 0.4 + d], fo: { mode: "stroll", phase: t * 1.1, expr: "grin" }, show: t < T("here") + 0.1 || t > T("you", 2) };
+    const z = COUCH[2] - 0.2 + d; // in front of the sofa (clear of its arm at x -5.1) until past it, then onto the sidewalk middle
+    return { p: [lerp(COUCH[0] + 0.85, -5.6, smooth((z - (COUCH[2] + 1.6)) / 1.8)), WALK, z], fo: { mode: "stroll", phase: t * 1.1, expr: "grin" }, show: t < T("here") + 0.1 || t > T("you", 2) };
   }
   return { p: BEACH_HERO, fo: { mode: "stand", expr: t > T("go") ? "laugh" : "grin", wave: 0.6 + 0.4 * Math.sin(t * 7) }, show: true };
 }
