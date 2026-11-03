@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { staticFile } from "remotion";
 import { Batch, Strand, boxGeo, V, lam, buildTown, flagTex, Kit, Ray, kitClone } from "./build";
+import { makeKit } from "./kitgen";
 import { beam, bed, rep, ctex, planksHD, beamHD, stoneHD, cobbleHD, grassHD, chainHD, waterNear, waterFar, cloudHD } from "./paint";
 import { Pen, fxSign } from "./toon";
 import { LIGHTS, LOOK, LightPreset } from "./lights";
@@ -22,7 +23,7 @@ export const loadKit = () => {
   if (!kitP) {
     const loader = new GLTFLoader();
     kitP = Promise.all(KENNEY.map((n) => loader.loadAsync(staticFile(`bridge/kenney/${n}.glb`)).then((g) => [n, g.scene] as const).catch(() => [n, null] as const)))
-      .then((list) => Object.fromEntries(list.filter((e) => e[1]).map(([n, s]) => [n, s!])) as Kit);
+      .then((list) => ({ ...makeKit(), ...Object.fromEntries(list.filter((e) => e[1]).map(([n, s]) => [n, s!])) }) as Kit); // own models fill any missing .glb
   }
   return kitP;
 };

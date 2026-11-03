@@ -141,6 +141,7 @@ lighting 5-6, ink 6, textures 5-6, characters 7, depth 6-7, composition 6-7 (fro
 5. Contracts between owners live in exported constants (e.g. `NOINK` layer from ink.ts, `dofAt`/`FOREGROUND` from story.ts, `LIGHTS`/`LOOK` from lights.ts). Changing a contract means telling every owner that reads it.
 
 ## Gotchas
+- **No Kenney download needed:** `templates/bridge/kitgen.ts` builds our own models (lantern, cart, stalls, bench, windmill, canoe, lily, flowers, grass, banners) and `loadKit()` in world.ts fills every missing `.glb` with them. Preview them: `npx remotion still src/kittest/index.tsx KitTest out/kit.png --gl=swangle`.
 - Kenney nature-kit materials are teal: recolour them by material name in build.ts.
 - Cameras end up inside houses: the sight-line culler in build.ts/world.ts removes anything blocking any camera ray.
 - Ink in the same merged effect pass as DOF gets overwritten. Ink must be its own pass before the blur.
