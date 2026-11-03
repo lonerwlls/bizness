@@ -12,8 +12,9 @@ mkdir -p out videos
 for ID in "$@"; do
   RAW="out/_raw_$ID.mp4"
   BASE="${ID%-wide}"  # <id>-wide — та же тема в формате 16:9 (композиция Fin-<id>-wide)
-  ENTRY=""; [ -f "src/$BASE/index.ts" ] && ENTRY="src/$BASE/index.ts"  # у отдельных роликов (towers) своя точка входа
-  GL=""; grep -rqsE "ThreeCanvas|Canvas3D" "src/$BASE" && GL="--gl=swangle"  # 3D-ролики рендерим программным WebGL (в облаке нет видеокарты)
+  ENTRY=""; SRC="src/$BASE"; [ -f "src/$BASE/index.ts" ] && ENTRY="src/$BASE/index.ts"  # у отдельных роликов (towers) своя точка входа
+  [ -f "src/videos/$BASE/index.tsx" ] && ENTRY="src/videos/$BASE/index.tsx" && SRC="src/videos/$BASE"  # ролики по скиллу cartoon-3d-short
+  GL=""; grep -rqsE "ThreeCanvas|Canvas3D" "$SRC" && GL="--gl=swangle"  # 3D-ролики рендерим программным WebGL (в облаке нет видеокарты)
   npx remotion render $ENTRY "Fin-$ID" "$RAW" --crf=18 --log=error $GL
   if [ -f "$AD" ] && ! grep -q "export const AD_FRAMES = 0;" src/finance/engine.tsx; then
     # Начало рекламы: конец предложения, ближайший к середине озвучки (как buildTopic в engine.tsx).
