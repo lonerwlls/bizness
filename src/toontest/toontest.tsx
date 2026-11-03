@@ -261,3 +261,24 @@ export const ToonTest: React.FC = () => {
     </AbsoluteFill>
   );
 };
+
+// ---------- кадр-проба: плоские персонажи «как в комиксе» на размытом 3D-фоне ----------
+import { Bean, BeanDefs, HERO2D, NEIGHBOR_A } from "./bean";
+export const ToonLook: React.FC = () => {
+  const f = useCurrentFrame();
+  return (
+    <AbsoluteFill style={{ background: "#0b1020" }}>
+      <AbsoluteFill style={{ filter: "blur(5px) saturate(1.45) contrast(1.05) brightness(1.06)" }}>
+        <Canvas3D><CamRig pos={[1.3, 1.55, OZ - 3.2]} look={[0.6, 1.3, OZ + 8]} fov={50} /><Base focus={[1, 0, OZ + 4]} /><Stand /></Canvas3D>
+      </AbsoluteFill>
+      <AbsoluteFill style={{ background: "radial-gradient(ellipse at 30% 25%, rgba(255,214,150,0.35), rgba(255,214,150,0) 60%)", mixBlendMode: "screen" }} />
+      <svg width={1080} height={1920} style={{ position: "absolute" }}>
+        <BeanDefs />
+        <Bean x={250} y={1480} s={0.85} look={NEIGHBOR_A} expr="laugh" open={0.6} f={f + 20} pose={{ armL: [25, 70], armR: [150, 30], lean: -6 }} />
+        <Bean x={640} y={1840} s={1.55} look={HERO2D} expr="smirk" f={f} pose={{ armL: [10, 6], armR: [35, 100], lean: 2, tilt: -4 }} />
+      </svg>
+      <AbsoluteFill style={{ boxShadow: "inset 0 0 220px 50px rgba(30,15,40,0.4)" }} />
+      <Grain f={f} o={0.05} />
+    </AbsoluteFill>
+  );
+};
