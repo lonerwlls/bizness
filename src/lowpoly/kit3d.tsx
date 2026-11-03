@@ -14,8 +14,16 @@ export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 export type V3 = [number, number, number];
 export type Limb = [number, number];
 export const WALK_Y = 0.121; // верх тротуара
+// TOON.on = true — «мультяшная» заливка ступенями (включает ролик в стиле toon)
+export const TOON = { on: false };
+let GRAD: THREE.DataTexture | null = null;
+const toonGrad = () => {
+  if (!GRAD) { GRAD = new THREE.DataTexture(new Uint8Array([95, 175, 255]), 3, 1, THREE.RedFormat); GRAD.minFilter = GRAD.magFilter = THREE.NearestFilter; GRAD.needsUpdate = true; }
+  return GRAD;
+};
 export const Mat: React.FC<{ c: string; flat?: boolean; r?: number; e?: string; ei?: number }> = ({ c, flat = true, r = 0.85, e, ei = 0 }) => (
-  <meshStandardMaterial color={c} roughness={r} metalness={0} flatShading={flat} emissive={e ?? "#000000"} emissiveIntensity={ei} />
+  TOON.on ? <meshToonMaterial color={c} gradientMap={toonGrad()} emissive={e ?? "#000000"} emissiveIntensity={ei} />
+    : <meshStandardMaterial color={c} roughness={r} metalness={0} flatShading={flat} emissive={e ?? "#000000"} emissiveIntensity={ei} />
 );
 
 // ---------- небо и свет ----------
@@ -39,7 +47,7 @@ export const SkyDome: React.FC<{ m: Mood }> = ({ m }) => {
 export const Cloud: React.FC<{ p: V3; s: number; c: string }> = ({ p, s, c }) => (
   <group position={p} scale={[s * 1.6, s * 0.55, s]}>
     {[[0, 0, 0, 1], [1.1, -0.15, 0.2, 0.8], [-1.1, -0.2, -0.1, 0.75], [0.4, 0.45, 0, 0.7], [-0.5, 0.35, 0.2, 0.6]].map(([x, y, z, r], i) => (
-      <mesh key={i} position={[x, y, z]}><icosahedronGeometry args={[r, 1]} /><meshStandardMaterial color={c} emissive="#6a4a5a" emissiveIntensity={0.2} flatShading roughness={1} fog={false} /></mesh>
+      <mesh key={i} position={[x, y, z]}><icosahedronGeometry args={[r, 1]} /><meshStandardMaterial color={c} emissive={TOON.on ? "#ffd8c8" : "#6a4a5a"} emissiveIntensity={TOON.on ? 0.55 : 0.2} flatShading roughness={1} fog={false} /></mesh>
     ))}
   </group>
 );
@@ -196,7 +204,7 @@ const Arm: React.FC<{ x: number; a: Limb; side: number; spread: number; c: strin
   </group>
 );
 export type Pose3D = { legL: Limb; legR: Limb; armL: Limb; armR: Limb; hip?: number; bob?: number; lean?: number; headYaw?: number; headPitch?: number; spread?: [number, number] };
-export const Human: React.FC<{ p: V3; rotY?: number; pose: Pose3D; look?: Look3D; eyes?: number; f: number; handR?: React.ReactNode; handL?: React.ReactNode; glasses?: boolean; scale?: number; mouth?: "flat" | "o" | "smile" }> = ({ p, rotY = 0, pose, look = MASCOT3D, eyes = 1, f, handR, handL, glasses, scale = 1, mouth = "flat" }) => {
+export const Human: React.FC<{ p: V3; rotY?: number; pose: Pose3D; look?: Look3D; eyes?: number; f: number; handR?: React.ReactNode; handL?: React.ReactNode; glasses?: boolean; scale?: number; mouth?: "flat" | "o" | "smile"; face?: React.ReactNode }> = ({ p, rotY = 0, pose, look = MASCOT3D, eyes = 1, f, handR, handL, glasses, scale = 1, mouth = "flat", face }) => {
   const blink = f % 80 < 3 ? 0.15 : 1;
   const hip = pose.hip ?? HIP;
   const sp = pose.spread ?? [0.12, 0.12];
@@ -224,6 +232,7 @@ export const Human: React.FC<{ p: V3; rotY?: number; pose: Pose3D; look?: Look3D
             ) : look.hair ? (
               <mesh position={[0, 0.02, -0.01]} castShadow><sphereGeometry args={[0.156, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2.2]} /><Mat c={look.hair} flat={false} r={0.9} /></mesh>
             ) : null}
+            {face ?? <>
             <mesh position={[0, -0.035, 0.145]} scale={[0.8, 1, 0.9]}><sphereGeometry args={[0.022, 10, 8]} /><Mat c={look.skin} flat={false} r={0.5} /></mesh>
             {mouth === "o" ? <mesh position={[0, -0.085, 0.132]} scale={[1, 1.2, 0.5]}><sphereGeometry args={[0.022, 10, 8]} /><Mat c="#5a1a1a" flat={false} /></mesh>
               : <mesh position={[0, -0.085, 0.135]} rotation={[0, 0, mouth === "smile" ? Math.PI : 0]} scale={[1, mouth === "smile" ? 1 : 0.35, 1]}><torusGeometry args={[0.03, 0.007, 6, 12, mouth === "smile" ? Math.PI : Math.PI * 2]} /><Mat c="#5a1a1a" flat={false} /></mesh>}
@@ -234,6 +243,7 @@ export const Human: React.FC<{ p: V3; rotY?: number; pose: Pose3D; look?: Look3D
                 <mesh><boxGeometry args={[0.04, 0.012, 0.02]} /><Mat c="#111116" /></mesh>
               </group>
             ) : null}
+            </>}
           </group>
         </group>
       </group>
