@@ -7,7 +7,7 @@ import { Grain, MONT, RED, WH, YEL, ip } from "../characters/kit";
 import { ChapterCard, Counter, GREEN, Tag } from "../characters/hud";
 import {
   CamRig, Dog3D, Human, Look3D, MASCOT3D, MAYA3D, MOODS, Mat, NPCS, Room, SIT, STAND3D, Street, V3, WALK_Y, World,
-  lerp, rnd, walkPose,
+  Stick, handWorld, lerp, rnd, walkPose,
 } from "../lowpoly/kit3d";
 
 export const EYES6_FRAMES = 1800;
@@ -27,30 +27,56 @@ const GROUP_ROT = FACE - Math.PI;
 const F = new THREE.Vector3(Math.sin(FACE), 0, Math.cos(FACE)), RR = new THREE.Vector3(Math.cos(FACE), 0, -Math.sin(FACE));
 const Sun: React.FC<{ p: V3; r?: number }> = ({ p, r = 9 }) => <mesh position={p}><sphereGeometry args={[r, 24, 16]} /><meshBasicMaterial color="#ffd27a" fog={false} /></mesh>;
 
-const Baby: React.FC<{ p: V3; rot?: V3; open: number; f: number }> = ({ p, rot = [0, 0, 0], open, f }) => (
-  <group position={p} rotation={rot}>
-    <mesh rotation={[0, 0, Math.PI / 2]} castShadow><capsuleGeometry args={[0.09, 0.16, 6, 12]} /><Mat c="#f8d8e4" flat={false} /></mesh>
+const SKIN = "#f0c8a8", ONESIE = "#f8d8e4";
+const Baby: React.FC<{ p: V3; rot?: V3; order?: string; open: number; f: number }> = ({ p, rot = [0, 0, 0], order = "XYZ", open, f }) => (
+  <group position={p} rotation={new THREE.Euler(rot[0], rot[1], rot[2], order as THREE.EulerOrder)}>
+    <mesh rotation={[0, 0, Math.PI / 2]} castShadow><capsuleGeometry args={[0.075, 0.14, 6, 12]} /><Mat c={ONESIE} flat={false} /></mesh>
+    {[-1, 1].map((s) => (
+      <group key={"a" + s} position={[0.08, 0.03, s * 0.07]} rotation={[s * -(0.5 + Math.sin(f / 5 + s) * 0.35), 0, -0.5 + Math.sin(f / 7 + s * 2) * 0.3]}>
+        <mesh position={[0, 0.05, 0]} castShadow><capsuleGeometry args={[0.026, 0.07, 4, 8]} /><Mat c={ONESIE} flat={false} /></mesh>
+        <mesh position={[0, 0.11, 0]}><sphereGeometry args={[0.028, 10, 8]} /><Mat c={SKIN} flat={false} /></mesh>
+      </group>
+    ))}
+    {[-1, 1].map((s) => (
+      <group key={"l" + s} position={[-0.11, 0.0, s * 0.04]} rotation={[s * -0.15, 0, Math.PI / 2 - 0.35 + Math.sin(f / 6 + s * 1.7) * 0.25]}>
+        <mesh position={[0, 0.06, 0]} castShadow><capsuleGeometry args={[0.03, 0.08, 4, 8]} /><Mat c={ONESIE} flat={false} /></mesh>
+        <mesh position={[0, 0.125, 0.0]} scale={[1, 0.8, 1.3]}><sphereGeometry args={[0.03, 10, 8]} /><Mat c="#ffffff" flat={false} /></mesh>
+      </group>
+    ))}
     <group position={[0.2, 0.02, 0]}>
-      <mesh castShadow><sphereGeometry args={[0.085, 16, 12]} /><Mat c="#f0c8a8" flat={false} r={0.5} /></mesh>
+      <mesh castShadow><sphereGeometry args={[0.088, 18, 14]} /><Mat c={SKIN} flat={false} r={0.5} /></mesh>
       {[-1, 1].map((s) => (
-        <group key={s} position={[0.074, 0.018, s * 0.03]}>
-          <mesh scale={[0.6, Math.max(0.12, open) * (f % 70 < 3 ? 0.2 : 1), 1]}><sphereGeometry args={[0.017, 10, 8]} /><Mat c="#1a1a24" flat={false} r={0.2} /></mesh>
-          {open > 0.6 ? <mesh position={[0.011, 0.006, 0.004]}><sphereGeometry args={[0.004, 6, 6]} /><meshBasicMaterial color="#ffffff" /></mesh> : null}
+        <group key={s} position={[0.02, 0.078, s * 0.032]}>
+          <mesh scale={[Math.max(0.12, open) * (f % 70 < 3 ? 0.2 : 1), 0.5, 0.7]}><sphereGeometry args={[0.02, 10, 8]} /><Mat c="#1a1a24" flat={false} r={0.2} /></mesh>
+          {open > 0.6 ? <mesh position={[0.005, 0.008, 0.004]}><sphereGeometry args={[0.005, 6, 6]} /><meshBasicMaterial color="#ffffff" /></mesh> : null}
         </group>
       ))}
-      <mesh position={[0.08, -0.03, 0]} rotation={[0, Math.PI / 2, Math.PI]}><torusGeometry args={[0.015, 0.004, 6, 10, Math.PI]} /><Mat c="#a04050" /></mesh>
+      <mesh position={[-0.005, 0.088, 0]}><sphereGeometry args={[0.012, 8, 6]} /><Mat c="#e8b494" flat={false} /></mesh>
+      <mesh position={[-0.045, 0.074, 0]} scale={[0.5, 0.3, 1.3]}><sphereGeometry args={[0.016, 8, 6]} /><Mat c="#a04050" flat={false} /></mesh>
+      <mesh position={[0.09, 0.0, 0]} scale={[0.5, 1, 1]}><sphereGeometry args={[0.07, 10, 8]} /><Mat c="#4a3428" flat={false} /></mesh>
     </group>
   </group>
 );
+// малыш на руках: середина между кистями, поперёк тела
+const HOLD = { ...STAND3D, armL: [40, 110] as [number, number], armR: [40, 110] as [number, number], spread: [-0.08, -0.08] as [number, number], headPitch: 28, lean: 6 };
+const held = (p: V3, rotY: number) => {
+  const m = handWorld(p, rotY, HOLD, 1).add(handWorld(p, rotY, HOLD, -1)).multiplyScalar(0.5);
+  const pos: V3 = [m.x, m.y + 0.075, m.z];
+  const rot = new THREE.Euler(0.55, rotY, 0.25, "YXZ");
+  const head = new THREE.Vector3(0.2, 0.06, 0).applyEuler(rot).add(m.clone().setY(m.y + 0.075));
+  return { pos, rot: [rot.x, rot.y, rot.z] as V3, head, order: "YXZ" };
+};
 
 // ---------- 1. Она открывает глаза ----------
 const S1: React.FC<{ g: number }> = ({ g }) => {
   const open = ip(g, [60, 80], [0, 1], Easing.out(Easing.cubic));
   const push = ip(g, [20, 100], [0, 1], Easing.inOut(Easing.cubic));
-  const baby: V3 = [0.12, 1.18, -0.1];
+  const dadP: V3 = [0.75, 0, -0.1], dadR = 0.75;
+  const B = held(dadP, dadR), fw = new THREE.Vector3(Math.sin(dadR), 0, Math.cos(dadR));
+  const camEnd = B.head.clone().add(fw.clone().multiplyScalar(0.95)).add(new THREE.Vector3(0, 0.45, 0));
   return (
     <Canvas3D>
-      <CamRig pos={[lerp(1.8, baby[0] + 0.75, push), lerp(1.6, baby[1] + 0.3, push), lerp(1.4, baby[2] + 0.12, push)]} look={[baby[0] + 0.2 * (0.5 + 0.5 * push), baby[1] + 0.03, baby[2]]} fov={lerp(44, 34, push)} />
+      <CamRig pos={[lerp(2.2, camEnd.x, push), lerp(1.7, camEnd.y, push), lerp(1.9, camEnd.z, push)]} look={[lerp(0.6, B.head.x, push), lerp(1.1, B.head.y, push), lerp(-0.3, B.head.z, push)]} fov={lerp(46, 38, push)} />
       <hemisphereLight args={["#fff4ec", "#a0a8b0", 0.95]} />
       <directionalLight position={[2, 4, 2]} intensity={1.3} color="#fff0e0" castShadow shadow-mapSize={[1024, 1024]} />
       <color attach="background" args={["#e8eef0"]} />
@@ -60,9 +86,9 @@ const S1: React.FC<{ g: number }> = ({ g }) => {
       <mesh position={[0, 0.5, -0.6]} castShadow receiveShadow><boxGeometry args={[1.0, 0.2, 2.0]} /><Mat c="#f4f6f8" /></mesh>
       <mesh position={[0, 0.25, -0.6]}><boxGeometry args={[0.9, 0.5, 1.9]} /><Mat c="#aab4c0" /></mesh>
       <mesh position={[0, 0.85, -1.5]} rotation={[-0.4, 0, 0]}><boxGeometry args={[0.9, 0.6, 0.15]} /><Mat c="#f8f8fa" /></mesh>
-      <Human p={[0, 0.15, -1.05]} rotY={0} look={{ ...MAYA3D, jacket: "#bcd4e8", jacket2: "#a0bcd4" }} glasses pose={{ ...SIT, hip: 0.52, legL: [90, 90], legR: [90, 90], armL: [60, 100], armR: [60, 100], spread: [-0.2, -0.2], headPitch: 20, lean: -10 }} f={g} mouth="smile" />
-      <Baby p={baby} rot={[0, 0, 0.35]} open={open} f={g} />
-      <Human p={[0.95, 0, -0.35]} rotY={-1.3} look={HOME_IN} pose={{ ...STAND3D, lean: 18, armL: [40, 70], headPitch: 22 }} eyes={0} f={g} mouth={open > 0.5 ? "smile" : "o"} />
+      <Human p={[0, 0.15, -1.05]} rotY={0} look={{ ...MAYA3D, jacket: "#bcd4e8", jacket2: "#a0bcd4" }} glasses pose={{ ...SIT, hip: 0.52, legL: [90, 90], legR: [90, 90], armL: [35, 60], armR: [35, 60], headPitch: 5, headYaw: 25, lean: -6 }} f={g} mouth="smile" />
+      <Human p={dadP} rotY={dadR} look={HOME_IN} pose={HOLD} eyes={0} f={g} mouth={open > 0.5 ? "smile" : "o"} />
+      <Baby p={B.pos} rot={B.rot} order={B.order} open={open} f={g} />
     </Canvas3D>
   );
 };
@@ -99,18 +125,21 @@ const S3: React.FC<{ g: number }> = ({ g }) => {
   const crib: V3 = [0.2, 0, -1.2];
   return (
     <Canvas3D>
-      <CamRig pos={[0.9, 1.75, 0.3]} look={[0.05, 0.65, -1.2]} fov={44} />
+      <CamRig pos={[0.75, 2.15, -0.05]} look={[0.2, 0.62, -1.2]} fov={44} />
       <hemisphereLight args={["#fff0e4", "#6a5040", 0.9]} />
       <directionalLight position={[2, 4, -4]} intensity={1.4} color="#ffe2c0" castShadow shadow-mapSize={[1024, 1024]} />
       <color attach="background" args={["#d8c4b0"]} />
       <Room lamp={false} />
       <group position={crib}>
-        <mesh position={[0, 0.5, 0]} castShadow receiveShadow><boxGeometry args={[1.2, 0.06, 0.7]} /><Mat c="#f4ecdf" /></mesh>
-        {Array.from({ length: 13 }, (_, i) => [-0.33, 0.33].map((z) => <mesh key={`${i}${z}`} position={[-0.58 + i * 0.097, 0.72, z]}><cylinderGeometry args={[0.012, 0.012, 0.44, 6]} /><Mat c="#e8d8c0" /></mesh>))}
-        {[-0.6, 0.6].map((x) => <mesh key={x} position={[x, 0.5, 0]}><boxGeometry args={[0.05, 1.0, 0.7]} /><Mat c="#e0ccb0" /></mesh>)}
-        <mesh position={[0, 0.555, 0]}><boxGeometry args={[1.1, 0.05, 0.6]} /><Mat c="#cfe0f0" /></mesh>
-        <Baby p={[-0.15, 0.62, 0]} rot={[-Math.PI / 2 + 0.1, 0, 0.3 + Math.sin(g / 8) * 0.1]} open={1} f={g} />
-        <mesh position={[0.62, 1.15, 0]}><cylinderGeometry args={[0.012, 0.012, 1.3, 6]} /><Mat c="#e0ccb0" /></mesh>
+        {[-0.6, 0.6].map((x) => [-0.33, 0.33].map((z) => <mesh key={`p${x}${z}`} position={[x, 0.5, z]} castShadow><boxGeometry args={[0.06, 1.0, 0.06]} /><Mat c="#e0ccb0" /></mesh>))}
+        {[-0.6, 0.6].map((x) => <mesh key={"e" + x} position={[x, 0.66, 0]} castShadow><boxGeometry args={[0.04, 0.6, 0.62]} /><Mat c="#ecdcc4" /></mesh>)}
+        {[-0.33, 0.33].map((z) => [0.44, 0.97].map((y) => <mesh key={`r${z}${y}`} position={[0, y, z]} castShadow><boxGeometry args={[1.2, 0.05, 0.05]} /><Mat c="#e0ccb0" /></mesh>))}
+        {Array.from({ length: 15 }, (_, i) => [-0.33, 0.33].map((z) => <mesh key={`${i}${z}`} position={[-0.525 + i * 0.075, 0.705, z]} castShadow><boxGeometry args={[0.022, 0.5, 0.022]} /><Mat c="#ecdcc4" /></mesh>))}
+        <mesh position={[0, 0.46, 0]} receiveShadow><boxGeometry args={[1.16, 0.04, 0.62]} /><Mat c="#e0ccb0" /></mesh>
+        <mesh position={[0, 0.53, 0]} receiveShadow><boxGeometry args={[1.14, 0.1, 0.6]} /><Mat c="#cfe0f0" /></mesh>
+        <mesh position={[0.4, 0.61, 0]} receiveShadow><boxGeometry args={[0.22, 0.06, 0.34]} /><Mat c="#ffffff" /></mesh>
+        <Baby p={[0.05, 0.665, 0]} rot={[Math.sin(g / 10) * 0.12, 0, 0.08]} open={1} f={g} />
+        <mesh position={[0.62, 1.25, 0]}><cylinderGeometry args={[0.012, 0.012, 0.6, 6]} /><Mat c="#e0ccb0" /></mesh>
         <group position={[0.1, 1.55, 0]} rotation={[0, g * 0.03, 0]}>
           <mesh rotation={[0, 0, Math.PI / 2]} position={[0.26, 0.25, 0]}><cylinderGeometry args={[0.01, 0.01, 0.5, 6]} /><Mat c="#e0ccb0" /></mesh>
           {[0, 1, 2, 3, 4].map((i) => {
@@ -192,14 +221,16 @@ const S6: React.FC<{ g: number }> = ({ g }) => (
 
 // ---------- 7. Щенок для старого Бадди ----------
 const S7: React.FC<{ g: number }> = ({ g }) => {
-  const px = 6.0 + Math.sin(g / 14) * 0.6, pz = 2.0 + Math.cos(g / 14) * 0.4;
+  const gg = Math.min(g, 125), run = g < 125;
+  const px = 6.0 + Math.sin(gg / 14) * 0.6, pz = 2.0 + Math.cos(gg / 14) * 0.4;
+  const heading = run ? Math.atan2(Math.cos(gg / 14) * 0.6, -Math.sin(gg / 14) * 0.4) : Math.atan2(6.5 - px, 1.2 - pz);
   return (
     <Canvas3D>
       <CamRig pos={[3.7, 1.9, 4.6]} look={[6.9, 0.4, 0.8]} fov={40} />
       <World m={MOODS.sunset} focus={[6.5, 0, 1]} />
       <Street />
       <Dog3D p={[6.5, 0.03, 1.2]} rotY={1.2} f={g} sit wag={0.6} headTilt={Math.sin(g / 12) * 15} {...OLD_DOG} />
-      <group scale={0.5} position={[px, 0.03 + Math.abs(Math.sin(g / 3)) * 0.06, pz]}><Dog3D p={[0, 0, 0]} rotY={Math.atan2(6.5 - px, 1.2 - pz) + 0.4} f={g} walk={g * 0.3} wag={1} color="#3a3a40" bark={Math.max(0, Math.sin(g / 5)) * 0.6} /></group>
+      <group scale={0.5} position={[px, 0.03 + (run ? Math.abs(Math.sin(g * 0.25)) * 0.03 : 0), pz]}><Dog3D p={[0, 0, 0]} rotY={heading} f={g} walk={run ? g * 0.028 : 0} sit={!run} wag={1} color="#3a3a40" bark={run ? 0 : Math.max(0, Math.sin(g / 5)) * 0.6} /></group>
       <Human p={[7.6, 0.03, 0.2]} rotY={-0.9} scale={0.6} look={DAUGHTER} pose={{ ...STAND3D, armL: [150 + Math.sin(g / 3) * 10, 175], armR: [150, 175], spread: [0.3, 0.3] }} eyes={1} f={g} mouth="o" />
     </Canvas3D>
   );
@@ -220,7 +251,17 @@ const S8: React.FC<{ g: number }> = ({ g }) => {
       })}
       {[0, 1, 2].map((k) => {
         const z = wz - 2.0 + k * 1.6, reach = 60 + Math.sin(g / 4 + k) * 40;
-        return <Human key={k} p={[wallX - 0.55, 0.03, z]} rotY={Math.PI / 2} scale={0.62 + k * 0.03} look={k === 1 ? DAUGHTER : NPCS[k + 1]} pose={{ ...STAND3D, armR: [reach, reach + 10] }} eyes={1} f={g + k * 6} mouth="smile" />;
+        const sc = 0.62 + k * 0.03, pose = { ...STAND3D, armR: [reach, reach + 10] as [number, number] }, P: V3 = [wallX - 0.55, 0.03, z];
+        const hand = handWorld([0, 0, 0], Math.PI / 2, pose, 1).multiplyScalar(sc).add(new THREE.Vector3(...P));
+        const tip = new THREE.Vector3(Math.min(wallX - 0.03, hand.x + 0.32), hand.y + 0.08, hand.z), bc = cols[k * 2 + 1];
+        return (
+          <group key={k}>
+            <Human p={P} rotY={Math.PI / 2} scale={sc} look={k === 1 ? DAUGHTER : NPCS[k + 1]} pose={pose} eyes={1} f={g + k * 6} mouth="smile" />
+            <Stick a={hand.clone().add(new THREE.Vector3(-0.04, -0.01, 0))} b={tip} r={0.016} c="#c89058" />
+            <mesh position={tip}><boxGeometry args={[0.07, 0.07, 0.08]} /><Mat c={bc} /></mesh>
+            <mesh position={[wallX - 0.012, tip.y, tip.z]} rotation={[0, -Math.PI / 2, 0]}><circleGeometry args={[0.1, 12]} /><meshStandardMaterial color={bc} /></mesh>
+          </group>
+        );
       })}
     </Canvas3D>
   );
