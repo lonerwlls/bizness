@@ -14,7 +14,7 @@ const tts = async (voice, text) => {
   const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}/with-timestamps?output_format=mp3_44100_128`, {
     method: "POST",
     headers: { "xi-api-key": K, "Content-Type": "application/json" },
-    body: JSON.stringify({ text, model_id: MODEL, language_code: "ru", voice_settings: SETTINGS }),
+    body: JSON.stringify({ text, model_id: MODEL, language_code: process.env.EL_LANG ?? "ru", voice_settings: SETTINGS }),
   });
   const j = await r.json();
   if (!r.ok) throw new Error(JSON.stringify(j.detail ?? j).slice(0, 300));
