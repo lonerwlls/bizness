@@ -152,6 +152,7 @@ const build = () => {
   // callback: hero and the mailman at the beach
   shot(E("subscribe"), "golden", 0, mv([-0.5, 1.4, 50.5], [-0.3, 1.45, 51.6], [0.3, 1.3, 57], [0.3, 1.32, 57], 40, 0.0));
   shot(E("go"), "golden", 9, mv([-1.6, 1.45, 53.6], [-1.5, 1.47, 54.0], [-0.2, 1.4, 56.6], [-0.2, 1.42, 56.6], 34, -0.04));
+  shot(E("keep"), "golden", 0, mv([2.6, 1.6, 50.5], [2.2, 2.6, 49.5], [0.4, 1.3, 57], [0.4, 1.5, 58], 42, 0.03, true));
 };
 /** which occurrence of `w` comes right before the word `next` */
 function wIndex(w: string, next: string) {
