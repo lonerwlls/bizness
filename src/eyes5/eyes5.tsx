@@ -194,10 +194,34 @@ const S6: React.FC<{ g: number }> = ({ g }) => {
 
 // ---------- 7. Футбол с колокольчиками ----------
 const S7: React.FC<{ g: number }> = ({ g }) => {
-  const bx = 7.2 + Math.sin(g / 25) * 0.7, bz = -2 + Math.sin(g / 17) * 1.2;
-  const kids = [0, 1, 2, 3].map((i) => {
-    const tx = bx + Math.cos(i * 1.6) * (0.8 + i * 0.3), tz = bz + Math.sin(i * 1.6) * (0.8 + i * 0.2);
-    return { x: tx, z: tz, rot: Math.atan2(bx - tx, bz - tz), k: i };
+  // дети стоят по кругу и пасуют мяч друг другу: замах, удар, мяч катится к следующему
+  const P: [number, number][] = [[6.3, -0.9], [8.2, -1.3], [7.9, -3.3], [6.1, -2.9]];
+  const T = 30, n = Math.floor(g / T), u = (g % T) / T;
+  const from = n % 4, to = (n + 1) % 4;
+  const foot = (a: number, b: number): [number, number] => {
+    const dx = P[b][0] - P[a][0], dz = P[b][1] - P[a][1], d = Math.hypot(dx, dz);
+    return [P[a][0] + (dx / d) * 0.28, P[a][1] + (dz / d) * 0.28];
+  };
+  const s0 = foot(from, to), s1 = foot(to, from);
+  const roll = u < 0.18 ? 0 : 1 - Math.pow(1 - (u - 0.18) / 0.82, 2);
+  const bx = lerp(s0[0], s1[0], roll), bz = lerp(s0[1], s1[1], roll);
+  const by = 0.12 + (u > 0.18 && u < 0.45 ? Math.sin(((u - 0.18) / 0.27) * Math.PI) * 0.12 : 0);
+  const face = (k: number, tx: number, tz: number) => Math.atan2(tx - P[k][0], tz - P[k][1]);
+  const kids = [0, 1, 2, 3].map((k) => {
+    let rot = face(k, bx, bz);
+    let pose: Pose3D = { ...STAND3D, armL: [14, 22], armR: [14, 22], headPitch: 10, bob: Math.abs(Math.sin(g / 6 + k)) * 0.02 };
+    if (k === from) {
+      rot = face(k, P[to][0], P[to][1]);
+      // замах назад → удар вперёд → нога возвращается
+      const th = u < 0.12 ? lerp(0, -35, u / 0.12) : u < 0.22 ? lerp(-35, 60, (u - 0.12) / 0.1) : lerp(60, 0, Math.min(1, (u - 0.22) / 0.2));
+      const sh = th < 0 ? th - 40 : th - 10;
+      pose = { ...pose, legR: [th, sh], armL: [-th * 0.5 + 10, 20], armR: [th * 0.4 + 10, 20], lean: 6 };
+    } else if (k === to) {
+      rot = face(k, P[from][0], P[from][1]);
+      const trap = u > 0.8 ? Math.sin(((u - 0.8) / 0.2) * Math.PI) * 25 : 0;
+      pose = { ...pose, legR: [trap, trap - 10], lean: 8 };
+    }
+    return { k, rot, pose };
   });
   return (
     <Canvas3D>
@@ -210,9 +234,9 @@ const S7: React.FC<{ g: number }> = ({ g }) => {
           <mesh position={[0, 1.2, 0]} rotation={[0, 0, Math.PI / 2]}><cylinderGeometry args={[0.05, 0.05, 2.4, 6]} /><Mat c="#f2f2ee" /></mesh>
         </group>
       ))}
-      <mesh position={[bx, 0.14 + Math.abs(Math.sin(g / 4)) * 0.1, bz]} rotation={[g * 0.2, g * 0.1, 0]} castShadow><icosahedronGeometry args={[0.12, 1]} /><Mat c="#f5c84c" /></mesh>
+      <mesh position={[bx, by, bz]} rotation={[g * 0.25, g * 0.1, 0]} castShadow><icosahedronGeometry args={[0.12, 1]} /><Mat c="#f5c84c" /></mesh>
       {[0, 1].map((k) => { const t = ((g / 12 + k / 2) % 1); return <mesh key={k} position={[bx, 0.2, bz]} rotation={[Math.PI / 2, 0, 0]} scale={0.15 + t * 0.6}><torusGeometry args={[1, 0.03, 6, 24]} /><meshBasicMaterial color="#f5c84c" transparent opacity={0.8 * (1 - t)} /></mesh>; })}
-      {kids.map(({ x, z, rot, k }) => <Human key={k} p={[x, 0.03, z]} rotY={rot} scale={0.72} look={NPCS[(k + 1) % 5]} pose={walkPose(g * 0.05 + k, 0.9, 0.1)} eyes={0} f={g + k * 4} mouth="smile" />)}
+      {kids.map(({ k, rot, pose }) => <Human key={k} p={[P[k][0], 0.03, P[k][1]]} rotY={rot} scale={0.72} look={NPCS[(k + 1) % 5]} pose={pose} eyes={0} f={g + k * 4} mouth="smile" />)}
       <Human p={[5.2, 0.03, 1.4]} rotY={2.4} pose={{ ...STAND3D, armL: [150, 175], armR: [150, 175], spread: [0.3, 0.3] }} eyes={0} f={g} mouth="smile" />
     </Canvas3D>
   );
