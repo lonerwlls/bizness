@@ -282,3 +282,28 @@ export const ToonLook: React.FC = () => {
     </AbsoluteFill>
   );
 };
+
+// ---------- кадр-проба 2: подробный 3D-городок + плоские персонажи ----------
+import { Post, Town } from "./town";
+export const ToonTown: React.FC = () => {
+  const f = useCurrentFrame();
+  const { width, height } = useVideoConfig();
+  return (
+    <AbsoluteFill style={{ background: "#0b1020" }}>
+      <AbsoluteFill style={{ filter: "blur(2.5px) saturate(1.2)" }}>
+        <ThreeCanvas width={width} height={height} shadows gl={{ antialias: true }} camera={{ fov: 50, near: 0.05, far: 1000 }}>
+          <CamRig pos={[-4.6, 1.65, 9.5]} look={[-0.6, 2.2, -14]} fov={52} />
+          <Town />
+          <Post />
+        </ThreeCanvas>
+      </AbsoluteFill>
+      <svg width={1080} height={1920} style={{ position: "absolute" }}>
+        <BeanDefs />
+        <Bean x={800} y={1430} s={0.8} look={NEIGHBOR_A} expr="laugh" open={0.6} f={f + 20} pose={{ armL: [25, 70], armR: [150, 30], lean: -6 }} />
+        <Bean x={420} y={1840} s={1.55} look={HERO2D} expr="smirk" f={f} pose={{ armL: [10, 6], armR: [35, 100], lean: 2, tilt: -4 }} />
+      </svg>
+      <AbsoluteFill style={{ boxShadow: "inset 0 0 200px 40px rgba(30,15,40,0.35)" }} />
+      <Grain f={f} o={0.04} />
+    </AbsoluteFill>
+  );
+};
