@@ -127,10 +127,11 @@ const build = () => {
   shot(E("loopy", 1), "day", 14, mv([sp("oven")[0] + 0.07, 0.86, sp("oven")[2] + 0.45], [sp("oven")[0] + 0.07, 0.86, sp("oven")[2] + 0.4], [sp("oven")[0] + 0.05, 0.83, sp("oven")[2]], [sp("oven")[0] + 0.05, 0.83, sp("oven")[2]], 30));
   // Leo's blank page
   shot(E("this", 2), "day", 10, mv([-0.4, 1.45, 2.4], [-0.6, 1.45, 2.0], [-2.9, 1.1, -1.1], [-2.9, 1.12, -1.1], 40, 0.02));
-  shot(E("tears"), "day", 12, front(LEO_AT_BOX, 1.0, 1.1, 0.3, 32, 0.98));
+  shot(E("tears"), "day", 12, front(LEO_AT_BOX, 1.75, 1.3, 0.35, 34, 1.2));
   shot(E("page", 1), "day", 12, front(LEO_AT_BOX, 0.85, 1.05, -0.2, 32, 0.98, 0.02));
   shot(E("blank"), "day", 13, front(LEO_AT_BOX, 1.6, 1.5, 0.5, 32, 1.4));
-  shot(E("no", 2), "day", 12, front(LEO_AT_BOX, 0.8, 1.02, 0.25, 32, 0.98, -0.03));
+  shot(E("no", 2), "day", 12, front(LEO_AT_BOX, 1.7, 1.3, 0.3, 34, 1.22, -0.03));
+  shot(E("advice"), "day", 12, front(LEO_AT_BOX, 0.9, 1.05, -0.2, 32, 0.98, 0.02));
   shot(E("not"), "day", 12, front(LEO_AT_BOX, 1.9, 1.45, -0.6, 34, 1.3, 0.03));
   // that night: the trail to the tower
   shot(E("so"), "night", 6, (u, f) => { const h = leoAt(f / FPS).p; return { pos: [h[0] + 1.4, 1.5, h[2] - 4.0], look: [h[0], 1.1, h[2]], fov: 42, roll: 0 }; });
