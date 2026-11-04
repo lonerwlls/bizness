@@ -294,11 +294,12 @@ const buildCity = (root: THREE.Object3D, gr: Growth, lits: Lit[], bridgeMat: THR
   for (let i = 0; i < 160; i++) prop(g1, kit, i % 3 ? "grass_large" : "grass", (r() - 0.5) * 2 * (SIDE - 0.5), 0, RIVER0 - 2 - r() * 180, 0.4 + r() * 0.5);
   for (let i = 0; i < 30; i++) prop(g1, kit, "plant_bush", (r() - 0.5) * 2 * ROAD, 0, RIVER0 - 3 - r() * 180, 0.8 + r() * 0.6);
   // level 2: young trees in the road and the lot, bushes everywhere
-  for (let i = 0; i < 40; i++) prop(g2, kit, i % 2 ? "tree_default" : "tree_oak", (r() - 0.5) * 2 * (SIDE - 1), 0, RIVER0 - 4 - r() * 180, 3 + r() * 3);
+  const lane = () => { const x = (r() - 0.5) * 2 * (SIDE - 1); return Math.abs(x) < 2.6 ? x + Math.sign(x || 1) * 2.6 : x; }; // keep the old road's middle clear (the cameras fly there)
+  for (let i = 0; i < 40; i++) prop(g2, kit, i % 2 ? "tree_default" : "tree_oak", lane(), 0, RIVER0 - 4 - r() * 180, 3 + r() * 3);
   for (let i = 0; i < 14; i++) prop(g2, kit, "tree_oak", LOT[0] + 3 + (i % 5) * 6.5 + 2.6, 0, LOT[2] + 2 + Math.floor(i / 5) * 10, 4 + r() * 3);
-  for (let i = 0; i < 60; i++) prop(g2, kit, "plant_bushLarge", (r() - 0.5) * 2 * (SIDE - 0.5), 0, RIVER0 - 2 - r() * 180, 1 + r() * 0.8);
+  for (let i = 0; i < 60; i++) prop(g2, kit, "plant_bushLarge", lane(), 0, RIVER0 - 2 - r() * 180, 1 + r() * 0.8);
   // level 3: a forest down the avenue
-  for (let i = 0; i < 90; i++) prop(g3, kit, ["tree_oak", "tree_default", "tree_fat", "tree_cone"][i % 4], (r() - 0.5) * 2 * (SIDE - 0.5), 0, RIVER0 - 2 - r() * 190, 7 + r() * 7);
+  for (let i = 0; i < 90; i++) prop(g3, kit, ["tree_oak", "tree_default", "tree_fat", "tree_cone"][i % 4], lane(), 0, RIVER0 - 2 - r() * 190, 7 + r() * 7);
   for (let i = 0; i < 50; i++) prop(g3, kit, "tree_default", LOT[0] + r() * (LOT[1] - LOT[0]), 0, LOT[2] + r() * (LOT[3] - LOT[2]), 8 + r() * 6);
   g1.build(gr.g[1]); g2.build(gr.g[2]); g3.build(gr.g[3]);
   for (const x of gr.g) root.add(x);
@@ -497,7 +498,7 @@ const build = () => {
   // five years
   shot(E("in", 2), "day", 1, 0, mv([0.5, 1.4, -90], [0.4, 1.6, -82], [0, 2, 0], [0, 2.5, 0], 46, 0, true));
   shot(E("splits"), "day", 1, 10, mv([1.0, 0.35, -40], [0.8, 0.4, -38.5], [0.2, 0.1, -34], [0.2, 0.1, -34], 46, 0.04));
-  shot(E("rain"), "rain", 1, 0, mv([-3, 34, -78], [-2, 32, -72], [16, 20, -44], [16, 20, -42], 44, 0, true));
+  shot(E("rain"), "rain", 1, 0, mv([-4, 62, -100], [-3, 58, -94], [15, 22, -52], [15, 22, -50], 44, 0, true));
   shot(E("sound"), "rain", 1, 0, mv([-2, 1.6, 40], [-1.6, 1.8, 36], [0, 6, -20], [0, 7, -20], 46, -0.03));
   // Chernobyl
   shot(E("chernobyl"), "day", 0, 0, mvAt(CHER, [5, 2.5, -78], [4, 3.0, -86], [0, 11, -125], [0, 11.5, -125], 44, 0, true));
@@ -526,7 +527,7 @@ let built = false;
 const ensure = () => { if (!built) { built = true; build(); S.sort((a, b) => a.a - b.a); } };
 export const shotIdx = (f: number) => { ensure(); let i = 0; while (i + 1 < S.length && f >= S[i + 1].a) i++; return i; };
 const shotEnd = (i: number) => (i + 1 < S.length ? S[i + 1].a : TOTAL);
-const KICKS = () => [wf("vanished"), wf("stop"), wf("splits")];
+const KICKS = (): number[] => []; // no flip-shakes here: they read as flicker
 const kick = (f: number) => { for (const k of KICKS()) { const d = f - k; if (d >= 0 && d < 7) return (d % 2 ? -1 : 1) * 0.045 * (1 - d / 7); } return 0; };
 export const camAt = (i: number, f: number): Cam => {
   ensure();
