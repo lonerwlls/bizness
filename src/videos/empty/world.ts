@@ -204,7 +204,7 @@ const buildCity = (root: THREE.Object3D, gr: Growth, lits: Lit[], bridgeMat: THR
         // box faces: +x, -x, +y, -y, +z, -z: front = toward the street
         const front = new THREE.PlaneGeometry(w, h).rotateY(s < 0 ? Math.PI / 2 : -Math.PI / 2).translate(x0 - s * 0.0, h / 2, zc);
         b.add(geo, ms);
-        b.add(front.translate(-s * 0.02, 0, 0), mf);
+        b.add(front.translate(-s * 0.06, 0, 0), mf);
         b.add(boxGeo(V(xc - d / 2 - 0.3, h, zc - w / 2 - 0.3), V(xc + d / 2 + 0.3, h + 0.6, zc + w / 2 + 0.3)), lam("cornice", () => ({ color: "#efe6d2" })));
         if (!brown && n % 3 === 0) { // rooftop water tank
           const tx = xc + s * 2, tz = zc;
@@ -219,11 +219,11 @@ const buildCity = (root: THREE.Object3D, gr: Growth, lits: Lit[], bridgeMat: THR
         }
         // night window lights on the street face
         const lm = new THREE.MeshBasicMaterial({ map: litTex(`l${n}`, w, h, n + 3), transparent: true, depthWrite: false, color: new THREE.Color(2.2, 2.0, 1.6), opacity: 0 });
-        const lp = new THREE.Mesh(new THREE.PlaneGeometry(w, h).rotateY(s < 0 ? Math.PI / 2 : -Math.PI / 2).translate(x0 - s * 0.06, h / 2, zc), lm);
+        const lp = new THREE.Mesh(new THREE.PlaneGeometry(w, h).rotateY(s < 0 ? Math.PI / 2 : -Math.PI / 2).translate(x0 - s * 0.14, h / 2, zc), lm);
         lp.layers.set(NOINK); lp.visible = false; root.add(lp); lits.push({ mesh: lp, z: zc });
         // vines (fifty years) and green roofs (a hundred)
         const vm = new THREE.MeshLambertMaterial({ map: vineTex(n % 4), transparent: true, alphaTest: 0.4, side: THREE.DoubleSide });
-        const vines = new THREE.Mesh(new THREE.PlaneGeometry(w, Math.min(h, 22)).rotateY(s < 0 ? Math.PI / 2 : -Math.PI / 2).translate(x0 - s * 0.1, Math.min(h, 22) / 2, zc), vm);
+        const vines = new THREE.Mesh(new THREE.PlaneGeometry(w, Math.min(h, 22)).rotateY(s < 0 ? Math.PI / 2 : -Math.PI / 2).translate(x0 - s * 0.3, Math.min(h, 22) / 2, zc), vm);
         gr.g[2].add(vines);
         const roofG = new THREE.Mesh(new THREE.BoxGeometry(d - 0.4, 0.5, w - 0.4).translate(xc, h + 0.7, zc), lam("roofGreen", () => ({ map: rep(grassHD(), 4, 4) })));
         gr.g[3].add(roofG);
@@ -255,8 +255,8 @@ const buildCity = (root: THREE.Object3D, gr: Growth, lits: Lit[], bridgeMat: THR
   };
   for (const [x, z] of [[-3, -12], [3, -48], [-3, -70], [3, 8], [-3, 30]]) car(x, z, "#f2c230");
   for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) car(LOT[0] + 6 + i * 6.5, LOT[2] + 5 + j * 10, ["#c8403a", "#3f6fb5", "#e8e4dc", "#3a8a5a", "#8a8a96"][(i + j) % 5], 0);
-  b.add(new THREE.PlaneGeometry(LOT[1] - LOT[0], LOT[3] - LOT[2]).rotateX(-Math.PI / 2).translate((LOT[0] + LOT[1]) / 2, 0.02, (LOT[2] + LOT[3]) / 2), lam("lotAsph", () => ({ color: "#5a5a60" })));
-  for (let i = 0; i < 5; i++) b.add(boxGeo(V(LOT[0] + 3 + i * 6.5, 0.03, LOT[2] + 1), V(LOT[0] + 3.15 + i * 6.5, 0.04, LOT[3] - 1)), lam("zebra", () => ({})));
+  b.add(new THREE.PlaneGeometry(LOT[1] - LOT[0], LOT[3] - LOT[2]).rotateX(-Math.PI / 2).translate((LOT[0] + LOT[1]) / 2, 0.03, (LOT[2] + LOT[3]) / 2), lam("lotAsph", () => ({ color: "#5a5a60" })));
+  for (let i = 0; i < 5; i++) b.add(boxGeo(V(LOT[0] + 3 + i * 6.5, 0.0, LOT[2] + 1), V(LOT[0] + 3.15 + i * 6.5, 0.08, LOT[3] - 1)), lam("zebra", () => ({})));
   // street lamps
   for (let z = 50; z > -150; z -= 14) for (const s of [-1, 1]) prop(b, kit, "lantern", s * (ROAD + 0.6), WALK, z + (s > 0 ? 7 : 0), 4.2);
   // river, quay walls, the steel truss bridge carrying the avenue
@@ -288,7 +288,7 @@ const buildCity = (root: THREE.Object3D, gr: Growth, lits: Lit[], bridgeMat: THR
   })());
   // ---- growth ----
   // level 1: cracks with grass in the road and sidewalks, tufts
-  const cr = new THREE.Mesh(new THREE.PlaneGeometry(ROAD * 2, 200).rotateX(-Math.PI / 2).translate(0, 0.03, RIVER0 - 100), new THREE.MeshLambertMaterial({ map: rep(crackTex(), 1, 6), transparent: true, alphaTest: 0.3 }));
+  const cr = new THREE.Mesh(new THREE.PlaneGeometry(ROAD * 2, 200).rotateX(-Math.PI / 2).translate(0, 0.06, RIVER0 - 100), new THREE.MeshLambertMaterial({ map: rep(crackTex(), 2, 22), transparent: true, alphaTest: 0.3, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
   cr.receiveShadow = true; gr.g[1].add(cr);
   const g1 = new Batch(), g2 = new Batch(), g3 = new Batch();
   for (let i = 0; i < 160; i++) prop(g1, kit, i % 3 ? "grass_large" : "grass", (r() - 0.5) * 2 * (SIDE - 0.5), 0, RIVER0 - 2 - r() * 180, 0.4 + r() * 0.5);
@@ -369,8 +369,8 @@ const buildPlant = (root: THREE.Object3D) => {
 const buildCher = (root: THREE.Object3D, wheel: THREE.Group) => {
   const b = new Batch(), o = CHER, kit = makeKit(), r = rng(9);
   b.add(new THREE.PlaneGeometry(1200, 1200).rotateX(-Math.PI / 2).translate(o[0], -0.02, 0), lam("grassT", () => ({})));
-  b.add(new THREE.PlaneGeometry(14, 200).rotateX(-Math.PI / 2).translate(o[0], 0.01, -40), lam("lotAsph", () => ({})));
-  b.add(new THREE.PlaneGeometry(14, 200).rotateX(-Math.PI / 2).translate(o[0], 0.03, -40), new THREE.MeshLambertMaterial({ map: rep(crackTex(), 1, 6), transparent: true, alphaTest: 0.3 }));
+  b.add(new THREE.PlaneGeometry(14, 200).rotateX(-Math.PI / 2).translate(o[0], 0.02, -40), lam("lotAsph", () => ({})));
+  b.add(new THREE.PlaneGeometry(14, 200).rotateX(-Math.PI / 2).translate(o[0], 0.07, -40), new THREE.MeshLambertMaterial({ map: rep(crackTex(), 2, 24), transparent: true, alphaTest: 0.3, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
   // panel blocks
   for (let i = 0; i < 8; i++) {
     const s = i % 2 ? 1 : -1, z = -10 - Math.floor(i / 2) * 32, h = 15 + (i % 3) * 6, w = 26;
@@ -392,10 +392,11 @@ const buildCher = (root: THREE.Object3D, wheel: THREE.Group) => {
   // the forest taking it back
   for (let i = 0; i < 120; i++) {
     const x = o[0] + (r() - 0.5) * 140, z = 10 - r() * 140;
-    if (Math.abs(x - o[0]) < 5 || Math.hypot(x - o[0] - WHEEL[0], z - WHEEL[2]) < 15) continue;
+    if (Math.abs(x - o[0]) < 9 || Math.hypot(x - o[0] - WHEEL[0], z - WHEEL[2]) < 15) continue;
     prop(b, kit, ["tree_default", "tree_oak", "tree_cone", "tree_fat"][i % 4], x, 0, z, 5 + r() * 8);
   }
-  for (let i = 0; i < 80; i++) prop(b, kit, i % 2 ? "grass_large" : "plant_bush", o[0] + (r() - 0.5) * 14, 0, 20 - r() * 150, 0.5 + r());
+  for (let i = 0; i < 80; i++) prop(b, kit, "grass", o[0] + (r() - 0.5) * 14, 0, 20 - r() * 150, 0.25 + 0.3 * r()); // low tufts only: the animals walk here
+  for (let i = 0; i < 30; i++) { const s2 = i % 2 ? 1 : -1; prop(b, kit, "plant_bush", o[0] + s2 * (9.5 + r() * 3), 0, 20 - r() * 150, 0.8 + r() * 0.6); }
   b.build(root);
 };
 
@@ -428,7 +429,7 @@ const buildMoon = (root: THREE.Object3D, earth: THREE.Sprite) => {
   // boot-print trails
   const fm = new THREE.MeshLambertMaterial({ map: footTex(), transparent: true, alphaTest: 0.2, depthWrite: false });
   for (const [x, z, rot, len] of [[0, -2, 0.2, 7], [1.6, -4, -0.5, 6], [-1.2, 0.5, 0.9, 5], [3.5, -1, 0.1, 6], [0.8, 3, -0.2, 5]]) {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(0.8, len).rotateX(-Math.PI / 2).rotateY(rot).translate(o[0] + x, 0.02, z), fm);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(0.8, len).rotateX(-Math.PI / 2).rotateY(rot).translate(o[0] + x, 0.05, z), fm);
     m.receiveShadow = true; root.add(m);
   }
   b.build(root);
@@ -484,7 +485,7 @@ const build = () => {
   shot(E("nobody"), "under", 0, 12, mvAt(SUB, [1.0, 2.2, 19.0], [1.2, 2.2, 19.4], [5.5, 1.3, 27], [5.5, 1.3, 27], 40, 0.02));
   shot(E("stop"), "under", 0, 0, mvAt(SUB, [6.5, 2.8, -4], [6.3, 3.0, -2], [-3, -1.2, 18], [-3, -1.0, 18], 44, -0.03, true));
   // power plants, lights out
-  shot(E("within"), "golden", 0, 0, mvAt(PLANT, [30, 4, -40], [26, 5, -34], [-2, 14, 24], [-2, 15, 24], 46, 0, true));
+  shot(E("within"), "day", 0, 0, mvAt(PLANT, [30, 4, -40], [26, 5, -34], [-2, 14, 24], [-2, 15, 24], 46, 0, true));
   shot(E("people"), "dusk", 0, 0, mvAt(PLANT, [-34, 2.0, -34], [-31, 2.4, -31], [8, 14, 24], [8, 15, 24], 44, 0.03));
   shot(E("and", 1), "dusk", 0, 0, mv([0, 60, -150], [0, 52, -132], [0, 0, 0], [0, 0, 10], 46, 0, true));
   shot(E("city", 1), "night", 0, 0, mv([0, 48, 40], [0, 46, 30], [0, 4, -90], [0, 4, -100], 44, 0.03, true));
@@ -499,11 +500,11 @@ const build = () => {
   shot(E("rain"), "rain", 1, 0, mv([-3, 34, -78], [-2, 32, -72], [16, 20, -44], [16, 20, -42], 44, 0, true));
   shot(E("sound"), "rain", 1, 0, mv([-2, 1.6, 40], [-1.6, 1.8, 36], [0, 6, -20], [0, 7, -20], 46, -0.03));
   // Chernobyl
-  shot(E("chernobyl"), "golden", 0, 0, mvAt(CHER, [5, 2.5, -78], [4, 3.0, -86], [0, 11, -125], [0, 11.5, -125], 44, 0, true));
-  shot(E("emptied"), "golden", 0, 0, mvAt(CHER, [2, 1.6, 22], [1.6, 1.8, 16], [0, 4, -60], [0, 5, -60], 44, 0.03));
+  shot(E("chernobyl"), "day", 0, 0, mvAt(CHER, [5, 2.5, -78], [4, 3.0, -86], [0, 11, -125], [0, 11.5, -125], 44, 0, true));
+  shot(E("emptied"), "day", 0, 0, mvAt(CHER, [2, 1.6, 22], [1.6, 1.8, 16], [0, 4, -60], [0, 5, -60], 44, 0.03));
   shot(E("today"), "day", 0, 6, mvAt(CHER, [3.2, 1.1, -5.5], [3.0, 1.1, -6.0], [0, 0.6, -12], [0, 0.6, -12.5], 42, 0));
-  shot(E("bears"), "day", 0, 10, mvAt(CHER, [-6, 1.2, -16], [-6.2, 1.2, -16.8], [0, 0.9, -22], [0, 0.9, -22], 40, -0.03));
-  shot(E("horses"), "golden", 0, 0, mvAt(CHER, [-3.5, 1.5, -26], [-4, 1.6, -27], [-14, 1.4, -36], [-14, 1.5, -36], 40, 0.02, true));
+  shot(E("bears"), "day", 0, 10, mvAt(CHER, [-6.5, 1.3, -15.5], [-6.7, 1.3, -16.2], [-1.8, 0.9, -22], [-1.6, 0.9, -22], 42, -0.03));
+  shot(E("horses"), "day", 0, 0, mvAt(CHER, [4.5, 1.6, -25], [4.0, 1.7, -26], [-2, 1.4, -35], [-2, 1.5, -35], 42, 0.02, true));
   // fifty years
   shot(E("in", 4), "day", 2, 0, mv([0, 3.0, -100], [0, 3.6, -92], [0, 4, 0], [0, 4.5, 0], 46, 0, true));
   shot(E("parking"), "day", 2, 0, mv([LOT[0] - 2, 6, LOT[2] - 6], [LOT[0] - 1, 6.5, LOT[2] - 4], [LOT[0] + 18, 0.5, LOT[2] + 14], [LOT[0] + 18, 0.6, LOT[2] + 15], 46, 0.03, true));
@@ -541,7 +542,7 @@ export const lookAt = (f: number): Look => { ensure(); return S[shotIdx(f)].look
 function dogAt(t: number): { p: V3; walking: boolean } {
   const z0 = STOOP[2], go = T("own") - 0.5;
   if (t < go) return { p: [STOOP[0] + 0.45, WALK + 1.0, z0], walking: false }; // on the top step, by the door
-  return { p: [STOOP[0] + 3.0, WALK, z0 - 1.6 - (t - go) * 1.6], walking: true };
+  return { p: [STOOP[0] + 1.5, WALK, z0 - 1.6 - (t - go) * 1.6], walking: true }; // between the house fronts and the lamp posts
 }
 /** subway water level (y): normal pumping, then rising after the pumps stop; "underwater" flash-forward is flooded */
 const waterY = (t: number, i: number) => {
@@ -627,7 +628,7 @@ export class EmptyWorld {
     const i = shotIdx(f), s = S[i], t = f / FPS, { L, K } = PRESETS[s.look];
     const c = camAt(i, f), pos = V(...c.pos), look = V(...c.look);
     cam.position.copy(pos); cam.up.set(0, 1, 0); cam.lookAt(look); cam.rotateZ(c.roll);
-    cam.fov = c.fov; cam.near = 0.1; cam.far = 1500; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
+    cam.fov = c.fov; cam.near = 0.3; cam.far = 1500; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
     cam.layers.enable(NOINK);
     const sunDir = this.shotSun(i), dist = pos.distanceTo(look);
     this.hemi.color.set(L.sky); this.hemi.groundColor.set(L.ground); this.hemi.intensity = s.look === "moon" ? 0.1 : L.hemiI;
@@ -739,14 +740,14 @@ export class EmptyWorld {
       const week = t >= T("whole") - 0.1 && t < T("then") - 0.1;
       if (!dg.walking) beast(`dogsit|${week ? 1 : 0}|${t >= T("then") ? 1 : 0}|${Math.round(Math.sin(t * 9) * 2)}`, dg.p, "dogsit", 0.75,
         (pen) => dogSit(pen, t >= T("then") ? -0.8 : 0, t >= T("then") ? 0.2 : 0.8, week, t < T("whole") ? Math.sin(t * 9) * 0.3 : 0));
-      else { const ph = Math.round((t * 2.2) % 1 * 12) / 12; beast(`dog|${ph}`, dg.p, "dog", 0.9, (pen) => quadSide(pen, "dog", ph, 1), [0, 0, -1]); }
+      else { const ph = Math.round((t * 2.2) % 1 * 12) / 12; beast(`dog|${ph}`, dg.p, "dog", 1.7, (pen) => quadSide(pen, "dog", ph, 1), [0, 0, -1]); }
     }
     // Chernobyl animals
-    if (Math.abs(cam.position.x - CHER[0]) < 500) {
+    if (Math.abs(cam.position.x - CHER[0]) < 500 && t >= T("today") - 0.15) { // the animals arrive with "today"
       const st = (k: number, sp: number) => Math.round(((t * sp + k * 0.31) % 1) * 12) / 12;
-      for (let k = 0; k < 3; k++) { const z = -10 - k * 2.2, x = -9 + ((t - T("today") + 2) * 2.4 + k * 1.3) % 22; beast(`wolf|${st(k, 2.2)}`, at(CHER, [x, 0, z]), "wolf", 1.5, (pen) => quadSide(pen, "wolf", st(k, 2.2), 1), [1, 0, 0]); }
-      beast(`bear|${st(5, 1.2)}`, at(CHER, [-1.5 + (t - T("bears")) * 0.9, 0, -22]), "bear", 2.1, (pen) => quadSide(pen, "bear", st(5, 1.2), 0.8), [1, 0, 0]);
-      for (let k = 0; k < 3; k++) { const x = -18 + k * 3.2 + (t - T("horses")) * 1.4; beast(`horse|${st(k + 7, 1.4)}|${k === 1 ? 1 : 0}`, at(CHER, [x, 0, -36 + k * 1.5]), "horse", 2.6, (pen) => quadSide(pen, "horse", st(k + 7, 1.4), 0.9, k === 1 ? 0.6 : 0), [1, 0, 0]); }
+      for (let k = 0; k < 3; k++) { const z = -10 - k * 2.2, x = -8 + ((t - T("today") + 2) * 1.8 + k * 2.6) % 16; beast(`wolf|${st(k, 1.6)}`, at(CHER, [x, 0, z]), "wolf", 2.3, (pen) => quadSide(pen, "wolf", st(k, 1.6), 1), [1, 0, 0]); }
+      beast(`bear|${st(5, 1.2)}`, at(CHER, [-2.5 + (t - T("bears")) * 0.7, 0, -22]), "bear", 3.2, (pen) => quadSide(pen, "bear", st(5, 1.2), 0.8), [1, 0, 0]);
+      for (let k = 0; k < 3; k++) { const x = -7 + k * 3.4 + (t - T("horses")) * 1.2; beast(`horse|${st(k + 7, 1.2)}|${k === 1 ? 1 : 0}`, at(CHER, [x, 0, -36 + k * 1.6]), "horse", 3.6, (pen) => quadSide(pen, "horse", st(k + 7, 1.2), 0.9, k === 1 ? 0.7 : 0), [1, 0, 0]); }
     }
     // rain streaks
     if (s.look === "rain") {

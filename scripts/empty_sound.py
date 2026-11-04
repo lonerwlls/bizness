@@ -115,7 +115,7 @@ act = np.convolve(np.clip(rms / 0.04, 0, 1), np.ones(int(0.25 * SR)) / int(0.25 
 MUS *= (1 - 0.5 * act)[:, None]
 mix = MUS * 0.6 + SFX * 0.9
 mix = np.tanh(mix * 1.2) / 1.2
-peak = np.max(np.abs(mix)); mix *= 0.5 / (peak + 1e-9)
+peak = np.max(np.abs(mix)); mix *= 0.28 / (peak + 1e-9)  # quieter so the voice stays clear (user request)
 with wv.open(f"public/{ID}/sound.wav", "wb") as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((mix * 32767).astype("<i2").tobytes())
 print("ok", DUR, "peak", peak)
