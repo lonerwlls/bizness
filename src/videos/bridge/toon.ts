@@ -458,7 +458,7 @@ const hatOn = (p: Pen, o: Outfit, hp: P2[], H: Blob, cx: number, hc: number, lig
 // ---------------- bodies ----------------
 export type Arms = [P2[], P2[]];
 /** held prop; for the hammer the number is the strike 0 (raised) .. 1 (struck) */
-export type Prop = null | "icecream" | "shako" | "phone" | "loaf" | ["hammer", number];
+export type Prop = null | "icecream" | "shako" | "phone" | "loaf" | "hold2" | ["hammer", number];
 
 const BUILD: Record<Build, { a: number; torso: number; legs: number; tw: number }> = {
   adult: { a: 118, torso: 1.1, legs: 1.4, tw: 0.8 },
@@ -466,6 +466,8 @@ const BUILD: Record<Build, { a: number; torso: number; legs: number; tw: number 
   kid: { a: 112, torso: 0.85, legs: 1.0, tw: 0.72 },
 };
 
+/** where "hold2" puts the hands: x = 300 +- HOLD_DX, y = chin + HOLD_DY x head height (design units) */
+export const HOLD_DX = 65, HOLD_DY = 0.55;
 export type FrontOpts = {
   phase?: number; expr?: Expr; mode?: "march" | "stroll" | "stand" | "sit" | "fall"; look?: number; blink?: boolean | number; lift?: number;
   prop?: Prop; tilt?: number; headTilt?: number; wave?: number;
@@ -563,6 +565,10 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
       const Hd = lerp2([tcx + 1.15 * T.a + 14 * u, S[1] - 0.55 * HH], [tcx + 1.45 * T.a + 22 * u, S[1] + 0.35 * HH], k);
       arms.push({ pts: [S, E, Hd], front: true });
     } else arms.push({ pts: hang(1, sw), front: false });
+  }
+  if (prop === "hold2" && mode !== "fall") { // both hands forward at chest height, 65 units either side of the middle (a held page/envelope sits between them)
+    arms.length = 0;
+    for (const side of [-1, 1]) { const S = sh(side); arms.push({ pts: [S, [tcx + side * (1.1 * T.a + 2 * u), S[1] + 0.42 * HH], [300 + side * HOLD_DX, chin + HOLD_DY * HH]], front: true }); }
   }
   const drawArm = (a: Arm) => { p.stroke(curve(a.pts[0], a.pts[1], a.pts[2]), 5.2 * u, armCol); p.dot(a.pts[2][0], a.pts[2][1], 5.5 * u); };
   // behind the body: rifle, sword, arms
