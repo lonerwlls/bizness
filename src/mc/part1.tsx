@@ -57,7 +57,7 @@ export const P1 = makePart(V, [
     <G c={15} r={0} t="leaves" /><G c={16} r={0} t="leaves" />
     <Bean x={gx(14) + 40} y={GY} s={HS} look={PAJAMA} f={f} expr="talk" open={0.3 + 0.3 * Math.sin(f * 0.4)} pose={{ armR: [92 + Math.sin(f * 0.4) * 10, -5], lean: 3 }} /></Street> },
   { at: "dog", s: (g, f, len) => <Street cam={camLerp(g, len, M(6.5, 2.0, -150), M(6.6, 2.2, -150))} f={f} cars={false} trees={false}>
-    <G c={8} r={0} t="conc" col="#e04a5a" /><Dog x={gx(7) - 30} f={f} bark /></Street> },
+    <G c={8} r={0} t="conc" col="#e04a5a" /><Dog x={gx(7) - 90} f={f} bark /></Street> },
   { at: "Phones", s: (g, f, len) => <Street cam={camLerp(g, len, M(4, 2.6, -280), M(4, 3.0, -290))} f={f}>
     <Hero x={gx(4) + B / 2} f={f} expr="talk" open={0.2} holdR={{ node: <Phone on />, rot: 0, k: 1.2 }} pose={{ armR: [125, 25] }} /></Street> },
   { at: "grid", s: (g, f, len) => {

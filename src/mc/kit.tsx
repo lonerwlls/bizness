@@ -468,17 +468,27 @@ export const Hearts: React.FC<{ x: number; y: number; v: number; s?: number }> =
   })}</g>
 );
 export const Dog: React.FC<{ x: number; f: number; bark?: boolean; flip?: boolean }> = ({ x, f, bark, flip }) => {
+  // собака из кубиков, как корова и курица: тело-брусок, квадратная голова, ножки-столбики
   const j = bark ? Math.abs(Math.sin(f * 0.5)) * 14 : 0;
+  const p = Math.sin(f * 0.3);
+  const o = { stroke: INK, strokeWidth: 5 };
   return (
     <g transform={`translate(${x} ${GY - j}) scale(${flip ? -1 : 1} 1)`}>
-      {[-50, -24, 30, 54].map((k) => <rect key={k} x={k - 8} y={-70} width={16} height={70} rx={8} fill="#c8803a" stroke={INK} strokeWidth={4.5} />)}
-      <path d={`M -70 -110 Q -110 ${-150 - Math.sin(f * 0.6) * 20} -96 -170`} stroke="#c8803a" strokeWidth={14} fill="none" strokeLinecap="round" />
-      <path d={`M -70 -110 Q -110 ${-150 - Math.sin(f * 0.6) * 20} -96 -170`} stroke={INK} strokeWidth={4} fill="none" opacity={0} />
-      <ellipse cx={0} cy={-100} rx={86} ry={46} fill="#e0a050" stroke={INK} strokeWidth={5} />
-      <ellipse cx={88} cy={-150} rx={50} ry={44} fill="#e0a050" stroke={INK} strokeWidth={5} />
-      <ellipse cx={70} cy={-176} rx={16} ry={30} fill="#8a5428" stroke={INK} strokeWidth={4} transform="rotate(-20 70 -176)" />
-      <circle cx={100} cy={-160} r={7} fill={INK} /><ellipse cx={136} cy={-144} rx={11} ry={9} fill={INK} />
-      {bark ? <path d="M 110 -126 Q 124 -110 140 -124" stroke={INK} strokeWidth={5} fill="#5a1620" /> : null}
+      <ellipse cx={0} cy={4 + j} rx={110} ry={14} fill="rgba(20,10,50,0.35)" />
+      {[-62, -30, 30, 62].map((k, i) => <rect key={k} x={k - 15} y={-90} width={30} height={90} fill="#c8803a" {...o} transform={`rotate(${(i % 2 ? 1 : -1) * p * 5} ${k} -90)`} />)}
+      <rect x={-96} y={-180} width={30} height={84} fill="#c8803a" {...o} transform={`rotate(${-35 + Math.sin(f * 0.8) * 15} -80 -150)`} />
+      <rect x={-90} y={-170} width={180} height={90} fill="#e0a050" {...o} />
+      <rect x={-60} y={-170} width={70} height={26} fill="#c8803a" />
+      <rect x={-90} y={-170} width={180} height={90} fill="none" {...o} />
+      <g transform={`rotate(${bark ? -8 + Math.sin(f * 0.5) * 6 : 0} 80 -160)`}>
+        <rect x={50} y={-260} width={110} height={110} fill="#e0a050" {...o} />
+        <rect x={140} y={-212} width={56} height={52} fill="#f0d0a0" {...o} />
+        <rect x={178} y={-212} width={20} height={18} fill={INK} />
+        <rect x={50} y={-290} width={30} height={34} fill="#8a5428" {...o} /><rect x={128} y={-290} width={30} height={34} fill="#8a5428" {...o} />
+        <rect x={100} y={-236} width={18} height={18} fill={INK} /><rect x={140} y={-236} width={18} height={18} fill={INK} />
+        {bark ? <rect x={150} y={-164} width={40} height={18} fill="#5a1620" {...o} /> : null}
+      </g>
+      {bark ? [0, 1].map((k) => <path key={k} d={`M ${230 + k * 26} ${-230 + k * 6} l 26 -16 M ${236 + k * 26} ${-196} l 30 0`} stroke={INK} strokeWidth={6} strokeLinecap="round" opacity={Math.abs(Math.sin(f * 0.5))} />) : null}
     </g>
   );
 };
