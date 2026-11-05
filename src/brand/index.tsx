@@ -4,6 +4,7 @@
 import React from "react";
 import { AbsoluteFill, Composition, registerRoot } from "remotion";
 import { Bean, BeanDefs, HERO2D } from "../toontest/bean";
+import { ThumbEyes, ThumbEyesVertical } from "./thumb";
 
 const INK = "#16131f";
 const SKY_TOP = "#2f6fd6", SKY_LOW = "#8fc4ff", SUN = "#ffd35a";
@@ -68,6 +69,8 @@ const Root: React.FC = () => (
   <>
     <Composition id="Brand-avatar" component={Avatar} durationInFrames={1} fps={30} width={800} height={800} />
     <Composition id="Brand-banner" component={Banner} durationInFrames={1} fps={30} width={2560} height={1440} />
+    <Composition id="Thumb-eyes" component={ThumbEyes} durationInFrames={1} fps={30} width={1280} height={720} />
+    <Composition id="Thumb-eyes-vertical" component={ThumbEyesVertical} durationInFrames={1} fps={30} width={1080} height={1920} />
     <Composition id="Brand-banner-guide" component={() => <Banner guide />} durationInFrames={1} fps={30} width={2560} height={1440} />
   </>
 );

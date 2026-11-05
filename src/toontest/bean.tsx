@@ -13,7 +13,7 @@ const D = Math.PI / 180;
 const go = (x: number, y: number, a: number, l: number): [number, number] => [x + Math.sin(a * D) * l, y + Math.cos(a * D) * l];
 
 // лицо: центр головы (0,0), голова rx 92 ry 86
-const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean }> = ({ expr, open, blink, sweat }) => {
+const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean; noEyes?: boolean }> = ({ expr, open, blink, sweat, noEyes }) => {
   const ey = -4, ex = 30;
   const brow = (s: number) => {
     const t = expr === "smirk" ? (s < 0 ? -9 : 5) : expr === "shock" ? 7 : expr === "sad" ? -8 : expr === "laugh" || expr === "grin" ? 4 : 0;
@@ -41,14 +41,14 @@ const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean
   else mouth = <path d={`M -14 ${my} Q 0 ${my + 6} 14 ${my}`} stroke={INK} strokeWidth={6} fill="none" strokeLinecap="round" />;
   return (
     <g>
-      {[-1, 1].map(brow)}{[-1, 1].map(eye)}{mouth}
+      {[-1, 1].map(brow)}{noEyes ? null : [-1, 1].map(eye)}{mouth}
       {sweat ? <path d="M 74 -46 Q 88 -22 74 -14 Q 60 -22 74 -46 Z" fill="#8fd4ff" stroke={INK} strokeWidth={4} /> : null}
     </g>
   );
 };
 
 export type BeanPose = { armL?: [number, number]; armR?: [number, number]; legL?: number; legR?: number; lean?: number; bob?: number; tilt?: number };
-export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; expr?: Expr; open?: number; f: number; pose?: BeanPose; sweat?: boolean; flip?: boolean; shadow?: boolean }> = ({ x, y, s = 1, look, expr = "neutral", open = 0, f, pose = {}, sweat, flip, shadow = true }) => {
+export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; expr?: Expr; open?: number; f: number; pose?: BeanPose; sweat?: boolean; flip?: boolean; shadow?: boolean; noEyes?: boolean }> = ({ x, y, s = 1, look, expr = "neutral", open = 0, f, pose = {}, sweat, flip, shadow = true, noEyes }) => {
   const { armL = [12, 8], armR = [12, 8], legL = 4, legR = 4, lean = 0, bob = 0, tilt = 0 } = pose;
   const blink = f % 84 < 3;
   const hipY = -168, shY = -318, headY = -432;
@@ -79,7 +79,7 @@ export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; 
         <g transform={`translate(0 ${headY}) rotate(${tilt})`}>
           {look.hair ? <path d="M -90 -18 Q -96 -96 0 -98 Q 96 -96 90 -18 Q 40 -60 -90 -18 Z" fill={look.hair} stroke={INK} strokeWidth={7} /> : null}
           <ellipse cx={0} cy={0} rx={92} ry={86} fill={look.head} stroke={INK} strokeWidth={7.5} />
-          <Face expr={expr} open={open} blink={blink} sweat={sweat} />
+          <Face expr={expr} open={open} blink={blink} sweat={sweat} noEyes={noEyes} />
           {look.hat === "beanie" ? (
             <g>
               <path d="M -90 -30 Q -92 -112 0 -116 Q 92 -112 90 -30 Z" fill={look.hatC} stroke={INK} strokeWidth={7.5} strokeLinejoin="round" />
