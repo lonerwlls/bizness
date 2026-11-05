@@ -66,8 +66,19 @@ const Banner: React.FC<{ guide?: boolean }> = ({ guide }) => (
   </AbsoluteFill>
 );
 
+const HeroOnly: React.FC<{ bg?: string }> = ({ bg }) => (
+  <AbsoluteFill style={{ background: bg ?? "transparent" }}>
+    <svg width={1500} height={1500} viewBox="0 0 1500 1500">
+      <BeanDefs />
+      <Bean x={750} y={1420} s={2.2} look={HERO2D} expr="grin" f={10} shadow={false} pose={{ armL: [12, 8], armR: [12, 8] }} />
+    </svg>
+  </AbsoluteFill>
+);
+
 const Root: React.FC = () => (
   <>
+    <Composition id="Hero-white" component={() => <HeroOnly bg="#ffffff" />} durationInFrames={1} fps={30} width={1500} height={1500} />
+    <Composition id="Hero-transparent" component={() => <HeroOnly />} durationInFrames={1} fps={30} width={1500} height={1500} />
     <Composition id="Brand-avatar" component={Avatar} durationInFrames={1} fps={30} width={800} height={800} />
     <Composition id="Brand-banner" component={Banner} durationInFrames={1} fps={30} width={2560} height={1440} />
     <Composition id="Thumb-eyes2" component={ThumbEyes2} durationInFrames={1} fps={30} width={1280} height={720} />
