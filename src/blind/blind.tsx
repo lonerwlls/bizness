@@ -5,9 +5,12 @@
 import React from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, continueRender, delayRender, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Bean, BeanDefs, BeanLook, BeanPose, HERO2D, NEIGHBOR_A, NEIGHBOR_B } from "../toontest/bean";
+import { VOICE } from "./voice";
 
-export const BLIND_FRAMES = 315;
 const LEAD = 9; // озвучка начинается через 0,3 сек
+export const BLIND_FRAMES = Math.round((VOICE.dur + 1.0) * 30);
+// кадр, на котором звучит слово (n — какое по счёту повторение); склейки чуть раньше слова
+const at = (w: string, n = 1) => { const x = VOICE.words.filter((v) => v.w === w)[n - 1]; return Math.round(x.t * 30) + LEAD; };
 const INK = "#16131f";
 const YEL = "#ffd23c";
 const fontH = delayRender("blind fonts");
@@ -234,17 +237,17 @@ const Grade: React.FC<{ dark?: number }> = ({ dark = 0 }) => (
 );
 
 // ---------- ролик ----------
-const CUTS = [0, 92, 120, 149, 191, 243, BLIND_FRAMES];
-const CRASH = 157;
+const CUTS = [0, at("Not") - 3, at("Everyone") - 3, at("Cars") - 3, at("Strangers") - 3, at("And") - 3, BLIND_FRAMES];
+const CRASH = at("crash");
 
 export const BlindFilm: React.FC = () => {
   const f = useCurrentFrame();
   const shot = CUTS.findIndex((c, i) => f >= c && f < CUTS[i + 1]);
   const g = f - CUTS[shot];
-  const crash = ip(f, [149, CRASH], [0, 1], Easing.in(Easing.quad));
+  const crash = ip(f, [CUTS[3], CRASH], [0, 1], Easing.in(Easing.quad));
   const shake = f >= CRASH && f < CRASH + 14 ? (CRASH + 14 - f) * 2.4 : 0;
   let cam: Cam; let hero: React.ReactNode = null; let crowd = true; let chain: number | undefined; let dark = 0;
-  const blindAt = 66; // «can't see»
+  const blindAt = at("can") - 2; // «can't see»
   if (shot === 0) {
     const isBlind = f >= blindAt;
     cam = { x: 1120 + g * 0.3, y: 470, z: ip(g, [0, 92], [1.65, 1.95]) };
@@ -276,8 +279,8 @@ export const BlindFilm: React.FC = () => {
       <Grade dark={dark} />
       <AbsoluteFill style={{ background: "#fff6d0", opacity: flash }} />
       <AbsoluteFill style={{ background: "#07030f", opacity: blackout }} />
-      <Sequence from={LEAD}><Audio src={staticFile("blind/voice.mp3")} /></Sequence>
-      <Audio src={staticFile("blind/sfx.wav")} volume={0.55} endAt={BLIND_FRAMES} />
+      <Sequence from={LEAD}><Audio src={staticFile("blind/voice.mp3")} volume={1} /></Sequence>
+      <Audio src={staticFile("blind/sfx.wav")} volume={0.22} endAt={BLIND_FRAMES} />
     </AbsoluteFill>
   );
 };
