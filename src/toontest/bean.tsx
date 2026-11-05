@@ -17,7 +17,7 @@ const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean
   const ey = -4, ex = 30;
   const brow = (s: number) => {
     const t = expr === "smirk" ? (s < 0 ? -9 : 5) : expr === "shock" ? 7 : expr === "sad" ? -8 : expr === "laugh" || expr === "grin" ? 4 : 0;
-    const by = ey - (expr === "shock" ? 40 : 30);
+    const by = noEyes ? ey - 4 : ey - (expr === "shock" ? 40 : 30); // без глаз брови ниже шапки, под ними гладкое лицо
     return <path key={"b" + s} d={`M ${s * ex - 15} ${by + t * s * -1} Q ${s * ex} ${by - 5} ${s * ex + 15} ${by - t * s * -1}`} stroke={INK} strokeWidth={6.5} fill="none" strokeLinecap="round" />;
   };
   const eye = (s: number) => {
@@ -41,7 +41,7 @@ const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean
   else mouth = <path d={`M -14 ${my} Q 0 ${my + 6} 14 ${my}`} stroke={INK} strokeWidth={6} fill="none" strokeLinecap="round" />;
   return (
     <g>
-      {[-1, 1].map(brow)}{noEyes ? null : [-1, 1].map(eye)}{mouth}
+      {noEyes ? null : [-1, 1].map(brow)}{noEyes ? null : [-1, 1].map(eye)}{mouth}
       {sweat ? <path d="M 74 -46 Q 88 -22 74 -14 Q 60 -22 74 -46 Z" fill="#8fd4ff" stroke={INK} strokeWidth={4} /> : null}
     </g>
   );
