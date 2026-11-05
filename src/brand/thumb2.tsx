@@ -1,26 +1,14 @@
 // Обложка серии «What if everyone lost their eyes» в духе примеров пользователя: яркая сцена-история
 // (3D-улица в 8 утра: машины врезались, дым, мигалки), крупный плоский герой без глаз в панике, пёс Бадди,
 // толпа на заднем плане, короткая надпись в две строки (белая + жёлтая, с точкой) слева сверху.
-import { ThreeCanvas } from "@remotion/three";
 import React from "react";
-import { AbsoluteFill, continueRender, delayRender, staticFile, useVideoConfig } from "remotion";
-import { CamRig, MOODS, Street, World } from "../lowpoly/kit3d";
+import { AbsoluteFill, continueRender, delayRender, staticFile } from "remotion";
 import { Bean, BeanDefs, HERO2D } from "../toontest/bean";
 
 const h = delayRender("thumb fonts");
 new FontFace("ThumbMont", `url(${staticFile("towers/fonts/Montserrat-latin.woff2")}) format("woff2")`, { weight: "100 900" }).load().then((f) => { document.fonts.add(f); continueRender(h); });
 const INK = "#16131f";
 
-const Background: React.FC = () => {
-  const { width, height } = useVideoConfig();
-  return (
-    <ThreeCanvas width={width} height={height} shadows gl={{ antialias: true }} camera={{ fov: 46, near: 0.05, far: 1000 }}>
-      <CamRig pos={[-2.6, 1.5, 9]} look={[1.2, 2.2, -12]} fov={50} />
-      <World m={{ ...MOODS.sunset, sunDir: [-30, 6, -40] }} focus={[0, 0, -6]} />
-      <Street />
-    </ThreeCanvas>
-  );
-};
 const Title: React.FC<{ x: number; y: number; size: number; fill: string; children: React.ReactNode }> = ({ x, y, size, fill, children }) => (
   <g>
     <text x={x + size * 0.05} y={y + size * 0.08} fontFamily="ThumbMont" fontWeight={900} fontSize={size} fill={INK} stroke={INK} strokeWidth={size * 0.2} strokeLinejoin="round" letterSpacing={-size * 0.02}>{children}</text>
@@ -29,8 +17,8 @@ const Title: React.FC<{ x: number; y: number; size: number; fill: string; childr
 );
 
 export const ThumbEyes2: React.FC = () => (
-  <AbsoluteFill style={{ background: "#1b2a6a" }}>
-    <AbsoluteFill style={{ filter: "blur(2.5px) saturate(1.6) contrast(1.05) brightness(1.22)" }}><Background /></AbsoluteFill>
+  <AbsoluteFill style={{ background: "#0a0f30" }}>
+    <AbsoluteFill style={{ background: "radial-gradient(ellipse at 75% 50%, #3d63d8 0%, #1d2f86 45%, #0a0f30 100%)" }} />
     <AbsoluteFill style={{ background: "radial-gradient(ellipse at 72% 45%, rgba(255,170,90,0.35), rgba(0,0,0,0) 55%)", mixBlendMode: "screen" }} />
     <AbsoluteFill style={{ boxShadow: "inset 0 0 200px 40px rgba(20,10,40,0.55)" }} />
     <svg width={1280} height={720} viewBox="0 0 1280 720" style={{ position: "absolute" }}>
