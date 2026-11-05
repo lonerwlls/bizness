@@ -6,6 +6,7 @@ import { AbsoluteFill, Composition, registerRoot } from "remotion";
 import { Bean, BeanDefs, HERO2D } from "../toontest/bean";
 import { ThumbEyes, ThumbEyesVertical } from "./thumb";
 import { ThumbEyes2 } from "./thumb2";
+import { Hero3D } from "./hero3d";
 
 const INK = "#16131f";
 const SKY_TOP = "#2f6fd6", SKY_LOW = "#8fc4ff", SUN = "#ffd35a";
@@ -77,6 +78,8 @@ const HeroOnly: React.FC<{ bg?: string }> = ({ bg }) => (
 
 const Root: React.FC = () => (
   <>
+    <Composition id="Hero3d-white" component={() => <Hero3D bg="#ffffff" />} durationInFrames={1} fps={30} width={1500} height={1500} />
+    <Composition id="Hero3d-transparent" component={() => <Hero3D />} durationInFrames={1} fps={30} width={1500} height={1500} />
     <Composition id="Hero-white" component={() => <HeroOnly bg="#ffffff" />} durationInFrames={1} fps={30} width={1500} height={1500} />
     <Composition id="Hero-transparent" component={() => <HeroOnly />} durationInFrames={1} fps={30} width={1500} height={1500} />
     <Composition id="Brand-avatar" component={Avatar} durationInFrames={1} fps={30} width={800} height={800} />
