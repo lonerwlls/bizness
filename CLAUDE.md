@@ -21,7 +21,7 @@
 ## Озвучка: какой сервис когда (решение пользователя)
 - **Шортсы** (до ~1 мин) — ElevenLabs, ключ `ELEVENLABS_API_KEY`, скрипт `scripts/tts_eleven.mjs` (для английского `EL_LANG=en`).
 - **Длинные ролики** — Fish Audio, ключ `FISH_API_KEY`. Голос — ссылка/ID модели, которую даст пользователь. Таймингов слов Fish не отдаёт: определяй их по аудио.
-- **Сейчас пользователь просит Fish для всех роликов (ноябрь 2026).** Команда: `node scripts/tts_fish.mjs full public/finance/<id> src/finance/topics/<id>.voice.ts public/finance/<id>/script.txt <ID_или_ссылка_голоса>` (английский: `FISH_LANG=en`, темп: `FISH_SPEED=1.1`). Тайминги слов считает `scripts/fish_align.py` (faster-whisper, один раз: `pip install faster-whisper`). Длинный текст режется на куски и склеивается сам. **Голос пользователя: `f8fb3d11726f44849b9ebc07f499abe6`** (https://fish.audio/m/f8fb3d11726f44849b9ebc07f499abe6).
+- **Сейчас пользователь просит Fish для всех роликов (ноябрь 2026).** Команда: `node scripts/tts_fish.mjs full public/finance/<id> src/finance/topics/<id>.voice.ts public/finance/<id>/script.txt <ID_или_ссылка_голоса>` (по умолчанию английский; русский: `FISH_LANG=ru`; темп: `FISH_SPEED=1.1`). **Ролики теперь на английском (решение пользователя): сценарий, озвучка, тексты в кадре.**. Тайминги слов считает `scripts/fish_align.py` (faster-whisper, один раз: `pip install faster-whisper`). Длинный текст режется на куски и склеивается сам. **Голос пользователя: `f8fb3d11726f44849b9ebc07f499abe6`** (https://fish.audio/m/f8fb3d11726f44849b9ebc07f499abe6).
 - Оба ключа лежат в одном окружении и друг другу не мешают; если пользователь назвал сервис явно — бери его.
 
 ## ОСНОВНОЙ СТИЛЬ ТЕПЕРЬ: low-poly 3D (решение пользователя)

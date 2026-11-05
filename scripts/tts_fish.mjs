@@ -2,7 +2,7 @@
 // node scripts/tts_fish.mjs sample <out.mp3> <voice> "текст"
 // node scripts/tts_fish.mjs full <public_dir> <ts_out> <script.txt> <voice>   → <public_dir>/voice.mp3 + <ts_out> (VOICE)
 // <voice> — ID модели голоса или ссылка вида https://fish.audio/m/<id>/
-// Переменные: FISH_MODEL (по умолчанию s1), FISH_SPEED (1.0), FISH_LANG (ru / en — для распознавания таймингов).
+// Переменные: FISH_MODEL (по умолчанию s1), FISH_SPEED (1.0), FISH_LANG (en по умолчанию / ru — для распознавания таймингов).
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
@@ -62,6 +62,6 @@ if (mode === "sample") {
   fs.rmSync(tmp, { recursive: true, force: true });
   const plain = path.join(OUT, ".script_plain.txt");
   fs.writeFileSync(plain, text);
-  execSync(`python3 scripts/fish_align.py "${voiceMp3}" "${plain}" "${TS}" ${process.env.FISH_LANG ?? "ru"}`, { stdio: "inherit" });
+  execSync(`python3 scripts/fish_align.py "${voiceMp3}" "${plain}" "${TS}" ${process.env.FISH_LANG ?? "en"}`, { stdio: "inherit" });
   fs.rmSync(plain, { force: true });
 }
