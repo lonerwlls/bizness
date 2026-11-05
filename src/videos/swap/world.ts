@@ -11,7 +11,7 @@ import { TONE, CHAR, untone } from "../bridge/shade";
 import { NOINK } from "../bridge/ink";
 import { Pool, Actor, Fx } from "../bridge/cast";
 import { makeKit } from "../bridge/kitgen";
-import { quadSide } from "../empty/animals";
+import { Dog3D } from "./dog3d";
 import * as P from "./props";
 import { VOICE } from "./voice";
 
@@ -259,6 +259,7 @@ export class SwapWorld {
       m.layers.set(NOINK); this.clouds.push(m); R.add(m);
     }
     this.buildHome(R); this.buildLab(R); this.buildYard(R);
+    this.dog.root.position.set(...DOG); R.add(this.dog.root);
   }
 
   private place(b: Batch, g: THREE.Object3D, p: V3, ry = 0) { g.position.set(...p); g.rotation.y = ry; g.updateMatrixWorld(true); b.addObject(g, new THREE.Matrix4()); }
@@ -325,7 +326,7 @@ export class SwapWorld {
 
   private actor(i: number) { while (this.actors.length <= i) this.actors.push(new Actor(this.root)); return this.actors[i]; }
   private fx(i: number) { while (this.fxs.length <= i) this.fxs.push(new Fx(this.root)); return this.fxs[i]; }
-  private dogCard = new Actor(this.root, new THREE.PlaneGeometry(1, 1).translate(0, 0.5, 0));
+  private dog = new Dog3D();
   private shotSun(i: number) {
     let v = this.sunCache.get(i);
     if (v) return v;
@@ -428,19 +429,16 @@ export class SwapWorld {
       this.brush.position.set(LAB[0] - 0.15 + 0.05 * st, 0.98, 0.05); this.brush.rotation.set(0, 0, 0.35 + 0.1 * st); this.brush.visible = true;
     } else this.brush.visible = false;
     // the yard: the dog (from rule three), then the best friend on the sidewalk
-    this.dogCard.mesh.visible = false;
+    this.dog.root.visible = false;
     if (Math.abs(cam.position.x - YARD[0]) < 500) {
       if (t < T("and", 3)) {
-        const bark = t >= T("barks");
-        const w = 1.7, hgt = w * 0.6, dp = V(...DOG), d = cam.position.distanceTo(dp), kk = d < 4 ? 1.6 : 1;
-        const ph = bark ? 0 : Math.round(((t * 0.8) % 1) * 12) / 12;
-        this.dogCard.r = this.pool.req(`dog|${ph}|${bark ? 1 : 0}`, Math.round(1000 * kk), Math.round(600 * kk), kk, (pen) => quadSide(pen, "dog", ph, bark ? 0.15 : 0.5, bark ? -0.15 : 0.3));
-        this.dogCard.mesh.visible = true; this.dogCard.mesh.position.copy(dp);
-        const yaw = Math.atan2(cam.position.x - dp.x, cam.position.z - dp.z);
-        this.dogCard.mesh.rotation.set(0, yaw, 0);
-        const mir = right.x < 0; // the dog faces +x (toward the gate)
-        this.dogCard.mesh.scale.set(mir ? -w : w, hgt, 1); used.push(this.dogCard); ground(DOG, 1.0);
-        if (bark && Math.floor(t * 5) % 2 === 0) addFx("bark", 300, 300, (pp) => { for (const a of [-0.5, 0, 0.5]) pp.stroke([[150 + 60 * Math.cos(a), 150 + 60 * Math.sin(a)], [150 + 130 * Math.cos(a), 150 + 130 * Math.sin(a)]], 14); }, V(DOG[0] + 0.95, 0.9, DOG[2]), 0.5, 0.5);
+        // the dog trots up to the fence, sniffs, then barks at the stranger
+        const bark = t >= T("barks"), sniff = t >= T("dogs") - 0.1 && t < T("we");
+        const x = DOG[0] - 1.2 + Math.min(1.2, (t - T("rule", 3)) * 0.8);
+        this.dog.root.visible = true; this.dog.root.position.set(x, 0, DOG[2]);
+        this.dog.update(t, x < DOG[0] - 0.01 ? 1 : 0, bark && !sniff, sniff);
+        ground([x + 0.02, 0, DOG[2]], 1.0);
+        if (bark && !sniff && Math.floor(t * 5) % 2 === 0) addFx("bark", 300, 300, (pp) => { for (const a of [-0.5, 0, 0.5]) pp.stroke([[150 + 60 * Math.cos(a), 150 + 60 * Math.sin(a)], [150 + 130 * Math.cos(a), 150 + 130 * Math.sin(a)]], 14); }, V(x + 0.75, 0.85, DOG[2]), 0.45, 0.45);
       }
       if (t >= T("then") - 0.2) person("friend", FRIEND, FRIEND_O, { mode: "stand", expr: t >= T("smiles") ? "grin" : "neutral", facing: 1, wave: t >= T("morning", 2) ? 0.5 + 0.5 * Math.sin(t * 8) : undefined }, 30);
     }
