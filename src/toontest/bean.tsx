@@ -52,7 +52,8 @@ const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean
 };
 
 export type BeanPose = { armL?: [number, number]; armR?: [number, number]; legL?: number; legR?: number; lean?: number; bob?: number; tilt?: number };
-export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; expr?: Expr; open?: number; f: number; pose?: BeanPose; sweat?: boolean; flip?: boolean; shadow?: boolean; noEyes?: boolean; blind?: boolean }> = ({ x, y, s = 1, look, expr = "neutral", open = 0, f, pose = {}, sweat, flip, shadow = true, noEyes, blind }) => {
+export type Hold = { node: React.ReactNode; rot?: number; k?: number };
+export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; expr?: Expr; open?: number; f: number; pose?: BeanPose; sweat?: boolean; flip?: boolean; shadow?: boolean; noEyes?: boolean; blind?: boolean; holdR?: Hold; holdL?: Hold; lying?: boolean }> = ({ x, y, s = 1, look, expr = "neutral", open = 0, f, pose = {}, sweat, flip, shadow = true, noEyes, blind, holdR, holdL, lying }) => {
   const { armL = [12, 8], armR = [12, 8], legL = 4, legR = 4, lean = 0, bob = 0, tilt = 0 } = pose;
   const blink = f % 84 < 3;
   const hipY = -168, shY = -318, headY = -432;
@@ -62,16 +63,18 @@ export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; 
     return <g key={"l" + side}><path d={`M ${hx} ${hy} L ${fx} ${fy}`} stroke={look.limb} strokeWidth={13} strokeLinecap="round" />
       <ellipse cx={fx + side * 9} cy={fy - 2} rx={22} ry={11} fill={look.shoe} stroke={INK} strokeWidth={5} /></g>;
   };
-  const arm = (side: number, a: [number, number]) => {
+  // предмет в руке: рисуется в точке кисти (локальные единицы персонажа), rot — поворот относительно тела, k — масштаб
+  const arm = (side: number, a: [number, number], hold?: Hold) => {
     const [sx, sy] = [side * 58, shY];
     const [ex2, ey2] = go(sx, sy, side * a[0], 78);
     const [hx, hy] = go(ex2, ey2, side * (a[0] + a[1]), 72);
     return <g key={"a" + side}><path d={`M ${sx} ${sy} L ${ex2} ${ey2} L ${hx} ${hy}`} stroke={look.limb} strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      {hold ? <g transform={`translate(${hx} ${hy}) rotate(${(hold.rot ?? 0) * side}) scale(${hold.k ?? 1})`}>{hold.node}</g> : null}
       <circle cx={hx} cy={hy} r={13} fill={look.limb} /></g>;
   };
   const body = `M -62 ${shY - 20} Q -70 ${shY - 30} -50 ${shY - 34} L 50 ${shY - 34} Q 70 ${shY - 30} 64 ${shY - 18} Q 74 ${hipY - 60} 60 ${hipY + 4} Q 0 ${hipY + 26} -60 ${hipY + 4} Q -74 ${hipY - 60} -62 ${shY - 20} Z`;
   return (
-    <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s})`}>
+    <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s})${lying ? " rotate(-90) translate(-60 -40)" : ""}`}>
       {shadow ? <ellipse cx={0} cy={4} rx={95} ry={20} fill="rgba(40,30,90,0.35)" filter="url(#beanBlur)" /> : null}
       <g transform={`translate(0 ${-bob}) rotate(${lean} 0 ${hipY})`}>
         {leg(-1, legL)}{leg(1, legR)}
@@ -79,7 +82,7 @@ export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; 
         <path d={body} fill={look.body} stroke={INK} strokeWidth={7.5} strokeLinejoin="round" />
         <path d={`M 0 ${shY - 30} L 0 ${hipY + 14}`} stroke={look.body2} strokeWidth={6} />
         {look.pack ? [-1, 1].map((k) => <path key={k} d={`M ${k * 38} ${shY - 32} Q ${k * 46} ${shY + 30} ${k * 40} ${shY + 70}`} stroke="#c8961a" strokeWidth={10} fill="none" strokeLinecap="round" />) : null}
-        {arm(-1, armL)}{arm(1, armR)}
+        {arm(-1, armL, holdL)}{arm(1, armR, holdR)}
         <g transform={`translate(0 ${headY}) rotate(${tilt})`}>
           {look.hair ? <path d="M -90 -18 Q -96 -96 0 -98 Q 96 -96 90 -18 Q 40 -60 -90 -18 Z" fill={look.hair} stroke={INK} strokeWidth={7} /> : null}
           <ellipse cx={0} cy={0} rx={92} ry={86} fill={look.head} stroke={INK} strokeWidth={7.5} />
