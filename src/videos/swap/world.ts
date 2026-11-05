@@ -91,11 +91,11 @@ const build = () => {
   // seven a.m.: the alarm, the bed, the feet
   shot(0, "home", 12, mv([-4.25, 0.78, -3.15], [-4.27, 0.78, -3.2], [-4.5, 0.64, -3.6], [-4.5, 0.64, -3.6], 32, 0.02));
   shot(E("you", 1), "home", 0, mv([BED[0] + 0.15, 3.6, BED[2] + 0.9], [BED[0] + 0.12, 3.3, BED[2] + 0.75], BEDTOP, BEDTOP, 50, 0));
-  shot(E("feet"), "home", 10, mv([BED[0] + 0.7, 1.75, BED[2] + 2.5], [BED[0] + 0.65, 1.7, BED[2] + 2.4], [BED[0], 0.57, BED[2] + 1.15], [BED[0], 0.57, BED[2] + 1.15], 40, -0.03));
+  shot(E("feet"), "home", 10, mv([BED[0] + 0.35, 1.45, BED[2] + 2.1], [BED[0] + 0.33, 1.42, BED[2] + 2.0], [BED[0], 0.57, BED[2] + 0.9], [BED[0], 0.57, BED[2] + 0.9], 44, -0.03));
   shot(E("yesterday"), "home", 0, mv([BED[0] + 0.15, 3.6, BED[2] + 0.9], [BED[0] + 0.12, 3.4, BED[2] + 0.8], BEDTOP, BEDTOP, 50, 0.03));
   // every morning a new body
   shot(E("every"), "home", 8, mv([BED[0] + 2.2, 1.4, BED[2] + 4.2], [BED[0] + 2.0, 1.4, BED[2] + 3.8], [BED[0] + 0.9, 1.1, BED[2] + 1.5], [BED[0] + 0.9, 1.15, BED[2] + 1.5], 42));
-  shot(E("and", 2), "home", 0, mv([1.5, 2.6, 3.4], [1.2, 2.4, 3.0], [-2.6, 1.0, -1.4], [-2.6, 1.0, -1.4], 46, 0, true));
+  shot(E("and", 2), "home", 0, mv([-1.4, 2.4, 0.9], [-1.6, 2.3, 0.5], [-2.6, 1.0, -1.4], [-2.6, 1.05, -1.4], 46, 0, true));
   // rule one
   shot(E("rule", 1), "home", 8, mv([-1.6, 1.3, 1.8], [-1.8, 1.3, 1.6], [-2.8, 1.2, -0.6], [-2.8, 1.2, -0.6], 44, 0.04));
   shot(E("in", 2), "lab", 0, mvAt(LAB, [1.8, 1.7, 3.0], [1.5, 1.6, 2.6], [0, 1.0, 0], [0, 1.0, 0], 44, 0, true));
@@ -127,7 +127,7 @@ const build = () => {
   shot(E("morning", 2), "day", 9, mv(at(YARD, [-1.6, 1.4, -20.2]), at(YARD, [-1.7, 1.4, -20.4]), at(YARD, [-4.2, 1.1, -21.2]), at(YARD, [-4.2, 1.12, -21.2]), 42, -0.02));
   // seven a.m., again
   shot(E("seven", 2), "home", 0, mv([BED[0] + 0.15, 3.6, BED[2] + 0.9], [BED[0] + 0.12, 3.25, BED[2] + 0.75], BEDTOP, BEDTOP, 50, -0.02));
-  shot(E("feet", 2), "home", 10, mv([BED[0] - 0.7, 1.75, BED[2] + 2.5], [BED[0] - 0.65, 1.7, BED[2] + 2.4], [BED[0], 0.57, BED[2] + 1.15], [BED[0], 0.57, BED[2] + 1.15], 40, 0.03));
+  shot(E("feet", 2), "home", 10, mv([BED[0] - 0.35, 1.45, BED[2] + 2.1], [BED[0] - 0.33, 1.42, BED[2] + 2.0], [BED[0], 0.57, BED[2] + 0.9], [BED[0], 0.57, BED[2] + 0.9], 44, 0.03));
   shot(E("and", 5), "home", 10, mv([BED[0] + 0.05, 1.9, BED[2] - 0.05], [BED[0] + 0.04, 1.75, BED[2] - 0.2], [BED[0], 0.57, BED[2] - 0.62], [BED[0], 0.57, BED[2] - 0.62], 40, 0.02, true));
 };
 let built = false;
@@ -149,7 +149,7 @@ function heroAt(t: number): HeroPose | null {
   if (t < T("every")) {
     const short = t >= T("yesterday") - 0.05;
     const o = short ? SHORT : TALL, len = short ? 1.38 : 2.07;
-    const crown = BED[2] - 0.85;
+    const crown = BED[2] - 0.7;
     return { p: [BED[0], 0.575, crown + len], o, fo: { mode: "stand", expr: short ? "relief" : t < T("you", 1) + 0.3 ? "dazed" : "nervous", blink: t < T("you", 1) ? 1 : undefined }, lie: true };
   }
   if (t < T("rule", 1)) {
@@ -193,7 +193,7 @@ function heroAt(t: number): HeroPose | null {
     const z = greet ? -20.9 : -16.5 - (t - T("then")) * 1.2;
     return { p: at(YARD, [-4.1, 0, Math.max(-20.9, z)]), o: SHORT, fo: z > -20.9 && !greet ? { mode: "stroll", phase: t * 1.1, expr: "smile" } : { mode: "stand", expr: "grin", facing: -1 } };
   }
-  return { p: [BED[0], 0.575, BED[2] - 0.85 + 2.07], o: TALL, fo: { mode: "stand", expr: t >= T("mind") - 0.4 ? "grin" : "smile" }, lie: true };
+  return { p: [BED[0], 0.575, BED[2] - 0.7 + 2.07], o: TALL, fo: { mode: "stand", expr: t >= T("mind") - 0.4 ? "grin" : "smile" }, lie: true };
 }
 /** the face in the mirror: his own, until it starts to slip through other faces */
 const mirrorFace = (t: number, own: Outfit): Outfit => {
@@ -232,7 +232,7 @@ export class SwapWorld {
   private fog = new THREE.Fog("#efe4d4", 60, 600);
   private clouds: THREE.Mesh[] = [];
   private sunCache = new Map<number, THREE.Vector3>();
-  private quiltTall = P.quilt(-0.45, 1.0);
+  private quiltTall = P.quilt(-0.18, 1.0);
   private quiltShort = P.quilt(-0.45, 1.0);
   private clock = P.alarmClock();
   private brush = P.brush();
@@ -377,8 +377,8 @@ export class SwapWorld {
     });
     // alarm rings until he opens his eyes (and again at the end)
     const ring = t < T("you", 1) || (t >= T("seven", 2) && t < T("your", 7) - 0.2);
-    this.clock.rotation.set(0, 0.5, ring ? 0.08 * Math.sin(t * 70) : 0);
-    this.clock.position.y = 0.55 + (ring ? 0.006 * Math.abs(Math.sin(t * 70)) : 0);
+    this.clock.rotation.set(0, 0.5, ring ? 0.05 * Math.sin(t * 24) : 0);
+    this.clock.position.y = 0.55 + (ring ? 0.004 * Math.abs(Math.sin(t * 24)) : 0);
 
     // ---- cast ----
     const right = V(0, 0, 0).setFromMatrixColumn(cam.matrixWorld, 0);
