@@ -80,7 +80,7 @@ const Subs: React.FC<{ t: number }> = ({ t }) => {
   if (!c) return null;
   const pop = Math.min(1, (t - c.a) / 0.12);
   return (
-    <div style={{ position: "absolute", left: 60, right: 60, top: 1500, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0 26px",
+    <div style={{ position: "absolute", left: 60, right: 60, top: 1620, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0 26px",
       transform: `scale(${0.9 + 0.1 * pop})`, fontFamily: "Anton", fontSize: 100, lineHeight: 1.1, textTransform: "uppercase", letterSpacing: 1 }}>
       {c.toks.map((tk, i) => (
         <span key={i} style={{ color: t >= tk.t - 0.03 && t < (c.toks[i + 1]?.t ?? c.b) ? "#ffd84a" : "#ffffff",
