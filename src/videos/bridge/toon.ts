@@ -17,7 +17,7 @@ export type Build = "adult" | "stout" | "kid" | "tall";
 export type Outfit = {
   jacket: string; pants: string; boots: string; hat?: string | null; belt?: string | null; buttons?: string; rifle?: boolean;
   sash?: string; sword?: boolean; moustache?: string; skin?: string; head?: number; cap?: string; hair?: string; dress?: string;
-  build?: Build; pack?: string; limb?: string;
+  build?: Build; pack?: string; limb?: string; hatTilt?: number;
 };
 type P2 = [number, number];
 
@@ -350,7 +350,7 @@ const hatBehind = (p: Pen, o: Outfit, H: Blob, cx: number, hc: number, light: nu
 
 const hatOn = (p: Pen, o: Outfit, hp: P2[], H: Blob, cx: number, hc: number, light: number, seed: number, facing: number, side: boolean) => {
   const W = 2 * H.a, HH = 2 * H.b, u = W / 100, crown = hc - H.b, ow = 0.85 * 5 * u;
-  const a = H.rot + rad(4 * (rnd(seed, 20) - 0.5)); // tilt with the head, +-2 deg extra
+  const a = H.rot + rad(4 * (rnd(seed, 20) - 0.5)) + rad(o.hatTilt ?? 0); // tilt with the head, +-2 deg extra (+ worn crooked)
   const R = (pts: P2[]) => rotPts(pts, a, cx, hc);
   const sag = (yb: number, wb: number): P2[] => {
     const base: P2[] = [];
