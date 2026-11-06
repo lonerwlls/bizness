@@ -45,8 +45,8 @@ const SUN_OF: Record<Look, [number, number]> = { home: [60, 50], school: [55, 55
 
 // ---------------- layout ----------------
 const KTABLE: V3 = [1.5, 0, -1.9];                  // kitchen table (top 0.76); chairs behind it (toward -z) face +z
-const SEAT_A: V3 = [1.2, P.SEAT, -2.62];            // the copy's chair (the hero sits here in the last scenes too)
-const SEAT_B: V3 = [1.8, P.SEAT, -2.62];
+const SEAT_A: V3 = [1.05, P.SEAT, -2.62];            // the copy's chair (the hero sits here in the last scenes too)
+const SEAT_B: V3 = [1.95, P.SEAT, -2.62];
 const STOVE_MOM: V3 = [3.65, 0, -3.0];
 const DOOR_IN = (k: number): V3 => [lerp(3.4, 1.9, k), 0, lerp(1.2, -1.25, k)];   // walking in from the living room
 const DOOR_IN2 = (k: number): V3 => [lerp(3.9, 2.35, k), 0, lerp(1.4, -1.0, k)];
@@ -71,6 +71,8 @@ const HH = 2 * 118 * 0.94;
 const handY = (o: Outfit, sit = false) => { const B = o.build === "stout" ? [1.15, 1.32] : o.build === "tall" ? [1.25, 1.85] : [1.1, 1.4]; return ((sit ? 0.2 : B[1]) + B[0] - HOLD_DY) * HH * SU; };
 const headTop = (o: Outfit, sit = false) => { const B = o.build === "stout" ? [1.15, 1.32] : [1.1, 1.4]; return ((sit ? 0.2 : B[1]) + B[0] + 1.0) * HH * SU + (o.hat === "beanie" ? 0.07 : 0.02); };
 const OUT = 0.03;
+/** the slice is 22 cm long; its ends sit in the two reaching hands */
+const REACH = (Math.abs(1.95 - 1.05) / 2 - 0.11) / SU;
 
 // ---------------- the story by time ----------------
 type Where = "kitchen" | "table" | "pizza" | "stairs" | "gym" | "homework" | "detention" | "kitchen2";
@@ -111,8 +113,9 @@ function castAt(t: number): Pose[] {
   if (w === "pizza") {
     const grab = t >= T("grab") - 0.15, yell = t >= T("mine") - 0.1 && t < T("at", 1);
     const expr: Expr = yell ? "yell" : t >= T("at", 1) ? "stern" : grab ? "stern" : "grin";
-    out.push({ key: "you", p: SEAT_B, fo: { mode: "sit", expr, look: -0.5 }, sit: true, pointAt: grab ? "copy" : undefined });
-    out.push({ key: "copy", p: SEAT_A, fo: { mode: "sit", expr, look: 0.5 }, sit: true, pointAt: grab ? "you" : undefined });
+    // both grab the slice: each hand holds one end of it, just above the table
+    out.push({ key: "you", p: SEAT_B, fo: { mode: "sit", expr, look: -0.5, ...(grab ? { reach: REACH } : {}) }, sit: true, pointAt: grab ? "copy" : undefined });
+    out.push({ key: "copy", p: SEAT_A, fo: { mode: "sit", expr, look: 0.5, ...(grab ? { reach: REACH } : {}) }, sit: true, pointAt: grab ? "you" : undefined });
     return out;
   }
   if (w === "stairs") {
@@ -170,23 +173,23 @@ const build = () => {
   const walkIn = (a: number) => shot(a, "home", 4, mv([0.6, 1.8, 3.6], [0.65, 1.75, 3.3], [1.6, 1.0, -1.6], [1.6, 1.0, -1.6], 50, 0, true));
   // Saturday morning: somebody is eating your cereal
   walkIn(0);
-  shot(E("somebody", 1), "home", 10, mv([1.35, 1.25, -1.25], [1.33, 1.23, -1.32], [1.2, 1.05, -2.62], [1.2, 1.05, -2.62], 40, 0.02));
-  shot(E("looks"), "home", 10, mv([1.4, 1.3, -1.0], [1.38, 1.3, -1.1], [1.2, 1.15, -2.62], [1.2, 1.16, -2.62], 38, -0.02));
+  shot(E("somebody", 1), "home", 10, mv([1.2, 1.25, -1.25], [1.18, 1.23, -1.32], [1.05, 1.05, -2.62], [1.05, 1.05, -2.62], 40, 0.02));
+  shot(E("looks"), "home", 10, mv([1.25, 1.3, -1.0], [1.23, 1.3, -1.1], [1.05, 1.15, -2.62], [1.05, 1.16, -2.62], 38, -0.02));
   shot(E("it", 1), "home", 10, mv([1.75, 1.6, -0.15], [1.77, 1.6, -0.25], [1.9, 1.5, -1.25], [1.9, 1.52, -1.25], 38, 0.03));
-  shot(E("same", 1), "home", 12, mv([1.3, 1.05, -1.75], [1.28, 1.05, -1.8], [1.2, 0.9, -2.62], [1.2, 0.92, -2.62], 36, 0.02));
-  shot(E("same", 2), "home", 12, mv([1.3, 1.6, -1.8], [1.28, 1.6, -1.85], [1.2, 1.5, -2.62], [1.2, 1.52, -2.62], 36, -0.02));
+  shot(E("same", 1), "home", 12, mv([1.15, 1.05, -1.75], [1.13, 1.05, -1.8], [1.05, 0.9, -2.62], [1.05, 0.92, -2.62], 36, 0.02));
+  shot(E("same", 2), "home", 12, mv([1.15, 1.6, -1.8], [1.13, 1.6, -1.85], [1.05, 1.5, -2.62], [1.05, 1.52, -2.62], 36, -0.02));
   shot(E("same", 3), "home", 6, mv([1.0, 1.5, 1.0], [1.03, 1.5, 0.9], [1.55, 1.15, -1.9], [1.55, 1.15, -1.9], 46, 0.02));
   shot(E("and", 2), "home", 8, mv([1.05, 1.48, 0.8], [1.15, 1.45, 0.4], [1.55, 1.2, -1.9], [1.55, 1.2, -1.9], 46, 0, true));
   // rule one: the number
   shot(E("rule", 1), "home", 6, mv([1.5, 1.45, 0.2], [1.5, 1.4, 0.0], [1.5, 0.95, -2.62], [1.5, 0.95, -2.62], 44, 0, true));
-  shot(E("you", 5), "home", 10, mv([1.95, 1.3, -1.25], [1.93, 1.3, -1.3], [1.8, 1.3, -2.62], [1.8, 1.32, -2.62], 40, 0.02));
-  shot(E("he", 3), "home", 10, mv([1.05, 1.3, -1.25], [1.07, 1.3, -1.3], [1.2, 1.3, -2.62], [1.2, 1.32, -2.62], 40, -0.02));
-  shot(E("it", 3), "home", 8, mv([1.5, 1.3, -0.7], [1.5, 1.3, -0.8], [1.5, 1.15, -2.62], [1.5, 1.15, -2.62], 44, 0.02));
+  shot(E("you", 5), "home", 10, mv([2.1, 1.3, -1.25], [2.08, 1.3, -1.3], [1.95, 1.3, -2.62], [1.95, 1.32, -2.62], 40, 0.02));
+  shot(E("he", 3), "home", 10, mv([0.9, 1.3, -1.25], [0.92, 1.3, -1.3], [1.05, 1.3, -2.62], [1.05, 1.32, -2.62], 40, -0.02));
+  shot(E("it", 3), "home", 8, mv([1.5, 1.35, -0.35], [1.5, 1.35, -0.45], [1.5, 1.2, -2.62], [1.5, 1.2, -2.62], 46, 0.02));
   // rule two: the last slice
   shot(E("rule", 2), "home", 6, mv([2.3, 1.7, 0.0], [2.2, 1.65, -0.2], [1.5, 0.85, -2.3], [1.5, 0.85, -2.3], 44, 0, true));
   shot(E("one", 2), "home", 14, mv([1.75, 1.35, -1.15], [1.73, 1.32, -1.2], [1.5, 0.8, -1.8], [1.5, 0.8, -1.8], 38, 0.02));
   shot(E("grab"), "home", 8, mv([1.5, 1.2, -0.85], [1.5, 1.2, -0.95], [1.5, 1.0, -2.5], [1.5, 1.0, -2.5], 44, -0.02));
-  shot(E("you", 8), "home", 10, mv([1.5, 1.35, -1.2], [1.5, 1.35, -1.28], [1.5, 1.3, -2.62], [1.5, 1.31, -2.62], 44, 0.03));
+  shot(E("you", 8), "home", 10, mv([1.5, 1.3, -0.55], [1.5, 1.3, -0.63], [1.5, 1.15, -2.62], [1.5, 1.16, -2.62], 46, 0.03));
   shot(E("at", 1), "home", 6, mv([2.4, 1.5, -0.3], [2.35, 1.5, -0.4], [1.5, 1.05, -2.5], [1.5, 1.05, -2.5], 44, -0.02));
   // rule three: socks on the stairs
   shot(E("rule", 3), "home", 4, mv([3.3, 1.75, -2.9], [3.4, 1.7, -2.7], [5.0, 1.2, 1.2], [5.0, 1.2, 1.2], 50, 0, true));
@@ -199,13 +202,13 @@ const build = () => {
   shot(E("and", 3), "school", 0, mvAt(GYM, [2.0, 2.2, 4.6], [1.8, 2.1, 4.1], [-0.2, 1.2, -1.0], [-0.2, 1.2, -1.0], 46, 0, true));
   shot(E("basketball"), "school", 6, mvAt(GYM, [0.6, 1.4, 2.8], [0.5, 1.4, 2.6], [0, 1.2, -0.4], [0, 1.25, -0.4], 46, 0.02));
   shot(E("two", 2), "school", 8, mvAt(GYM, [-1.3, 1.2, 2.0], [-1.2, 1.25, 1.85], [0.3, 1.5, -0.6], [0.3, 1.55, -0.6], 44, -0.03));
-  shot(E("homework"), "home", 8, mv([1.5, 1.5, -0.6], [1.5, 1.45, -0.75], [1.5, 0.95, -2.5], [1.5, 0.95, -2.5], 44, 0.02));
-  shot(E("half", 1), "home", 12, mv([1.5, 1.5, -0.95], [1.5, 1.48, -1.02], [1.5, 0.9, -2.2], [1.5, 0.9, -2.2], 44, -0.02));
+  shot(E("homework"), "home", 8, mv([1.5, 1.6, -0.2], [1.5, 1.55, -0.35], [1.5, 1.0, -2.4], [1.5, 1.0, -2.4], 50, 0.02));
+  shot(E("half", 1), "home", 12, mv([1.5, 1.55, -0.75], [1.5, 1.53, -0.82], [1.5, 0.85, -2.2], [1.5, 0.85, -2.2], 52, -0.02));
   shot(E("detention"), "school", 4, mvAt(CLASS, [-0.8, 2.0, -3.5], [-0.8, 1.95, -3.2], [-0.8, 0.9, 0.6], [-0.8, 0.9, 0.6], 58, 0, true));
   shot(E("also"), "school", 10, mvAt(CLASS, [-1.45, 1.45, -0.7], [-1.47, 1.45, -0.6], [-1.6, 1.2, 0.5], [-1.6, 1.21, 0.5], 40, 0.02));
   // next Saturday: three of you
   walkIn(E("next"));
-  shot(E("somebody", 2), "home", 10, mv([1.35, 1.25, -1.25], [1.33, 1.23, -1.32], [1.2, 1.05, -2.62], [1.2, 1.05, -2.62], 40, -0.02));
+  shot(E("somebody", 2), "home", 10, mv([1.2, 1.25, -1.25], [1.18, 1.23, -1.32], [1.05, 1.05, -2.62], [1.05, 1.05, -2.62], 40, -0.02));
   shot(E("you", 15), "home", 8, mv([2.25, 1.55, 0.6], [2.24, 1.55, 0.5], [2.15, 1.45, -1.1], [2.15, 1.47, -1.1], 46, 0.02));
   shot(E("there"), "home", 4, mv([0.6, 1.8, 3.6], [0.7, 1.75, 3.2], [1.6, 1.0, -1.6], [1.6, 1.0, -1.6], 50, 0, true));
 };
@@ -480,7 +483,12 @@ export class CopyWorld {
       const grab = t >= T("grab") - 0.15;
       this.slice.visible = true;
       if (!grab) { this.slice.position.set(KTABLE[0] + 0.02, 0.775, KTABLE[2] + 0.1); this.slice.rotation.set(0, 0.3, 0); }
-      else { const tug = 0.03 * Math.sin(t * 9); this.slice.position.set(KTABLE[0] + tug, P.SEAT + 0.55, SEAT_A[2] + 0.12); this.slice.rotation.set(0, 0, 0); }
+      else {
+        // held between the two hands (hand height of a seated "hold2"), a little toward the lens like any held prop
+        const y = yaws.get("you") ?? 0, n = V(Math.sin(y), 0, Math.cos(y));
+        this.slice.position.set((SEAT_A[0] + SEAT_B[0]) / 2, P.SEAT + handY(HERO, true) - 0.01, SEAT_A[2]).addScaledVector(n, OUT);
+        this.slice.rotation.set(0, 0, 0);
+      }
     }
     if (where === "homework") this.notes.forEach((nb, k) => { nb.visible = true; nb.position.set((k ? SEAT_B : SEAT_A)[0], 0.76, KTABLE[2] - 0.15); nb.rotation.set(0, k ? -0.1 : 0.12, 0); });
     if (where === "table") {
