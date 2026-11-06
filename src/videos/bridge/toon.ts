@@ -475,6 +475,8 @@ export type FrontOpts = {
   prop?: Prop; tilt?: number; headTilt?: number; wave?: number;
   /** "hold2": distance of each hand from the middle (default HOLD_DX); small = gripping a phone by its edges */
   holdDx?: number;
+  /** point one arm straight out toward canvas left (-1) or right (1) */
+  point?: -1 | 1;
   /** canvas angle the key light comes FROM (painted crescent + thick outline side) */
   light?: number; facing?: -1 | 0 | 1; seed?: number;
 };
@@ -573,6 +575,12 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
   if (prop === "hold2" && mode !== "fall") { // both hands forward at chest height, 65 units either side of the middle (a held page/envelope sits between them)
     arms.length = 0;
     for (const side of [-1, 1]) { const S = sh(side); arms.push({ pts: [S, [tcx + side * (1.1 * T.a + 2 * u), S[1] + 0.42 * HH], [300 + side * (opts.holdDx ?? HOLD_DX), chin + HOLD_DY * HH]], front: true }); }
+  }
+  if (opts.point && mode !== "fall") { // one arm straight out to the side (-1 = canvas left, 1 = right), pointing; the other hangs
+    const d = opts.point, S = sh(d);
+    arms.length = 0;
+    arms.push({ pts: hang(-d, 0), front: false });
+    arms.push({ pts: [S, [tcx + d * (1.05 * T.a + 30 * u), S[1] + 0.1 * HH], [tcx + d * (1.05 * T.a + 66 * u), S[1] + 0.04 * HH]], front: true });
   }
   const drawArm = (a: Arm) => { p.stroke(curve(a.pts[0], a.pts[1], a.pts[2]), 5.2 * u, armCol); p.dot(a.pts[2][0], a.pts[2][1], 5.5 * u); };
   // behind the body: rifle, sword, arms
