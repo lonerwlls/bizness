@@ -25,7 +25,7 @@ par_last = [re.findall(r"[\w$]+(?:[-.,][\w]+)*", l)[-1] for l in txt.split("\n")
 # проверка распознаванием: слева от паузы последнее слово предложения целиком, справа — первое слово следующего целиком
 from faster_whisper import WhisperModel
 wm = WhisperModel("medium", device="cpu", compute_type="int8")
-SYN = {"vpn": "впн", "вэпээн": "впн", "google": "гугл", "youtube": "ютуб"}
+SYN = {"vpn": "впн", "вэпээн": "впн", "google": "гугл", "youtube": "ютуб", "ip": "айпи", "cookie": "куки"}
 nrm = lambda t: [SYN.get(q, q) for q in (re.sub(r"[^а-яa-z0-9]", "", w.lower().replace("ё", "е")) for w in t.replace("-", " ").split()) if q]
 def hear(a, b):
     a, b = max(0.0, a), min(len(x) / SR, b)
