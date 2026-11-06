@@ -53,7 +53,7 @@ const DOOR_IN2 = (k: number): V3 => [lerp(3.9, 2.35, k), 0, lerp(1.4, -1.0, k)];
 const SOFA: V3 = [-2.5, 0, 3.3];
 const TV: V3 = [-2.5, 0, 0.55];
 const STAIRS: V3 = [5.55, 0, 0.9];                  // bottom step front edge; rises toward +z (x 5.05 .. 6.05)
-const MOM_STAIRS: V3 = [4.85, 0, 0.3];
+const MOM_STAIRS: V3 = [4.1, 0, 0.35];
 const POINT_A: V3 = [3.75, 0, -0.75], POINT_B: V3 = [4.45, 0, -0.75];
 const CLASS: V3 = [3000, 0, 0];
 const GYM: V3 = [-3000, 0, 0];
@@ -190,11 +190,11 @@ const build = () => {
   shot(E("at", 1), "home", 6, mv([2.4, 1.5, -0.3], [2.35, 1.5, -0.4], [1.5, 1.05, -2.5], [1.5, 1.05, -2.5], 44, -0.02));
   // rule three: socks on the stairs
   shot(E("rule", 3), "home", 4, mv([3.3, 1.75, -2.9], [3.4, 1.7, -2.7], [5.0, 1.2, 1.2], [5.0, 1.2, 1.2], 50, 0, true));
-  shot(E("mom", 1), "home", 10, mv([4.9, 1.55, -0.9], [4.92, 1.55, -1.0], [5.3, 1.45, 0.35], [5.3, 1.47, 0.35], 40, 0.02));
+  shot(E("mom", 1), "home", 10, mv([4.15, 1.5, -0.6], [4.17, 1.5, -0.65], [4.1, 1.4, 0.35], [4.1, 1.42, 0.35], 46, 0.02));
   shot(E("socks"), "home", 12, mv([5.75, 1.0, 0.1], [5.73, 0.98, 0.05], [5.55, 0.45, 1.3], [5.55, 0.45, 1.3], 40, -0.02));
   shot(E("you", 10), "home", 6, mv([4.1, 1.45, -3.0], [4.1, 1.45, -2.85], [4.1, 1.2, -0.75], [4.1, 1.2, -0.75], 44, 0.02));
   shot(E("he", 5), "home", 8, mv([4.6, 1.5, -2.4], [4.58, 1.5, -2.3], [4.2, 1.25, -0.75], [4.2, 1.25, -0.75], 42, -0.02));
-  shot(E("mom", 2), "home", 6, mv([4.4, 1.6, -3.1], [4.4, 1.6, -2.9], [4.6, 1.15, 0.0], [4.6, 1.15, 0.0], 48, 0.02));
+  shot(E("mom", 2), "home", 6, mv([4.1, 1.5, -2.9], [4.1, 1.5, -2.75], [4.1, 1.1, 0.35], [4.1, 1.1, 0.35], 46, 0.02));
   // the last rule: unstoppable
   shot(E("and", 3), "school", 0, mvAt(GYM, [2.0, 2.2, 4.6], [1.8, 2.1, 4.1], [-0.2, 1.2, -1.0], [-0.2, 1.2, -1.0], 46, 0, true));
   shot(E("basketball"), "school", 6, mvAt(GYM, [0.6, 1.4, 2.8], [0.5, 1.4, 2.6], [0, 1.2, -0.4], [0, 1.25, -0.4], 46, 0.02));
@@ -358,7 +358,7 @@ export class CopyWorld {
     b.add(boxGeo(V(o[0] - 4.2, 0, 4.0), V(o[0] + 4.2, 3.2, 4.12)), wall);
     b.add(boxGeo(V(o[0] - 4.32, 0, -4.2), V(o[0] - 4.2, 3.2, 4.2)), wall);
     b.add(boxGeo(V(o[0] + 4.2, 0, -4.2), V(o[0] + 4.32, 3.2, 4.2)), wall);
-    b.add(boxGeo(V(o[0] - 4.2, 3.2, -4.2), V(o[0] + 4.2, 3.35, 4.2)), lam("ceilM", () => ({ color: "#f4f1ea" })));
+    b.add(boxGeo(V(o[0] - 4.2, 3.2, -4.2), V(o[0] + 4.2, 3.35, 4.2), 0, true), lam("ceilM", () => ({ color: "#f4f1ea" })));
     for (const z of [-2.2, 0.4, 3.0]) { const w = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.5), new THREE.MeshBasicMaterial({ map: skyWin(), color: new THREE.Color(1.15, 1.15, 1.15) })); w.position.set(o[0] - 4.19, 1.7, z); w.rotation.y = Math.PI / 2; R.add(w); }
     this.place(b, C.blackboard(), add3(o, [0, 0, -3.97]));
     this.place(b, P.teacherDesk(), add3(o, [-1.9, 0, -2.7]));
@@ -487,7 +487,8 @@ export class CopyWorld {
       // comic bubbles beside the heads, kept inside the frame, 1.2 m from the lens
       const label = (m: THREE.Mesh, p: V3, dx: number) => {
         const ndc = V(p[0], p[1] + headTop(HERO, true) + 0.15, p[2]).project(cam);
-        const x = THREE.MathUtils.clamp(ndc.x + dx, -0.55, 0.55), y = THREE.MathUtils.clamp(ndc.y, -0.2, 0.5);
+        const top = V(p[0], p[1] + headTop(HERO, true) + 0.05, p[2]).project(cam).y;
+        const x = THREE.MathUtils.clamp(ndc.x + dx, -0.55, 0.55), y = THREE.MathUtils.clamp(Math.max(ndc.y, top + 0.2), -0.2, 0.78);
         const dir = V(x, y, 0.5).unproject(cam).sub(cam.position).normalize();
         m.visible = true; m.position.copy(cam.position).addScaledVector(dir, 1.2); m.quaternion.copy(cam.quaternion);
         m.scale.setScalar(0.9 * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)) / Math.tan(THREE.MathUtils.degToRad(20)));
