@@ -86,6 +86,10 @@ const STUDENTS: Outfit[] = [
   { jacket: "#5d7a3a", pants: "#3b3f52", boots: INK, hat: "hair", hair: "#b07a3a", skin: HEAD },
 ];
 const HH = 2 * 118 * 0.94;
+/** hands grip the 7.5 cm phone by its edges: hand centres 2.8 cm outside each edge (design units) */
+const PHONE_DX = 27;
+/** how far in front of the body card the held phone sits (small, so hands and phone stay together off-axis) */
+const PHONE_OUT = 0.025;
 /** height of the "hold2" hands above the card's base point (standing: the sole; sitting: the seat) */
 const handY = (o: Outfit, sit = false) => {
   const B = o.build === "stout" ? [1.15, 1.32] : [1.1, 1.4];
@@ -119,7 +123,7 @@ const girlAt = (t: number): { p: V3; walking: boolean } => {
 type HeroPose = { p: V3; fo: FrontOpts; lie?: boolean; sit?: boolean; phone?: boolean };
 function heroAt(t: number): HeroPose {
   const w = whereAt(t);
-  const stand = (p: V3, expr: Expr, extra: Partial<FrontOpts> = {}, phone = false): HeroPose => ({ p, fo: { mode: "stand", expr, ...extra, prop: phone ? "hold2" : extra.prop }, phone });
+  const stand = (p: V3, expr: Expr, extra: Partial<FrontOpts> = {}, phone = false): HeroPose => ({ p, fo: { mode: "stand", expr, ...extra, prop: phone ? "hold2" : extra.prop, holdDx: phone ? PHONE_DX : undefined }, phone });
   if (w === "bed") {
     const ring = t >= T("next") - 0.1;
     let expr: Expr = "smile_closed", blink: number | undefined = 1;
@@ -135,11 +139,11 @@ function heroAt(t: number): HeroPose {
     if (t >= T("you", 2)) expr = "smile";
     if (t >= T("gum")) expr = "shock";
     if (t >= T("on", 1)) expr = "pained";
-    return { p: s.p, fo: s.walking ? { mode: "stroll", phase: t * 1.1, expr, prop: "hold2" } : { mode: "stand", expr, prop: "hold2", look: t >= T("on", 1) ? 0 : undefined }, phone: true };
+    return { p: s.p, fo: s.walking ? { mode: "stroll", phase: t * 1.1, expr, prop: "hold2", holdDx: PHONE_DX } : { mode: "stand", expr, prop: "hold2", holdDx: PHONE_DX, look: t >= T("on", 1) ? 0 : undefined }, phone: true };
   }
   if (w === "sofa") {
     const expr: Expr = t >= T("did") + 0.1 ? "stern" : t >= T("the", 2) ? "neutral" : "grin";
-    return { p: SEATS[1], fo: { mode: "sit", expr, prop: "hold2" }, sit: true, phone: true };
+    return { p: SEATS[1], fo: { mode: "sit", expr, prop: "hold2", holdDx: PHONE_DX }, sit: true, phone: true };
   }
   if (w === "party") {
     if (t < T("you", 3)) return stand([2.5, 0, 1.45], t >= T("it", 5) ? "neutral" : "smile", {}, true);
@@ -147,7 +151,7 @@ function heroAt(t: number): HeroPose {
   }
   if (w === "class") {
     const d = DESKS[HERO_DESK];
-    if (t < T("you", 5)) return { p: [d[0], P.SEAT, d[2] + 0.5], fo: { mode: "sit", expr: t >= T("question") ? "grin" : "smile" }, sit: true, phone: t >= T("pop") - 0.3 };
+    if (t < T("you", 5)) return { p: [d[0], P.SEAT, d[2] + 0.5], fo: { mode: "sit", expr: t >= T("question") ? "grin" : "smile", ...(t >= T("pop") - 0.3 ? { prop: "hold2" as const, holdDx: PHONE_DX } : {}) }, sit: true, phone: t >= T("pop") - 0.3 };
     return stand([d[0], 0, d[2] + 0.92], "grin", { wave: 1 });
   }
   if (w === "hall") {
@@ -199,7 +203,7 @@ const mvAt = (o: V3, p0: V3, p1: V3, l0: V3, l1: V3, fov: number, roll = 0, ease
 /** close on the phone in the hero's hands: the camera hangs in front of it (dx sideways) and follows */
 const onPhone = (dist: number, dx = 0.03, roll = 0, dir = 1) => (u: number, f: number): Cam => {
   const h = heroAt(f / FPS), y = h.p[1] + handY(HERO, h.sit);
-  const c: V3 = [h.p[0], y, h.p[2] + 0.07 * dir];
+  const c: V3 = [h.p[0], y, h.p[2] + PHONE_OUT * dir];
   return { pos: [c[0] + dx, y + 0.07 - 0.01 * u, c[2] + dir * (dist - 0.02 * u)], look: c, fov: 34, roll };
 };
 /** follow the hero: camera offset from his position, looking at a point offset from it */
@@ -588,7 +592,7 @@ export class FutureWorld {
       if (h.phone && yaw !== null && yaw !== undefined) {
         const n = V(Math.sin(yaw), 0, Math.cos(yaw));
         this.phone.root.visible = true;
-        this.phone.root.position.copy(V(...h.p)).add(V(0, handY(HERO, h.sit), 0)).addScaledVector(n, 0.07);
+        this.phone.root.position.copy(V(...h.p)).add(V(0, handY(HERO, h.sit), 0)).addScaledVector(n, PHONE_OUT);
         this.phone.root.rotation.set(-0.2, yaw, 0, "YXZ");
       }
     }
