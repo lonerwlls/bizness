@@ -10,7 +10,7 @@ import { BlendFunction, BloomEffect, ToneMappingEffect, ToneMappingMode } from "
 import { InkPass, noInkFallback } from "../bridge/ink";
 import { LensBlur } from "../bridge/lensblur";
 import { GradeEffect, GRADES, GRADE_STRENGTH, gradeFor } from "../bridge/grade";
-import { AirWorld, TOTAL, layersAt, dofAt } from "./air";
+import { AirWorld, TOTAL, layersAt, dofAt, lightAt } from "./air";
 
 export const PLANE_FRAMES = TOTAL;
 const makeBloom = () => {
@@ -37,7 +37,7 @@ const Inner: React.FC<{ id: number }> = ({ id }) => {
   cam.getWorldDirection(fwd);
   fx.lens.focus = Math.max(0.3, target.clone().sub(cam.position).dot(fwd));
   fx.lens.cInf = dofAt(f).cInf;
-  gradeFor(fx.grade, "day");
+  gradeFor(fx.grade, lightAt(f) === "golden" ? "day" : "day"); void lightAt;
   return (
     <>
       <primitive object={world.root} dispose={null} />
