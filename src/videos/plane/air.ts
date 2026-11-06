@@ -10,7 +10,6 @@ import { LIGHTS, LOOK } from "../bridge/lights";
 import { TONE, CHAR, untone } from "../bridge/shade";
 import { NOINK } from "../bridge/ink";
 import { Pool, Actor, Fx } from "../bridge/cast";
-import { VOICE_ENV } from "./voice";
 
 export const FPS = 30;
 export const TOTAL = 1635;
@@ -480,7 +479,7 @@ export const lightAt = (f: number): Light => shotAt(f).light ?? "day";
 export const layersAt = (f: number): { id: number; alpha: number }[] => [{ id: shotAt(f).id, alpha: 1 }];
 const KICKS = [31, 287, 399, 702, 925, 1291, 1418];
 const kick = (f: number) => {
-  for (const k of KICKS) { const d = f - k; if (d >= 0 && d < 7) return (d % 2 ? -1 : 1) * 0.05 * (1 - d / 7); }
+  for (const k of KICKS) { const d = f - k; if (d >= 0 && d < 7) return (Math.floor(d) % 2 ? -1 : 1) * 0.05 * (1 - d / 7); }
   return 0;
 };
 export const camAt = (id: number, f: number): Cam => {
@@ -824,9 +823,9 @@ export class AirWorld {
     // ---- cast: our hero ----
     const right = V(0, 0, 0).setFromMatrixColumn(cam.matrixWorld, 0);
     const L2D = Math.round(Math.atan2(-sunDir.y, sunDir.dot(right)) / (Math.PI / 4)) * (Math.PI / 4);
-    const lid = (seed: number) => { const k = (f + seed * 37) % 70; return k < 4 ? [0.5, 1, 1, 0.5][k] : 0; };
-    const env = VOICE_ENV[Math.min(VOICE_ENV.length - 1, f)] ?? 0;
-    const talk = env > 0.28 && (f >> 1) % 3 !== 0;
+    const lid = (seed: number) => { const k = Math.floor(f + seed * 37) % 70; return k < 4 ? [0.5, 1, 1, 0.5][k] : 0; };
+    // the narration is a voice-over: the hero never lip-syncs it (user's rule)
+    const talk = false;
     const used: Actor[] = [];
     let ai = 0;
     const people: { p: THREE.Vector3; fo: FrontOpts; flip?: boolean; scale?: number; yaw?: number }[] = [];

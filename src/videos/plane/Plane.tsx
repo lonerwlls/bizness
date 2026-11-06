@@ -10,9 +10,12 @@ import { BlendFunction, BloomEffect, ToneMappingEffect, ToneMappingMode } from "
 import { InkPass, noInkFallback } from "../bridge/ink";
 import { LensBlur } from "../bridge/lensblur";
 import { GradeEffect, GRADES, GRADE_STRENGTH, gradeFor } from "../bridge/grade";
-import { AirWorld, TOTAL, layersAt, dofAt, lightAt } from "./air";
+import { AirWorld, layersAt, dofAt, lightAt } from "./air";
+import { WARP } from "./warp";
+/** storyboard frame (air.ts SHOTS) for an output frame: the shots follow the words of the current voice-over */
+const story = (f: number) => WARP[Math.min(WARP.length - 1, Math.max(0, f))];
 
-export const PLANE_FRAMES = TOTAL;
+export const PLANE_FRAMES = WARP.length;
 const makeBloom = () => {
   const b = new BloomEffect({ blendFunction: BlendFunction.ADD, intensity: 0.5, luminanceThreshold: 1.0, luminanceSmoothing: 0.2, mipmapBlur: true, levels: 6, radius: 0.6 });
   const mip = b.mipmapBlurPass, setSize = mip.setSize.bind(mip);
@@ -21,7 +24,7 @@ const makeBloom = () => {
 };
 const fwd = new THREE.Vector3();
 const Inner: React.FC<{ id: number }> = ({ id }) => {
-  const f = useCurrentFrame();
+  const f = story(useCurrentFrame());
   const { camera, scene } = useThree();
   const world = useMemo(() => new AirWorld(), []);
   const fx = useMemo(() => ({
@@ -60,7 +63,7 @@ const ShotView: React.FC<{ id: number; alpha: number }> = ({ id, alpha }) => (
   </AbsoluteFill>
 );
 export const PlaneTest: React.FC = () => {
-  const f = useCurrentFrame();
+  const f = story(useCurrentFrame());
   return (
     <AbsoluteFill style={{ background: "#cfe3f2" }}>
       {layersAt(f).map((l, i) => <ShotView key={i ? "over" : "base"} id={l.id} alpha={l.alpha} />)}

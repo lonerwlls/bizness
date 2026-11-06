@@ -1,10 +1,13 @@
-# Звук шортса «самолёт 400 тонн» (~54.5 с): озвучка Fish Audio + музыка + звуки по сценам (тайминги = кадры/30 из air.ts).
+# Звук шортса «самолёт 400 тонн»: озвучка Fish Audio + музыка + звуки по сценам (кадры раскладки air.ts -> время новой озвучки через warp_anchors.json).
 import os, sys, subprocess
 import numpy as np
 sys.path.insert(0, os.path.dirname(__file__))
 from sfx import *  # noqa
-D = 1635 / 30
-F = lambda f: f / 30
+import json
+_A = json.load(open("public/plane/warp_anchors.json"))  # [(new voice s, storyboard s)]
+_X = np.array([a[0] for a in _A]); _Y = np.array([a[1] for a in _A])
+F = lambda f: float(np.interp(f / 30, _Y, _X))  # storyboard frame -> time in the current voice-over
+D = float(_X[-1])
 raw = subprocess.run(["ffmpeg", "-v", "error", "-i", "public/plane/voice.wav", "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True).stdout
 voice = np.frombuffer(raw, np.float32).astype(float); voice /= np.max(np.abs(voice)) + 1e-9
 
@@ -40,16 +43,16 @@ add(roar(2.6, 0.75), F(124), 0.15, -0.4)
 add(engine(1.3, 1.6), F(160), 0.1)
 # ---- в небе: ветер, потоки ----
 def windb(d, g=1.0): n = int(d * SR); return norm(filt(noise(d), 500, 4500)) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.7 * t(n))) * env(n, 0.3, 0.5) * g
-add(windb(F(309 - 193)), F(193), 0.08)
+add(windb((F(309) - F(193))), F(193), 0.08)
 add(whoosh(0.8, 600, 6000), F(193), 0.14, -0.4)
 add(whoosh(0.7, 300, 2500), F(221), 0.15, 0.3)
 add(riser(0.9), F(260), 0.09)
 add(whoosh(0.6, 500, 6000), F(283), 0.16); add(boom(1.2), F(287), 0.15)
 # ---- машина и ладонь ----
-add(engine(F(434 - 309), 0.8), F(309), 0.07)
-n = int(F(434 - 345) * SR); add(norm(filt(noise(F(434 - 345)), 300, 3000)) * env(n, 0.4, 0.4), F(345), 0.09)
+add(engine((F(434) - F(309)), 0.8), F(309), 0.07)
+n = int((F(434) - F(345)) * SR); add(norm(filt(noise((F(434) - F(345))), 300, 3000)) * env(n, 0.4, 0.4), F(345), 0.09)
 add(whoosh(0.6, 400, 5000), F(397), 0.16); add(ping(988, 0.5, 6), F(399), 0.07); add(laugh(4, 420), F(402), 0.1)
-add(windb(F(507 - 434)), F(434), 0.07); add(whoosh(0.7, 300, 3000), F(474), 0.12)
+add(windb((F(507) - F(434))), F(434), 0.07); add(whoosh(0.7, 300, 3000), F(474), 0.12)
 # ---- модель крыла ----
 add(click(2200, 0.03, 200), F(507), 0.1)
 for a in np.arange(F(555), F(605), 0.42): add(whoosh(0.35, 800, 6000), a, 0.05)
@@ -64,11 +67,11 @@ add(whoosh(0.6, 300, 2500), F(908), 0.12)
 add(boom(1.3), F(925), 0.28); add(crunch(), F(925), 0.2); add(thud(55, 0.5), F(925), 0.35)
 add(laugh(5, 380), F(1018), 0.12)
 # ---- двигатели только толкают ----
-add(engine(F(1105 - 1047), 1.2), F(1047), 0.08)
+add(engine((F(1105) - F(1047)), 1.2), F(1047), 0.08)
 add(roar(1.6, 0.4), F(1105), 0.12, 0.3)
 # ---- 1982: пепел ----
-add(windb(F(1655 - 1155), 0.8)[:int(F(1456 - 1155) * SR)], F(1155), 0.07)
-add(engine(F(1291 - 1155), 1.4), F(1155), 0.05)
+add(windb(F(1456) - F(1155), 0.8), F(1155), 0.07)
+add(engine((F(1291) - F(1155)), 1.4), F(1155), 0.05)
 for a in np.arange(F(1256), F(1291), 0.11): add(click(4000, 0.02, 400), a + 0.05 * rng.random(), 0.06, rng.uniform(-0.7, 0.7))
 add(boom(1.5), F(1291), 0.22); add(powerdown(1.2), F(1291), 0.18)
 for a in (F(1300), F(1320), F(1336)): add(thud(70, 0.3), a, 0.12)
