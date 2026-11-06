@@ -72,7 +72,14 @@ def heart():
         for dd, g in ((0, 1.0), (0.16, 0.7)):
             a = int((k * 0.36 + dd) * SR); s_ = thud(55, 0.2) * g; o[a:a + len(s_)] += s_[: len(o) - a]
     return norm(o)
-SND = dict(whisper=whisper, heart=heart, scrub=lambda: scrub(1.2), engine=lambda: engine(1.6),thud=lambda: thud(90, 0.25), pop=pop, punch=punch, splash=splash, fire=fire, groan=groan, ring=ring, knock=knock, sparkle=sparkle, boing=boing, cheer=cheer, twang=twang,
+def buzz(d=1.0):
+    x = t(int(d * SR)); return norm(np.sign(np.sin(2 * np.pi * 150 * x)) * (np.sin(2 * np.pi * 3 * x) > 0)) * 0.6
+def horn(d=1.0):
+    x = t(int(d * SR)); return norm(filt(np.sign(np.sin(2 * np.pi * 400 * x)) + np.sign(np.sin(2 * np.pi * 500 * x)), 200, 3000)) * env(len(x), 0.02, 0.1)
+def squawk():
+    x = t(int(0.5 * SR)); f = 1400 - 800 * x
+    return norm(filt(np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) + rng.standard_normal(len(x)) * 0.4, 600, 4000)) * env(len(x), 0.01, 0.3)
+SND = dict(buzz=buzz, horn=horn, squawk=squawk, whisper=whisper, heart=heart, scrub=lambda: scrub(1.2), engine=lambda: engine(1.6),thud=lambda: thud(90, 0.25), pop=pop, punch=punch, splash=splash, fire=fire, groan=groan, ring=ring, knock=knock, sparkle=sparkle, boing=boing, cheer=cheer, twang=twang,
            chomp=chomp, whoosh=lambda: whoosh(0.5, 400, 3500), boom=lambda: boom(1.4), crunch=crunch, chirp=chirp, bark=bark, squeal=lambda: squeal(0.6),
            drone=lambda: norm(filt(rng.standard_normal(int(3 * SR)), 60, 300)) * env(int(3 * SR), 1, 1))
 

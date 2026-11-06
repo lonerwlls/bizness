@@ -247,7 +247,8 @@ export const Town: React.FC<{ cam: Cam; f: number; sun?: [number, number]; child
 
 // ---------- спальня героя ----------
 export const CEIL = GY - 820;
-export const Room: React.FC<{ cam: Cam; f: number; children?: React.ReactNode; xray?: number; win?: boolean }> = ({ cam, f, children, xray = 0, win = true }) => (
+export type RoomKind = "bed" | "kitchen" | "bath";
+export const Room: React.FC<{ cam: Cam; f: number; children?: React.ReactNode; xray?: number; win?: boolean; kind?: RoomKind; handle?: boolean }> = ({ cam, f, children, xray = 0, win = true, kind = "bed", handle = true }) => (
   <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{ position: "absolute", inset: 0 }}>
     <Defs />
     <Layer cam={cam} d={1}>
@@ -277,6 +278,7 @@ export const Room: React.FC<{ cam: Cam; f: number; children?: React.ReactNode; x
         <path d={`M 1300 ${CEIL + 600} L 1100 ${GY} L 1900 ${GY} L 1780 ${CEIL + 600} Z`} fill="#ffd88a" opacity={0.18} style={{ mixBlendMode: "screen" }} />
         <Glow x={1560} y={CEIL + 400} r={360} g="gO" o={0.7} />
       </g> : null}
+      {kind === "bath" ? <g>{Array.from({ length: 60 }, (_, i) => <rect key={i} x={-900 + (i % 20) * 140} y={GY - 420 + Math.floor(i / 20) * 140} width={140} height={140} fill={(i + Math.floor(i / 20)) % 2 ? "#5ad8c8" : "#8ae8dc"} stroke={INK} strokeWidth={4} />)}</g> : null}
       {/* постер-волна (без надписей) */}
       <rect x={-260} y={CEIL + 200} width={220} height={280} fill="#5ad8c8" stroke={INK} strokeWidth={7} />
       <path d={`M -240 ${CEIL + 400} q 50 -60 100 0 q 50 60 80 -10`} stroke="#fff0f8" strokeWidth={14} fill="none" strokeLinecap="round" />
@@ -286,8 +288,9 @@ export const Room: React.FC<{ cam: Cam; f: number; children?: React.ReactNode; x
       {Array.from({ length: 30 }, (_, i) => <path key={i} d={`M ${-1500 + i * 170} ${GY} L ${-1500 + i * 170} ${GY + 700}`} stroke={INK} strokeWidth={4} opacity={0.35 * (1 - xray)} />)}
       <rect x={-1500} y={GY} width={5000} height={16} fill="#b07a4a" opacity={1 - xray} />
       {xray > 0 ? <g opacity={xray}><Under f={f} /></g> : null}
-      <Bed x={250} />
-      <Nightstand x={900} />
+      {kind === "bath" ? <BathSet /> : null}
+      <Door x={2050} handle={handle} />
+      {kind === "bed" ? <><Bed x={250} /><Nightstand x={900} /></> : kind === "kitchen" ? <KitchenSet /> : null}
       {children}
     </Layer>
   </svg>
@@ -404,28 +407,199 @@ export const Thought: React.FC<{ x: number; y: number; s?: number; icon: "clock"
 export const Toothbrush: React.FC = () => (
   <g><rect x={-8} y={-110} width={16} height={110} rx={6} fill="#5ad8c8" stroke={INK} strokeWidth={4} /><rect x={-14} y={-140} width={28} height={34} rx={6} fill="#fff" stroke={INK} strokeWidth={4} /></g>
 );
-export const Dog: React.FC<{ x: number; y: number; f: number; bark?: boolean; flip?: boolean; s?: number }> = ({ x, y, f, bark, flip, s = 1 }) => {
-  const b = bark ? Math.max(0, Math.sin(f * 0.5)) : 0;
+export const Dog: React.FC<{ x: number; y: number; f: number; bark?: boolean; flip?: boolean; s?: number; c?: string }> = ({ x, y, f, bark, flip, s = 1, c = "#e8a050" }) => {
+  const b = bark ? Math.max(0, Math.sin(f * 0.45)) : 0; // открытая пасть
+  const wag = Math.sin(f * 0.6) * 14;
+  const leg = (lx: number, back: boolean, ph: number) => (
+    <g key={lx}>
+      <path d={`M ${lx} -70 L ${lx + Math.sin(f * 0.1 + ph) * 2} -8`} stroke={INK} strokeWidth={30} strokeLinecap="round" />
+      <path d={`M ${lx} -70 L ${lx + Math.sin(f * 0.1 + ph) * 2} -8`} stroke={back ? "#c8803a" : c} strokeWidth={18} strokeLinecap="round" />
+      <ellipse cx={lx + 10} cy={-4} rx={22} ry={11} fill="#fff0e0" stroke={INK} strokeWidth={5} />
+    </g>
+  );
   return (
     <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s})`}>
-      <ellipse cx={0} cy={4} rx={120} ry={16} fill="rgba(40,30,90,0.35)" />
-      {[-70, -40, 40, 70].map((k) => <path key={k} d={`M ${k} -50 L ${k} 0`} stroke={INK} strokeWidth={18} strokeLinecap="round" />)}
-      {[-70, -40, 40, 70].map((k) => <path key={"i" + k} d={`M ${k} -50 L ${k} -4`} stroke="#e8a050" strokeWidth={9} strokeLinecap="round" />)}
-      <path d={`M -100 -90 Q -150 ${-150 + Math.sin(f * 0.6) * 20} -130 -170`} stroke={INK} strokeWidth={18} fill="none" strokeLinecap="round" />
-      <path d={`M -100 -90 Q -150 ${-150 + Math.sin(f * 0.6) * 20} -130 -170`} stroke="#e8a050" strokeWidth={9} fill="none" strokeLinecap="round" />
-      <ellipse cx={0} cy={-80} rx={110} ry={50} fill="#e8a050" stroke={INK} strokeWidth={7} />
-      <g transform={`translate(100 -130) rotate(${-b * 12})`}>
-        <ellipse cx={0} cy={0} rx={62} ry={54} fill="#e8a050" stroke={INK} strokeWidth={7} />
-        <path d="M -40 -30 Q -70 10 -50 50 Q -26 20 -20 -20 Z" fill="#8a4a2a" stroke={INK} strokeWidth={6} />
-        <ellipse cx={52} cy={12 + b * 4} rx={36} ry={24 + b * 6} fill="#fff0e0" stroke={INK} strokeWidth={6} />
-        <circle cx={80} cy={2} r={10} fill={INK} />
-        <circle cx={20} cy={-16} r={9} fill={INK} /><circle cx={23} cy={-19} r={3} fill="#fff" />
-        {b > 0.3 ? <path d="M 40 30 Q 60 50 80 30" stroke={INK} strokeWidth={5} fill="#d84a6a" /> : null}
+      <ellipse cx={0} cy={4} rx={140} ry={16} fill="rgba(40,30,90,0.35)" />
+      {leg(-80, true, 0)}{leg(60, true, 1)}
+      {/* хвост */}
+      <g transform={`translate(-112 -110) rotate(${-30 + wag})`}>
+        <path d="M 0 0 Q -20 -50 -6 -96" stroke={INK} strokeWidth={26} fill="none" strokeLinecap="round" />
+        <path d="M 0 0 Q -20 -50 -6 -96" stroke={c} strokeWidth={14} fill="none" strokeLinecap="round" />
       </g>
-      {b > 0.3 ? [0, 1, 2].map((i) => <path key={i} d={`M ${200 + i * 26} ${-160 + i * 30} l 40 ${-14 + i * 14}`} stroke={INK} strokeWidth={8} strokeLinecap="round" />) : null}
+      {/* тело */}
+      <path d="M -125 -120 Q -130 -165 -80 -165 L 70 -165 Q 125 -165 125 -110 Q 125 -62 80 -60 L -80 -60 Q -128 -62 -125 -120 Z" fill={c} stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+      <path d="M 60 -150 Q 110 -140 104 -90 Q 92 -66 64 -66 Q 40 -100 60 -150 Z" fill="#fff0e0" />
+      <ellipse cx={-30} cy={-140} rx={34} ry={18} fill="#c8803a" />
+      {leg(-50, false, 2)}{leg(90, false, 3)}
+      {/* голова */}
+      <g transform={`translate(120 -185) rotate(${-b * 10})`}>
+        <path d="M -10 -10 Q 20 -110 -20 -120 Q -40 -60 -40 -20 Z" fill="#8a4a2a" stroke={INK} strokeWidth={6} strokeLinejoin="round" transform="translate(-24 4)" />
+        <ellipse cx={0} cy={-40} rx={66} ry={60} fill={c} stroke={INK} strokeWidth={7} />
+        {/* морда */}
+        <path d={`M 30 -46 Q 110 -50 112 -18 Q 112 0 80 2 L 30 2 Z`} fill="#fff0e0" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+        <path d={`M 34 6 Q 70 ${14 + b * 34} 100 ${6 + b * 18} L 100 4 L 34 4 Z`} fill="#fff0e0" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+        {b > 0.2 ? <path d={`M 50 8 Q 70 ${12 + b * 30} 88 8 Z`} fill="#d84a6a" stroke={INK} strokeWidth={4} /> : null}
+        <ellipse cx={110} cy={-30} rx={15} ry={12} fill={INK} /><circle cx={106} cy={-34} r={4} fill="#fff" />
+        <circle cx={22} cy={-58} r={10} fill={INK} /><circle cx={25} cy={-61} r={3.5} fill="#fff" />
+        <path d={`M 8 -80 Q 22 ${-90 - b * 6} 36 -80`} stroke={INK} strokeWidth={5} fill="none" strokeLinecap="round" />
+        {/* висячее ухо */}
+        <path d={`M -40 -86 Q -10 -96 -6 -70 Q -10 -20 -38 ${-6 + Math.sin(f * 0.3) * 4} Q -60 -40 -40 -86 Z`} fill="#8a4a2a" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+        {/* ошейник */}
+        <path d="M -44 4 Q 0 24 40 8" stroke={INK} strokeWidth={20} fill="none" strokeLinecap="round" />
+        <path d="M -44 4 Q 0 24 40 8" stroke="#ff4a6a" strokeWidth={10} fill="none" strokeLinecap="round" />
+        <circle cx={0} cy={28} r={11} fill={YEL} stroke={INK} strokeWidth={4} />
+      </g>
+      {b > 0.3 ? [0, 1, 2].map((i) => <path key={i} d={`M ${260 + i * 8} ${-240 + i * 40} l 46 ${-18 + i * 18}`} stroke={INK} strokeWidth={8} strokeLinecap="round" />) : null}
     </g>
   );
 };
+
+// ---------- предметы части 2 ----------
+export const Door: React.FC<{ x: number; handle?: boolean }> = ({ x, handle = true }) => (
+  <g>
+    <rect x={x - 16} y={GY - 600} width={292} height={600} fill="#fff0f8" stroke={INK} strokeWidth={7} />
+    <rect x={x} y={GY - 584} width={260} height={584} fill="#c87a4a" stroke={INK} strokeWidth={7} />
+    <rect x={x + 30} y={GY - 550} width={200} height={220} rx={10} fill="#a85a3a" stroke={INK} strokeWidth={5} />
+    <rect x={x + 30} y={GY - 300} width={200} height={260} rx={10} fill="#a85a3a" stroke={INK} strokeWidth={5} />
+    <rect x={x + 6} y={GY - 236} width={30} height={60} rx={8} fill="#8a8aa8" stroke={INK} strokeWidth={5} />
+    {handle ? <DoorHandle x={x + 22} y={GY - 206} /> : <circle cx={x + 22} cy={GY - 206} r={8} fill={INK} />}
+  </g>
+);
+export const DoorHandle: React.FC<{ x: number; y: number; rot?: number }> = ({ x, y, rot = 0 }) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot})`}><circle r={16} fill={YEL} stroke={INK} strokeWidth={5} /><rect x={-4} y={-12} width={70} height={22} rx={11} fill={YEL} stroke={INK} strokeWidth={5} /></g>
+);
+export const Sink: React.FC<{ x: number; crack?: number }> = ({ x, crack = 0 }) => (
+  <g transform={`translate(${x} ${GY}) scale(0.65) translate(${-x} ${-GY})`}>
+    <rect x={x - 26} y={GY - 300} width={52} height={300} fill="#fff4f0" stroke={INK} strokeWidth={7} />
+    <g transform={`rotate(${-crack * 8} ${x - 10} ${GY - 300})`}><path d={`M ${x - 170} ${GY - 330} L ${x} ${GY - 330} L ${x} ${GY - 250} Q ${x - 140} ${GY - 250} ${x - 170} ${GY - 300} Z`} fill="#ffffff" stroke={INK} strokeWidth={7} strokeLinejoin="round" /></g>
+    <g transform={`rotate(${crack * 8} ${x + 10} ${GY - 300})`}><path d={`M ${x} ${GY - 330} L ${x + 170} ${GY - 330} Q ${x + 140} ${GY - 250} ${x} ${GY - 250} Z`} fill="#ffffff" stroke={INK} strokeWidth={7} strokeLinejoin="round" /></g>
+    {crack > 0 ? <path d={`M ${x} ${GY - 332} l -8 20 l 12 18 l -10 22 l 8 22`} stroke={INK} strokeWidth={5} fill="none" /> : null}
+    <path d={`M ${x + 40} ${GY - 330} L ${x + 40} ${GY - 380} L ${x - 10} ${GY - 380}`} stroke="#b8b4d0" strokeWidth={14} fill="none" strokeLinecap="round" />
+    <path d={`M ${x + 40} ${GY - 330} L ${x + 40} ${GY - 380} L ${x - 10} ${GY - 380}`} stroke={INK} strokeWidth={3} fill="none" />
+    <rect x={x - 130} y={GY - 640} width={260} height={220} rx={110} fill="#bff4ff" stroke={INK} strokeWidth={8} />
+    <path d={`M ${x - 70} ${GY - 590} L ${x - 20} ${GY - 620} M ${x - 80} ${GY - 550} L ${x + 10} ${GY - 600}`} stroke="#fff" strokeWidth={10} strokeLinecap="round" />
+  </g>
+);
+export const BathSet: React.FC = () => (
+  <g>
+    <rect x={-700} y={GY - 260} width={600} height={260} rx={40} fill="#ffffff" stroke={INK} strokeWidth={8} />
+    <rect x={-680} y={GY - 240} width={560} height={30} rx={14} fill="#8ae8dc" stroke={INK} strokeWidth={5} />
+  </g>
+);
+export const KitchenSet: React.FC = () => (
+  <g>
+    {/* шкафчики и столешница */}
+    <rect x={-700} y={GY - 300} width={1200} height={300} fill="#ff8fb0" stroke={INK} strokeWidth={7} />
+    {[0, 1, 2, 3].map((i) => <g key={i}><rect x={-680 + i * 295} y={GY - 270} width={270} height={250} rx={8} fill="#ff9ac0" stroke={INK} strokeWidth={5} /><rect x={-560 + i * 295} y={GY - 200} width={30} height={10} rx={5} fill={INK} /></g>)}
+    <rect x={-720} y={GY - 320} width={1240} height={30} fill="#fff4f0" stroke={INK} strokeWidth={7} />
+    {[0, 1, 2].map((i) => <rect key={"u" + i} x={-680 + i * 380} y={CEIL + 140} width={340} height={200} rx={8} fill="#ff9ac0" stroke={INK} strokeWidth={6} />)}
+    {/* холодильник */}
+    <rect x={540} y={GY - 640} width={240} height={640} rx={20} fill="#9fdcff" stroke={INK} strokeWidth={7} />
+    <path d={`M 540 ${GY - 420} L 780 ${GY - 420}`} stroke={INK} strokeWidth={6} />
+    <rect x={740} y={GY - 560} width={16} height={90} rx={8} fill="#fff" stroke={INK} strokeWidth={4} /><rect x={740} y={GY - 380} width={16} height={120} rx={8} fill="#fff" stroke={INK} strokeWidth={4} />
+    {/* стол */}
+    <rect x={950} y={GY - 250} width={440} height={30} rx={10} fill="#c87a4a" stroke={INK} strokeWidth={7} />
+    {[980, 1340].map((k) => <rect key={k} x={k} y={GY - 222} width={24} height={222} fill="#a85a3a" stroke={INK} strokeWidth={5} />)}
+  </g>
+);
+export const Bowl: React.FC<{ x: number; y: number; full?: number }> = ({ x, y, full = 0 }) => (
+  <g transform={`translate(${x} ${y})`}>
+    {full > 0 ? <ellipse cx={0} cy={-34} rx={66} ry={14 + full * 10} fill="#ffd27a" stroke={INK} strokeWidth={4} /> : null}
+    {full > 0 ? [-30, -5, 20, 40].map((k, i) => <circle key={k} cx={k} cy={-40 - full * 10 + (i % 2) * 6} r={9} fill="#f0a040" stroke={INK} strokeWidth={3} />) : null}
+    <path d="M -76 -36 Q -70 10 0 12 Q 70 10 76 -36 Z" fill="#5ad8c8" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+  </g>
+);
+export const CerealBox: React.FC<{ x: number; y: number; rot?: number }> = ({ x, y, rot = 0 }) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+    <rect x={-50} y={-170} width={100} height={170} fill="#ff6a5a" stroke={INK} strokeWidth={6} />
+    <circle cx={0} cy={-100} r={30} fill={YEL} stroke={INK} strokeWidth={5} /><rect x={-36} y={-150} width={72} height={18} rx={6} fill="#fff4f0" stroke={INK} strokeWidth={4} />
+  </g>
+);
+export const MilkCarton: React.FC<{ x: number; y: number; rot?: number }> = ({ x, y, rot = 0 }) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+    <rect x={-40} y={-140} width={80} height={140} fill="#ffffff" stroke={INK} strokeWidth={6} />
+    <path d="M -40 -140 L 0 -180 L 40 -140 Z" fill="#9fdcff" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+    <rect x={-40} y={-90} width={80} height={40} fill="#7ab8ff" />
+  </g>
+);
+export const MilkSpray: React.FC<{ x: number; y: number; p: number; dir?: number }> = ({ x, y, p, dir = 1 }) => (
+  <g>{Array.from({ length: 34 }, (_, i) => {
+    const t = Math.min(1, Math.max(0, p - i * 0.6) / 14);
+    if (t <= 0) return null;
+    const ang = -0.25 + (i % 7) * 0.08, v = 900 + (i % 5) * 160;
+    return <ellipse key={i} cx={x + dir * Math.cos(ang) * v * t} cy={y + Math.sin(ang) * v * t + 500 * t * t} rx={22 + (i % 3) * 8} ry={14} fill="#ffffff" stroke={INK} strokeWidth={4} />;
+  })}</g>
+);
+export const Phone: React.FC<{ crack?: boolean; on?: boolean; rot?: number }> = ({ crack, on = true, rot = 0 }) => (
+  <g transform={`rotate(${rot})`}>
+    <rect x={-32} y={-60} width={64} height={120} rx={12} fill="#262838" stroke={INK} strokeWidth={5} />
+    <rect x={-24} y={-48} width={48} height={92} rx={4} fill={on && !crack ? "#5ae0ff" : "#1a1a3a"} />
+    {on && !crack ? <><rect x={-16} y={-36} width={32} height={10} rx={4} fill="#fff" opacity={0.8} /><circle cx={0} cy={10} r={12} fill="#ff6fb5" /></> : null}
+    {crack ? <path d="M -24 -30 L -4 -6 L -18 10 L 6 24 L -6 44 M -4 -6 L 20 -20 M 6 24 L 24 30" stroke="#ffffff" strokeWidth={4} fill="none" /> : null}
+  </g>
+);
+export const Puff: React.FC<{ x: number; y: number; p: number; s?: number }> = ({ x, y, p, s = 1 }) => p <= 0 || p > 1 ? null : (
+  <g transform={`translate(${x} ${y}) scale(${s})`} opacity={1 - p}>{Array.from({ length: 8 }, (_, i) => { const a = i / 8 * Math.PI * 2; return <circle key={i} cx={Math.cos(a) * 120 * p} cy={Math.sin(a) * 80 * p} r={30 + 30 * p} fill="#f0e8ff" stroke={INK} strokeWidth={5} />; })}</g>
+);
+export const Car: React.FC<{ x: number; y: number; s?: number; c: string; rot?: number; flip?: boolean; lights?: boolean }> = ({ x, y, s = 1, c, rot = 0, flip, lights = true }) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${(flip ? -1 : 1) * s} ${s})`}>
+    <ellipse cx={0} cy={2} rx={170} ry={14} fill="rgba(10,6,30,0.45)" />
+    <path d="M -155 -30 L -155 -72 Q -150 -88 -122 -90 L -72 -92 Q -40 -142 10 -142 L 60 -142 Q 92 -140 112 -98 L 140 -92 Q 158 -88 158 -70 L 158 -30 Z" fill={c} stroke={INK} strokeWidth={6.5} strokeLinejoin="round" />
+    <path d="M -58 -94 Q -32 -130 6 -130 L 6 -94 Z" fill="#9fdcff" stroke={INK} strokeWidth={5} strokeLinejoin="round" />
+    <path d="M 20 -130 L 56 -130 Q 80 -128 96 -94 L 20 -94 Z" fill="#9fdcff" stroke={INK} strokeWidth={5} strokeLinejoin="round" />
+    <path d="M -150 -58 L 154 -58" stroke={INK} strokeWidth={4} opacity={0.5} />
+    <rect x={142} y={-80} width={18} height={14} rx={5} fill="#fff2c0" stroke={INK} strokeWidth={4} />
+    <rect x={-160} y={-80} width={14} height={14} rx={4} fill="#ff3a4a" stroke={INK} strokeWidth={4} />
+    {lights ? <><Glow x={152} y={-73} r={60} g="gW" /><Glow x={-154} y={-73} r={45} g="gR" /></> : null}
+    {[-95, 95].map((k) => <g key={k}><circle cx={k} cy={-28} r={30} fill="#1c1a2a" stroke={INK} strokeWidth={6} /><circle cx={k} cy={-28} r={12} fill="#b8b4d0" /></g>)}
+  </g>
+);
+export const Gull: React.FC<{ x: number; y: number; f: number; s?: number; cry?: boolean; fly?: boolean }> = ({ x, y, f, s = 1, cry, fly }) => {
+  const w = fly ? Math.sin(f * 0.5) * 30 : 0, o = cry ? 0.5 + 0.5 * Math.sin(f * 0.8) : 0;
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {!fly ? [-14, 14].map((k) => <path key={k} d={`M ${k} -10 L ${k} 30`} stroke="#ffb040" strokeWidth={8} strokeLinecap="round" />) : null}
+      <ellipse cx={0} cy={-50} rx={70} ry={44} fill="#ffffff" stroke={INK} strokeWidth={6} />
+      <path d={`M -30 -60 Q -100 ${-90 - w} -150 ${-60 - w * 2} Q -90 -40 -30 -40 Z`} fill="#c8c8e0" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+      <circle cx={60} cy={-100} r={36} fill="#ffffff" stroke={INK} strokeWidth={6} />
+      <circle cx={70} cy={-108} r={6} fill={INK} />
+      <path d={`M 90 -100 L 140 ${-104 - o * 10} L 92 -90 Z`} fill="#ffb040" stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+      <path d={`M 90 -92 L 136 ${-80 + o * 16} L 92 -86 Z`} fill="#ffb040" stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+    </g>
+  );
+};
+// скелет «рентгеном» (рост как у Bean при s)
+export const Skeleton: React.FC<{ x: number; y: number; s?: number; f: number; a?: number }> = ({ x, y, s = 1, f, a = 0 }) => {
+  const p = Math.sin(f * 0.25 + a);
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}><Glow x={0} y={-250} r={260} g="gC" o={0.35} />
+    <g stroke="#e8fbff" strokeLinecap="round" fill="none">
+      <path d={`M -20 -170 L ${-20 + p * 40} 0 M 20 -170 L ${20 - p * 40} 0`} strokeWidth={14} />
+      <path d="M -50 -170 Q 0 -150 50 -170" strokeWidth={14} />
+      <path d="M 0 -170 L 0 -330" strokeWidth={14} />
+      {[0, 1, 2, 3].map((i) => <path key={i} d={`M -50 ${-310 + i * 30} Q 0 ${-290 + i * 30} 50 ${-310 + i * 30}`} strokeWidth={9} />)}
+      <path d={`M -56 -320 L ${-90 - p * 20} -200 M 56 -320 L ${90 + p * 20} -200`} strokeWidth={12} />
+      <circle cx={0} cy={-420} r={78} fill="#e8fbff" stroke="none" />
+      <circle cx={-26} cy={-430} r={20} fill="#0a2a5a" stroke="none" /><circle cx={26} cy={-430} r={20} fill="#0a2a5a" stroke="none" />
+      <path d="M -24 -376 L 24 -376" stroke="#0a2a5a" strokeWidth={8} />
+    </g></g>
+  );
+};
+export const TV: React.FC<{ x: number; y: number; children?: React.ReactNode }> = ({ x, y, children }) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={-30} y={0} width={60} height={60} fill="#3a2a6a" stroke={INK} strokeWidth={6} />
+    <rect x={-150} y={56} width={300} height={24} rx={10} fill="#3a2a6a" stroke={INK} strokeWidth={6} />
+    <rect x={-300} y={-360} width={600} height={370} rx={22} fill="#262838" stroke={INK} strokeWidth={8} />
+    <clipPath id="tvclip"><rect x={-276} y={-336} width={552} height={322} rx={10} /></clipPath>
+    <g clipPath="url(#tvclip)"><rect x={-276} y={-336} width={552} height={322} fill="#3a4ab8" />{children}</g>
+    <Glow x={0} y={-170} r={420} g="gC" o={0.35} />
+  </g>
+);
+export const Bubble: React.FC<{ x: number; y: number; r?: number; f: number }> = ({ x, y, r = 60, f }) => (
+  <g><circle cx={x} cy={y} r={r * (1 + 0.03 * Math.sin(f * 0.3))} fill="#bff4ff" fillOpacity={0.25} stroke="#ffffff" strokeWidth={5} />
+    <path d={`M ${x - r * 0.5} ${y - r * 0.3} Q ${x - r * 0.4} ${y - r * 0.6} ${x - r * 0.1} ${y - r * 0.65}`} stroke="#ffffff" strokeWidth={6} fill="none" strokeLinecap="round" />
+    <Glow x={x} y={y} r={r * 1.6} g="gP" o={0.3} /></g>
+);
 
 // ---------- переход между частями: вспышка солнечного света ----------
 export const Flare: React.FC<{ p: number }> = ({ p }) => {

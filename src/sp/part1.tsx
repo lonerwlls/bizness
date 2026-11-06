@@ -66,9 +66,9 @@ export const P1 = makePart(V, [
     <rect x={1080} y={300} width={460} height={420} fill="#ffe9a0" />
     <g clipPath="url(#nwin)">
       <rect x={1080} y={620} width={460} height={100} fill="#5ad8c8" stroke={INK} strokeWidth={6} />
-      <Bean x={1310} y={900} s={0.8} look={LOOKS[0]} f={f} expr="talk" open={0.4} pose={{ armR: [130, 100] }} />
-      <g transform={`translate(${1190 + Math.sin(f * 1.4) * 14} 596) rotate(90)`}><Toothbrush /></g>
-      {[0, 1, 2].map((i) => <circle key={i} cx={1300 + Math.sin(f * 0.3 + i) * 12} cy={606 + i * 8} r={10} fill="#ffffff" stroke={INK} strokeWidth={4} />)}
+      <Bean x={1310} y={900} s={0.8} look={LOOKS[0]} f={f} expr="talk" open={0.35} pose={{ armR: [100, 102], armL: [20, 10], tilt: Math.sin(f * 1.4) * 2 }} />
+      <g transform={`translate(${1396 + Math.sin(f * 1.4) * 6} 582) rotate(-95) scale(0.55)`}><Toothbrush /></g>
+      {[0, 1, 2].map((i) => <circle key={i} cx={1322 + Math.sin(f * 0.3 + i) * 8} cy={596 + i * 7} r={8} fill="#ffffff" stroke={INK} strokeWidth={3} />)}
     </g>
     <Glow x={1310} y={510} r={320} g="gY" o={0.4} />
     <rect x={1080} y={300} width={460} height={420} fill="none" stroke={INK} strokeWidth={10} />
@@ -77,7 +77,7 @@ export const P1 = makePart(V, [
   </Town> },
   { at: "dog", s: (g, f, len) => <Town cam={camLerp(g, len, C(900, 640, 1.15), C(960, 650, 1.25))} f={f}>
     <Dog x={900} y={GY + 20} f={f} bark s={1.1} />
-    <SoundRings x={1150} y={GY - 160} f={f} c="#ffd23c" n={3} />
+    <SoundRings x={1400} y={GY - 210} f={f} c="#ffd23c" n={3} />
   </Town> },
   { at: "boat", s: (g, f, len) => <Bay cam={camLerp(g, len, C(1600, 650, 1.6), C(1700, 650, 1.7))} f={f} boats={false} promenade={false}>
     <Boat x={1700 - g * 3} y={820} f={f} puffs s={1.1} c="#ff6a5a" />
