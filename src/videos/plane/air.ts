@@ -255,10 +255,10 @@ const buildAirport = (R: THREE.Object3D) => {
   const grass = lam("airGrass", () => ({ map: rep(grassHD(), 160, 160) }));
   // the grass always loses the depth test to the apron/runway lying on it (no green flicker on far shots)
   grass.polygonOffset = true; grass.polygonOffsetFactor = 6; grass.polygonOffsetUnits = 6;
-  const ground = new THREE.PlaneGeometry(9000, 9000).rotateX(-Math.PI / 2);
+  const ground = new THREE.PlaneGeometry(9000, 9000, 180, 180).rotateX(-Math.PI / 2); // small cells: huge triangles get dropped near the lens
   b.add(ground, grass, new THREE.Matrix4().makeTranslation(0, 0, 2500));
   // runway (60 m wide, z -500 .. 4300), threshold piano keys
-  const rw = new THREE.PlaneGeometry(60, 4800).rotateX(-Math.PI / 2);
+  const rw = new THREE.PlaneGeometry(60, 4800, 6, 480).rotateX(-Math.PI / 2);
   const asph = lam("runway", () => ({ map: rep(asphaltTex(), 1, 20) }));
   b.add(rw, asph, new THREE.Matrix4().makeTranslation(RX, 0.07, 1900));
   const paint = lam("rwPaint", () => ({ color: "#f1efe8" }));
@@ -268,11 +268,11 @@ const buildAirport = (R: THREE.Object3D) => {
   }
   // apron + taxiway
   const apron = lam("apron", () => ({ map: rep(apronTex(), 12, 14) }));
-  b.add(new THREE.PlaneGeometry(260, 300).rotateX(-Math.PI / 2), apron, new THREE.Matrix4().makeTranslation(-40, 0.02, 10));
-  b.add(new THREE.PlaneGeometry(70, 30).rotateX(-Math.PI / 2), apron, new THREE.Matrix4().makeTranslation(RX - 55, 0.02, -60));
+  b.add(new THREE.PlaneGeometry(260, 300, 26, 30).rotateX(-Math.PI / 2), apron, new THREE.Matrix4().makeTranslation(-40, 0.02, 10));
+  b.add(new THREE.PlaneGeometry(70, 30, 7, 3).rotateX(-Math.PI / 2), apron, new THREE.Matrix4().makeTranslation(RX - 55, 0.02, -60));
   const yellow = lam("taxiLine", () => ({ color: "#f2c230" }));
-  b.add(new THREE.PlaneGeometry(0.5, 280).rotateX(-Math.PI / 2), yellow, new THREE.Matrix4().makeTranslation(0, 0.08, 10));
-  b.add(new THREE.PlaneGeometry(150, 0.5).rotateX(-Math.PI / 2), yellow, new THREE.Matrix4().makeTranslation(70, 0.08, -60));
+  b.add(new THREE.PlaneGeometry(0.5, 280, 1, 28).rotateX(-Math.PI / 2), yellow, new THREE.Matrix4().makeTranslation(0, 0.08, 10));
+  b.add(new THREE.PlaneGeometry(150, 0.5, 15, 1).rotateX(-Math.PI / 2), yellow, new THREE.Matrix4().makeTranslation(70, 0.08, -60));
   // runway edge lights
   const lampM = lam("rwLamp", () => ({ color: "#ffe9a8", emissive: "#ffd060", emissiveIntensity: 0.6 }));
   for (let z = -480; z < 1600; z += 30) for (const s of [-1, 1]) b.add(boxGeo(V(RX + s * 31.5 - 0.2, 0, z - 0.2), V(RX + s * 31.5 + 0.2, 0.45, z + 0.2)), lampM);
@@ -688,8 +688,8 @@ export class AirWorld {
     buildAirport(R);
     // service road beyond the runway (the car drives here)
     const rb = new Batch();
-    rb.add(new THREE.PlaneGeometry(8, 2400).rotateX(-Math.PI / 2), lam("roadM", () => ({ map: rep(apronTex(), 1, 60), color: "#8a8c94" })), new THREE.Matrix4().makeTranslation(ROAD_X, 0.07, 700));
-    rb.add(new THREE.PlaneGeometry(0.25, 2400).rotateX(-Math.PI / 2), lam("roadLine", () => ({ color: "#f1efe8" })), new THREE.Matrix4().makeTranslation(ROAD_X, 0.11, 700));
+    rb.add(new THREE.PlaneGeometry(8, 2400, 1, 240).rotateX(-Math.PI / 2), lam("roadM", () => ({ map: rep(apronTex(), 1, 60), color: "#8a8c94" })), new THREE.Matrix4().makeTranslation(ROAD_X, 0.07, 700));
+    rb.add(new THREE.PlaneGeometry(0.25, 2400, 1, 240).rotateX(-Math.PI / 2), lam("roadLine", () => ({ color: "#f1efe8" })), new THREE.Matrix4().makeTranslation(ROAD_X, 0.11, 700));
     rb.build(R);
     this.parts = buildPlane(this.inner, this.gear);
     this.inner.add(this.gear);
