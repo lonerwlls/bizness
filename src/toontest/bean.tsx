@@ -13,15 +13,19 @@ const D = Math.PI / 180;
 const go = (x: number, y: number, a: number, l: number): [number, number] => [x + Math.sin(a * D) * l, y + Math.cos(a * D) * l];
 
 // лицо: центр головы (0,0), голова rx 92 ry 86
-const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean; noEyes?: boolean }> = ({ expr, open, blink, sweat, noEyes }) => {
+const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean; noEyes?: boolean; blind?: boolean }> = ({ expr, open, blink, sweat, noEyes, blind }) => {
   const ey = -4, ex = 30;
   const brow = (s: number) => {
+    // слепой: брови высоко, «домиком» (внутренние концы выше) — испуг и растерянность
+    if (blind) return <path key={"b" + s} d={`M ${s * ex - 16 * s} ${ey - 50} Q ${s * ex} ${ey - 44} ${s * ex + 16 * s} ${ey - 34}`} stroke={INK} strokeWidth={6.5} fill="none" strokeLinecap="round" />;
     const t = expr === "smirk" ? (s < 0 ? -9 : 5) : expr === "shock" ? 7 : expr === "sad" ? -8 : expr === "laugh" || expr === "grin" ? 4 : 0;
     const by = noEyes ? ey - 4 : ey - (expr === "shock" ? 40 : 30); // без глаз брови ниже шапки, под ними гладкое лицо
     return <path key={"b" + s} d={`M ${s * ex - 15} ${by + t * s * -1} Q ${s * ex} ${by - 5} ${s * ex + 15} ${by - t * s * -1}`} stroke={INK} strokeWidth={6.5} fill="none" strokeLinecap="round" />;
   };
   const eye = (s: number) => {
     const x = s * ex;
+    // слепой: пустые мутные глаза без зрачков
+    if (blind) return <g key={s}><circle cx={x} cy={ey} r={18} fill="#fff" stroke={INK} strokeWidth={5.5} /><circle cx={x} cy={ey + 1} r={9.5} fill="#c4cde0" /><circle cx={x - 5} cy={ey - 5} r={3.5} fill="#fff" /></g>;
     if (expr === "laugh") return <path key={s} d={`M ${x - 13} ${ey + 4} Q ${x} ${ey - 12} ${x + 13} ${ey + 4}`} stroke={INK} strokeWidth={6.5} fill="none" strokeLinecap="round" />;
     if (blink) return <path key={s} d={`M ${x - 12} ${ey} L ${x + 12} ${ey}`} stroke={INK} strokeWidth={6} strokeLinecap="round" />;
     if (expr === "shock") return <g key={s}><circle cx={x} cy={ey} r={17} fill="#fff" stroke={INK} strokeWidth={5.5} /><circle cx={x} cy={ey + 2} r={5.5} fill={INK} /></g>;
@@ -48,7 +52,8 @@ const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean
 };
 
 export type BeanPose = { armL?: [number, number]; armR?: [number, number]; legL?: number; legR?: number; lean?: number; bob?: number; tilt?: number };
-export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; expr?: Expr; open?: number; f: number; pose?: BeanPose; sweat?: boolean; flip?: boolean; shadow?: boolean; noEyes?: boolean }> = ({ x, y, s = 1, look, expr = "neutral", open = 0, f, pose = {}, sweat, flip, shadow = true, noEyes }) => {
+export type Hold = { node: React.ReactNode; rot?: number; k?: number };
+export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; expr?: Expr; open?: number; f: number; pose?: BeanPose; sweat?: boolean; flip?: boolean; shadow?: boolean; noEyes?: boolean; blind?: boolean; holdR?: Hold; holdL?: Hold; lying?: boolean }> = ({ x, y, s = 1, look, expr = "neutral", open = 0, f, pose = {}, sweat, flip, shadow = true, noEyes, blind, holdR, holdL, lying }) => {
   const { armL = [12, 8], armR = [12, 8], legL = 4, legR = 4, lean = 0, bob = 0, tilt = 0 } = pose;
   const blink = f % 84 < 3;
   const hipY = -168, shY = -318, headY = -432;
@@ -58,16 +63,18 @@ export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; 
     return <g key={"l" + side}><path d={`M ${hx} ${hy} L ${fx} ${fy}`} stroke={look.limb} strokeWidth={13} strokeLinecap="round" />
       <ellipse cx={fx + side * 9} cy={fy - 2} rx={22} ry={11} fill={look.shoe} stroke={INK} strokeWidth={5} /></g>;
   };
-  const arm = (side: number, a: [number, number]) => {
+  // предмет в руке: рисуется в точке кисти (локальные единицы персонажа), rot — поворот относительно тела, k — масштаб
+  const arm = (side: number, a: [number, number], hold?: Hold) => {
     const [sx, sy] = [side * 58, shY];
     const [ex2, ey2] = go(sx, sy, side * a[0], 78);
     const [hx, hy] = go(ex2, ey2, side * (a[0] + a[1]), 72);
     return <g key={"a" + side}><path d={`M ${sx} ${sy} L ${ex2} ${ey2} L ${hx} ${hy}`} stroke={look.limb} strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      {hold ? <g transform={`translate(${hx} ${hy}) rotate(${(hold.rot ?? 0) * side}) scale(${hold.k ?? 1})`}>{hold.node}</g> : null}
       <circle cx={hx} cy={hy} r={13} fill={look.limb} /></g>;
   };
   const body = `M -62 ${shY - 20} Q -70 ${shY - 30} -50 ${shY - 34} L 50 ${shY - 34} Q 70 ${shY - 30} 64 ${shY - 18} Q 74 ${hipY - 60} 60 ${hipY + 4} Q 0 ${hipY + 26} -60 ${hipY + 4} Q -74 ${hipY - 60} -62 ${shY - 20} Z`;
   return (
-    <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s})`}>
+    <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s})${lying ? " rotate(-90) translate(-60 -40)" : ""}`}>
       {shadow ? <ellipse cx={0} cy={4} rx={95} ry={20} fill="rgba(40,30,90,0.35)" filter="url(#beanBlur)" /> : null}
       <g transform={`translate(0 ${-bob}) rotate(${lean} 0 ${hipY})`}>
         {leg(-1, legL)}{leg(1, legR)}
@@ -75,11 +82,11 @@ export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; 
         <path d={body} fill={look.body} stroke={INK} strokeWidth={7.5} strokeLinejoin="round" />
         <path d={`M 0 ${shY - 30} L 0 ${hipY + 14}`} stroke={look.body2} strokeWidth={6} />
         {look.pack ? [-1, 1].map((k) => <path key={k} d={`M ${k * 38} ${shY - 32} Q ${k * 46} ${shY + 30} ${k * 40} ${shY + 70}`} stroke="#c8961a" strokeWidth={10} fill="none" strokeLinecap="round" />) : null}
-        {arm(-1, armL)}{arm(1, armR)}
+        {arm(-1, armL, holdL)}{arm(1, armR, holdR)}
         <g transform={`translate(0 ${headY}) rotate(${tilt})`}>
           {look.hair ? <path d="M -90 -18 Q -96 -96 0 -98 Q 96 -96 90 -18 Q 40 -60 -90 -18 Z" fill={look.hair} stroke={INK} strokeWidth={7} /> : null}
           <ellipse cx={0} cy={0} rx={92} ry={86} fill={look.head} stroke={INK} strokeWidth={7.5} />
-          <Face expr={expr} open={open} blink={blink} sweat={sweat} noEyes={noEyes} />
+          <Face expr={expr} open={open} blink={blink && !blind} sweat={sweat} noEyes={noEyes} blind={blind} />
           {look.hat === "beanie" ? (
             <g>
               <path d="M -90 -30 Q -92 -112 0 -116 Q 92 -112 90 -30 Z" fill={look.hatC} stroke={INK} strokeWidth={7.5} strokeLinejoin="round" />
