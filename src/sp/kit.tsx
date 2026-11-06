@@ -742,6 +742,43 @@ export const Flashes: React.FC<{ f: number; pts: number[][] }> = ({ f, pts }) =>
   <g>{pts.map(([x, y], i) => (f + i * 7) % 23 < 3 ? <g key={i}><Glow x={x} y={y} r={160} g="gW" /><path transform={`translate(${x} ${y})`} d="M 0 -40 L 10 -10 L 40 0 L 10 10 L 0 40 L -10 10 L -40 0 L -10 -10 Z" fill="#fff" /></g> : null)}</g>
 );
 
+// ---------- часть 5: спасения, шторм, усталость ----------
+export const Flames: React.FC<{ x: number; y: number; f: number; s?: number }> = ({ x, y, f, s = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <Glow x={0} y={-80} r={260} g="gO" />
+    {[[-60, 0.8, "#ff4a3a"], [50, 0.9, "#ff4a3a"], [0, 1.2, "#ff8a3a"], [-25, 0.8, YEL], [25, 0.7, YEL]].map(([dx, k, c], i) => {
+      const h = 160 * (k as number) * (1 + 0.15 * Math.sin(f * 0.5 + i * 2)), w = 60 * (k as number);
+      return <path key={i} d={`M ${(dx as number) - w} 0 Q ${(dx as number) - w} ${-h * 0.5} ${(dx as number) + Math.sin(f * 0.3 + i) * 14} ${-h} Q ${(dx as number) + w} ${-h * 0.5} ${(dx as number) + w} 0 Z`} fill={c as string} stroke={INK} strokeWidth={6} strokeLinejoin="round" />;
+    })}
+  </g>
+);
+export const Truck: React.FC<{ x: number; y: number; s?: number; c?: string }> = ({ x, y, s = 1, c = "#5ad8c8" }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <rect x={-260} y={-260} width={340} height={210} rx={10} fill={c} stroke={INK} strokeWidth={8} />
+    <path d="M 90 -50 L 90 -200 L 190 -200 L 250 -120 L 250 -50 Z" fill="#ff6a5a" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
+    <path d="M 120 -180 L 180 -180 L 225 -125 L 120 -125 Z" fill="#9fdcff" stroke={INK} strokeWidth={5} strokeLinejoin="round" />
+    <rect x={-270} y={-60} width={530} height={30} fill="#3a3a6a" stroke={INK} strokeWidth={6} />
+    {[-180, -60, 170].map((k) => <g key={k}><circle cx={k} cy={-20} r={40} fill="#1c1a2a" stroke={INK} strokeWidth={7} /><circle cx={k} cy={-20} r={15} fill="#b8b4d0" /></g>)}
+  </g>
+);
+// ночь/шторм поверх кадра (экранные координаты)
+export const NightOver: React.FC<{ f: number; rain?: boolean; o?: number; flash?: boolean }> = ({ f, rain, o = 0.55, flash }) => (
+  <svg width={1920} height={1080} style={{ position: "absolute", inset: 0 }}>
+    <rect width={1920} height={1080} fill="#0a0628" opacity={o} />
+    {rain ? Array.from({ length: 90 }, (_, i) => { const x = (i * 211 + f * 9) % 2100 - 100, y = (i * 137 + f * 60) % 1200 - 100; return <path key={i} d={`M ${x} ${y} l -16 50`} stroke="#bfd8ff" strokeWidth={4} opacity={0.6} />; }) : null}
+    {flash && f % 50 < 3 ? <rect width={1920} height={1080} fill="#e8f0ff" opacity={0.6} /> : null}
+    {flash && f % 50 < 5 ? <path d="M 1300 0 L 1240 200 L 1300 210 L 1200 440 L 1290 450 L 1180 700" stroke="#fff8d0" strokeWidth={14} fill="none" strokeLinejoin="round" /> : null}
+  </svg>
+);
+export const BigWaves: React.FC<{ y: number; f: number }> = ({ y, f }) => (
+  <g>{[0, 1, 2].map((k) => <path key={k} d={`M -2000 ${y + k * 120} ${Array.from({ length: 30 }, (_, i) => `Q ${-2000 + i * 200 + 100} ${y + k * 120 - 90 + Math.sin(f * 0.15 + i + k) * 30} ${-1800 + i * 200} ${y + k * 120}`).join(" ")} L 4000 ${y + 1200} L -2000 ${y + 1200} Z`} fill={["#3a3aa8", "#2a2a8a", "#1c1c6a"][k]} stroke={INK} strokeWidth={7} />)}</g>
+);
+
+export const Smoke2: React.FC<{ x: number; y: number; f: number; n?: number }> = ({ x, y, f, n = 7 }) => (
+  <g>{Array.from({ length: n }, (_, i) => { const t = ((f * 0.9 + i * 13) % 80) / 80; const r = 26 + t * 70;
+    return <circle key={i} cx={x + Math.sin(i * 2.1 + t * 3) * 40 + t * 30} cy={y - t * 320} r={r} fill={i % 2 ? "#8a7fb8" : "#a497cc"} stroke={INK} strokeWidth={5} opacity={Math.min(1, (1 - t) * 1.6)} />; })}</g>
+);
+
 // ---------- переход между частями: вспышка солнечного света ----------
 export const Flare: React.FC<{ p: number }> = ({ p }) => {
   if (p <= 0) return null;
