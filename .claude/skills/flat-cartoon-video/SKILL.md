@@ -1,29 +1,36 @@
 ---
 name: flat-cartoon-video
-description: Main channel style (approved 2026-11-05) — flat bright 2D cartoon "what if…" explainer videos, 16:9 1920x1080, English Fish Audio voice, cuts tied to voice words, no captions; long videos made as ~1-min parts joined by a block-wipe transition. Use for ANY new video request from this user ("сделай ролик", "новая тема", "как Minecraft/blind", "в нашем стиле"), unless they name another style.
+description: Main channel style = EXACTLY the look of the Minecraft video in src/mc (blocky cube world, flat bright 2D cartoon "what if…" videos, 16:9 1920x1080, English Fish Audio voice, cuts tied to voice words, no captions; long videos made as ~1-min parts joined by a block-wipe transition). Use for ANY new video request from this user ("сделай ролик", "новая тема", "как Minecraft", "в нашем стиле"), unless they name another style.
 ---
 
 # Flat 2D cartoon video (main style)
 
 Talk to the user in short, plain Russian. The user is a beginner on a phone, so do all the work yourself and give them only results and yes/no questions.
 
-## Working samples (copy these, don't start from zero)
-- **10-second sample:** `src/blind/blind.tsx` (composition `Fin-blind`), with sound from `scripts/blind_sound.py`.
-- **7-part, 7-minute video:** "What if Minecraft became real?". Copy its whole layout for a new multi-part video:
-  - `src/mc/kit.tsx`: camera, layers, blocks, items, animals, monsters, `makePart`, `BlockWipe`.
-  - `src/mc/scenes.tsx`: ready scenes `Street`, `Room`, `Land`.
-  - `src/mc/partN.tsx`: shot lists. Each shot is `{ at: "word", n?, s: (g, f, len) => JSX }`.
-  - `src/mc/index.tsx`: compositions `Fin-mc1`…`Fin-mc7`.
-  - `public/mc/pN/script.txt` and `voice.mp3`, plus `src/mc/voices/pN.ts`.
-  - `scripts/mc_sound.py` with `scripts/mc_events.json` for music and sound effects; one continuous music track is cut per part.
-  - `scripts/mc_preview.sh N` builds a fast contact sheet; `scripts/mc_render.sh 1 2 …` renders the parts and `videos/<id>/full.mp4`.
+## THE reference: the Minecraft video (`src/mc/`)
+The user said: "the same style as the Minecraft video". Every new video must look like `videos/mc/full.mp4`. Do NOT use `src/blind/` as a sample; it was an early test in a different style.
+
+How to start a new video `<id>`:
+1. **Copy the code:** `cp -r src/mc src/<id>`, then register the new compositions (`Fin-<id>1…`) in `src/Root.tsx` / `index` the same way `Fin-mc*` are.
+2. **Copy the scripts:** copy `scripts/mc_sound.py`, `mc_events.json`, `mc_preview.sh` and `mc_render.sh` to `<id>_*` and change the paths (`public/mc` → `public/<id>`, `Fin-mc` → `Fin-<id>`, `videos/mc` → `videos/<id>`).
+3. **Keep the kit as it is:** keep `kit.tsx` and `scenes.tsx` (blocks, `Street` / `Room` / `Land`, sky, haze, glow, `Grade`, `BlockWipe`, animals, items). Change only the story, the shot lists in `partN.tsx`, the scripts and the sound events. New things go in `kit.tsx`, built from blocks and flat shapes in the same style.
+
+What the Minecraft video is made of:
+- **`kit.tsx`:**
+  - Constants: `B=200` is one block and `GY=900` is the ground.
+  - Camera and layers: `Layer` / `Cam` / `camLerp` for parallax.
+  - Blocks: `Blk` / `G(c,r)` with `gx` / `gy`.
+  - World pieces: `Ground`, `Tree`, `Tower`, `SqSun`, `Cloud`, `Backdrop(tod: dawn/day/dusk/night)`, `BlockCar`.
+  - Objects and creatures: `Item`, `Drop`, `Torch`, `Cow` / `Chicken` / `Dog` / `Bee` (blocky), monsters `Shade` / `Groaner` / `Bony`, `Fire`, `Earth`, `Stars`, `Hearts`, `FoodBar`, `Phone`.
+  - Assembly: `makePart` and `BlockWipe`.
+- **`scenes.tsx`:** `Street` (the blocky town), `Room` (a plank room with a window) and `Land` (nature and hills). Backgrounds are scaled to 0.42 with haze.
 - **Characters:** `Bean` from `src/toontest/bean.tsx`.
   - The hero is always `HERO2D`: orange jacket, yellow backpack, beanie with pompom.
   - Props: `expr`, `open`, `blind`, `sweat`, `pose`, `holdR` / `holdL`, `lying`.
-  - Extra people use the looks in `LOOKS` / `PAJAMA` / `BANKER` / `DOCTOR`.
+  - Extra people use `LOOKS` / `PAJAMA` / `BANKER` / `DOCTOR`.
 
 ## Look
-- **Drawing:** flat bright 2D cartoon (IFology / Monk Mode Films vibe), drawn as SVG with thick black ink outlines and saturated colours.
+- **Drawing:** exactly as in `src/mc`: a world of cubes, flat bright 2D cartoon (IFology / Monk Mode Films vibe), drawn as SVG with thick black ink outlines and saturated colours.
 - **Light:** pink, purple and blue light with yellow lights and glow.
 - **Depth:** far layers are blurred, the camera has parallax, and there is a vignette. Never 3D, anime or realism.
 - **Format:** 16:9, 1920×1080, 30 fps. Everything the viewer sees or hears is in English.
