@@ -31,7 +31,7 @@ if words_src.endswith((".mp3", ".wav")):  # надёжнее всего: нас�
         if q[i]:
             j = i
             while j < len(q) and q[j]: j += 1
-            if j - i >= 2 and i > 0: cuts.append((i + j) / 200 + lead)
+            if j - i >= 25 and i > 0: cuts.append((i + j) / 200 + lead)  # только настоящие паузы между предложениями (≥ 0,25 с)
             i = j
         else: i += 1
 elif words_src != "-":
@@ -45,6 +45,7 @@ elif words_src != "-":
         for a, b in zip(W, W[1:]):
             cuts.append((a[1] + b[0]) / 2 + lead)
 T = min(cuts, key=lambda c: abs(c - mid)) if cuts else mid
+if cuts: print(f"ближайшая к середине пауза между предложениями: {T:.2f} с (середина {mid:.2f} с)")
 if words_src.endswith((".mp3", ".wav")) and abs(T - mid) > 0.35:
     # у середины нет паузы (фраза слитная): ищем стык между словами, где громкость на уровне фона, и ПРОВЕРЯЕМ распознаванием,
     # что слово не разрезано (тишина бывает и внутри слова — перед «т», «п», «к»): слова до стыка + после стыка = вся фраза

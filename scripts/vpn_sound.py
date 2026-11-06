@@ -58,6 +58,8 @@ add(shimmer(1.2, 700, 2600), at("Из-за"), 0.07)
 add(shimmer(1.0, 600, 2000), at("подвох"), 0.06)
 for i in range(4): add(click(1500 + 200 * i, 0.04, 90), at("файлам") + i * 0.13, 0.06)
 add(whoosh(0.9, 400, 4000), at("Так"), 0.08)
+add(thud(80, 0.2), at("Даже") + 0.3, 0.06); add(ping(1047, 0.4, 6), at("Поэтому", 2) + 0.3, 0.06); add(ping(1319, 0.4, 6), at("Поэтому", 2) + 0.7, 0.05)
+add(riser(0.8), at("А", 3), 0.05); add(shimmer(1.0, 700, 2600), at("Подписывайся"), 0.07)
 raw = subprocess.run(["ffmpeg", "-v", "error", "-i", "public/vpn/voice.mp3", "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True).stdout
 voice = np.frombuffer(raw, np.float32).astype(float); voice /= np.max(np.abs(voice)) + 1e-9
 add(voice, LEAD, 0.62)

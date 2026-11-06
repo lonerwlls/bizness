@@ -34,6 +34,7 @@ const LOOKS: BeanLook[] = [
   { head: "#f2e2c8", body: "#f4c430", body2: "#c8961a", limb: "#262838", shoe: "#2a2a30", hat: "beanie", hatC: "#d8406a", hatC2: "#ffffff" },
   { head: "#f8f6f0", body: "#ff6f8f", body2: "#d04868", limb: "#262838", shoe: "#ffffff", hair: "#1e1a1a" },
 ];
+const PROVIDER: BeanLook = { head: "#f8f6f0", body: "#3a8af0", body2: "#2a5ac0", limb: "#262838", shoe: "#2a2a30", hair: "#4a2e1e" };
 const GUARD: BeanLook = { head: "#f2e2c8", body: "#2a3048", body2: "#ffd23c", limb: "#262838", shoe: "#1a1a22", hat: "bowler", hatC: "#1a1a22", hatC2: "#ffd23c" };
 
 // ---------- камера с параллаксом (как в примере про слепоту), кадр 9:16 ----------
@@ -201,7 +202,7 @@ const Packet: React.FC<{ x: number; y: number; s?: number; f: number; enc: numbe
   </g>
 );
 // здание-сервер VPN: высокая башня с антенной и зелёной вывеской-щитом
-const ServerTower: React.FC<{ x: number; y: number; s?: number; f: number }> = ({ x, y, s = 1, f }) => (
+const ServerTower: React.FC<{ x: number; y: number; s?: number; f: number; eye?: number }> = ({ x, y, s = 1, f, eye = 0 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     <Glow x={0} y={-700} r={520} g="gG" o={0.5 + 0.2 * Math.sin(f * 0.15)} />
     <rect x={-160} y={-900} width={320} height={900} fill="#2a3a6a" stroke={INK} strokeWidth={9} />
@@ -213,10 +214,15 @@ const ServerTower: React.FC<{ x: number; y: number; s?: number; f: number }> = (
     <circle cx={0} cy={-1110} r={18} fill="#ff3a4a" stroke={INK} strokeWidth={5} opacity={f % 30 < 15 ? 1 : 0.4} />
     {[1, 2, 3].map((k) => <circle key={k} cx={0} cy={-1110} r={30 + ((f * 2 + k * 30) % 90)} fill="none" stroke="#5aff9a" strokeWidth={6} opacity={1 - ((f * 2 + k * 30) % 90) / 90} />)}
     <ShieldLock x={0} y={-960} s={0.75} />
+    {eye > 0 ? <g transform={`translate(0 -520) scale(1 ${eye})`}>
+      <Glow x={0} y={0} r={260} g="gY" o={0.6} />
+      <path d="M -150 0 Q 0 -120 150 0 Q 0 120 -150 0 Z" fill="#ffffff" stroke={INK} strokeWidth={10} />
+      <circle cx={Math.sin(f * 0.08) * 40} cy={0} r={50} fill="#3a8af0" stroke={INK} strokeWidth={8} /><circle cx={Math.sin(f * 0.08) * 40} cy={0} r={22} fill={INK} />
+    </g> : null}
   </g>
 );
 // сайт: здание с витриной-«браузером» и охранником у двери
-const SiteBuilding: React.FC<{ x: number; y: number; s?: number; f: number }> = ({ x, y, s = 1, f }) => (
+const SiteBuilding: React.FC<{ x: number; y: number; s?: number; f: number; lang?: number }> = ({ x, y, s = 1, f, lang }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     <Glow x={0} y={-420} r={420} g="gP" o={0.5} />
     <rect x={-260} y={-700} width={520} height={700} fill="#c85a9a" stroke={INK} strokeWidth={9} />
@@ -224,6 +230,11 @@ const SiteBuilding: React.FC<{ x: number; y: number; s?: number; f: number }> = 
     <rect x={-220} y={-650} width={440} height={46} rx={14} fill="#c8d4ea" stroke={INK} strokeWidth={6} />
     {[0, 1, 2].map((i) => <circle key={i} cx={-190 + i * 30} cy={-627} r={9} fill={["#ff5a6a", "#ffd23c", "#5ac84a"][i]} stroke={INK} strokeWidth={3} />)}
     <rect x={-190} y={-580} width={380} height={70} rx={10} fill="#7a5ac8" stroke={INK} strokeWidth={5} />
+    {lang !== undefined ? <>
+      <text x={0} y={-528} textAnchor="middle" fontFamily="VpnMont" fontWeight={900} fontSize={50} fill="#ffffff" stroke={INK} strokeWidth={8} paintOrder="stroke">{["HOLA!", "BONJOUR!", "HALLO!"][lang]}</text>
+      <g transform="translate(150 -330) rotate(12)"><rect x={-90} y={-46} width={180} height={92} rx={14} fill={YEL} stroke={INK} strokeWidth={7} /><circle cx={-62} cy={0} r={10} fill={INK} />
+        <text x={14} y={18} textAnchor="middle" fontFamily="VpnMont" fontWeight={900} fontSize={52} fill={INK}>{["9 €", "$12", "¥90"][lang]}</text></g>
+    </> : null}
     {[0, 1, 2].map((i) => <rect key={i} x={-190 + i * 130} y={-490} width={120} height={110} rx={10} fill={["#ff8ab0", "#5ae0ff", YEL][i]} stroke={INK} strokeWidth={5} opacity={0.6 + 0.4 * Math.sin(f * 0.1 + i)} />)}
     <rect x={-80} y={-260} width={160} height={260} rx={10} fill="#3a2858" stroke={INK} strokeWidth={8} />
     <circle cx={50} cy={-130} r={10} fill={YEL} stroke={INK} strokeWidth={4} />
@@ -430,6 +441,11 @@ const SHOTS: Shot[] = [
     <Bean x={1720} y={1080} s={1.15} look={LOOKS[3]} f={f} expr={g > 25 ? "sad" : "shock"} open={0.5} sweat={g > 25} holdR={{ node: <g><circle cx={-24} cy={-40} r={26} fill="#bfe8ff" stroke={INK} strokeWidth={8} /><circle cx={24} cy={-40} r={26} fill="#bfe8ff" stroke={INK} strokeWidth={8} /></g>, rot: 0 }} pose={{ armR: [150, 30], tilt: Math.sin(f * 0.2) * 5 }} />
     {g > 25 ? <><QMark x={1550} y={250} f={f} /><QMark x={1900} y={210} s={0.8} f={f} /></> : null}
   </World></Frame> },
+  { at: "Даже", s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: 1700, y: 420, z: 1.0 }, { x: 1720, y: 430, z: 1.08 })} f={f} crowd={false}>
+    <Tunnel a={[700, 560]} b={[2800, 560]} lift={0} p={1} f={f} w={230} pk={(g % 45) / 45} />
+    <Bean x={1700} y={1080} s={1.15} look={PROVIDER} f={f} expr={g > 30 ? "sad" : "neutral"} sweat={g > 30} holdR={{ node: <g><circle cx={0} cy={-70} r={46} fill="#bfe8ff" fillOpacity={0.5} stroke={INK} strokeWidth={10} /><rect x={-8} y={-26} width={16} height={60} fill="#7a4a2a" stroke={INK} strokeWidth={6} /></g>, rot: -30 }} pose={{ armR: [140, 30], tilt: g > 30 ? Math.sin(f * 0.3) * 6 : 0 }} />
+    {g > 30 ? <><QMark x={1520} y={250} f={f} /><QMark x={1900} y={200} s={0.8} f={f} /></> : null}
+  </World></Frame> },
   // 30–42 с: сайт видит IP сервера; будто ты в другой стране
   { at: "А", n: 1, s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: 2050, y: 380, z: 0.95 }, { x: 2050, y: 400, z: 1.05 })} f={f} crowd={false}
       back={<SiteBuilding x={2300} y={BASE + 160} s={1.0} f={f} />}>
@@ -439,11 +455,15 @@ const SHOTS: Shot[] = [
   { at: "Из-за", s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: 1500, y: 560, z: 1.15 }, { x: 1500, y: 580, z: 1.25 })} f={f} sky="sunset" palms crowd={false}>
     <Hero x={1500} y={1080} s={1.3} f={f} expr="laugh" open={0.6} holdR={{ node: <g><rect x={-70} y={-30} width={60} height={34} rx={10} fill={INK} /><rect x={10} y={-30} width={60} height={34} rx={10} fill={INK} /></g>, rot: 0 }} pose={{ armR: [160, 40], armL: [130, 30], tilt: Math.sin(f * 0.1) * 5 }} />
   </World></Frame> },
+  { at: "Поэтому", n: 2, s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: 1500, y: 300, z: 1.25 }, { x: 1500, y: 280, z: 1.35 })} f={f} sky="sunset" palms crowd={false}
+      back={<SiteBuilding x={1500} y={BASE + 160} s={1.0} f={f} lang={Math.floor(g / 12) % 3} />}>
+    <Hero x={1220} y={1080} s={1.1} f={f} expr="grin" pose={{ armL: [130, 30] }} />
+  </World></Frame> },
   // 42–55 с: подвох — VPN не делает невидимым
-  { at: "Но", n: 2, s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: HX, y: 640, z: 1.35 }, { x: HX, y: 660, z: 1.45 })} f={f}>
+  { at: "Но", n: 3, s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: HX, y: 640, z: 1.35 }, { x: HX, y: 660, z: 1.45 })} f={f}>
     <Hero x={HX} y={1080} s={1.3} f={f} expr="grin" pose={{ armL: [40, 20], armR: [40, 20] }} />
     <Cloak x={HX} y={1100} s={1.3} o={ip(g, [4, 18], [0, 1])} f={f} /></World></Frame> },
-  { at: "Сайты", n: 2, s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: HX + 150, y: 520, z: 1.05 }, { x: HX + 150, y: 540, z: 1.12 })} f={f} crowd={false}
+  { at: "Сайты", n: 3, s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: HX + 150, y: 520, z: 1.05 }, { x: HX + 150, y: 540, z: 1.12 })} f={f} crowd={false}
       back={<SiteBuilding x={HX + 650} y={BASE + 160} s={0.95} f={f} />}>
     <Hero x={HX - 120} y={1080} s={1.15} f={f} expr="shock" open={0.6} sweat pose={{ armL: [60, 30], armR: [40, 20] }} />
     <Cloak x={HX - 120} y={1100} s={1.15} o={0.8 - 0.4 * clamp01(g / 40)} f={f} />
@@ -451,13 +471,23 @@ const SHOTS: Shot[] = [
     <Account x={HX - 120} y={240} s={0.9 * clamp01((g - 4) / 6)} f={f} />
     {[0, 1, 2, 3].map((k) => <Cookie key={k} x={HX - 400 + k * 190} y={460 + Math.sin(f * 0.15 + k) * 20} s={clamp01((g - 14 - k * 4) / 6)} rot={f * 2 + k * 40} />)}
   </World></Frame> },
+  { at: "А", n: 3, s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: 1750, y: 260, z: 0.82 }, { x: 1750, y: 240, z: 0.9 })} f={f} crowd={false}
+      back={<ServerTower x={2000} y={BASE + 200} s={1.0} f={f} eye={clamp01((g - 6) / 10)} />}>
+    <Hero x={1450} y={1080} s={1.15} f={f} expr={g > 30 ? "sad" : "shock"} open={0.4} sweat pose={{ armR: [150, 70], tilt: Math.sin(f * 0.08) * 6 }} />
+    {g > 30 ? <QMark x={1250} y={520} s={1.1} f={f} /> : null}
+  </World></Frame> },
   // 55–60 с: финал — туннель внутри интернета
-  { at: "Так", s: (g, f, len) => <Frame dark={ip(g, [len - 30, len], [0, 0.6])}><World cam={lerpCam(g, len, { x: 2000, y: 200, z: 0.62 }, { x: 2000, y: 160, z: 0.75 })} f={f} flick={1}>
+  { at: "Так", s: (g, f, len) => <Frame><World cam={lerpCam(g, len, { x: 2000, y: 200, z: 0.62 }, { x: 2000, y: 160, z: 0.75 })} f={f} flick={1}>
     <Tunnel a={[400, 560]} b={[3600, 300]} lift={500} p={1} f={f} w={150} pk={(g % 50) / 50} />
     <Hero x={2000} y={1080} s={1.0} f={f} expr="grin" pose={{ armR: [150, 40], armL: [20, 10] }} />
   </World></Frame> },
+  { at: "Подписывайся", s: (g, f, len) => <Frame dark={ip(g, [len - 30, len], [0, 0.6])}><World cam={lerpCam(g, len, { x: 2000, y: 640, z: 1.35 }, { x: 2000, y: 660, z: 1.45 })} f={f} flick={1} crowd={false}>
+    <Tunnel a={[800, 300]} b={[3200, 200]} lift={250} p={1} f={f} w={150} pk={(g % 50) / 50} />
+    <Hero x={2000} y={1080} s={1.3} f={f} expr="grin" pose={{ armR: [150 + Math.sin(f * 0.4) * 22, 40], armL: [20, 10] }} />
+  </World></Frame> },
 ];
 const STARTS = SHOTS.map((s, i) => (i === 0 ? 0 : at(s.at, s.n) - 3));
+STARTS.forEach((v, i) => { if (i && v <= STARTS[i - 1]) throw new Error(`склейки не по порядку: сцена ${i} («${SHOTS[i].at}»)`); });
 
 export const VpnShort: React.FC = () => {
   const f = useCurrentFrame();

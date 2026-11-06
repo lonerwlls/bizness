@@ -64,11 +64,12 @@ if os.environ.get("AD_CENTER") and len(cuts) > 2:
     pos = lambda i: cuts[i][0] + sum(d for c, d, _ in cuts[:i]) + cuts[i][1] / 2  # середина i-й паузы в итоговой озвучке
     i = min(range(len(cuts)), key=lambda i: abs(pos(i) + float(os.environ.get("LEAD", "0")) - total / 2))
     nb, na = i, len(cuts) - i - 1          # пауз до и после выбранной
-    need = total / 2 - (pos(i) + float(os.environ.get("LEAD", "0")))  # >0: сдвинуть паузу позже
-    a = 2 * need / max(1, nb) if need > 0 else 2 * need / max(1, na)  # пауза сдвигается на половину добавки
-    a = max(-0.2, min(0.2, a))
+    need = total / 2 - (pos(i) + float(os.environ.get("LEAD", "0")))  # >0: паузу надо сдвинуть позже
+    # до выбранной паузы +a, после −a: пауза смещается на (nb + na) * a / 2 относительно середины ролика
+    a = max(-0.2, min(0.2, 2 * need / max(1, nb + na)))
     for j in range(len(cuts)):
-        if (need > 0 and j < i) or (need < 0 and j > i): cuts[j][1] = round(cuts[j][1] + (a if need > 0 else a), 3)
+        if j < i: cuts[j][1] = round(max(0.2, cuts[j][1] + a), 3)
+        elif j > i: cuts[j][1] = round(max(0.2, cuts[j][1] - a), 3)
     print(f"баннер: пауза после «{cuts[i][2]}», сдвиг пауз на {a:+.3f} с")
 parts, prev, x = [], 0, x.copy()
 F8 = int(0.008 * SR)  # 8 мс плавного стыка, чтобы не было щелчков
