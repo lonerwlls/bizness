@@ -38,8 +38,8 @@ for i in range(int(D / (bar / 4))):                       # пульс баса 
 for i in range(int(D / (bar / 8))):                       # тиканье «часов» с карты
     a = i * bar / 8
     if T2 <= a < D - 1.2: add(click(6000, 0.02, 500), a, 0.02 + 0.02 * (a > T3), 0.4 * (-1) ** i)
-add(riser(2.0), T3 - 2.0, 0.08); add(riser(2.2), T4 - 2.2, 0.1)
-add(boom(1.8), T4, 0.22); add(drone(D - T4, [45, 52, 57, 64, 69], 2500), T4, 0.12)
+add(riser(1.8), T3 - 2.1, 0.05); add(riser(2.0), T4 - 2.3, 0.06)
+add(boom(1.8), T4 - 0.25, 0.12); add(drone(D - T4, [45, 52, 57, 64, 69], 2500), T4, 0.12)
 # ---- звуки ----
 def buzz(d=0.5):
     x = t(int(d * SR)); return norm(np.sign(np.sin(2 * np.pi * 110 * x)) * 0.6 + np.sin(2 * np.pi * 220 * x)) * env(len(x), 0.01, 0.1)

@@ -4,7 +4,7 @@
 # Правила NATRIA (natriamedia.ru/pravila): баннер СТРОГО в середине ролика (3.1), ровно по центру экрана и не меньше 25% площади
 # экрана (3.2), ускорение не больше 1.3x (3.6), хромакей убран полностью (2.8). Место паузы — промежуток между словами, ближайший к
 # середине исходного ролика: тогда баннер стоит ровно посередине и готового ролика (середина ± 0,1 с), и слово не режется.
-#   python3 scripts/insert_ad.py <видео.mp4> <слова: voice.ts | words.json | -> [сдвиг_озвучки_сек] [выход.mp4]
+#   python3 scripts/insert_ad.py <видео.mp4> <озвучка .mp3/.wav (лучше всего) | voice.ts | words.json | -> [сдвиг_озвучки_сек] [выход.mp4]
 import json, subprocess, sys, os
 
 AD, SPEED = "ads/ad.mp4", 1.3
@@ -19,7 +19,22 @@ mid = dur / 2
 
 # промежутки между словами (середина промежутка)
 cuts = []
-if words_src != "-":
+if words_src.endswith((".mp3", ".wav")):  # надёжнее всего: настоящая тишина в самой озвучке (окна по 10 мс)
+    import numpy as np
+    SR = 16000
+    x = np.frombuffer(subprocess.run(["ffmpeg", "-v", "error", "-i", words_src, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True).stdout, np.float32)
+    db = 20 * np.log10(np.array([np.sqrt(np.mean(x[i:i + 160] ** 2)) for i in range(0, len(x) - 160, 160)]) + 1e-9)
+    FLOOR = np.percentile(db[db > -150], 10)  # фон без вставленной цифровой тишины
+    q = db < FLOOR + 8
+    i = 0
+    while i < len(q):
+        if q[i]:
+            j = i
+            while j < len(q) and q[j]: j += 1
+            if j - i >= 2 and i > 0: cuts.append((i + j) / 200 + lead)
+            i = j
+        else: i += 1
+elif words_src != "-":
     s = open(words_src, encoding="utf8").read()
     if words_src.endswith(".ts"):
         W = json.loads(s[s.index("{"): s.rindex("}") + 1])["words"]
@@ -30,6 +45,27 @@ if words_src != "-":
         for a, b in zip(W, W[1:]):
             cuts.append((a[1] + b[0]) / 2 + lead)
 T = min(cuts, key=lambda c: abs(c - mid)) if cuts else mid
+if words_src.endswith((".mp3", ".wav")) and abs(T - mid) > 0.35:
+    # у середины нет паузы (фраза слитная): ищем стык между словами, где громкость на уровне фона, и ПРОВЕРЯЕМ распознаванием,
+    # что слово не разрезано (тишина бывает и внутри слова — перед «т», «п», «к»): слова до стыка + после стыка = вся фраза
+    import re
+    from faster_whisper import WhisperModel
+    wm = WhisperModel("medium", device="cpu", compute_type="int8")
+    nrm = lambda t: [re.sub(r"[^а-яa-z0-9]", "", w.lower().replace("ё", "е")) for w in t.split() if re.sub(r"[^а-яa-z0-9]", "", w.lower())]
+    hear = lambda a, b: nrm(" ".join(sg.text for sg in wm.transcribe(x[int(a * SR): int(b * SR)], language="ru", beam_size=5)[0]))
+    sm = np.convolve(db, np.ones(3) / 3, "same")
+    ks = [k for k in range(int((mid - lead - 1.2) * 100), int((mid - lead + 1.2) * 100)) if sm[k] <= FLOOR + 6]
+    # соседние кадры одной тишины — один кандидат (середина участка)
+    groups, g0 = [], None
+    for k in ks:
+        if g0 is not None and k == groups[-1][-1] + 1: groups[-1].append(k)
+        else: groups.append([k]); g0 = k
+    for gr in sorted(groups, key=lambda gr: abs(gr[len(gr) // 2] / 100 + lead - mid)):
+        c = gr[len(gr) // 2] / 100
+        whole, left, right = hear(c - 1.6, c + 1.6), hear(c - 1.6, c), hear(c, c + 1.6)
+        ok = left + right == whole
+        print(f"  кандидат {c + lead:.2f} с: {' '.join(left)} | {' '.join(right)}  {'OK' if ok else 'режет слово'}")
+        if ok: T = c + lead; break
 T = round(T * 30) / 30  # ровно на кадр
 print(f"ролик {dur:.2f} с, середина {mid:.2f} с, вставка в {T:.2f} с, баннер {ad_dur:.2f} с")
 
@@ -42,8 +78,8 @@ fc = f"""
 [F0][ad]overlay=(W-w)/2:(H-h)/2:shortest=1:format=auto[F];
 [A][F][B]concat=n=3:v=1:a=0[v];
 [0:a]aformat=sample_rates=48000:channel_layouts=stereo,asplit=2[a1][a2];
-[a1]atrim=0:{T},asetpts=PTS-STARTPTS[aA];
-[a2]atrim=start={T},asetpts=PTS-STARTPTS[aB];
+[a1]atrim=0:{T},asetpts=PTS-STARTPTS,afade=t=out:st={T - 0.012}:d=0.012[aA];
+[a2]atrim=start={T},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.012[aB];
 [1:a]aformat=sample_rates=48000:channel_layouts=stereo,atempo={SPEED},volume=8dB,apad,atrim=0:{ad_dur},asetpts=PTS-STARTPTS[aF];
 [aA][aF][aB]concat=n=3:v=0:a=1,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]
 """

@@ -14,7 +14,8 @@ pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", mp3, "-f", "s16le", "-ac", 
 audio = np.frombuffer(pcm, np.int16).astype(np.float32) / 32768
 dur = round(len(audio) / 16000, 3)
 
-model = WhisperModel("small", device="cpu", compute_type="int8")
+import os
+model = WhisperModel(os.environ.get("WHISPER_MODEL", "small"), device="cpu", compute_type="int8")
 segs, _ = model.transcribe(audio, language=lang, word_timestamps=True, vad_filter=False)
 heard = [(w.start, w.end, w.word.strip()) for s in segs for w in s.words]
 
