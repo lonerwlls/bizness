@@ -132,7 +132,7 @@ function heroAt(t: number): HeroPose {
   }
   if (w === "byBed") return { p: BY_BED, fo: { mode: "stand", expr: t >= T("and", 2) ? "grin" : t >= T("full", 1) ? "relief_open" : "shock", look: t < T("full", 1) ? -0.3 : 0 } };
   if (w === "byBed2") return stubWalk(t, T("then") - 0.1, T("toe", 2), -2.2, "grin");
-  if (w === "stub") return stubWalk(t, T("you", 3) - 1.0, T("toe", 1), -1.5, "smile");
+  if (w === "stub") return stubWalk(t, T("you", 3) - 0.6, T("toe", 1), -2.05, "smile");
   if (w === "kitchen") return { p: HERO_KITCHEN, fo: { mode: "stand", expr: t >= T("dad") ? "shock" : "grin", prop: "hold2", holdDx: MUG_DX, look: t >= T("dad") ? -0.6 : 0 }, held: "mug" };
   if (w === "class") {
     const d = DESKS[HERO_DESK];
@@ -173,7 +173,7 @@ const build = () => {
   shot(E("everyone"), "home", 6, mv([3.8, 2.0, 1.6], [3.7, 1.95, 1.3], [2.6, 1.2, -2.6], [2.6, 1.2, -2.6], 52, 0, true));
   shot(E("and", 2), "home", 10, mv([-2.25, 1.6, -0.5], [-2.3, 1.58, -0.75], [-2.4, 1.6, -1.4], [-2.4, 1.6, -1.4], 38, 0.02));
   // rule one: the toe, the coffee, Dad
-  shot(E("rule", 1), "home", 6, mv([-1.25, 1.6, -0.2], [-1.3, 1.6, -0.35], [-2.6, 1.0, -2.6], [-2.6, 1.0, -2.6], 44, 0, true));
+  shot(E("rule", 1), "home", 6, mv([-1.3, 1.6, 0.3], [-1.35, 1.6, 0.15], [-2.3, 1.0, -2.5], [-2.3, 1.0, -2.5], 46, 0, true));
   shot(E("stub", 1), "home", 10, mv([-2.3, 0.45, -1.55], [-2.32, 0.43, -1.6], [-2.9, 0.2, -2.4], [-2.9, 0.2, -2.4], 40, 0.03));
   shot(E("minus"), "home", 10, mv([-2.1, 1.7, -1.1], [-2.13, 1.7, -1.2], [-2.7, 1.65, -2.4], [-2.7, 1.67, -2.4], 40, -0.03));
   shot(E("coffee"), "home", 8, mv([3.2, 1.55, 0.4], [3.18, 1.55, 0.3], [2.55, 1.4, -1.55], [2.55, 1.42, -1.55], 44, 0.02));
