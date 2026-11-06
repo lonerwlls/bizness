@@ -1,42 +1,39 @@
 ---
 name: flat-cartoon-video
-description: Main channel style = EXACTLY the look of the Minecraft video in src/mc (blocky cube world, flat bright 2D cartoon "what if…" videos, 16:9 1920x1080, English Fish Audio voice, cuts tied to voice words, no captions; long videos made as ~1-min parts joined by a block-wipe transition). Use for ANY new video request from this user ("сделай ролик", "новая тема", "как Minecraft", "в нашем стиле"), unless they name another style.
+description: Main channel style = EXACTLY the look of the 10-second sample src/blind/blind.tsx (normal night city, flat bright 2D cartoon "what if…" videos; NOT blocky like Minecraft, 16:9 1920x1080, English Fish Audio voice, cuts tied to voice words, no captions; long videos made as ~1-min parts joined by a transition). Use for ANY new video request from this user ("сделай ролик", "новая тема", "как пример про слепоту", "в нашем стиле"), unless they name another style.
 ---
 
 # Flat 2D cartoon video (main style)
 
 Talk to the user in short, plain Russian. The user is a beginner on a phone, so do all the work yourself and give them only results and yes/no questions.
 
-## THE reference: the Minecraft video (`src/mc/`)
-The user said: "the same style as the Minecraft video". Every new video must look like `videos/mc/full.mp4`. Do NOT use `src/blind/` as a sample; it was an early test in a different style.
-
-How to start a new video `<id>`:
-1. **Copy the code:** `cp -r src/mc src/<id>`, then register the new compositions (`Fin-<id>1…`) in `src/Root.tsx` / `index` the same way `Fin-mc*` are.
-2. **Copy the scripts:** copy `scripts/mc_sound.py`, `mc_events.json`, `mc_preview.sh` and `mc_render.sh` to `<id>_*` and change the paths (`public/mc` → `public/<id>`, `Fin-mc` → `Fin-<id>`, `videos/mc` → `videos/<id>`).
-3. **Keep the kit as it is:** keep `kit.tsx` and `scenes.tsx` (blocks, `Street` / `Room` / `Land`, sky, haze, glow, `Grade`, `BlockWipe`, animals, items). Change only the story, the shot lists in `partN.tsx`, the scripts and the sound events. New things go in `kit.tsx`, built from blocks and flat shapes in the same style.
-
-What the Minecraft video is made of:
-- **`kit.tsx`:**
-  - Constants: `B=200` is one block and `GY=900` is the ground.
-  - Camera and layers: `Layer` / `Cam` / `camLerp` for parallax.
-  - Blocks: `Blk` / `G(c,r)` with `gx` / `gy`.
-  - World pieces: `Ground`, `Tree`, `Tower`, `SqSun`, `Cloud`, `Backdrop(tod: dawn/day/dusk/night)`, `BlockCar`.
-  - Objects and creatures: `Item`, `Drop`, `Torch`, `Cow` / `Chicken` / `Dog` / `Bee` (blocky), monsters `Shade` / `Groaner` / `Bony`, `Fire`, `Earth`, `Stars`, `Hearts`, `FoodBar`, `Phone`.
-  - Assembly: `makePart` and `BlockWipe`.
-- **`scenes.tsx`:** `Street` (the blocky town), `Room` (a plank room with a window) and `Land` (nature and hills). Backgrounds are scaled to 0.42 with haze.
+## THE picture reference: `src/blind/blind.tsx` (10-second sample)
+The user said: "I need this style", meaning the 10-second sample where everyone goes blind and cars crash (`videos/blind.mp4`, composition `Fin-blind`). Every new video must look like it:
+- **The city:** a normal night city, not blocks.
+  - Two layers of buildings: `FAR` / `MID` from `makeBlds`, purple and blue with lit yellow windows.
+  - On the street: lamps, traffic lights, cars (`Car`, which can show a `dent`), `Smoke` and a crowd of `Bean` people.
+  - Lighting and finish: `Glow` gradients, blurred far layers, `Layer` / `Cam` parallax, `Grade` with a vignette.
+- **Start from its code:** copy `blind.tsx` (`World`, `Building`, `Lamp`, `TrafficLight`, `Car`, `Smoke`, `Crowd`, `Defs`, `Grade`) into a shared kit for the new video. Add new places and objects drawn the same way (flat SVG, thick ink outline, the same palette).
 - **Characters:** `Bean` from `src/toontest/bean.tsx`.
   - The hero is always `HERO2D`: orange jacket, yellow backpack, beanie with pompom.
   - Props: `expr`, `open`, `blind`, `sweat`, `pose`, `holdR` / `holdL`, `lying`.
-  - Extra people use `LOOKS` / `PAJAMA` / `BANKER` / `DOCTOR`.
+
+## What to take from the Minecraft video (`src/mc/`): only the way a long video is built
+- **Reuse the machinery:**
+  - Shot lists: `{ at: "word", n?, s: (g, f, len) => JSX }`.
+  - Assembly: `makePart(V, shots, {id, last})`.
+  - Sound: one continuous music track cut per part (`scripts/mc_sound.py` + `mc_events.json`).
+  - Checks and output: `mc_preview.sh` contact sheet; `mc_render.sh` renders the parts and `full.mp4`.
+- **Do NOT reuse the look:** no cube world, no Minecraft blocks or animals. For the join between parts, use a transition that fits a normal city instead of `BlockWipe`: a dark flash, or the camera flying into a window or light.
 
 ## Look
-- **Drawing:** exactly as in `src/mc`: a world of cubes, flat bright 2D cartoon (IFology / Monk Mode Films vibe), drawn as SVG with thick black ink outlines and saturated colours.
+- **Drawing:** exactly as in `src/blind/blind.tsx`: a normal (not blocky) world, flat bright 2D cartoon (IFology / Monk Mode Films vibe), drawn as SVG with thick black ink outlines and saturated colours.
 - **Light:** pink, purple and blue light with yellow lights and glow.
 - **Depth:** far layers are blurred, the camera has parallax, and there is a vignette. Never 3D, anime or realism.
 - **Format:** 16:9, 1920×1080, 30 fps. Everything the viewer sees or hears is in English.
 - **No captions or on-screen text**, unless the user asks for them.
 - **Backgrounds** stay small and hazy so the characters dominate.
-- **Staging:** feet stand exactly on the ground (`GY` / `gy(r)`), so nothing floats and nothing sinks. Animals and objects are drawn in the same style; in Minecraft they are also blocky.
+- **Staging:** feet stand exactly on the ground (`GY` / `gy(r)`), so nothing floats and nothing sinks. Animals and objects are drawn in the same style.
 - **No copied characters or textures** from real games or channels. All designs are our own.
 
 ## Voice (Fish Audio)
@@ -49,7 +46,7 @@ What the Minecraft video is made of:
 
 ## Editing
 - Cut every 1–2 s, and tie cuts and events to voice words with `atWord(V, "word", n)`.
-- Every part except the last ends with a `BlockWipe` covering the screen and the next part opens with it, so the parts join into one video. The last part fades to black.
+- Every part except the last ends with a transition (not cubes) and the next part opens with it, so the parts join into one video. The last part fades to black.
 
 ## Workflow (user rules)
 1. For a long video, write all the scripts, then make **only part 1**, send it, and wait for corrections and a "yes". Only after that do the other parts.
