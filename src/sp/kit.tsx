@@ -51,6 +51,8 @@ export const Defs: React.FC = () => (
     <linearGradient id="skyS" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stopColor="#2a1468" /><stop offset="38%" stopColor="#7a2ea8" /><stop offset="68%" stopColor="#f05a9a" /><stop offset="88%" stopColor="#ffa86a" /><stop offset="100%" stopColor="#ffd88a" />
     </linearGradient>
+    <linearGradient id="skyHi" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#0c0838" /><stop offset="55%" stopColor="#2a2a8a" /><stop offset="100%" stopColor="#7a5ad8" /></linearGradient>
+    <linearGradient id="skyMid" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#3a2a9a" /><stop offset="60%" stopColor="#a85ac8" /><stop offset="100%" stopColor="#ff9ab0" /></linearGradient>
     <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#ff8fb0" /><stop offset="18%" stopColor="#8a5ad8" /><stop offset="100%" stopColor="#2a2a8a" /></linearGradient>
     <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#4a3098" /><stop offset="100%" stopColor="#6a42b8" /></linearGradient>
     <linearGradient id="xr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#0a2a5a" /><stop offset="100%" stopColor="#06163a" /></linearGradient>
@@ -599,6 +601,72 @@ export const Bubble: React.FC<{ x: number; y: number; r?: number; f: number }> =
   <g><circle cx={x} cy={y} r={r * (1 + 0.03 * Math.sin(f * 0.3))} fill="#bff4ff" fillOpacity={0.25} stroke="#ffffff" strokeWidth={5} />
     <path d={`M ${x - r * 0.5} ${y - r * 0.3} Q ${x - r * 0.4} ${y - r * 0.6} ${x - r * 0.1} ${y - r * 0.65}`} stroke="#ffffff" strokeWidth={6} fill="none" strokeLinecap="round" />
     <Glow x={x} y={y} r={r * 1.6} g="gP" o={0.3} /></g>
+);
+
+// ---------- полёт (часть 3) ----------
+// герой летит вправо, «как супергерой»: cx, cy — центр тела
+export const FlyHero: React.FC<{ cx: number; cy: number; s?: number; f: number; expr?: any; open?: number; look?: BeanLook; sweat?: boolean; arms?: "fwd" | "both" | "back"; left?: boolean }> = ({ cx, cy, s = HS, f, expr = "grin", open = 0, look = HERO2D, sweat, arms = "fwd", left }) => {
+  const w = Math.sin(f * 0.15) * 4;
+  const pose: BeanPose = { armR: arms === "back" ? [20, 0] : [175, 0], armL: arms === "both" ? [175, 0] : [25, 5], legL: 4 + Math.sin(f * 0.3) * 4, legR: -4 - Math.sin(f * 0.3) * 4 };
+  return <g transform={`translate(${cx} ${cy + w}) scale(${left ? -1 : 1} 1)`}><Bean x={-250 * s} y={0} s={s} look={look} expr={expr} open={open} f={f} lying flip shadow={false} sweat={sweat} pose={pose} /></g>;
+};
+// небо на высоте alt (0 — над морем на закате, 1 — у самолётов), облака летят навстречу со скоростью sp
+export const Sky: React.FC<{ cam: Cam; f: number; alt?: number; sp?: number; children?: React.ReactNode; sea?: boolean }> = ({ cam, f, alt = 0, sp = 6, children, sea = true }) => {
+  const r = rand(5); const CL = Array.from({ length: 14 }, () => ({ x: r() * 5000, y: r() * 1100 - 100, w: 0.6 + r() * 1.2, d: r() < 0.5 ? 0.5 : 1.3 }));
+  const wrap = (x: number) => ((x % 5000) + 5000) % 5000 - 1500;
+  return (
+    <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{ position: "absolute", inset: 0 }}>
+      <Defs />
+      <Layer cam={cam} d={0.05}>
+        <rect x={-3000} y={-2500} width={9000} height={3200} fill="url(#skyS)" /><rect x={-3000} y={690} width={9000} height={2000} fill="#ffd88a" />
+        <rect x={-3000} y={-2500} width={9000} height={3200} fill="url(#skyMid)" opacity={Math.min(1, alt * 2)} />
+        <rect x={-3000} y={-2500} width={9000} height={3200} fill="url(#skyHi)" opacity={Math.max(0, alt * 2 - 1)} />
+        {alt > 0.5 ? Array.from({ length: 40 }, (_, i) => <circle key={i} cx={(i * 397) % 2400 - 200} cy={(i * 211) % 700} r={3} fill="#fff" opacity={(alt - 0.5) * 1.6} />) : null}
+        <Sun x={1500} y={620 + alt * 300} r={110} />
+      </Layer>
+      {sea ? <Layer cam={cam} d={0.3}>
+        <g transform={`translate(0 ${alt * 900})`}>
+          <rect x={-3000} y={760} width={9000} height={1400} fill="url(#sea)" />
+          <path d="M -3000 760 L 6000 760" stroke={INK} strokeWidth={6} />
+          <Waves y0={790} y1={1300} f={f * sp * 0.5} />
+          {alt < 0.3 ? <path d="M -2600 762 Q -1800 640 -900 700 Q -300 650 100 762 Z" fill="#6a3aa8" stroke={INK} strokeWidth={6} /> : null}
+        </g>
+      </Layer> : null}
+      <Layer cam={cam} d={0.6} blur={2}>{CL.filter((c) => c.d < 1).map((c, i) => <Cloud key={i} x={wrap(c.x - f * sp * 0.6)} y={c.y + alt * 200} w={c.w} />)}</Layer>
+      <Layer cam={cam} d={1}>{children}</Layer>
+      <Layer cam={cam} d={1.3} blur={4}>{CL.filter((c) => c.d > 1).slice(0, 4).map((c, i) => <Cloud key={i} x={wrap(c.x - f * sp * 1.6)} y={i % 2 ? -60 + c.y * 0.1 : 1060 + c.y * 0.1} w={c.w} />)}</Layer>
+    </svg>
+  );
+};
+export const Jet: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <path d="M -380 -20 Q -380 -70 -300 -70 L 330 -70 Q 420 -66 440 -20 Q 420 26 330 30 L -300 30 Q -380 30 -380 -20 Z" fill="#f4f2ff" stroke={INK} strokeWidth={8} />
+    <path d="M -300 -70 L -360 -190 L -280 -190 L -200 -70 Z" fill="#ff6fb5" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+    <path d="M -40 10 L -200 160 L -100 160 L 100 10 Z" fill="#c8c0e8" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+    {Array.from({ length: 12 }, (_, i) => <circle key={i} cx={-220 + i * 44} cy={-30} r={11} fill="#9fdcff" stroke={INK} strokeWidth={4} />)}
+    <path d="M 360 -50 Q 400 -48 418 -24 L 360 -24 Z" fill="#5ae0ff" stroke={INK} strokeWidth={5} />
+    <rect x={-120} y={30} width={110} height={44} rx={22} fill="#b8b4d0" stroke={INK} strokeWidth={6} />
+  </g>
+);
+export const Thermo: React.FC<{ x: number; y: number; v: number; s?: number }> = ({ x, y, v, s = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <rect x={-30} y={-300} width={60} height={300} rx={30} fill="#fff4f0" stroke={INK} strokeWidth={7} />
+    <circle cx={0} cy={20} r={50} fill={v > 0.4 ? "#ff4a6a" : "#5ae0ff"} stroke={INK} strokeWidth={7} />
+    <rect x={-14} y={-280 * v} width={28} height={280 * v + 20} rx={14} fill={v > 0.4 ? "#ff4a6a" : "#5ae0ff"} />
+    {[0, 1, 2, 3, 4].map((i) => <path key={i} d={`M 30 ${-60 - i * 50} L 52 ${-60 - i * 50}`} stroke={INK} strokeWidth={5} />)}
+  </g>
+);
+export const Egg: React.FC = () => <g><ellipse cx={0} cy={-40} rx={32} ry={42} fill="#fff8ec" stroke={INK} strokeWidth={6} /><ellipse cx={-10} cy={-56} rx={8} ry={12} fill="#fff" /></g>;
+export const Shield: React.FC<{ x: number; y: number; r: number; f: number; o?: number }> = ({ x, y, r, f, o = 1 }) => (
+  <g opacity={o}>
+    <circle cx={x} cy={y} r={r} fill="#ffd860" fillOpacity={0.12} stroke={YEL} strokeWidth={8} />
+    {Array.from({ length: 18 }, (_, i) => { const a = i / 18 * Math.PI * 2 + f * 0.02; return <path key={i} transform={`translate(${x + Math.cos(a) * r * 0.75} ${y + Math.sin(a) * r * 0.75}) rotate(${a * 57})`} d="M -26 0 L -13 -22 L 13 -22 L 26 0 L 13 22 L -13 22 Z" fill="none" stroke="#fff2c0" strokeWidth={4} opacity={0.4 + 0.4 * Math.sin(f * 0.2 + i)} />; })}
+    <Glow x={x} y={y} r={r * 1.3} g="gY" o={0.5} />
+  </g>
+);
+export const Frost: React.FC<{ o: number }> = ({ o }) => o <= 0 ? null : (
+  <g opacity={o}>{Array.from({ length: 22 }, (_, i) => { const a = (i / 22) * Math.PI * 2, R = 560 + (i % 3) * 40; const x = 960 + Math.cos(a) * R * 1.6, y = 540 + Math.sin(a) * R; return <g key={i} transform={`translate(${x} ${y}) rotate(${a * 57})`} stroke="#e8fbff" strokeWidth={6} strokeLinecap="round"><path d="M -40 0 L 40 0 M 0 -40 L 0 40 M -28 -28 L 28 28 M -28 28 L 28 -28" /></g>; })}
+    <rect width={1920} height={1080} fill="#bff4ff" opacity={0.15} /></g>
 );
 
 // ---------- переход между частями: вспышка солнечного света ----------
