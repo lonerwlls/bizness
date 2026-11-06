@@ -22,19 +22,54 @@ while i < len(quiet):
 s = open(ts_in, encoding="utf8").read(); V = json.loads(s[s.index("{"): s.rindex("}") + 1]); W = V["words"]
 txt = open(script, encoding="utf8").read().strip()
 par_last = [re.findall(r"[\w$]+(?:[-.,][\w]+)*", l)[-1] for l in txt.split("\n") if l.strip()]
+# проверка распознаванием: слева от паузы последнее слово предложения целиком, справа — первое слово следующего целиком
+from faster_whisper import WhisperModel
+wm = WhisperModel("medium", device="cpu", compute_type="int8")
+SYN = {"vpn": "впн", "вэпээн": "впн", "google": "гугл", "youtube": "ютуб"}
+nrm = lambda t: [SYN.get(q, q) for q in (re.sub(r"[^а-яa-z0-9]", "", w.lower().replace("ё", "е")) for w in t.replace("-", " ").split()) if q]
+def hear(a, b):
+    a, b = max(0.0, a), min(len(x) / SR, b)
+    y16 = x[int(a * SR): int(b * SR)][::3]  # 48 кГц -> 16 кГц
+    return nrm(" ".join(sg.text for sg in wm.transcribe(y16, language="ru", beam_size=5)[0]))
+same = lambda u, v: u == v or (len(u) > 3 and len(v) > 3 and (u.startswith(v[:4]) or v.startswith(u[:4])))
 cuts, pi, missed, used = [], 0, [], -1.0
 for k, w in enumerate(W[:-1]):
     if not w["end"]: continue
     big = pi < len(par_last) and w["w"] == par_last[pi]
     if big: pi += 1
-    # тайминги распознавания бывают раньше звука на ~0,2 с: окно от конца слова до конца следующего слова (+0,35 с);
-    # каждая тишина используется один раз и по порядку
-    cand = [g for g in gaps if g[0] > used and g[1] - g[0] >= 0.02 and w["e"] - 0.15 <= (g[0] + g[1]) / 2 <= W[k + 1]["e"] + 0.35]
-    if not cand: missed.append(w["w"]); continue
-    g = min(cand, key=lambda g: abs((g[0] + g[1]) / 2 - (w["e"] + W[k + 1]["t"]) / 2 - 0.2) - 0.15 * min(0.4, g[1] - g[0]))
-    used = g[1]
-    cuts.append([round((g[0] + g[1]) / 2, 3), 0.75 if big else 0.45, w["w"]])
+    last, first = nrm(w["w"])[-1], nrm(W[k + 1]["w"])[0]
+    # только тишина между концом слова и НАЧАЛОМ следующего слова (с запасом на сдвиг таймингов распознавания)
+    cand = [g for g in gaps if g[0] > used and g[1] - g[0] >= 0.02 and w["t"] - 0.4 <= (g[0] + g[1]) / 2 <= W[k + 1]["e"] + 0.4]
+    cand.sort(key=lambda g: -(g[1] - g[0]))  # сначала самые длинные тишины
+    ok = None
+    for g in cand[:6]:
+        c = (g[0] + g[1]) / 2
+        L, R = hear(c - 1.6, c), hear(c, c + 1.6)
+        if L and R and same(L[-1], last) and same(R[0], first): ok = c; break
+    if ok is None:
+        missed.append(w["w"])
+        for g in cand[:6]:
+            c = (g[0] + g[1]) / 2; print("   нет:", w["w"], round(c, 2), hear(c - 1.4, c)[-2:], "|", hear(c, c + 1.4)[:2], "ждём", last, first)
+        if not cand: print("   нет тишины в окне:", w["w"], w["e"], W[k + 1]["t"])
+        continue
+    used = ok
+    cuts.append([round(ok, 3), 0.75 if big else 0.45, w["w"]])
 cuts.sort()
+# баннер рекламы ставится в паузу между предложениями; чтобы он стоял РОВНО в середине ролика, чуть меняем длину пауз:
+# до выбранной паузы +a, после −a (на слух незаметно). Длина ролика = озвучка + хвост TAIL (как в ролике), пауза баннера — середина.
+import os
+TAIL = float(os.environ.get("TAIL", "0"))
+if os.environ.get("AD_CENTER") and len(cuts) > 2:
+    total = len(x) / SR + sum(d for _, d, _ in cuts) + TAIL
+    pos = lambda i: cuts[i][0] + sum(d for c, d, _ in cuts[:i]) + cuts[i][1] / 2  # середина i-й паузы в итоговой озвучке
+    i = min(range(len(cuts)), key=lambda i: abs(pos(i) + float(os.environ.get("LEAD", "0")) - total / 2))
+    nb, na = i, len(cuts) - i - 1          # пауз до и после выбранной
+    need = total / 2 - (pos(i) + float(os.environ.get("LEAD", "0")))  # >0: сдвинуть паузу позже
+    a = 2 * need / max(1, nb) if need > 0 else 2 * need / max(1, na)  # пауза сдвигается на половину добавки
+    a = max(-0.2, min(0.2, a))
+    for j in range(len(cuts)):
+        if (need > 0 and j < i) or (need < 0 and j > i): cuts[j][1] = round(cuts[j][1] + (a if need > 0 else a), 3)
+    print(f"баннер: пауза после «{cuts[i][2]}», сдвиг пауз на {a:+.3f} с")
 parts, prev, x = [], 0, x.copy()
 F8 = int(0.008 * SR)  # 8 мс плавного стыка, чтобы не было щелчков
 for c, d, _ in cuts:
