@@ -65,20 +65,20 @@ export const P6 = makePart(V, [
   { at: "experiments", s: (g, f, len) => <Room cam={C(1100, GY - 320, 1.5)} f={f} win={false} kind="plain">
     <rect x={850} y={GY - 160} width={260} height={160} fill="#ff6fb5" stroke={INK} strokeWidth={8} />
     <Bean x={980} y={GY - 160} s={HS} look={LOOKS[2]} f={f} expr="grin" pose={{ armR: [80, 30] }} />
-    <g transform={`translate(980 ${GY - 160 - 395})`}><Crown s={0.8} /></g>
+    <g transform={`translate(980 ${GY - 160 - 312})`}><Crown s={0.8} /></g>
     <Bean x={1350} y={GY} s={HS} look={LOOKS[5]} f={f} expr="sad" flip />
   </Room> },
   { at: "start", n: 2, s: (g, f, len) => <Room cam={C(1100, GY - 320, 1.6)} f={f} win={false} kind="plain">
     <rect x={850} y={GY - 160} width={260} height={160} fill="#ff6fb5" stroke={INK} strokeWidth={8} />
     <Bean x={980} y={GY - 160} s={HS} look={LOOKS[2]} f={f} expr="smirk" flip pose={{ armL: [30, 100], armR: [30, 100], tilt: -10 }} />
-    <g transform={`translate(980 ${GY - 160 - 395})`}><Crown s={0.8} /></g>
+    <g transform={`translate(980 ${GY - 160 - 312})`}><Crown s={0.8} /></g>
     <Bean x={1350} y={GY} s={HS} look={LOOKS[5]} f={f} expr="talk" open={0.5} flip pose={{ armR: [150, 20] }} />
   </Room> },
   { at: "break", s: (g, f, len) => <Room cam={C(960, GY - 300, 1.4)} f={f} win={false} kind="plain">
     {[700, 1000, 1300].map((x, i) => <g key={x} transform={`translate(${x} ${GY}) rotate(${i === 1 ? ip(g, [6, 12], [0, -80]) : 0})`}><path d="M -40 0 L -10 -110 L 10 -110 L 40 0 Z" fill="#ff8a3a" stroke={INK} strokeWidth={6} /><rect x={-24} y={-70} width={48} height={18} fill="#fff" /></g>)}
     <path d={`M 700 ${GY - 90} L 1300 ${GY - 90}`} stroke={YEL} strokeWidth={12} strokeDasharray="30 20" />
     <Bean x={ip(g, [0, len], [800, 1100])} y={GY} s={HS} look={LOOKS[2]} f={f} expr="smirk" pose={walkPose(f, 0.3)} />
-    <g transform={`translate(${ip(g, [0, len], [800, 1100])} ${GY - 395})`}><Crown s={0.8} /></g>
+    <g transform={`translate(${ip(g, [0, len], [800, 1100]) - 8} ${GY - 312 - Math.abs(Math.sin(f * 0.3)) * 4})`}><Crown s={0.8} /></g>
   </Room> },
   // всемогущество
   { at: "Now", s: (g, f, len) => <><Town cam={camLerp(g, len, C(960, GY - 430, 1.6), C(960, GY - 430, 1.85))} f={f}>
