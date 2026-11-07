@@ -46,7 +46,9 @@ for k, w in enumerate(W[:-1]):
         c = (g[0] + g[1]) / 2
         L, R = hear(c - 1.6, c), hear(c, c + 1.6)
         lastok = L and (same(L[-1], last) or (len(L) > 1 and same(L[-2] + L[-1], last)))  # «кибер угроз» = «киберугроз»
-        firstok = R and (same(R[0], first) or (len(R) > 1 and same(R[0] + R[1], first)))
+        second = nrm(W[k + 2]["w"])[0] if k + 2 < len(W) else ""
+        firstok = R and (same(R[0], first) or (len(R) > 1 and same(R[0] + R[1], first))
+                         or (len(first) <= 2 and second and same(R[0], second)))  # короткое «но/а/и» распознавание часто не слышит
         if lastok and firstok: ok = c; break
     if ok is None:
         missed.append(w["w"])
