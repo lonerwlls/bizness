@@ -224,11 +224,11 @@ const build = () => {
   shot(E("and", 3), "school", 6, mvAt(SCHOOL, [-1.8, 1.7, -5.5], [-1.6, 1.7, -5.2], [1.2, 1.2, 0], [1.2, 1.2, 0], 46, 0.02));
   shot(E("one", 2), "school", 10, mvAt(SCHOOL, [0.4, 1.6, -2.2], [0.42, 1.6, -2.15], [EXIT_DOOR, 1.85, 0], [EXIT_DOOR, 1.87, 0], 42, 0.02));
   shot(E("your", 3), "home", 4, mvAt(SCHOOL, [0.6, 1.6, -2.8], [0.65, 1.6, -2.5], [1.2, 1.3, 6], [1.2, 1.3, 6], 46, 0, true));
-  shot(E("mom"), "home", 10, mvAt(SCHOOL, [2.0, 1.55, 2.6], [2.05, 1.55, 2.65], [3.4, 1.4, 4.5], [3.4, 1.42, 4.5], 40, 0.02));
+  shot(E("mom"), "home", 10, mvAt(SCHOOL, [2.0, 1.4, 2.5], [2.05, 1.4, 2.55], [3.4, 1.12, 4.5], [3.4, 1.14, 4.5], 44, 0.02));
   shot(E("pancakes"), "home", 8, mvAt(SCHOOL, [3.1, 1.5, 1.4], [3.05, 1.5, 1.45], [1.6, 1.0, 2.9], [1.6, 1.02, 2.9], 44, -0.02));
   // next Monday: the same door, the same beach, sunscreen this time
   bedroom(E("monday", 2), E("you", 6), E("and", 4), E("again"), true);
-  shot(E("this"), "beach", 10, mvAt(BED, [2.0, 1.55, 2.8], [1.95, 1.55, 2.75], [0.8, 1.45, 2.0], [0.8, 1.47, 2.0], 38, 0.02));
+  shot(E("this"), "beach", 10, mvAt(BED, [2.2, 1.45, 3.0], [2.15, 1.45, 2.95], [0.8, 1.2, 2.0], [0.8, 1.22, 2.0], 44, 0.02));
 };
 let built = false;
 const ensure = () => { if (!built) { built = true; build(); S.sort((a, b) => a.a - b.a); } };
@@ -663,8 +663,8 @@ export class DoorsWorld {
       }
       if (schoolDest(t) === "homek") {
         const mp = W(SCHOOL, 3.4, 0, 4.55), my = person("mom", mp, MOM, { mode: "stand", expr: t >= T("pancakes") + 0.3 ? "grin" : "smile", prop: "hold2", holdDx: 40 }, 21);
-        holdIn(this.pan, mp, MOM, my, -0.02);
-        if (this.pan.visible) { const k = (t * 1.1) % 1; this.flip.visible = true; this.flip.position.copy(this.pan.position).add(V(0, 0.04 + 0.45 * Math.sin(Math.PI * k), 0)); this.flip.rotation.set(Math.PI * 2 * k, my ?? 0, 0, "YXZ"); }
+        holdIn(this.pan, mp, MOM, my, -0.07);
+        if (this.pan.visible) { const k = (t * 1.1) % 1; this.flip.visible = true; this.flip.position.copy(this.pan.position).add(V(0, 0.04 + 0.12 * Math.sin(Math.PI * k), 0)); this.flip.rotation.set(Math.PI * 2 * k, my ?? 0, 0, "YXZ"); }
       }
     }
     for (let k = ai; k < this.actors.length; k++) this.actors[k].mesh.visible = false;
