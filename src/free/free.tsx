@@ -903,11 +903,11 @@ export const FreeShort: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: "#120a30" }}>
       <AbsoluteFill style={{ transform: `scale(${punch})` }}>{SHOTS[i].s(g, f, end - STARTS[i])}</AbsoluteFill>
-      {SHOTS[i].over ? SHOTS[i].over!(g, f, end - STARTS[i]) : null}
-      <Subs t={(f - LEAD) / FPS} />
       <AbsoluteFill style={{ background: "#07030f", opacity: fadeOut }} />
       <Audio src={staticFile("free/mix.wav")} />
     </AbsoluteFill>
   );
 };
 void PROVIDER; void ServerTower; void Tunnel; void World; void Hacker; void Virus; void HookMail; void BadFile; void GiftBox; void FakeLogin; void Key; void Layers; void TipUpdate; void Tip2FA; void TipLink; void Cafe; void GUARD; void Badge; void Cloak; void Cookie; void Account; void Speedo; void PhoneX; void Gear; void MapScene; void Shop; void OldPhone; void SiteBuilding; void Dash; void KZ_P;
+
+void Subs; void BigText;
