@@ -26,7 +26,7 @@ def put(sig, at, g):
 BPM = 88; beat = 60 / BPM
 DAY = [[62, 66, 69, 74], [59, 62, 66, 71], [55, 59, 62, 67], [57, 61, 64, 69]]
 NIGHT = [[57, 60, 64, 69], [53, 57, 60, 65], [50, 53, 57, 62], [52, 56, 59, 64]]
-start5 = sum(DUR.get(i, 60) for i in range(1, 6)); end5 = start5 + sum(DUR.get(i, 60) for i in (6, 7))
+start5 = sum(DUR.get(i, 60) for i in range(1, 6)); end5 = start5 + sum(DUR.get(i, 60) for i in (6, 7))  # части 6–7 — минорные аккорды
 b = 0; tt = 0.0
 while tt < TOTAL + 1:
     night = start5 - 0.5 <= tt < end5 - 0.5
