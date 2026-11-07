@@ -779,6 +779,36 @@ export const Smoke2: React.FC<{ x: number; y: number; f: number; n?: number }> =
     return <circle key={i} cx={x + Math.sin(i * 2.1 + t * 3) * 40 + t * 30} cy={y - t * 320} r={r} fill={i % 2 ? "#8a7fb8" : "#a497cc"} stroke={INK} strokeWidth={5} opacity={Math.min(1, (1 - t) * 1.6)} />; })}</g>
 );
 
+// ---------- часть 6: соблазн ----------
+export const Crown: React.FC<{ s?: number }> = ({ s = 1 }) => (
+  <g transform={`scale(${s})`}><path d="M -60 0 L -70 -70 L -30 -36 L 0 -86 L 30 -36 L 70 -70 L 60 0 Z" fill={YEL} stroke={INK} strokeWidth={6} strokeLinejoin="round" />{[-30, 0, 30].map((k) => <circle key={k} cx={k} cy={-14} r={8} fill="#ff4a6a" stroke={INK} strokeWidth={3} />)}</g>
+);
+export const MoneyBag: React.FC<{ s?: number }> = ({ s = 1 }) => (
+  <g transform={`scale(${s})`}><path d="M -30 -110 Q 0 -90 30 -110 L 20 -80 Q 80 -50 70 0 Q 0 20 -70 0 Q -80 -50 -20 -80 Z" fill="#c8a050" stroke={INK} strokeWidth={6} strokeLinejoin="round" /><circle cx={0} cy={-36} r={24} fill={YEL} stroke={INK} strokeWidth={5} /><path d="M -6 -50 L -6 -22 M 6 -50 L 6 -22" stroke={INK} strokeWidth={4} /></g>
+);
+export const Contract: React.FC<{ s?: number }> = ({ s = 1 }) => (
+  <g transform={`scale(${s})`}><rect x={-60} y={-160} width={120} height={160} fill="#fff8ec" stroke={INK} strokeWidth={6} />{[0, 1, 2, 3, 4].map((i) => <path key={i} d={`M -42 ${-136 + i * 22} L ${30 - (i % 2) * 20} ${-136 + i * 22}`} stroke="#c8b8e8" strokeWidth={6} />)}<path d="M -40 -22 q 15 -16 30 0 t 30 0" stroke="#3a56c0" strokeWidth={5} fill="none" /></g>
+);
+export const GoldBars: React.FC<{ x: number; y: number; n?: number }> = ({ x, y, n = 6 }) => (
+  <g>{Array.from({ length: n }, (_, i) => { const row = i < 3 ? 0 : i < 5 ? 1 : 2, k = i < 3 ? i : i < 5 ? i - 3 : 0; return <path key={i} transform={`translate(${x + k * 110 + row * 55} ${y - row * 46})`} d="M -50 0 L -36 -44 L 36 -44 L 50 0 Z" fill={YEL} stroke={INK} strokeWidth={5} strokeLinejoin="round" />; })}<Glow x={x + 110} y={y - 40} r={260} g="gY" o={0.5} /></g>
+);
+export const Vault: React.FC<{ x: number; y: number; open?: number }> = ({ x, y, open = 0 }) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={-260} y={-520} width={520} height={520} fill="#3a3a6a" stroke={INK} strokeWidth={9} />
+    <rect x={-220} y={-480} width={440} height={440} fill="#1a1440" />
+    <g transform={`translate(-220 -260) scale(${1 - open * 0.8} 1)`}><circle cx={220} cy={0} r={220} fill="#b8b4d0" stroke={INK} strokeWidth={9} /><circle cx={220} cy={0} r={80} fill="#8a86a8" stroke={INK} strokeWidth={7} />{[0, 1, 2, 3].map((i) => <path key={i} d={`M 220 0 L ${220 + Math.cos(i * 1.57) * 150} ${Math.sin(i * 1.57) * 150}`} stroke={INK} strokeWidth={12} />)}</g>
+  </g>
+);
+export const Hourglass: React.FC<{ x: number; y: number; s?: number; f: number }> = ({ x, y, s = 1, f }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <Glow x={0} y={0} r={300} g="gY" o={0.5} />
+    <rect x={-110} y={-190} width={220} height={26} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} /><rect x={-110} y={164} width={220} height={26} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
+    <path d="M -90 -164 L 90 -164 Q 90 -60 10 0 Q 90 60 90 164 L -90 164 Q -90 60 -10 0 Q -90 -60 -90 -164 Z" fill="#bff4ff" fillOpacity={0.5} stroke={INK} strokeWidth={6} />
+    <path d="M -60 -120 L 60 -120 Q 40 -50 0 -10 Q -40 -50 -60 -120 Z" fill={YEL} />
+    <path d="M -70 160 Q 0 80 70 160 Z" fill={YEL} /><path d="M 0 -10 L 0 150" stroke={YEL} strokeWidth={5} strokeDasharray="10 8" strokeDashoffset={-f * 2} />
+  </g>
+);
+
 // ---------- переход между частями: вспышка солнечного света ----------
 export const Flare: React.FC<{ p: number }> = ({ p }) => {
   if (p <= 0) return null;
