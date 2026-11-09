@@ -7,6 +7,7 @@ import { Bean, BeanDefs, HERO2D } from "../toontest/bean";
 import { ThumbEyes, ThumbEyesVertical } from "./thumb";
 import { ThumbEyes2 } from "./thumb2";
 import { Hero3D } from "./hero3d";
+import { StyleCard, StyleId } from "./styles";
 
 const INK = "#16131f";
 const SKY_TOP = "#2f6fd6", SKY_LOW = "#8fc4ff", SUN = "#ffd35a";
@@ -78,6 +79,7 @@ const HeroOnly: React.FC<{ bg?: string }> = ({ bg }) => (
 
 const Root: React.FC = () => (
   <>
+    {(["comic", "sketch", "film", "neon", "glossy"] as StyleId[]).map((id) => <Composition key={id} id={`Style-${id}`} component={() => <StyleCard id={id} />} durationInFrames={1} fps={30} width={1920} height={1080} />)}
     <Composition id="Hero3d-white" component={() => <Hero3D bg="#ffffff" />} durationInFrames={1} fps={30} width={1500} height={1500} />
     <Composition id="Hero3d-transparent" component={() => <Hero3D />} durationInFrames={1} fps={30} width={1500} height={1500} />
     <Composition id="Hero-white" component={() => <HeroOnly bg="#ffffff" />} durationInFrames={1} fps={30} width={1500} height={1500} />
