@@ -3,6 +3,7 @@
 // (тот же объект на несколько кадров вперёд, полупрозрачный бирюзовый), счётчик «+10s», ключевые слова, название.
 import React from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, continueRender, delayRender, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { CafeBG, PlaceDefs, StreetBG, TitleBG, YardBG } from "./places";
 import { Bean, BeanDefs, BeanLook, BeanPose, HERO2D, NEIGHBOR_A, NEIGHBOR_B, Expr } from "../../toontest/bean";
 
 export const FUTURE_FRAMES = 600;
@@ -37,21 +38,6 @@ const Defs: React.FC = () => (
   </defs>
 );
 const Ghost: React.FC<{ children: React.ReactNode }> = ({ children }) => <g filter="url(#ghost)" style={{ mixBlendMode: "screen" }}>{children}</g>;
-const Skyline: React.FC<{ y: number; c?: string; seed?: number; lit?: number }> = ({ y, c = "#1a1636", seed = 1, lit = 0.35 }) => {
-  const b: React.ReactNode[] = [];
-  let x = -40, k = seed;
-  while (x < W + 40) {
-    k = (k * 9301 + 49297) % 233280; const r = k / 233280;
-    const w = 90 + r * 140, h = 160 + ((k * 7) % 233280) / 233280 * 300;
-    b.push(<rect key={x} x={x} y={y - h} width={w} height={h + 400} fill={c} />);
-    for (let wy = y - h + 24; wy < y - 20; wy += 34) for (let wx = x + 14; wx < x + w - 20; wx += 30) {
-      k = (k * 9301 + 49297) % 233280;
-      if (k / 233280 < lit) b.push(<rect key={`${wx}-${wy}`} x={wx} y={wy} width={14} height={18} fill="#ffc86a" opacity={0.85} />);
-    }
-    x += w + 6;
-  }
-  return <g>{b}</g>;
-};
 const Push: React.FC<{ g: number; dur: number; k?: number; cx?: number; cy?: number; children: React.ReactNode }> = ({ g, dur, k = 0.06, cx = W / 2, cy = H / 2, children }) => {
   const s = 1 + k * (g / dur);
   return <g transform={`translate(${cx} ${cy}) scale(${s}) translate(${-cx} ${-cy})`}>{children}</g>;
@@ -115,14 +101,7 @@ const Yard: SC = ({ g }) => {
   const b = ballAt(g), bg = ballAt(g + GH);
   return (
     <Push g={g} dur={75}>
-      <rect width={W} height={H} fill="url(#dusk)" />
-      <Skyline y={720} c="#2a2350" seed={3} lit={0.15} />
-      {/* школа */}
-      <rect x={1180} y={420} width={760} height={420} fill="#3a2f5e" stroke={INK} strokeWidth={8} />
-      {Array.from({ length: 12 }, (_, i) => <rect key={i} x={1220 + (i % 6) * 120} y={470 + Math.floor(i / 6) * 150} width={80} height={90} fill={i % 3 ? "#ffc86a" : "#5a4a86"} stroke={INK} strokeWidth={5} />)}
-      <rect x={0} y={GROUND - 10} width={W} height={H} fill="#2b2448" />
-      {Array.from({ length: 20 }, (_, i) => <rect key={i} x={i * 100} y={GROUND - 120} width={10} height={110} fill="#1d1838" />)}
-      <rect x={0} y={GROUND - 110} width={W} height={8} fill="#1d1838" />
+      <YardBG ground={GROUND} />
       <Bean x={1350} y={GROUND} s={1.05} look={NEIGHBOR_A} expr={g < 45 ? "grin" : g < 60 ? "neutral" : "shock"} open={1} f={g} flip pose={{ armR: throwArm(g), armL: [15, 10], lean: g < 45 ? -6 : 6 }} />
       <Bean x={560} y={GROUND} s={1.05} look={HERO2D} expr="smirk" f={g + 9} pose={{ armR: heroCatchArm(g), armL: [10, 6] }} />
       {/* реальный мяч в руке друга до броска */}
@@ -139,9 +118,7 @@ const Yard: SC = ({ g }) => {
 };
 const YardClose: SC = ({ g }) => (
   <Push g={g} dur={60} k={0.08} cx={760} cy={520}>
-    <rect width={W} height={H} fill="url(#dusk)" />
-    <Skyline y={760} c="#2a2350" seed={5} lit={0.2} />
-    <rect x={0} y={GROUND + 120} width={W} height={H} fill="#2b2448" />
+    <g filter="url(#dof)" transform="translate(960 640) scale(1.5) translate(-960 -760)"><YardBG ground={GROUND} /></g>
     <Bean x={1420} y={GROUND + 420} s={1.6} look={NEIGHBOR_A} expr="shock" open={1} f={g} flip pose={{ armR: [70, 10], armL: [15, 10] }} />
     <Bean x={640} y={GROUND + 480} s={1.75} look={HERO2D} expr="smirk" f={g + 20} pose={{ armR: [95, -40], armL: [10, 6], tilt: -4 }} />
     <Ball x={handPos(640, GROUND + 480, 1.75, 1, [95, -40])[0]} y={handPos(640, GROUND + 480, 1.75, 1, [95, -40])[1]} r={46} rot={20} />
@@ -161,10 +138,7 @@ const Cafeteria: SC = ({ g }) => {
   const [tx, ty, tr] = trayAt(g), [gx, gy, gr] = trayAt(g + GH);
   return (
     <Push g={g} dur={75}>
-      <rect width={W} height={H} fill="#2a2350" />
-      {[0, 1, 2].map((i) => <g key={i}><rect x={160 + i * 600} y={150} width={420} height={330} fill="url(#night)" stroke={INK} strokeWidth={10} /><g clipPath={`inset(0)`} /><rect x={160 + i * 600} y={300} width={420} height={180} fill="#1a1636" /><rect x={365 + i * 600} y={150} width={10} height={330} fill={INK} /></g>)}
-      {[0, 1, 2].map((i) => <circle key={"l" + i} cx={370 + i * 600} cy={60} r={180} fill="url(#lamp)" />)}
-      <rect x={0} y={GROUND - 10} width={W} height={H} fill="#3d3368" />
+      <CafeBG ground={GROUND} />
       <rect x={1380} y={GROUND - 190} width={460} height={30} rx={10} fill="#8a6a4a" stroke={INK} strokeWidth={8} />
       {[1420, 1800].map((x) => <rect key={x} x={x} y={GROUND - 165} width={20} height={165} fill="#5a4a3a" stroke={INK} strokeWidth={6} />)}
       <Bean x={1180} y={GROUND} s={1.0} look={NEIGHBOR_B} expr={g < 26 ? "neutral" : "shock"} open={1} f={g} flip pose={{ armR: girlArm, armL: [g < 24 ? 70 : 40, 15] }} />
@@ -177,9 +151,7 @@ const Cafeteria: SC = ({ g }) => {
 };
 const CafeClose: SC = ({ g }) => (
   <Push g={g} dur={60} k={0.07} cx={900} cy={560}>
-    <rect width={W} height={H} fill="#2a2350" />
-    {[0, 1].map((i) => <circle key={i} cx={500 + i * 900} cy={120} r={260} fill="url(#lamp)" />)}
-    <rect x={0} y={GROUND + 140} width={W} height={H} fill="#3d3368" />
+    <g filter="url(#dof)" transform="translate(960 640) scale(1.5) translate(-960 -760)"><CafeBG ground={GROUND} /></g>
     <Bean x={1320} y={GROUND + 460} s={1.55} look={NEIGHBOR_B} expr="shock" open={1} f={g} flip pose={{ armR: [40, 15], armL: [40, 15] }} />
     <Bean x={720} y={GROUND + 480} s={1.7} look={HERO2D} expr="grin" f={g + 11} pose={{ armR: [40, -100], armL: [40, -100] }} />
     <Tray x={720} y={handPos(720, GROUND + 480, 1.7, 1, [40, -100])[1] - 14} />
@@ -191,12 +163,7 @@ const Street: SC = ({ g }) => {
   const step = ip(g, [6, 18], [0, 1]), stop = g > 18;
   return (
     <Push g={g} dur={110} k={0.05}>
-      <rect width={W} height={H} fill="url(#night)" />
-      <Skyline y={760} c="#18142f" seed={9} lit={0.4} />
-      {[300, 1100, 1700].map((x) => <g key={x}><rect x={x} y={420} width={12} height={360} fill="#121024" /><rect x={x - 40} y={410} width={80} height={16} rx={8} fill="#121024" /><circle cx={x} cy={440} r={220} fill="url(#lamp)" /></g>)}
-      <rect x={0} y={760} width={W} height={70} fill="#4a4270" stroke={INK} strokeWidth={6} />
-      <rect x={0} y={830} width={W} height={260} fill="#221d3c" />
-      {Array.from({ length: 8 }, (_, i) => <rect key={i} x={760 + i * 60} y={850} width={36} height={220} fill="#e8e4f0" opacity={0.85} />)}
+      <StreetBG curb={790} />
       <Ghost><Car x={carX(g + GH)} y={1010} /></Ghost>
       <Car x={carX(g)} y={1010} />
       <Bean x={lerp(560, 650, step)} y={790} s={0.62} look={HERO2D} expr={g < 34 ? "neutral" : "smirk"} f={g} pose={{ legL: stop ? 4 : 4 + Math.sin(g * 0.8) * 20, legR: stop ? 4 : 4 - Math.sin(g * 0.8) * 20, armL: [10, 6], armR: [10, 6], lean: g > 18 && g < 34 ? -6 : 0 }} />
@@ -210,8 +177,7 @@ const Face: SC = ({ g }) => {
   const ex = (side: number): [number, number] => [x + side * 30 * s, y + (-432 - 4) * s];
   return (
     <Push g={g} dur={70} k={0.1} cx={W / 2} cy={560}>
-      <rect width={W} height={H} fill="url(#night)" />
-      <Skyline y={900} c="#18142f" seed={2} lit={0.45} />
+      <g filter="url(#dof)" transform="translate(960 540) scale(1.6) translate(-760 -600)"><StreetBG curb={790} /></g>
       <Bean x={x} y={y} s={s} look={HERO2D} expr="neutral" f={20} shadow={false} pose={{}} />
       {[-1, 1].map((sd) => <circle key={sd} cx={ex(sd)[0]} cy={ex(sd)[1]} r={50 + 10 * Math.sin(g / 5)} fill={CYAN} opacity={0.35} filter="url(#glow)" />)}
       {[-1, 1].map((sd) => <circle key={"d" + sd} cx={ex(sd)[0] + 8} cy={ex(sd)[1] - 10} r={9} fill={CYAN} />)}
@@ -231,8 +197,7 @@ const Title: SC = ({ g }) => {
   };
   return (
     <Push g={g} dur={150} k={0.04}>
-      <rect width={W} height={H} fill="url(#night)" />
-      <Skyline y={1000} c="#16122c" seed={4} lit={0.5} />
+      <TitleBG />
       <Bean x={W / 2} y={1080} s={0.55} look={HERO2D} expr="smirk" f={g} pose={{}} />
       <Ghost><Bean x={W / 2 + 60} y={1080} s={0.55} look={HERO2D} expr="smirk" f={g} shadow={false} pose={{ armR: [150, 20] }} /></Ghost>
       {line("WHAT IF YOU COULD SEE", 380, 96, "#ffffff", 4)}
@@ -251,7 +216,7 @@ export const FutureTest: React.FC = () => {
     <AbsoluteFill style={{ background: "#0e0c26" }}>
       {SHOTS.map(([S, from, len], i) => (
         <Sequence key={i} from={from} durationInFrames={len}>
-          <AbsoluteFill><svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}><BeanDefs /><Defs /><Scene S={S} /></svg></AbsoluteFill>
+          <AbsoluteFill><svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}><BeanDefs /><Defs /><PlaceDefs /><Scene S={S} /></svg></AbsoluteFill>
         </Sequence>
       ))}
       <AbsoluteFill>
@@ -261,7 +226,7 @@ export const FutureTest: React.FC = () => {
           {f < 450 ? <Hud f={f} /> : null}
         </svg>
       </AbsoluteFill>
-      <AbsoluteFill style={{ boxShadow: "inset 0 0 260px 60px rgba(5,4,20,0.6)", pointerEvents: "none" }} />
+      <AbsoluteFill style={{ boxShadow: "inset 0 0 220px 30px rgba(20,15,40,0.35)", pointerEvents: "none" }} />
       <AbsoluteFill style={{ background: "#ffffff", opacity: ip(f, [448, 451, 456], [0, 0.6, 0]) }} />
       <Audio src={staticFile("future/sound.wav")} />
     </AbsoluteFill>
