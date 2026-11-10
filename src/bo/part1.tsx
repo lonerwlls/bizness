@@ -2,7 +2,7 @@
 // Правдоподобно: спит под одеялом, сидит по-человечески, стучит в дверь, шнур в розетке, шаг без скольжения, мимика по ситуации.
 import React from "react";
 import { Bean, Cam, Frame, HERO2D, Phone, SoundRings, Voice, atWord, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, BoCar, Bench, Bus, GY, HS, Hallway, Hero, INK, InBed, Kitchen, LampPost, NoIcon, Notice, Rooftop, Skyline, Street, Svg, YEL, walk, walkSpeed } from "./scenes";
+import { Apartment, BoCar, Bench, Bus, GY, HS, Hallway, Hero, INK, InBed, Kitchen, LampPost, NoIcon, Notice, Rooftop, Skyline, Street, Svg, YEL, walk, walkDx } from "./scenes";
 import { VOICE } from "./voices/p1";
 
 const V = VOICE as Voice;
@@ -78,7 +78,7 @@ export const P1 = makePart(V, [
     {since("stops", "Somewhere", g) < 0 ? <SoundRings x={1700} y={GY - 520} f={f} c="#ff6fb5" n={3} /> : null}
   </Apartment> },
   // спускается по подъезду
-  { at: "go", s: (g, f, len) => <Hallway cam={camLerp(g, len, C(500, 560, 1.0), C(600, 560, 1.05))} f={f}><Hero x={300 + g * walkSpeed()} y={GY} f={f} expr="worried" gaze={1} pose={walk(f)} /></Hallway> },
+  { at: "go", s: (g, f, len) => <Hallway cam={camLerp(g, len, C(500, 560, 1.0), C(600, 560, 1.05))} f={f}><Hero x={300 + walkDx(g)} y={GY} f={f} expr="worried" gaze={1} pose={walk(g)} /></Hallway> },
   // стучит в дверь соседа (дверь №3: x 900…1160, рука на двери)
   { at: "knock", n: 1, s: (g, f, len) => <Hallway cam={C(1100, GY - 280, 1.8)} f={f}>
     <Hero x={1239} y={GY} f={f} expr={since("answer", "knock", g) > 0 ? "sad" : "worried"} open={0.4} gaze={-1} pose={{ armL: [90 + Math.max(0, Math.sin(f * 0.7)) * 12, 0], armR: [15, 8], tilt: -10 }} />
@@ -88,9 +88,9 @@ export const P1 = makePart(V, [
     return <Hallway cam={C(dx + 200, GY - 280, 1.6)} f={f}>
       <Hero x={dx + 339} y={GY} f={f} expr={k > 1 ? "sad" : "worried"} gaze={-1} pose={{ armL: [90 + Math.max(0, Math.sin(f * 0.7)) * 12, 0], armR: [15, 8], tilt: -8 }} /></Hallway>; } },
   // объявление на фонаре
-  { at: "On", n: 3, s: (g, f, len) => { const stop = Math.min(g, 40) * walkSpeed();
+  { at: "On", n: 3, s: (g, f, len) => { const stop = walkDx(Math.min(g, 47));
     return <Street cam={camLerp(g, len, C(900, 600, 1.0), C(1000, GY - 220, 1.5))} f={f}><Abandoned /><LampPost x={1000} y={GY + 120} notice={1} f={f} />
-      <Hero x={620 + stop} y={GY + 140} f={f} expr={g > 40 ? "worried" : "neutral"} gaze={g > 40 ? 1 : 0} pose={g < 40 ? walk(f) : { tilt: 10, armL: [15, 8], armR: [15, 8] }} /></Street>; } },
+      <Hero x={620 + stop} y={GY + 140} f={f} expr={g > 47 ? "worried" : "neutral"} gaze={g > 47 ? 1 : 0} pose={g < 47 ? walk(g) : { tilt: 10, armL: [15, 8], armR: [15, 8] }} /></Street>; } },
   { at: "evacuated", s: (g, f, len) => <Frame bg="#2a2470"><rect width={1920} height={1080} fill="#4a3a8a" /><g transform={`translate(960 540) scale(${ip(g, [0, len], [3.2, 3.6])}) translate(-75 -95) skewY(${Math.sin(f * 0.4) * 3})`}><Notice /></g></Frame> },
   { at: "after", s: (g, f, len) => <Svg><Skyline cam={C(960, 540, 1.0)} f={f} tod="night" lights={ip(g, [0, 14], [1, 0])} midBase={GY + 100} />
     {[300, 960, 1620].map((x, i) => <g key={i} transform={`translate(${x} 1080) scale(1.6)`}><path d="M -60 0 L 0 -420 L 60 0 M -40 -140 L 40 -140 M -100 -360 L 100 -360" stroke={INK} strokeWidth={12} fill="none" /><path d="M -100 -360 L 100 -360" stroke="#b8b4d0" strokeWidth={6} />{g < 12 && (f + i * 3) % 6 < 3 ? <circle cx={100} cy={-360} r={30} fill={YEL} stroke={INK} strokeWidth={5} /> : null}</g>)}

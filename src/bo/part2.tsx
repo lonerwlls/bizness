@@ -1,7 +1,7 @@
 // Часть 2/10: дни 2–3 — уходит вода, пир из размороженной еды, первая тёмная ночь со звёздами.
 import React from "react";
 import { Bean, Cam, Defs, Frame, Glow, HERO2D, Layer, Voice, atWord, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, GY, HS, Hero, INK, InBed, Kitchen, Rooftop, Stars, Street, Svg, YEL, walk, walkSpeed } from "./scenes";
+import { Apartment, GY, HS, Hero, INK, InBed, Kitchen, Rooftop, Stars, Street, Svg, YEL, walk, walkDx } from "./scenes";
 import { VOICE } from "./voices/p2";
 
 const V = VOICE as Voice;
@@ -36,19 +36,25 @@ const Bathroom: React.FC<{ cam: Cam; f: number; lvl: number; children?: React.Re
     <rect width={1920} height={1080} fill="#0a0628" opacity={0.25} />
   </Svg>
 );
-const Steam: React.FC<{ x: number; y: number; f: number; c?: string }> = ({ x, y, f, c = "#fff" }) => <g>{[0, 1, 2].map((i) => <path key={i} d={`M ${x - 30 + i * 30} ${y} q ${10 * Math.sin(f * 0.2 + i)} -25 0 -50 q ${-10 * Math.sin(f * 0.2 + i)} -25 0 -50`} stroke={c} strokeWidth={7} fill="none" strokeLinecap="round" opacity={0.75} />)}</g>;
-const Stove: React.FC<{ x: number; y: number; f: number }> = ({ x, y, f }) => (
+// запах: мягкие полупрозрачные зеленоватые облачка, медленно поднимаются и тают
+const Smell: React.FC<{ x: number; y: number; f: number }> = ({ x, y, f }) => <g style={{ filter: "blur(6px)" }}>{[0, 1, 2, 3].map((i) => { const t = ((f * 0.6 + i * 25) % 100) / 100; return <ellipse key={i} cx={x + Math.sin(i * 2 + t * 4) * 40} cy={y - t * 200} rx={50 + t * 40} ry={30 + t * 20} fill="#9ad87a" opacity={0.35 * (1 - t)} />; })}</g>;
+// пар: тонкие полупрозрачные завитки, размытые
+const Steam2: React.FC<{ x: number; y: number; f: number }> = ({ x, y, f }) => <g style={{ filter: "blur(3px)" }}>{[0, 1, 2].map((i) => { const t = ((f * 0.8 + i * 33) % 100) / 100; return <path key={i} d={`M ${x - 30 + i * 30} ${y - t * 60} q 12 -20 0 -40 q -12 -20 0 -40`} stroke="#ffffff" strokeWidth={8} fill="none" strokeLinecap="round" opacity={0.45 * Math.sin(t * Math.PI)} />; })}</g>;
+// походная плитка на столешнице; сковорода стоит прямо на решётке, в ней стейк
+const CampStove: React.FC<{ x: number; y: number; f: number; food?: "steak" | "pizza" }> = ({ x, y, f, food = "steak" }) => (
   <g transform={`translate(${x} ${y})`}>
-    <rect x={-90} y={-50} width={180} height={50} rx={8} fill="#5a5680" stroke={INK} strokeWidth={6} />
-    {[0, 1, 2].map((i) => <path key={i} d={`M ${-30 + i * 30} -52 q -10 -20 0 -34 q 10 14 0 34`} fill={i === 1 ? YEL : "#5ae0ff"} stroke={INK} strokeWidth={3} transform={`scale(1 ${1 + 0.15 * Math.sin(f * 0.6 + i)})`} />)}
-    <Glow x={0} y={-60} r={120} g="gC" o={0.6} />
-    <rect x={-110} y={-110} width={220} height={20} rx={8} fill="#262838" stroke={INK} strokeWidth={6} />
-    <ellipse cx={0} cy={-114} rx={84} ry={14} fill="#ffb060" stroke={INK} strokeWidth={4} />
-    {[-40, 0, 36].map((k, i) => <circle key={k} cx={k} cy={-118} r={10} fill={["#ff4a6a", "#ffd23c", "#5ac84a"][i]} stroke={INK} strokeWidth={3} />)}
+    <rect x={-100} y={-44} width={200} height={44} rx={8} fill="#5a5680" stroke={INK} strokeWidth={6} />
+    <rect x={60} y={-34} width={26} height={24} rx={6} fill="#ff4a6a" stroke={INK} strokeWidth={4} />
+    <rect x={-70} y={-58} width={140} height={14} rx={4} fill="#262838" stroke={INK} strokeWidth={4} />
+    {[0, 1, 2, 3, 4].map((i) => <path key={i} d={`M ${-24 + i * 12} -58 q -5 -12 0 -20 q 5 8 0 20`} fill="#5ae0ff" stroke={INK} strokeWidth={2} transform={`scale(1 ${1 + 0.15 * Math.sin(f * 0.7 + i)})`} />)}
+    <Glow x={0} y={-62} r={90} g="gC" o={0.5} />
+    {/* сковорода на решётке */}
+    <path d="M -90 -62 L 90 -62 L 80 -92 L -80 -92 Z" fill="#2a2840" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+    <rect x={90} y={-86} width={140} height={18} rx={8} fill="#2a2840" stroke={INK} strokeWidth={5} />
+    {food === "steak" ? <g><path d="M -55 -92 Q -60 -116 -20 -118 Q 30 -124 50 -108 Q 62 -96 40 -92 Z" fill="#a8483a" stroke={INK} strokeWidth={4} /><path d="M -30 -108 L 20 -110 M -24 -100 L 30 -102" stroke="#6a2a20" strokeWidth={4} /></g>
+      : <ellipse cx={0} cy={-98} rx={70} ry={10} fill="#ffb060" stroke={INK} strokeWidth={4} />}
   </g>
 );
-// запах: волнистые зелёные линии
-const Smell: React.FC<{ x: number; y: number; f: number }> = ({ x, y, f }) => <g>{[0, 1, 2].map((i) => <path key={i} d={`M ${x + i * 60} ${y} q 20 -30 0 -60 q -20 -30 0 -60`} stroke="#8ad85a" strokeWidth={9} fill="none" strokeLinecap="round" opacity={0.8} transform={`translate(${Math.sin(f * 0.15 + i) * 10} ${-((f * 1.5 + i * 20) % 40)})`} />)}</g>;
 // рука «от первого лица» с фонариком/без
 const PovHand: React.FC<{ x: number; y: number; rot?: number; s?: number }> = ({ x, y, rot = 0, s = 1 }) => (
   <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
@@ -79,10 +85,13 @@ export const P2 = makePart(V, [
     <path d="M 420 300 L 380 380 L 420 380 L 380 460" stroke={YEL} strokeWidth={14} fill="none" opacity={g < 20 ? 1 : 0} strokeLinejoin="round" />
   </Frame> },
   // набирает воду во всё подряд
-  { at: "So", s: (g, f, len) => <Kitchen cam={C(100, GY - 250, 1.4)} f={f}><Stream w={6} f={f} />
-    <Pot x={-30} y={GY - 225} full={1} /><Pot x={-300} y={GY - 225} c="#ff8a5a" /><Bottle x={-420} y={GY - 225} /><Bottle x={-480} y={GY - 225} />
+  { at: "So", s: (g, f, len) => <Kitchen cam={C(100, GY - 250, 1.4)} f={f}>
+    <Pot x={-300} y={GY - 225} c="#ff8a5a" /><Bottle x={-420} y={GY - 225} /><Bottle x={-480} y={GY - 225} />
     <Pot x={350} y={GY} c="#5ad8c8" s={1.2} />
-    <Hero x={220} y={GY} f={f} expr="determined" gaze={-1} pose={{ armL: [110, 20], armR: [110, 20] }} holdL={{ node: <Bottle x={0} y={40} />, k: 1 }} /></Kitchen> },
+    <Pot x={-30} y={GY - 225} full={1} />
+    <rect x={-33} y={GY - 310} width={6} height={10 + 0 * f} fill="#9fdcff" />
+    {[0, 1].map((i) => <ellipse key={i} cx={-30} cy={GY - 300 + ((f * 4 + i * 12) % 24)} rx={4} ry={6} fill="#9fdcff" stroke={INK} strokeWidth={2} />)}
+    <Hero x={220} y={GY} f={f} expr="determined" gaze={-1} pose={{ armL: [60, 40], armR: [15, 8] }} holdL={{ node: <Bottle x={0} y={40} />, k: 0.9 }} /></Kitchen> },
   { at: "fill", s: (g, f, len) => <Bathroom cam={C(960, GY - 250, 1.5)} f={f} lvl={ip(g, [0, len], [0.1, 0.6])}>
     {ip(g, [0, len], [1, 0]) > 0.1 ? <rect x={1196} y={GY - 300} width={10} height={180} fill="#9fdcff" /> : null}
     <Hero x={480} y={GY} f={f} expr="worried" gaze={1} pose={{ armR: [80, 40], tilt: 10 }} /></Bathroom> },
@@ -93,23 +102,36 @@ export const P2 = makePart(V, [
     <Glow x={610} y={GY - 260} r={160} g="gO" o={0.25} /></Kitchen> },
   { at: "Food", s: (g, f, len) => <Frame bg="#1e1a50"><rect width={1920} height={1080} fill="#2a2470" />
     <rect x={560} y={240} width={360} height={600} rx={30} fill="#9fdcff" stroke={INK} strokeWidth={10} />
-    <g transform="translate(1300 540)"><circle r={240} fill="#fff6e0" stroke={INK} strokeWidth={12} />
-      <path d={`M 0 0 A 200 200 0 ${ip(g, [0, len], [0, 1]) > 0.5 ? 1 : 0} 1 ${Math.sin(ip(g, [0, len], [0, 1]) * Math.PI * 2 * 0.33 + 0.0001) * 200} ${-Math.cos(ip(g, [0, len], [0, 1]) * Math.PI * 2 * 0.33) * 200} L 0 0 Z`} transform="rotate(0)" fill="#ff6a5a" opacity={0.6} />
-      <path d={`M 0 0 L 0 -170 M 0 0 L ${Math.sin(ip(g, [0, len], [0, 2.1])) * 140} ${-Math.cos(ip(g, [0, len], [0, 2.1])) * 140}`} stroke={INK} strokeWidth={14} strokeLinecap="round" /></g>
+    <path d="M 860 300 L 860 420" stroke="#fff" strokeWidth={14} strokeLinecap="round" />
+    <g transform="translate(1320 540)"><circle r={240} fill="#fff6e0" stroke={INK} strokeWidth={12} />
+      {Array.from({ length: 12 }, (_, i) => <rect key={i} x={-6} y={-225} width={12} height={30} fill={INK} transform={`rotate(${i * 30})`} />)}
+      <rect x={-9} y={-110} width={18} height={110} rx={9} fill={INK} transform={`rotate(${ip(g, [0, len], [0, 120])})`} />
+      <rect x={-6} y={-180} width={12} height={180} rx={6} fill="#ff4a6a" transform={`rotate(${ip(g, [0, len], [0, 1440])})`} />
+      <circle r={16} fill={INK} /></g>
   </Frame> },
   { at: "full", s: (g, f, len) => <Kitchen cam={C(610, GY - 250, 2.2)} f={f} open dark={0.4}><Smell x={560} y={GY - 280} f={f} /></Kitchen> },
   // пир на походной плитке
-  { at: "tonight", s: (g, f, len) => <Kitchen cam={C(-150, GY - 290, 1.9)} f={f} dark={0.45}>
-    <Stove x={-150} y={GY - 225} f={f} /><Steam x={-150} y={GY - 360} f={f} />
-    <Hero x={130} y={GY} f={f} expr="grin" gaze={-1} pose={{ armL: [70, 40], armR: [15, 8] }} /></Kitchen> },
-  { at: "Ice", s: (g, f, len) => <Kitchen cam={C(-60, GY - 330, 2.6)} f={f} dark={0.45}>
-    <Stove x={-300} y={GY - 225} f={f} />
-    <Hero x={60} y={GY} f={f} expr={Math.floor(g / 12) % 2 ? "laugh" : "talk"} open={0.4 + 0.3 * Math.abs(Math.sin(f * 0.5))} pose={{ armR: [130 + Math.sin(f * 0.5) * 10, 70] }} holdR={{ node: <g><path d="M -20 0 L 0 50 L 20 0 Z" fill="#c87a4a" stroke={INK} strokeWidth={4} /><circle cx={0} cy={-6} r={24} fill="#ff9ac0" stroke={INK} strokeWidth={4} /></g>, k: 1.3, rot: 180 }} /></Kitchen> },
-  { at: "Everything", s: (g, f, len) => <Kitchen cam={C(100, GY - 260, 1.6)} f={f} dark={0.5}>
-    <Stove x={-150} y={GY - 225} f={f} />
-    <rect x={130} y={GY - 70} width={140} height={70} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
-    <Bean x={200} y={GY} s={HS} look={HERO2D} f={f} expr="tired" gaze={-1} sit={70 / HS} pose={{ armL: [40, 60], armR: [40, 60], tilt: -6 }} /></Kitchen> },
-  // день 3: запах
+  { at: "tonight", s: (g, f, len) => <Kitchen cam={C(-120, GY - 300, 2.0)} f={f} dark={0.45}>
+    <CampStove x={-230} y={GY - 225} f={f} /><Steam2 x={-230} y={GY - 345} f={f} />
+    <Hero x={95} y={GY} f={f} expr="grin" gaze={-1} pose={{ armL: [66, 8], armR: [15, 8] }} /></Kitchen> },
+  { at: "Ice", s: (g, f, len) => { const k = (Math.sin(f * 0.25) + 1) / 2;
+    return <Kitchen cam={C(1160, GY - 250, 2.2)} f={f} dark={0.45}>
+      <rect x={1100} y={GY - 80} width={130} height={80} rx={8} fill="#5a4a9a" stroke={INK} strokeWidth={6} />
+      <Bean x={1165} y={GY} s={HS} look={HERO2D} f={f} expr={k > 0.7 ? "laugh" : "grin"} open={0.4} sit={80 / HS} pose={{ armR: [70 + k * 70, 120 - k * 40], armL: [40, 50] }}
+        holdR={{ node: <g><rect x={-5} y={-50} width={10} height={50} rx={5} fill="#b8b4d0" stroke={INK} strokeWidth={3} /><ellipse cx={0} cy={-56} rx={12} ry={9} fill="#ff9ac0" stroke={INK} strokeWidth={3} /></g>, k: 1, rot: 180 }} />
+      <rect x={950} y={GY - 210} width={440} height={26} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
+      {[980, 1350].map((x) => <rect key={x} x={x} y={GY - 186} width={22} height={186} fill="#a85a3a" stroke={INK} strokeWidth={5} />)}
+      <g transform={`translate(1060 ${GY - 210})`}><path d="M -60 -40 Q -55 10 0 12 Q 55 10 60 -40 Z" fill="#5ad8c8" stroke={INK} strokeWidth={5} /><ellipse cx={0} cy={-42} rx={56} ry={12} fill="#ff9ac0" stroke={INK} strokeWidth={4} /></g>
+      <g transform={`translate(1290 ${GY - 210})`}><ellipse cx={0} cy={-6} rx={70} ry={14} fill="#f4f2ff" stroke={INK} strokeWidth={5} /><path d="M -40 -12 Q -40 -34 -5 -36 Q 34 -38 40 -20 Q 44 -10 30 -10 Z" fill="#a8483a" stroke={INK} strokeWidth={4} /></g>
+    </Kitchen>;
+  } },
+  { at: "Everything", s: (g, f, len) => <Kitchen cam={C(1160, GY - 250, 1.8)} f={f} dark={0.5}>
+    <rect x={1100} y={GY - 80} width={130} height={80} rx={8} fill="#5a4a9a" stroke={INK} strokeWidth={6} />
+    <Bean x={1165} y={GY} s={HS} look={HERO2D} f={f} expr="tired" sit={80 / HS} pose={{ armL: [60, 70], armR: [60, 70], lean: 4 }} />
+    <rect x={950} y={GY - 210} width={440} height={26} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
+    {[980, 1350].map((x) => <rect key={x} x={x} y={GY - 186} width={22} height={186} fill="#a85a3a" stroke={INK} strokeWidth={5} />)}
+    {[1040, 1290].map((x) => <ellipse key={x} cx={x} cy={GY - 216} rx={60} ry={12} fill="#f4f2ff" stroke={INK} strokeWidth={5} />)}
+  </Kitchen> },
   { at: "By", n: 2, s: (g, f, len) => <Kitchen cam={C(560, GY - 280, 1.7)} f={f} open dark={0.35}>
     <Smell x={520} y={GY - 280} f={f} /><Smell x={620} y={GY - 120} f={f + 10} />
     <Hero x={880} y={GY} f={f} expr="scared" gaze={-1} pose={{ armL: [150, 75], armR: [20, 20], tilt: 12, lean: 8 }} /></Kitchen> },
@@ -117,7 +139,7 @@ export const P2 = makePart(V, [
     <Hero x={-80} y={GY} f={f} expr="tired" gaze={-1} pose={{ armL: [150, ip(g, [0, 12], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} /></Apartment> },
   // первая настоящая ночь
   { at: "first", s: (g, f, len) => <Street cam={camLerp(g, len, C(960, 560, 1.0), C(960, 600, 1.1))} f={f} tod="night">
-    <Hero x={700 + g * walkSpeed() * 0.6} y={GY + 140} f={f} expr="worried" gaze={1} pose={walk(f, 0.13)} /></Street> },
+    <Hero x={650 + walkDx(g, 0.16)} y={GY + 140} f={f} expr="worried" gaze={1} pose={walk(g, 0.16)} /></Street> },
   { at: "lights", s: (g, f, len) => <><Street cam={camLerp(g, len, C(960, GY - 100, 1.5), C(960, GY - 100, 1.7))} f={f} tod="night"><Hero x={960} y={GY + 140} f={f} expr="scared" gaze={Math.sin(f * 0.1)} pose={{ armL: [60, 40], armR: [60, 40], tilt: Math.sin(f * 0.1) * 6 }} /></Street><svg width={1920} height={1080} style={{ position: "absolute", inset: 0 }}><rect width={1920} height={1080} fill="#02010a" opacity={ip(g, [0, len], [0.3, 0.75])} /></svg></> },
   { at: "can", n: 2, s: (g, f, len) => <Frame bg="#02010a"><rect width={1920} height={1080} fill="#03020c" />
     <g opacity={0.25}><PovHand x={1100} y={560} rot={-20} /></g>

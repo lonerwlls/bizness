@@ -268,10 +268,16 @@ export const Bench: React.FC<{ x: number; y: number }> = ({ x, y }) => (
     {[-110, 110].map((k) => <rect key={k} x={x + k - 6} y={y - 62} width={12} height={62} fill="#2a2450" stroke={INK} strokeWidth={4} />)}
   </g>
 );
-// шаг без «скольжения»: ноги ±18°, скорость тела совпадает с шагом
-export const WALK_A = 18;
-export const walk = (f: number, sp = 0.22, a = 0): import("../sp/kit").BeanPose => {
-  const p = Math.sin(f * sp + a);
-  return { legL: p * WALK_A, legR: -p * WALK_A, bob: (1 - Math.abs(p)) * 4, lean: 3, armL: [14 - p * 16, 10], armR: [14 + p * 16, 10], tilt: 0 };
+// шаг без «скольжения»: ноги ходят «ножницами» (одна вперёд, другая назад), тело движется ровно настолько,
+// чтобы опорная ступня стояла на месте. g — кадр от начала плана; dx — смещение тела вправо (для шага влево: x - dx и flip).
+export const WALK_A = 20;
+export const walk = (g: number, sp = 0.2): import("../sp/kit").BeanPose => {
+  const p = Math.sin(g * sp);
+  return { legL: p * WALK_A, legR: p * WALK_A, bob: (1 - Math.abs(p)) * 5, lean: 3, armL: [14 - p * 18, 10], armR: [14 - p * 18, 10], tilt: 0 };
 };
-export const walkSpeed = (sp = 0.22, s = HS) => (2 * 168 * s * Math.sin((WALK_A * Math.PI) / 180) * sp) / Math.PI;
+export const walkDx = (g: number, sp = 0.2, s = HS) => {
+  const A = (WALK_A * Math.PI) / 180, L = 168 * s, U = L * Math.sin(A);
+  const t = g * sp - Math.PI / 2, k = Math.floor(t / Math.PI), ph = t - k * Math.PI;
+  return k * 2 * U + U - L * Math.sin(A * Math.cos(ph)) + U;
+};
+export const walkSpeed = (sp = 0.2, s = HS) => (2 * 168 * s * Math.sin((WALK_A * Math.PI) / 180) * sp) / Math.PI;
