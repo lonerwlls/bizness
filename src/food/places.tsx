@@ -377,3 +377,54 @@ export const TVFrame: React.FC<{ children: React.ReactNode; headline: string; t:
     </g>
   </g>
 );
+
+// ================= СКЛАД =================
+export const Warehouse: React.FC = () => (
+  <g>
+    <rect width={W * 1.4} height={H} fill="#cdb48a" />
+    <rect x={-200} y={0} width={W * 1.8} height={120} fill="#b89c70" />
+    {Array.from({ length: 8 }, (_, i) => <path key={i} d={`M ${i * 300 - 100} 0 L ${i * 300 + 40} 120`} stroke="#9a7e56" strokeWidth={10} />)}
+    {[0, 1, 2].map((i) => <g key={i}><path d={`M ${300 + i * 600} 0 L ${300 + i * 600} 90`} stroke={OL} strokeWidth={4} /><path d={`M ${250 + i * 600} 90 L ${350 + i * 600} 90 L ${330 + i * 600} 110 L ${270 + i * 600} 110 Z`} fill="#e8b23a" stroke={OL} strokeWidth={4} /></g>)}
+    {/* стеллажи с коробками */}
+    {[0, 1, 2, 3].map((r) => (
+      <g key={r} transform={`translate(${-60 + r * 560} 140)`}>
+        {[0, 1, 2].map((lv) => <g key={lv}>
+          <rect x={0} y={160 + lv * 200} width={500} height={16} fill="#e07a3a" stroke={OL} strokeWidth={4} />
+          {Array.from({ length: 4 }, (_, k) => (lv + k + r) % 5 === 0 ? null : <rect key={k} x={14 + k * 120} y={60 + lv * 200} width={108} height={100} fill="#c89a5a" stroke={OL} strokeWidth={4} />)}
+        </g>)}
+        {[0, 500].map((x) => <rect key={x} x={x - 8} y={40} width={16} height={620} fill="#3a6a9a" stroke={OL} strokeWidth={4} />)}
+      </g>
+    ))}
+    <rect x={-200} y={800} width={W * 1.8} height={H} fill="#a89878" stroke={OL} strokeWidth={6} />
+    {Array.from({ length: 12 }, (_, i) => <path key={i} d={`M ${-200 + i * 220} 800 L ${-300 + i * 220} ${H}`} stroke="rgba(60,40,20,0.15)" strokeWidth={4} />)}
+    <rect x={-200} y={860} width={W * 1.8} height={14} fill="#e8c040" />
+  </g>
+);
+export const Pallet: React.FC<{ x: number; y: number; boxes: number }> = ({ x, y, boxes }) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={-150} y={-24} width={300} height={24} fill="#b08050" stroke={OL} strokeWidth={4} />
+    {[-130, -20, 90].map((bx) => <rect key={bx} x={bx} y={-14} width={40} height={14} fill="#6a4a2a" />)}
+    {Array.from({ length: boxes }, (_, i) => <rect key={i} x={-140 + (i % 3) * 94} y={-24 - 80 - Math.floor(i / 3) * 80} width={90} height={80} fill="#c89a5a" stroke={OL} strokeWidth={4} />)}
+  </g>
+);
+export const Box: React.FC<{ x: number; y: number; s?: number; label?: string }> = ({ x, y, s = 1, label }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <rect x={-45} y={-40} width={90} height={80} fill="#c89a5a" stroke={OL} strokeWidth={4} />
+    <path d="M -45 -40 L 45 -40" stroke="#a87a40" strokeWidth={8} />
+    {label ? <text x={0} y={14} textAnchor="middle" fontFamily="sans-serif" fontWeight={900} fontSize={16} fill="#5a3a20">{label}</text> : null}
+  </g>
+);
+
+// ================= ПУНКТ РАЗДАЧИ (шатёр) =================
+export const Tent: React.FC = () => (
+  <g>
+    <rect x={-W * 2} width={W * 5} height={H} fill="#e8cfa0" />
+    {Array.from({ length: 20 }, (_, i) => <rect key={i} x={i * 240 - 2500} y={220 + (i % 3) * 40} width={220} height={520} fill="#d6b884" />)}
+    <path d="M 300 330 L 960 180 L 1620 330 L 1620 360 L 300 360 Z" fill="#f2ead6" stroke={OL} strokeWidth={6} strokeLinejoin="round" />
+    {Array.from({ length: 11 }, (_, i) => <path key={i} d={`M ${300 + i * 132} 360 q 66 30 132 0`} fill="#d8443a" stroke={OL} strokeWidth={4} />)}
+    {[320, 1600].map((x) => <rect key={x} x={x - 8} y={350} width={16} height={460} fill="#7a6a5a" stroke={OL} strokeWidth={4} />)}
+    <rect x={400} y={250} width={340} height={70} rx={8} fill="#2e6a9a" stroke={OL} strokeWidth={5} />
+    <text x={570} y={298} textAnchor="middle" fontFamily="sans-serif" fontWeight={900} fontSize={34} fill="#f6efe2">FOOD AID</text>
+    <rect x={-W * 2} y={800} width={W * 5} height={H} fill="#bfae8a" stroke={OL} strokeWidth={6} />
+  </g>
+);
