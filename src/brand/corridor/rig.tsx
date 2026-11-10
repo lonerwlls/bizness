@@ -26,7 +26,7 @@ export type Mouth = "smile" | "flat" | "o" | "open" | "wavy" | "grin" | "laugh";
 export type Expr = { browH?: number; browA?: number; browSkew?: number; eyes?: "dot" | "wide" | "happy" | "half"; blink?: number; look?: P; mouth?: Mouth; open?: number; sweat?: boolean; blush?: boolean };
 export type Look = {
   skin: string; skinDark: string; top: string; topDark: string; pants: string; shoe: string;
-  kind: "hero" | "janitor";
+  kind: "hero" | "janitor" | "person"; hair?: string; hairStyle?: "short" | "bun" | "long" | "cap" | "bald"; cap?: string; apron?: string;
 };
 export const HERO: Look = { kind: "hero", skin: "#fbefd6", skinDark: "#e4c79a", top: "#e0793a", topDark: "#b65a26", pants: "#4a3a32", shoe: "#f6efe2" };
 export const JANITOR: Look = { kind: "janitor", skin: "#efbd52", skinDark: "#c9952e", top: "#8d7d62", topDark: "#6a5c46", pants: "#4f4436", shoe: "#3a2a1e" };
@@ -100,6 +100,24 @@ const Face: React.FC<{ e: Expr; turn: number; look: Look }> = ({ e, turn, look }
   );
 };
 
+const Hair: React.FC<{ look: Look; turn: number }> = ({ look, turn }) => {
+  const c = look.hair ?? "#4a2e1e", st = look.hairStyle ?? "short", t = -turn * 6;
+  if (st === "bald") return null;
+  if (st === "cap") return (
+    <g transform={`translate(${t} 0)`}>
+      <path d="M -77 -22 Q -80 -98 0 -102 Q 80 -98 77 -22 Q 40 -40 -77 -22 Z" fill={look.cap ?? "#3a6a9a"} stroke={OL} strokeWidth={7} strokeLinejoin="round" />
+      <path d={`M ${turn > 0 ? 20 : -110} -30 Q ${turn > 0 ? 70 : -60} -44 ${turn > 0 ? 112 : -20} -26 Q ${turn > 0 ? 70 : -60} -18 ${turn > 0 ? 20 : -110} -30 Z`} fill={look.cap ?? "#3a6a9a"} stroke={OL} strokeWidth={6} />
+    </g>
+  );
+  return (
+    <g transform={`translate(${t} 0)`}>
+      {st === "long" ? [-1, 1].map((k) => <path key={k} d={`M ${k * 70} -30 Q ${k * 92} 30 ${k * 74} 92 Q ${k * 60} 96 ${k * 56} 70 Q ${k * 66} 20 ${k * 56} -20 Z`} fill={c} stroke={OL} strokeWidth={6} />) : null}
+      <path d="M -76 -14 Q -84 -92 0 -96 Q 84 -92 76 -14 Q 50 -52 6 -50 Q -36 -54 -76 -14 Z" fill={c} stroke={OL} strokeWidth={7} strokeLinejoin="round" />
+      {st === "bun" ? <circle cx={0} cy={-104} r={26} fill={c} stroke={OL} strokeWidth={6} /> : null}
+    </g>
+  );
+};
+
 /** рисует персонажа: (x, y) — точка на полу между ступнями, s — масштаб */
 export const Toon: React.FC<{ x: number; y: number; s: number; look: Look; pose: Pose; uid: string; behindArms?: boolean }> = ({ x, y, s, look, pose, uid }) => {
   const g = rigGeo(pose), turn = pose.turn ?? 0, lean = pose.lean ?? 0;
@@ -127,6 +145,7 @@ export const Toon: React.FC<{ x: number; y: number; s: number; look: Look; pose:
       <Limb pts={[g.hipR, g.knR, g.fR]} c={look.pants} w={22} />
       {shoe(g.fL, -1)}{shoe(g.fR, 1)}
       <path d={torso} fill={`url(#${tp})`} stroke={OL} strokeWidth={7} strokeLinejoin="round" />
+      {look.apron ? <path d={`M ${pose.hip[0] - 40} ${pose.hip[1] - 120} L ${pose.hip[0] + 40} ${pose.hip[1] - 120} L ${pose.hip[0] + 50} ${pose.hip[1] + 24} L ${pose.hip[0] - 50} ${pose.hip[1] + 24} Z`} fill={look.apron} stroke={OL} strokeWidth={5} transform={`rotate(${lean} ${pose.hip[0]} ${pose.hip[1]})`} /> : null}
       {look.kind === "hero" ? (
         <g>
           <path d={`M ${g.neck[0]} ${g.neck[1] + 8} L ${pose.hip[0] + lean * 0.4} ${pose.hip[1] + 30}`} stroke={look.topDark} strokeWidth={5} />
@@ -153,7 +172,7 @@ export const Toon: React.FC<{ x: number; y: number; s: number; look: Look; pose:
             {[-50, -25, 0, 25, 50].map((k) => <path key={k} d={`M ${k + turn * 8} -42 L ${k + turn * 8} -18`} stroke="#1c2036" strokeWidth={4} />)}
             <circle cx={-turn * 8} cy={-112} r={19} fill="#f4efe4" stroke={OL} strokeWidth={6} />
           </g>
-        ) : (
+        ) : look.kind === "person" ? <Hair look={look} turn={turn} /> : (
           <path d={`M ${-turn * 20 - 30} -60 Q ${-turn * 20} -70 ${-turn * 20 + 30} -60`} stroke="rgba(255,255,255,0.4)" strokeWidth={7} fill="none" strokeLinecap="round" />
         )}
       </g>
