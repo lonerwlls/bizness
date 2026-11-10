@@ -18,7 +18,7 @@ const tr = (en: string, ru: string) => (LANG === "ru" ? ru : en);
 
 export const FPS = 30;
 export const FS_FRAMES = Math.ceil((VOICE.dur + 1.6) * FPS);
-export const FS_FRAMES_RU = Math.ceil((VOICE_RU.dur + 1.6) * FPS);
+export const FS_FRAMES_RU = Math.ceil((VOICE_RU.dur + 3.8) * FPS);
 const W = 1080, PH = 1180; // ширина и высота области картинки
 const RED = "#ff3b3b", YEL = "#ffc53a", CYAN = "#5fd8f0", LIT = "#f4b448", WALL = "#1d2752";
 const MONO = "'DejaVu Sans Mono', 'Liberation Mono', ui-monospace, monospace";
@@ -139,9 +139,9 @@ const News: Shot = ({ g, t }) => {
     <Room tv={flick} tvText={<g>
       <rect x={16} y={16} width={408} height={50} fill={RED} />
       <text x={36} y={52} fontFamily="FsMont" fontWeight={900} fontSize={30} fill="#fff">{tr("BREAKING", "СРОЧНО")}</text>
-      {line.map((l, i) => <text key={l} x={220} y={140 + i * 50} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={38} fill="#0b1030">{l}</text>)}
-      <rect x={16} y={228} width={408} height={26} fill="#0b1030" />
-      <text x={30 - (g * 4) % 400} y={248} fontFamily={MONO} fontSize={18} fill="#fff">{tr("STAY HOME · STAY CALM · STAY HOME · STAY CALM · STAY HOME", "СОХРАНЯЙТЕ СПОКОЙСТВИЕ · ОСТАВАЙТЕСЬ ДОМА · СОХРАНЯЙТЕ СПОКОЙСТВИЕ")}</text>
+      {line.map((l, i) => <text key={l} x={220} y={140 + i * 50} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={Math.min(38, 540 / Math.max(1, l.length))} fill="#0b1030">{l}</text>)}
+      <clipPath id="tvclip"><rect x={16} y={16} width={408} height={238} /></clipPath><rect x={16} y={228} width={408} height={26} fill="#0b1030" />
+      <text clipPath="url(#tvclip)" x={30 - (g * 4) % 400} y={248} fontFamily={MONO} fontSize={18} fill="#fff">{tr("STAY HOME · STAY CALM · STAY HOME · STAY CALM · STAY HOME", "СОХРАНЯЙТЕ СПОКОЙСТВИЕ · ОСТАВАЙТЕСЬ ДОМА · СОХРАНЯЙТЕ СПОКОЙСТВИЕ")}</text>
     </g>}>
       <path d="M 120 760 Q 120 700 180 700 L 520 700 Q 580 700 580 760 L 580 960 L 120 960 Z" fill="#3a2a4a" stroke="#0a0d22" strokeWidth={8} />
       <Toon x={330} y={1010} s={0.85} look={HERO} pose={pose} uid="news" />
@@ -169,7 +169,7 @@ const Market: Shot = ({ g, t }) => {
       <path d="M 780 560 L 830 620 L 800 680 M 830 620 L 900 600 M 830 620 L 870 720" stroke="#9fb0e8" strokeWidth={4} fill="none" opacity={0.8} />
       <rect x={0} y={830} width={W} height={400} fill="#0c1024" />
       {Array.from({ length: 8 }, (_, i) => <path key={i} d={`M ${720 + rnd(i) * 220} 840 l 12 -8 l 10 10 z`} fill="#9fb0e8" opacity={0.6} />)}
-      <Tag x={360} y={215} title={tr("GROUND FLOOR", "1 ЭТАЖ · МАГАЗИН")} sub={tr("EMPTY SINCE MONDAY", "ПУСТО С ПОНЕДЕЛЬНИКА")} c={RED} w={330} o={ip(t, [0.4, 0.8], [0, 1])} />
+      <Tag x={360} y={300} title={tr("GROUND FLOOR", "1 ЭТАЖ · МАГАЗИН")} sub={tr("EMPTY SINCE MONDAY", "ПУСТО С ПОНЕДЕЛЬНИКА")} c={RED} w={330} o={ip(t, [0.4, 0.8], [0, 1])} />
     </Cam>
   </g>;
 };
@@ -462,7 +462,7 @@ const mkWords = (src: Wd[]): Wd[] => {
 };
 const mkGroups = (words: Wd[]): Wd[][] => {
   const gs: Wd[][] = []; let cur: Wd[] = [];
-  words.forEach((w) => { cur.push(w); if (w.end || (w.pause && cur.length >= 3) || cur.length >= 6) { gs.push(cur); cur = []; } });
+  words.forEach((w) => { cur.push(w); if (w.end || (w.pause && cur.length >= 3) || cur.length >= 8) { gs.push(cur); cur = []; } });
   if (cur.length) gs.push(cur);
   // короткие хвосты (1 слово после точки) склеиваем с предыдущей группой, если там ≤ 3 слов
   const m: Wd[][] = [];
@@ -482,7 +482,7 @@ const Captions: React.FC<{ sec: number }> = ({ sec }) => {
       const said = sec >= w.t, now = said && (i === grp.length - 1 || sec < grp[i + 1].t);
       const c = KEY_RED.test(w.w) ? RED : KEY_YEL.test(w.w) ? YEL : "#fff";
       const k = Math.min(1, (sec - w.t) / 0.1);
-      return <span key={i} style={{ color: said ? c : c === "#fff" ? "#6a6a72" : c, opacity: said ? 1 : 0.35, filter: said ? (now && c !== "#fff" ? `drop-shadow(0 0 18px ${c})` : "none") : "blur(2px)", display: "inline-block", marginRight: 22, transform: `translateY(${said ? 0 : 6}px) scale(${now ? 1 + 0.06 * (1 - k) : 1})` }}>{w.w}</span>;
+      return <span key={i} style={{ color: said ? c : c === "#fff" ? "#6a6a72" : c, opacity: said ? 1 : 0.35, filter: said ? (now && c !== "#fff" ? `drop-shadow(0 0 18px ${c})` : "none") : "blur(2px)", display: "inline-block", marginRight: 26, transform: `translateY(${said ? 0 : 6}px) scale(${now ? 1 + 0.06 * (1 - k) : 1})` }}>{w.w}</span>;
     })}
   </div>;
 };
@@ -500,7 +500,7 @@ const Clock: React.FC<{ sec: number }> = ({ sec }) => {
 // Русская озвучка идёт в другом темпе: время картинки берём из английского монтажа через пары «англ. слово ↔ рус. слово».
 // [время в английском ролике, время в русском]
 export const WARP_RU: [number, number][] = [
-  [0, 0], [3.889, 4.35], [5.45, 6.699], [7.012, 8.367], [7.964, 9.757], [10.15, 12.753], [13.514, 15.439], [14.826, 17.038], [16.35, 18.712], [18.634, 20.2], [21.42, 22.929], [21.95, 24.219], [22.755, 25.741], [23.127, 26.344], [23.789, 27.202], [24.45, 28.398], [25.7, 30.519], [27.6, 32.772], [29.408, 33.656], [31.033, 35.467], [32.531, 37.055], [33.355, 38.45], [34.45, 39.755], [36.826, 42.729], [37.7, 43.862], [40, 47.662], [44.222, 50.808], [45.5, 53.042], [48.042, 56.47], [49.818, 57.935], [51.5, 60.533], [51.943, 60.943], [53.023, 62.327], [53.88, 63.943], [56.982, 67.057], [57.82, 68.961], [58.05, 69.191], [58.909, 71.148], [61.4, 74.831], [66.3, 80.202],
+  [0, 0], [3.889, 4.857], [5.45, 6.862], [7.012, 8.628], [7.964, 10.217], [10.15, 13.165], [13.514, 16.03], [14.826, 17.77], [16.35, 19.79], [18.634, 21.234], [21.42, 24.326], [21.95, 25.639], [22.755, 27.036], [23.127, 27.889], [23.789, 29.02], [24.45, 30.216], [25.7, 32.138], [27.6, 34.261], [29.408, 35.263], [31.033, 37.429], [32.531, 39.274], [33.355, 40.6], [34.45, 41.818], [36.826, 44.504], [37.7, 45.863], [40, 49.622], [44.222, 53.023], [45.5, 55.159], [48.042, 59.042], [49.818, 60.635], [51.5, 63.186], [51.943, 63.603], [53.023, 64.962], [53.88, 66.428], [56.982, 70.125], [57.82, 71.362], [58.05, 71.592], [58.909, 72.895], [61.4, 75.574], [66.3, 79.451],
 ];
 const warp = (x: number, pairs: [number, number][], from: 0 | 1) => {
   const to = 1 - from;
@@ -511,18 +511,37 @@ const warp = (x: number, pairs: [number, number][], from: 0 | 1) => {
   const l = pairs[pairs.length - 1]; return l[to] + (x - l[from]);
 };
 
+// Камера никогда не стоит: медленный наезд за сцену + лёгкое «дыхание» (по реальному времени), чтобы не было застывших кадров.
+const live = (sec: number, prog: number) => {
+  const k = 1.03 + 0.06 * prog + 0.01 * Math.sin(sec * 0.9);
+  const dx = 7 * Math.sin(sec * 0.71) + 4 * Math.sin(sec * 1.9), dy = 6 * Math.cos(sec * 0.53) + 3 * Math.sin(sec * 1.4);
+  return `translate(${W / 2 + dx} ${PH / 2 + dy}) rotate(${0.35 * Math.sin(sec * 0.6)}) scale(${k}) translate(${-W / 2} ${-PH / 2})`;
+};
+/** пылинки в луче света и мерцание — фон всегда живой */
+const Dust: React.FC<{ sec: number }> = ({ sec }) => (
+  <g>
+    {Array.from({ length: 34 }, (_, i) => {
+      const sp = 8 + rnd(i + 3) * 22, x = (rnd(i) * W + sec * sp * (rnd(i + 9) > 0.5 ? 1 : -1) + 2000) % W;
+      const y = (rnd(i + 21) * PH - sec * (6 + rnd(i + 5) * 14) + 3000) % PH;
+      return <circle key={i} cx={x + 10 * Math.sin(sec * 0.8 + i)} cy={y} r={1.5 + rnd(i + 7) * 2.5} fill="#fff" opacity={0.08 + 0.12 * (0.5 + 0.5 * Math.sin(sec * 1.3 + i * 1.7))} />;
+    })}
+    <rect width={W} height={PH} fill="#000" opacity={0.035 + 0.035 * Math.abs(Math.sin(sec * 7.3) * Math.sin(sec * 3.1))} />
+  </g>
+);
 export const FoodShort: React.FC<{ lang?: "en" | "ru" }> = ({ lang = "en" }) => {
   LANG = lang;
   const f = useCurrentFrame(), sec = f / FPS;
   const vsec = lang === "ru" ? warp(sec, WARP_RU, 1) : sec, vf = Math.round(vsec * FPS);
   const ci = CUTS.reduce((acc, [, a], i) => (vf >= S(a) ? i : acc), 0);
   const [C, a] = CUTS[ci], g = vf - S(a);
+  const nextF = ci + 1 < CUTS.length ? S(CUTS[ci + 1][1]) : S(66.3);
   return <AbsoluteFill style={{ background: "#000" }}>
     <svg width={W} height={1920} viewBox={`0 0 ${W} 1920`} style={{ position: "absolute", top: 0 }}>
       <defs><linearGradient id="fadeB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" /></linearGradient>
         <radialGradient id="vig" cx="50%" cy="45%" r="70%"><stop offset="0.55" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" stopOpacity={0.75} /></radialGradient></defs>
       <svg width={W} height={PH} viewBox={`0 0 ${W} ${PH}`} overflow="hidden">
-        <C key={ci} g={g} t={g / FPS} />
+        <g transform={live(sec, g / Math.max(1, nextF - S(a)))}><C key={ci} g={g} t={g / FPS} /></g>
+        <Dust sec={sec} />
         <rect width={W} height={PH} fill="url(#vig)" />
       </svg>
       <rect y={PH - 260} width={W} height={262} fill="url(#fadeB)" />
@@ -532,6 +551,6 @@ export const FoodShort: React.FC<{ lang?: "en" | "ru" }> = ({ lang = "en" }) => 
     <Clock sec={vsec} />
     <Captions sec={sec} />
     <Audio src={staticFile(lang === "ru" ? "foodshort_ru_george/voice.mp3" : "foodshort/voice.mp3")} />
-    <Audio src={staticFile(lang === "ru" ? "foodshort_ru/sfx.wav" : "foodshort/sfx.wav")} volume={0.55} />
+    <Audio src={staticFile(lang === "ru" ? "foodshort_ru/bed.wav" : "foodshort/sfx.wav")} volume={lang === "ru" ? 0.85 : 0.55} />
   </AbsoluteFill>;
 };

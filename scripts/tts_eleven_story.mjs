@@ -34,9 +34,9 @@ for (let i = 0; i < parts.length; i++) {
   const mp3 = path.join(tmp, `p${i}.mp3`), wav = path.join(tmp, `p${i}.wav`);
   fs.writeFileSync(mp3, Buffer.from(j.audio_base64, "base64"));
   // обрезаем тишину в начале/конце куска, чтобы паузы были ровно такими, как задано
-  execSync(`ffmpeg -v error -y -i "${mp3}" -af "silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse" -ar 44100 -ac 1 -c:a pcm_s16le "${wav}"`);
+  execSync(`ffmpeg -v error -y -i "${mp3}" -af "silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.04,areverse,silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.08,areverse" -ar 44100 -ac 1 -c:a pcm_s16le "${wav}"`);
   const lead = (() => { // сколько тишины срезали в начале
-    const o = execSync(`ffmpeg -v info -i "${mp3}" -af silencedetect=n=-45dB:d=0.01 -f null - 2>&1 || true`).toString();
+    const o = execSync(`ffmpeg -v info -i "${mp3}" -af silencedetect=n=-55dB:d=0.01 -f null - 2>&1 || true`).toString();
     const m = o.match(/silence_start: 0(?:\.0+)?\s[\s\S]*?silence_end: ([\d.]+)/); return m ? +m[1] : 0;
   })();
   const dur = +execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${wav}"`).toString().trim();
