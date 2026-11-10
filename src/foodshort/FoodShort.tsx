@@ -15,19 +15,20 @@ new FontFace("FsMont", `url(${staticFile("towers/fonts/Montserrat-latin.woff2")}
 // язык ролика: ставится в корневом компоненте до отрисовки сцен (в одном рендере только одна композиция)
 let LANG: "en" | "ru" = "en";
 const tr = (en: string, ru: string) => (LANG === "ru" ? ru : en);
+export const setLang = (l: "en" | "ru") => { LANG = l; };
 
 export const FPS = 30;
 export const FS_FRAMES = Math.ceil((VOICE.dur + 1.6) * FPS);
 export const FS_FRAMES_RU = Math.ceil((VOICE_RU.dur + 3.8) * FPS);
-const W = 1080, PH = 1180; // ширина и высота области картинки
-const RED = "#ff3b3b", YEL = "#ffc53a", CYAN = "#5fd8f0", LIT = "#f4b448", WALL = "#1d2752";
-const MONO = "'DejaVu Sans Mono', 'Liberation Mono', ui-monospace, monospace";
-const rnd = (i: number) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
-const S = (sec: number) => Math.round(sec * FPS);
-type Shot = React.FC<{ g: number; t: number }>; // g — кадр сцены, t — секунды сцены
+export const W = 1080, PH = 1180; // ширина и высота области картинки
+export const RED = "#ff3b3b", YEL = "#ffc53a", CYAN = "#5fd8f0", LIT = "#f4b448", WALL = "#1d2752";
+export const MONO = "'DejaVu Sans Mono', 'Liberation Mono', ui-monospace, monospace";
+export const rnd = (i: number) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+export const S = (sec: number) => Math.round(sec * FPS);
+export type Shot = React.FC<{ g: number; t: number }>; // g — кадр сцены, t — секунды сцены
 
 // ---------- общие детали ----------
-const Tag: React.FC<{ x: number; y: number; title: string; sub?: string; c?: string; o?: number; w?: number }> = ({ x, y, title, sub, c = CYAN, o = 1, w: w0 = 300 }) => { const w = Math.max(w0, title.length * 20 + 80, (sub ?? "").length * 11.5 + 80); return (
+export const Tag: React.FC<{ x: number; y: number; title: string; sub?: string; c?: string; o?: number; w?: number }> = ({ x, y, title, sub, c = CYAN, o = 1, w: w0 = 300 }) => { const w = Math.max(w0, title.length * 20 + 80, (sub ?? "").length * 11.5 + 80); return (
   <g transform={`translate(${x} ${y})`} opacity={o}>
     <rect x={-w / 2} y={-34} width={w} height={sub ? 76 : 60} rx={8} fill="rgba(8,12,30,0.85)" stroke={c} strokeWidth={3} />
     <rect x={-w / 2 + 14} y={-20} width={18} height={18} rx={3} fill="none" stroke={c} strokeWidth={3} />
@@ -35,20 +36,20 @@ const Tag: React.FC<{ x: number; y: number; title: string; sub?: string; c?: str
     {sub ? <text x={-w / 2 + 44} y={28} fontFamily={MONO} fontSize={18} fill={c} letterSpacing={1}>{sub}</text> : null}
   </g>
 ); };
-const Brackets: React.FC<{ x: number; y: number; w: number; h: number; c?: string }> = ({ x, y, w, h, c = YEL }) => {
+export const Brackets: React.FC<{ x: number; y: number; w: number; h: number; c?: string }> = ({ x, y, w, h, c = YEL }) => {
   const k = 22;
   return <g stroke={c} strokeWidth={5} fill="none" strokeLinecap="round">
     {[[x, y, 1, 1], [x + w, y, -1, 1], [x, y + h, 1, -1], [x + w, y + h, -1, -1]].map(([a, b, sx, sy], i) => <path key={i} d={`M ${a} ${b + sy * k} L ${a} ${b} L ${a + sx * k} ${b}`} />)}
   </g>;
 };
-const Shadow: React.FC<{ x: number; y: number; s?: number; eyes?: number; look?: number }> = ({ x, y, s = 1, eyes = 1, look = 0 }) => (
+export const Shadow: React.FC<{ x: number; y: number; s?: number; eyes?: number; look?: number }> = ({ x, y, s = 1, eyes = 1, look = 0 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     <path d="M -70 0 Q -74 -120 -40 -140 L 40 -140 Q 74 -120 70 0 Z" fill="#05060d" />
     <circle cx={0} cy={-190} r={56} fill="#05060d" />
     {eyes > 0 ? [-1, 1].map((k) => <circle key={k} cx={k * 18 + look * 14} cy={-194} r={6} fill="#f2f2f2" opacity={eyes} />) : null}
   </g>
 );
-const Crate: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
+export const Crate: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     <rect x={-95} y={-70} width={190} height={140} rx={6} fill="#b57a3e" stroke={OL} strokeWidth={7} />
     {[-36, 0, 36].map((k) => <path key={k} d={`M -95 ${k} L 95 ${k}`} stroke="#8a5628" strokeWidth={5} />)}
@@ -65,18 +66,18 @@ const Carrier: React.FC<{ x: number; y: number; s: number; pose: Pose; uid: stri
   const p2 = { ...pose, handL: hl, handR: hr };
   return <g><Toon x={x} y={y} s={s} look={HERO} pose={p2} uid={uid} /><Crate x={x + (pose.dir ?? 0) * 20 * s} y={y + hy * s} s={s * 0.95} /><Hand p={hl} x={x} y={y} s={s} /><Hand p={hr} x={x} y={y} s={s} /></g>;
 };
-const NightBg: React.FC<{ top?: string; bot?: string }> = ({ top = "#0a0f26", bot = "#1a2350" }) => (
+export const NightBg: React.FC<{ top?: string; bot?: string }> = ({ top = "#0a0f26", bot = "#1a2350" }) => (
   <g><defs><linearGradient id="nbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={top} /><stop offset="1" stopColor={bot} /></linearGradient></defs><rect width={W} height={PH} fill="url(#nbg)" /></g>
 );
-const Cam: React.FC<{ s: number; cx: number; cy: number; children: React.ReactNode; shake?: number }> = ({ s, cx, cy, children, shake = 0 }) => (
+export const Cam: React.FC<{ s: number; cx: number; cy: number; children: React.ReactNode; shake?: number }> = ({ s, cx, cy, children, shake = 0 }) => (
   <g transform={`translate(${W / 2 + shake * (rnd(cx + shake * 7) - 0.5) * 30} ${PH / 2 + shake * (rnd(cy + shake * 3) - 0.5) * 30}) scale(${s}) translate(${-cx} ${-cy})`}>{children}</g>
 );
 
 // ---------- фасад дома ----------
-const FLOORS = 6, COLS = 4;
+export const FLOORS = 6, COLS = 4;
 const FX = 150, FW = 780, FB = 1120, FH = 150; // левый край, ширина, низ, высота этажа
-const winXY = (floor: number, col: number): [number, number] => [FX + 60 + col * 180, FB - floor * FH - 20];
-const Facade: React.FC<{ lit: (f: number, c: number) => number; watchers?: number }> = ({ lit, watchers = 0 }) => (
+export const winXY = (floor: number, col: number): [number, number] => [FX + 60 + col * 180, FB - floor * FH - 20];
+export const Facade: React.FC<{ lit: (f: number, c: number) => number; watchers?: number }> = ({ lit, watchers = 0 }) => (
   <g>
     <rect x={FX} y={FB - (FLOORS + 0.4) * FH} width={FW} height={(FLOORS + 0.4) * FH + 60} fill={WALL} stroke="#0c1130" strokeWidth={6} />
     {Array.from({ length: FLOORS }, (_, fi) => Array.from({ length: COLS }, (_, c) => {
@@ -114,7 +115,7 @@ const Building: Shot = ({ g, t }) => {
 };
 
 // ---------- комната с телевизором ----------
-const Room: React.FC<{ tv: number; children?: React.ReactNode; tvText?: React.ReactNode }> = ({ tv, children, tvText }) => (
+export const Room: React.FC<{ tv: number; children?: React.ReactNode; tvText?: React.ReactNode }> = ({ tv, children, tvText }) => (
   <g>
     <rect width={W} height={PH} fill="#151b3c" />
     <rect x={60} y={170} width={330} height={400} fill="#0b1030" stroke="#0a0d22" strokeWidth={10} />
@@ -286,7 +287,7 @@ const MyDoor: Shot = ({ t }) => {
 };
 
 // ---------- кухня: одна кастрюля ----------
-const Steam: React.FC<{ x: number; y: number; g: number; k?: number; o?: number }> = ({ x, y, g, k = 1, o = 0.5 }) => (
+export const Steam: React.FC<{ x: number; y: number; g: number; k?: number; o?: number }> = ({ x, y, g, k = 1, o = 0.5 }) => (
   <g opacity={o}>{[0, 1, 2].map((i) => {
     const ph = (g * 0.02 + i / 3) % 1;
     return <path key={i} d={`M ${x - 30 + i * 30} ${y - ph * 220 * k} q ${18 * Math.sin(g / 9 + i)} -40 0 -80 t 0 -80`} stroke="#e8eef8" strokeWidth={12} fill="none" strokeLinecap="round" opacity={1 - ph} />;
@@ -512,13 +513,13 @@ const warp = (x: number, pairs: [number, number][], from: 0 | 1) => {
 };
 
 // Камера никогда не стоит: медленный наезд за сцену + лёгкое «дыхание» (по реальному времени), чтобы не было застывших кадров.
-const live = (sec: number, prog: number) => {
+export const live = (sec: number, prog: number) => {
   const k = 1.03 + 0.06 * prog + 0.01 * Math.sin(sec * 0.9);
   const dx = 7 * Math.sin(sec * 0.71) + 4 * Math.sin(sec * 1.9), dy = 6 * Math.cos(sec * 0.53) + 3 * Math.sin(sec * 1.4);
   return `translate(${W / 2 + dx} ${PH / 2 + dy}) rotate(${0.35 * Math.sin(sec * 0.6)}) scale(${k}) translate(${-W / 2} ${-PH / 2})`;
 };
 /** пылинки в луче света и мерцание — фон всегда живой */
-const Dust: React.FC<{ sec: number }> = ({ sec }) => (
+export const Dust: React.FC<{ sec: number }> = ({ sec }) => (
   <g>
     {Array.from({ length: 34 }, (_, i) => {
       const sp = 8 + rnd(i + 3) * 22, x = (rnd(i) * W + sec * sp * (rnd(i + 9) > 0.5 ? 1 : -1) + 2000) % W;
