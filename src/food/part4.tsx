@@ -65,21 +65,25 @@ const Guarded: Shot = ({ g }) => {
 };
 // 4. склад: собирают, считают, раздают
 const Depot: Shot = ({ g }) => {
-  const s = 0.8, y = 900, cyc = 60;
+  const y = 900, cyc = 60;
+  // два рабочих идут по разным «дорожкам» (дальняя и ближняя), чтобы не проходить друг сквозь друга
   const workers = [0, 1].map((i) => {
+    const s = i === 0 ? 0.74 : 0.86, wy = i === 0 ? 860 : 950;
     const t = (g + i * 30) % cyc, n = Math.floor((g + i * 30) / cyc);
     const go = t < 30, u = go ? t / 30 : 1 - (t - 30) / 30;
-    const x = lerp(300, 820, u) + i * 40;
-    const pose = walking(g, Math.abs(x - 300) / s + n * 900, go ? 1 : -1, go ? { handL: [-40, -300], handR: [40, -300], seed: 3 + i } : { seed: 3 + i });
-    return { x, pose, carry: go, i };
+    const x = lerp(320, 905, u);
+    const pose = walking(g, Math.abs(x - 320) / s + n * 1000, go ? 1 : -1, go ? { handL: [-40, -300], handR: [40, -300], seed: 3 + i } : { seed: 3 + i });
+    return { x, pose, carry: go, i, s, wy };
   });
+  const s = 0.8;
   const placed = Math.min(9, 3 + Math.floor(g / 30));
   const counter = stand(g, { turn: -0.5, handL: [-40, -320], handR: [10 + Math.sin(g * 0.8) * 8, -330], nod: 10, expr: { mouth: "open", open: talk(g, 4) * 0.5, look: [0, 1] }, seed: 6 });
   return (
     <Svg bg="#cdb48a"><CamG cam={{ s: lerp(1.0, 1.06, g / 195), cx: 900, cy: 560 }}>
       <Warehouse />
-      <Pallet x={1000} y={y} boxes={placed} />
-      {workers.map((w) => <g key={w.i}><Person x={w.x} y={y} s={s} look={PEOPLE.worker} pose={w.pose} uid={"w" + w.i} />{w.carry ? <Box x={w.x} y={y - 300 * s} s={0.85} /> : null}</g>)}
+      {workers.slice(0, 1).map((w) => <g key={w.i}><Person x={w.x} y={w.wy} s={w.s} look={PEOPLE.worker} pose={w.pose} uid={"w" + w.i} />{w.carry ? <Box x={w.x} y={w.wy - 300 * w.s} s={0.85 * w.s / 0.8} /> : null}</g>)}
+      <Pallet x={985} y={y} boxes={placed} />
+      {workers.slice(1).map((w) => <g key={w.i}><Person x={w.x} y={w.wy} s={w.s} look={PEOPLE.worker} pose={w.pose} uid={"w" + w.i} />{w.carry ? <Box x={w.x} y={w.wy - 300 * w.s} s={0.85 * w.s / 0.8} /> : null}</g>)}
       <Person x={1320} y={y} s={s} look={SOLDIER} pose={counter} uid="c" />
       <rect x={1320 - 70 * s} y={y - 340 * s} width={60} height={80} fill="#f2ead6" stroke={OL} strokeWidth={4} />
     </CamG></Svg>
@@ -189,7 +193,7 @@ const Aid: Shot = ({ g }) => {
   const soldier = stand(g, { turn: -0.5, handL: giveH, handR: [10, -300], expr: { mouth: "smile", look: [-1, 0] }, seed: 60 });
   const vol = stand(g + 20, { turn: -0.4, handL: trackP((g + 26) % cyc, [[0, [-60, -200]], [10, [-40, -300]], [24, [-170, -300]], [30, [-170, -300]], [40, [-60, -200]], [52, [-60, -200]]]), handR: [20, -300], expr: { mouth: "open", open: talk(g, 6) * 0.6, look: [-1, 0] }, seed: 61 });
   const taker = (k: number) => {
-    const tt = (g + k * 17) % (cyc * 2), x = lerp(700, 200, tt / (cyc * 2));
+    const tt = (g + k * 52) % (cyc * 2), x = lerp(700, 200, tt / (cyc * 2));
     return walking(g, (700 - x) / 0.7 + k * 300, -1, { handL: [-40, -300], handR: [40, -300], seed: 62 + k, expr: { mouth: "smile" } });
   };
   return (
@@ -201,7 +205,7 @@ const Aid: Shot = ({ g }) => {
       <Person x={1150} y={900} s={0.8} look={VOLUNTEER} pose={vol} uid="vo" />
       <rect x={760} y={680} width={700} height={220} fill="#8a6a4a" stroke={OL} strokeWidth={5} />
       {t >= 10 && t < 30 ? <Box x={900 + giveH[0] * 0.8} y={900 + giveH[1] * 0.8 + 20} s={0.7} /> : null}
-      {[0, 1].map((k) => { const tt = (g + k * 17) % (cyc * 2), x = lerp(700, 200, tt / (cyc * 2)); return <g key={k}><Person x={x} y={930} s={0.7} look={[PEOPLE.woman, PEOPLE.oldman][k]} pose={taker(k)} uid={"t" + k} /><Box x={x} y={930 - 300 * 0.7} s={0.7} /></g>; })}
+      {[0, 1].map((k) => { const tt = (g + k * 52) % (cyc * 2), x = lerp(700, 200, tt / (cyc * 2)), py = k ? 960 : 920; return <g key={k}><Person x={x} y={py} s={0.7} look={[PEOPLE.woman, PEOPLE.oldman][k]} pose={taker(k)} uid={"t" + k} /><Box x={x} y={py - 300 * 0.7} s={0.7} /></g>; })}
       <text x={-100} y={-100} fontSize={1}>{n}</text>
     </CamG></Svg>
   );
@@ -233,7 +237,7 @@ export const Part4: React.FC = () => (
     {CUTS.map(([S, a, b], i) => <Sequence key={i} from={a} durationInFrames={b - a}><ShotView S={S} /></Sequence>)}
     <TimeCard text="1 WEEK LATER" />
     <Sequence from={V}><Audio src={staticFile("food/part4.mp3")} /></Sequence>
-    <Audio src={staticFile("food/sfx4.wav")} />
+    <Audio src={staticFile("food/sfx4.wav")} volume={0.3} />
     <FadeOut total={PART4_FRAMES} />
   </AbsoluteFill>
 );
