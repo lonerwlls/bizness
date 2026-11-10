@@ -64,17 +64,32 @@ const Viral: Shot = ({ g }) => {
 // 3. люди хватают рис
 const Grab: Shot = ({ g }) => {
   const Z = 3.6, s = 0.75;
-  const ppl: [number, Look, number][] = [[-1.15, PEOPLE.woman, 0], [1.1, PEOPLE.man, 8]];
+  const ppl: [number, Look, number][] = [[-1.3, PEOPLE.woman, 0], [1.28, PEOPLE.man, 8]];
   return (
     <Svg><CamG cam={{ s: 1.25, cx: 960, cy: 560 }}>
       <Aisle fill={0.4} />
       {ppl.map(([X, lk, d], i) => {
         const side = X < 0 ? -1 : 1, shelfX = aisleX(side * 1.6, Z), x = aisleX(X, Z), y = aisleFloorY(Z);
-        const reachL = ((shelfX - x) / s) * 0.9;
-        const ph = ((g + d) % 40) / 40, out = ph < 0.5 ? ph * 2 : 2 - ph * 2;
-        const h: [number, number] = [lerp(side * 60, reachL, out), lerp(-200, -300, out)];
-        const pose = stand(g + d, { turn: side * 0.7, lean: side * 6 * out, handR: side > 0 ? h : [70, -230], handL: side < 0 ? h : [-70, -230], expr: { mouth: "flat", browA: 0.5, look: [side, 0] }, seed: 2 + i });
-        return <g key={i}><Person x={x} y={y} s={s} look={lk} pose={pose} uid={"g" + i} />{out < 0.4 ? <RiceBag x={x + (side > 0 ? 70 : -70) * s} y={y - 200 * s} s={0.5} /> : null}</g>;
+        // цикл: тянется к полке → берёт мешок → несёт к корзине в другой руке → кладёт; корзина наполняется
+        const CY = 46, t = (g + d) % CY, n = Math.floor((g + d) / CY);
+        const shelfL: [number, number] = [((shelfX - x) / s) * 1.0, -330];
+        const basketH: [number, number] = [-side * 70, -215];
+        const overBasket: [number, number] = [-side * 30, -300];
+        const h = trackP(t, [[0, [side * 60, -230]], [12, shelfL], [16, shelfL], [30, overBasket], [34, [-side * 34, -270]], [46, [side * 60, -230]]]);
+        const holding = t >= 14 && t < 33;
+        const pose = stand(g + d, { turn: side * 0.7, lean: side * 6 * ip(t, [4, 12, 18, 26], [0, 1, 1, 0]), handR: side > 0 ? h : basketH, handL: side < 0 ? h : basketH, expr: { mouth: "flat", browA: 0.5, look: [t < 16 ? side : -side * 0.5, t < 16 ? 0 : 0.6] }, seed: 2 + i });
+        const hw: [number, number] = [x + h[0] * s, y + h[1] * s], bw: [number, number] = [x + basketH[0] * s, y + basketH[1] * s];
+        const inBasket = Math.min(4, n + (t >= 33 ? 1 : 0) + 1);
+        return (
+          <g key={i}>
+            <Person x={x} y={y} s={s} look={lk} pose={pose} uid={"g" + i} />
+            <g transform={`translate(${bw[0]} ${bw[1]})`}>
+              {Array.from({ length: inBasket }, (_, k) => <RiceBag key={k} x={-24 + (k % 3) * 24} y={14 - Math.floor(k / 3) * 14} s={0.42} />)}
+              <path d="M -46 0 L 46 0 L 38 52 L -38 52 Z" fill="#d8443a" stroke={OL} strokeWidth={4} /><path d="M -32 0 Q 0 -44 32 0" stroke={OL} strokeWidth={4} fill="none" />
+            </g>
+            {holding ? <RiceBag x={hw[0]} y={hw[1] + 34} s={0.45} /> : null}
+          </g>
+        );
       })}
     </CamG></Svg>
   );
@@ -158,7 +173,7 @@ const CafeClose: Shot = ({ g }) => {
   }
   const gg = g - 72;
   return (
-    <Svg day="DAY 5"><CamG cam={{ s: lerp(1.5, 1.6, gg / 132), cx: 400, cy: 600 }}>
+    <Svg><CamG cam={{ s: lerp(1.5, 1.6, gg / 132), cx: 400, cy: 600 }}>
       <Street stock={0.05} closedCafe />
       {[150, 640].map((x) => <g key={x}><CafeTable x={x} /><path d={`M ${x - 40} ${STREET_Y - 150} L ${x - 40} ${STREET_Y - 260} L ${x + 30} ${STREET_Y - 260} L ${x + 30} ${STREET_Y - 150}`} stroke="#4a4038" strokeWidth={8} fill="none" /></g>)}
       <g transform="translate(560 540) rotate(3)"><rect x={-110} y={-70} width={220} height={140} fill="#fbf6e8" stroke={OL} strokeWidth={4} />{txt(0, -20, 28, "#3a2a1e", "CLOSED UNTIL")}{txt(0, 22, 28, "#3a2a1e", "FURTHER")}{txt(0, 58, 28, "#3a2a1e", "NOTICE")}</g>
@@ -216,15 +231,23 @@ const Press: Shot = ({ g }) => {
 };
 // 12. вечер дома: шкафчик, начинает считать
 const Cupboard: Shot = ({ g }) => {
-  const Z = 3.0, X = -0.4, s = 0.75 * (3.6 / Z), x = kitX(X, Z), y = kitFloorY(Z);
+  const Z = 3.0, s = 0.75 * (3.6 / Z), y = kitFloorY(Z);
   if (g < 70) {
-    const pose = g < 40 ? walking(g, g * 9, 1, { handR: [80, -250], seed: 40, expr: { mouth: "flat", browA: 0.5 } }) : stand(g, { turn: -0.3, handR: trackP(g, [[40, [80, -250]], [55, [-150, -300]], [70, [-80, -200]]]), seed: 40, expr: { mouth: "flat", browA: 0.5 } });
-    const hx = g < 40 ? x - 300 + g * 7 : x;
+    // входит справа, идёт к столу, ставит пакет на стол левой рукой
+    const PX = kitX(-1.15, 2.9), PY = kitFloorY(2.9) - (0.76 * 900) / 2.9; // точка на столешнице
+    const SX = PX + 105, walkEnd = 40, hx = g < walkEnd ? lerp(SX + 340, SX, g / walkEnd) : SX;
+    const carry: [number, number] = [-60, -205];
+    const place: [number, number] = [(PX - SX) / s, (PY - 92 - y) / s];
+    const handL = g < walkEnd ? carry : trackP(g, [[walkEnd, carry], [56, place], [60, place], [70, [-60, -180]]]);
+    const pose = g < walkEnd ? walking(g, (SX + 340 - hx) / s, -1, { handL: carry, seed: 40, expr: { mouth: "flat", browA: 0.5 } })
+      : stand(g, { turn: -0.5, lean: ip(g, [walkEnd, 56, 62, 70], [0, -6, -6, 0]), handL, seed: 40, expr: { mouth: "flat", browA: 0.5, look: [-1, 0.5] } });
+    const released = g >= 60;
+    const bagTop: [number, number] = released ? [PX, PY - 92] : [hx + handL[0] * s, y + handL[1] * s];
     return (
-      <Svg><CamG cam={{ s: 1.3, cx: x - 80, cy: y - 260 }}>
+      <Svg><CamG cam={{ s: 1.3, cx: 820, cy: y - 260 }}>
         <Kitchen open={0} />
         <Person x={hx} y={y} s={s} look={HERO} pose={pose} uid="hc" />
-        {g < 55 ? <g transform={`translate(${hx + 80 * s} ${y - 250 * s})`}><path d="M -50 0 L 50 0 L 44 100 L -44 100 Z" fill="#d8c08a" stroke={OL} strokeWidth={4} /><RiceBag x={-10} y={10} s={0.4} /></g> : <g transform={`translate(${kitX(-1.6, 2.85)} ${kitFloorY(2.85) - 230})`}><path d="M -50 0 L 50 0 L 44 100 L -44 100 Z" fill="#d8c08a" stroke={OL} strokeWidth={4} /><RiceBag x={-10} y={10} s={0.4} /></g>}
+        <g transform={`translate(${bagTop[0]} ${bagTop[1]})`}><RiceBag x={-6} y={14} s={0.4} /><path d="M -46 4 L 46 4 L 42 92 L -42 92 Z" fill="#d8c08a" stroke={OL} strokeWidth={4} /><path d="M -46 4 L 46 4" stroke={OL} strokeWidth={5} /></g>
         <rect x={0} y={0} width={W * 2} height={H} fill="rgba(30,20,60,0.25)" transform="translate(-500 -200)" />
       </CamG></Svg>
     );
