@@ -6,10 +6,12 @@ import { PART2_FRAMES, Part2 } from "./part2";
 import { PART3_FRAMES, Part3 } from "./part3";
 import { PART4_FRAMES, Part4 } from "./part4";
 import { PART5_FRAMES, Part5 } from "./part5";
+import { PART6_FRAMES, Part6 } from "./part6";
 
 const Root: React.FC = () => (
   <>
     <Composition id="Food-1" component={Part1} durationInFrames={PART1_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="Food-6" component={Part6} durationInFrames={PART6_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="Food-5" component={Part5} durationInFrames={PART5_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="Food-4" component={Part4} durationInFrames={PART4_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="Food-3" component={Part3} durationInFrames={PART3_FRAMES} fps={30} width={1920} height={1080} />

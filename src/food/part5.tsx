@@ -16,11 +16,11 @@ const Svg: React.FC<{ children: React.ReactNode; bg?: string }> = ({ children, b
 type Shot = React.FC<{ g: number }>;
 const txt = (x: number, y: number, size: number, fill: string, t: string, w = 900) => <text x={x} y={y} textAnchor="middle" fontFamily="sans-serif" fontWeight={w} fontSize={size} fill={fill}>{t}</text>;
 /** реальная точка кисти в мире (с учётом длины руки) */
-const handW = (x: number, y: number, s: number, pose: Pose, side: "L" | "R"): P => { const h = rigGeo(pose)[side === "L" ? "hL" : "hR"]; return [x + h[0] * s, y + h[1] * s]; };
+export const handW = (x: number, y: number, s: number, pose: Pose, side: "L" | "R"): P => { const h = rigGeo(pose)[side === "L" ? "hL" : "hR"]; return [x + h[0] * s, y + h[1] * s]; };
 const FARMER: Look = { kind: "person", skin: "#e2a868", skinDark: "#b98040", top: "#6a8a4a", topDark: "#506a36", pants: "#3a4a6a", shoe: "#3a2a1e", hairStyle: "cap", cap: "#c8a050" };
 
 // ---------- предметы ----------
-const Boots: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
+export const Boots: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     {[-22, 18].map((dx) => <path key={dx} d={`M ${dx - 16} 0 L ${dx - 16} -56 L ${dx + 8} -56 L ${dx + 8} -18 L ${dx + 30} -14 Q ${dx + 34} 0 ${dx + 26} 0 Z`} fill="#6a4a2e" stroke={OL} strokeWidth={4} strokeLinejoin="round" />)}
   </g>
@@ -28,13 +28,13 @@ const Boots: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) 
 const Phone: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}><rect x={-18} y={-34} width={36} height={64} rx={6} fill="#2a2a30" stroke={OL} strokeWidth={4} /><rect x={-13} y={-27} width={26} height={48} rx={2} fill="#7ab0d0" /></g>
 );
-const Can: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
+export const Can: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}><rect x={-18} y={-24} width={36} height={48} rx={4} fill="#a8aeb6" stroke={OL} strokeWidth={4} /><rect x={-18} y={-10} width={36} height={18} fill="#d8443a" /></g>
 );
 const Batteries: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}><rect x={-26} y={-22} width={52} height={44} rx={4} fill="#f2e6c4" stroke={OL} strokeWidth={4} />{[-14, 0, 14].map((d) => <rect key={d} x={d - 5} y={-16} width={10} height={30} fill="#3a3a40" />)}</g>
 );
-const Bucket: React.FC<{ x: number; y: number; grow: number; s?: number; tomato?: boolean }> = ({ x, y, grow, s = 1, tomato = true }) => (
+export const Bucket: React.FC<{ x: number; y: number; grow: number; s?: number; tomato?: boolean }> = ({ x, y, grow, s = 1, tomato = true }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     <g transform={`translate(0 -50) scale(${0.2 + 0.8 * grow})`}>
       <path d="M 0 0 L 0 -90" stroke="#4a7a3a" strokeWidth={7} />
@@ -53,7 +53,7 @@ const Tire: React.FC<{ x: number; y: number; grow: number }> = ({ x, y, grow }) 
     <ellipse cx={0} cy={-26} rx={52} ry={14} fill="#5a3e2a" />
   </g>
 );
-const Shovel: React.FC<{ a: P; b: P }> = ({ a, b }) => {
+export const Shovel: React.FC<{ a: P; b: P }> = ({ a, b }) => {
   // древко проходит через обе кисти и уходит вниз к лопате
   const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
   const top: P = [a[0] - ux * 30, a[1] - uy * 30], end: P = [b[0] + ux * 140, b[1] + uy * 140];
@@ -66,7 +66,7 @@ const Shovel: React.FC<{ a: P; b: P }> = ({ a, b }) => {
     </g>
   );
 };
-const Car: React.FC<{ x: number; y: number; c: string; s?: number; roof?: number; flip?: boolean }> = ({ x, y, c, s = 1, roof = 0, flip }) => (
+export const Car: React.FC<{ x: number; y: number; c: string; s?: number; roof?: number; flip?: boolean }> = ({ x, y, c, s = 1, roof = 0, flip }) => (
   <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s})`}>
     {roof === 1 ? <rect x={-80} y={-170} width={140} height={34} rx={8} fill="#e8d8b0" stroke={OL} strokeWidth={4} /> : null}
     {roof === 2 ? <g><rect x={-90} y={-176} width={70} height={40} fill="#3a6a9a" stroke={OL} strokeWidth={4} /><rect x={-14} y={-170} width={60} height={34} fill="#c8603a" stroke={OL} strokeWidth={4} /></g> : null}
@@ -98,7 +98,7 @@ const Jerrycan: React.FC<{ x: number; y: number; rot?: number }> = ({ x, y, rot 
 const Bills: React.FC<{ x: number; y: number }> = ({ x, y }) => (
   <g transform={`translate(${x} ${y})`}>{[-8, 0, 8].map((r, i) => <g key={i} transform={`rotate(${r - 10})`}><rect x={-40} y={-20} width={80} height={40} rx={3} fill="#9ac08a" stroke={OL} strokeWidth={3} /><circle r={10} fill="none" stroke="#5a8a4a" strokeWidth={3} /></g>)}</g>
 );
-const Ground: React.FC<{ y: number; c?: string; sky?: string }> = ({ y, c = "#d4c09a", sky = "#efd9ae" }) => (
+export const Ground: React.FC<{ y: number; c?: string; sky?: string }> = ({ y, c = "#d4c09a", sky = "#efd9ae" }) => (
   <g><rect x={-W} width={W * 3} height={H} fill={sky} /><rect x={-W} y={y} width={W * 3} height={H} fill={c} stroke={OL} strokeWidth={5} /></g>
 );
 const Stall: React.FC<{ x: number; y: number; w?: number }> = ({ x, y, w = 360 }) => (

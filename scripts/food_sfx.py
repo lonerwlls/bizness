@@ -96,3 +96,32 @@ if part == 5:
     for i in range(13): add(pluck(220 * 2 ** ((i % 5) / 12)), a + (i * 10 + 12) * F, 0.05)
     add(thud(60, 0.6), a + 130 * F, 0.25)
     save("public/food/sfx5.wav")
+
+def crackle(d):
+    n = int(d * SR); out = np.zeros(n)
+    for _ in range(int(d * 14)):
+        a = int(rng.uniform(0, d - 0.05) * SR); c = click(rng.uniform(1500, 4000), 0.02, 300); out[a:a + len(c)] += c * rng.uniform(0.2, 1)
+    return norm(out + 0.3 * norm(filt(rng.standard_normal(n), 100, 800)))
+def plop(): return norm(mixlen(thud(160, 0.2), int(0.2 * SR)) + 0.5 * mixlen(water(0.15), int(0.2 * SR)))
+
+if part == 6:
+    F = 1 / 30
+    a = S(0); add(wind(5.1), a, 0.12); steps(a, a + 5.1, 44 * F, 0.08, 0.4)
+    a = S(5.1); add(room(2.3), a, 0.05)
+    for k in range(16): add(click(2200, 0.02, 250), a + (6 + k * 4) * F, 0.05, (k % 5 - 2) * 0.2)
+    a = S(7.4); add(room(5.1), a, 0.06); steps(a, a + 34 * F, 14 * F, 0.14, -0.4); add(box_down(), a + 63 * F, 0.3)
+    add(engine(2.4, 0.9), a + 95 * F, 0.12, 0.3)
+    a = S(12.5); add(crackle(5.6), a, 0.12); add(glug(5.6) * 0.3, a, 0.05); add(murmur(5.6) * 0.5, a, 0.1); add(plop(), a + 150 * F, 0.3)
+    steps(a + 60 * F, a + 120 * F, 15 * F, 0.1, 0.4)
+    a = S(18.1); add(scrub(1.4), a, 0.08); add(cardboard(0.6) * 0.5, a + 44 * F, 0.08); add(plop(), a + 64 * F, 0.15); add(plop(), a + 94 * F, 0.3)
+    a = S(21.6)
+    for k, at in enumerate((0, 24, 52)): add(box_down(), a + (at + 8) * F, 0.32 - k * 0.07)
+    a = S(24.4); add(creak(0.5, 200), a + 20 * F, 0.06); add(stamp(), a + 34 * F, 0.25); add(ping(2600, 0.2, 25), a + 80 * F, 0.12)
+    a = S(27.4); add(room(5.4), a, 0.08); add(click(2500, 0.03, 250), a + 4 * F, 0.15)
+    a = S(32.8); add(murmur(2.3) * 0.5, a, 0.08); add(breath(0.8), a + 0.6, 0.1)
+    a = S(35.1); add(crickets(2.8), a, 0.1); steps(a, a + 2.8, 23 * F, 0.1, -0.3)
+    a = S(37.9); add(wind(2.6), a, 0.1); add(ping(1800, 0.3, 18), a + 0.4, 0.05)
+    a = S(40.5); add(murmur(6.9) * 0.5, a, 0.08); steps(a, a + 46 * F, 15 * F, 0.12, -0.3); steps(a + 0.2, a + 46 * F, 15 * F, 0.12, 0.3); add(click(800, 0.05, 80), a + 50 * F, 0.15)
+    a = S(47.4); add(murmur(6.0), a, 0.18); add(crackle(6.0) * 0.4, a, 0.05)
+    for k in range(14): add(ping(rng.uniform(2800, 3600), 0.15, 30), a + rng.uniform(0.3, 5.5), 0.05, rng.uniform(-0.6, 0.6))
+    save("public/food/sfx6.wav")
