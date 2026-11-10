@@ -18,6 +18,14 @@ The user said: "I need this style", meaning the 10-second sample where everyone 
   - The hero is always `HERO2D`: orange jacket, yellow backpack, beanie with pompom.
   - Props: `expr`, `open`, `blind`, `sweat`, `pose`, `holdR` / `holdL`, `lying`.
 
+## Backgrounds and story format (user decisions, 2026-11-10)
+- **Backgrounds:** do not reuse one shared world. Each scene gets its own background for the place the hero is in right now (apartment, stairwell, street, store, rooftop, hospital…), drawn in the same flat style. The seaside town from `src/sp` is retired.
+- **"Disaster, day by day" format:**
+  - Narrated in second person.
+  - Shape: a normal day, then the disaster, then the hero lives through it day by day (day 1 … day 30), then the ending and a question to viewers.
+  - The voice names the days. Nothing is written on screen; show passing time with visuals such as tally marks.
+- **Reusable code:** `src/sp/kit.tsx`, from the 8-part "superpowers" video, provides `makePart` with a `dir` option, `Bean` helpers, `Layer`/`Cam`, `Glow`, the flare transition, and props. Example of a new topic: `src/bo/` (blackout).
+
 ## What to take from the Minecraft video (`src/mc/`): only the way a long video is built
 - **Reuse the machinery:**
   - Shot lists: `{ at: "word", n?, s: (g, f, len) => JSX }`.

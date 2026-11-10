@@ -833,7 +833,8 @@ export const atWord = (V: Voice, w: string, n = 1) => {
 };
 export const TRANS = 18;
 export const partFrames = (V: Voice) => Math.round((V.dur + 0.3) * FPS) + LEAD + TRANS;
-export const makePart = (V: Voice, shots: Shot[], o: { id: number; last?: boolean }) => {
+export const makePart = (V: Voice, shots: Shot[], o: { id: number; last?: boolean; dir?: string }) => {
+  const dir = o.dir ?? "sp";
   const FR = partFrames(V);
   const starts = shots.map((s, i) => (i === 0 ? 0 : atWord(V, s.at, s.n) - 3));
   const Comp: React.FC = () => {
@@ -850,8 +851,8 @@ export const makePart = (V: Voice, shots: Shot[], o: { id: number; last?: boolea
         <Grade />
         <Flare p={Math.max(inP, outP)} />
         <AbsoluteFill style={{ background: "#07030f", opacity: Math.max(fade, fadeOut) }} />
-        <Sequence from={LEAD}><Audio src={staticFile(`sp/p${o.id}/voice.mp3`)} /></Sequence>
-        <Audio src={staticFile(`sp/p${o.id}/sfx.wav`)} volume={0.5} />
+        <Sequence from={LEAD}><Audio src={staticFile(`${dir}/p${o.id}/voice.mp3`)} /></Sequence>
+        <Audio src={staticFile(`${dir}/p${o.id}/sfx.wav`)} volume={0.5} />
       </AbsoluteFill>
     );
   };
