@@ -10,8 +10,8 @@ FPS, LEAD, WIPE = 30, 9, 18
 def voice(i):
     s = open(f"src/bo/voices/p{i}.ts", encoding="utf8").read()
     return json.loads(s[s.index("{"): s.rindex("}") + 1])
-V = {i: voice(i) for i in range(1, 9) if os.path.exists(f"src/bo/voices/p{i}.ts")}
-LAST = 8
+V = {i: voice(i) for i in range(1, 11) if os.path.exists(f"src/bo/voices/p{i}.ts")}
+LAST = 10
 FR = {i: round((V[i]["dur"] + 0.3) * FPS) + LEAD + WIPE for i in V}
 DUR = {i: FR[i] / FPS for i in V}
 TOTAL = sum(DUR.values())
@@ -26,7 +26,7 @@ def put(sig, at, g):
 BPM = 80; beat = 60 / BPM
 DAY = [[62, 66, 69, 74], [59, 62, 66, 71], [55, 59, 62, 67], [57, 61, 64, 69]]
 NIGHT = [[57, 60, 64, 69], [53, 57, 60, 65], [50, 53, 57, 62], [52, 56, 59, 64]]
-start5 = -1.0; end5 = sum(DUR.get(i, 60) for i in range(1, 8))  # всё в миноре, светлеет только финал (часть 8)
+start5 = -1.0; end5 = sum(DUR.get(i, 60) for i in range(1, 10))  # всё в миноре, светлеет только финал (часть 10)
 b = 0; tt = 0.0
 while tt < TOTAL + 1:
     night = start5 - 0.5 <= tt < end5 - 0.5
