@@ -61,3 +61,38 @@ if part == 4:
     steps(S(40.3), S(45.5), 13 * F, 0.12, -0.4)
     add(murmur(7.5) * 0.6, S(45.5), 0.16); add(whisper(2.5), S(45.5) + 0.3, 0.12, 0.3)
     save("public/food/sfx4.wav")
+
+def dig():
+    n = int(0.22 * SR); x = t(n)
+    return norm(filt(rng.standard_normal(n), 150, 2200) * np.exp(-x * 14) + 0.5 * mixlen(thud(70, 0.22), n))
+def growl(d=1.2):
+    n = int(d * SR); x = t(n); f = 70 + 25 * np.sin(2 * np.pi * 2.3 * x)
+    return norm(np.sin(2 * np.pi * np.cumsum(f) / SR) * (0.5 + 0.5 * np.sin(2 * np.pi * 6 * x) ** 2) + 0.4 * filt(rng.standard_normal(n), 60, 300)) * env(n, 0.2, 0.4)
+def pass_car(d=2.0): n = int(d * SR); x = t(n); return norm(filt(noise(d), 80, 1200) * np.sin(np.pi * x / d) ** 3)
+def pluck(f): return norm(ping(f, 0.5, 9) + 0.3 * mixlen(ping(f * 2, 0.3, 14), int(0.5 * SR)))
+
+if part == 5:
+    F = 1 / 30
+    a = S(0); add(murmur(3.1) * 0.5, a, 0.12); add(paper(0.3), a + 8 * F, 0.18)
+    a = S(3.1); add(murmur(4.3) * 0.4, a, 0.08); add(box_down(), a + 34 * F, 0.3); add(cardboard(0.6) * 0.6, a + 62 * F, 0.15); add(paper(0.3), a + 104 * F, 0.15)
+    a = S(7.4); add(click(1800, 0.04, 150), a + 14 * F, 0.25); add(cardboard(0.3), a + 24 * F, 0.2); add(slap(), a + 64 * F, 0.25)
+    a = S(9.9); add(murmur(4.2), a, 0.25); steps(a, a + 4.2, 0.42, 0.1, -0.4); steps(a + 0.2, a + 4.2, 0.46, 0.1, 0.4)
+    a = S(14.1); add(murmur(5.4) * 0.6, a, 0.14); add(paper(0.25), a + 62 * F, 0.15); add(can(), a + 62 * F, 0.08)
+    a = S(19.5); add(wind(4.9), a, 0.08)
+    for k in range(0, 147, 40): add(water(0.6) * env(int(0.6 * SR), 0.05, 0.2), a + k * F, 0.05, 0.2)
+    a = S(24.4)
+    for k in range(3): add(dig(), a + (21 + 36 * k) * F, 0.22, -0.3); add(dig(), a + (6 + 36 * k) * F, 0.18, 0.3)
+    add(wind(2.0), a, 0.06); add(wind(3.9), S(26.4), 0.08)
+    a = S(30.3); add(dig() * 0.6, a + 28 * F, 0.12); add(water(0.6) * env(int(0.6 * SR), 0.05, 0.2), a + 66 * F, 0.08)
+    add(growl(1.3), S(33.4) + 0.6, 0.3)
+    a = S(35.7); add(engine(4.8, 0.8), a, 0.12); add(pass_car(2.5), a + 1.0, 0.08, 0.5)
+    a = S(40.5); add(engine(3.4, 0.9), a, 0.08)
+    for k in range(3): add(pass_car(1.6), a + k * 1.1, 0.1, -0.5 + k * 0.5)
+    steps(a, a + 3.4, 39 * F, 0.12)
+    a = S(43.9); add(wind(6.9), a, 0.1); add(box_down() * 0.6, a + 40 * F, 0.15)
+    for k in range(50, 100, 7): add(click(900, 0.04, 120), a + k * F, 0.12)
+    add(box_down(), a + 118 * F, 0.25)
+    a = S(50.8); add(room(6.5), a, 0.1)
+    for i in range(13): add(pluck(220 * 2 ** ((i % 5) / 12)), a + (i * 10 + 12) * F, 0.05)
+    add(thud(60, 0.6), a + 130 * F, 0.25)
+    save("public/food/sfx5.wav")
