@@ -837,6 +837,7 @@ export const makePart = (V: Voice, shots: Shot[], o: { id: number; last?: boolea
   const dir = o.dir ?? "sp";
   const FR = partFrames(V);
   const starts = shots.map((s, i) => (i === 0 ? 0 : atWord(V, s.at, s.n) - 3));
+  starts.forEach((v, i) => { if (i > 0 && v <= starts[i - 1]) { const m = `план «${shots[i].at}» начинается раньше предыдущего — проверь n`; if (o.dir) throw new Error(m); else console.warn(m); } });
   const Comp: React.FC = () => {
     const f = useCurrentFrame();
     let i = 0; while (i + 1 < starts.length && f >= starts[i + 1]) i++;

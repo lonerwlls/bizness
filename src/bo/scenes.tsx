@@ -176,18 +176,23 @@ export const Apartment: React.FC<{ cam: Cam; f: number; tod?: Tod; dark?: number
     <rect width={1920} height={1080} fill="#0a0628" opacity={dark} />
   </Svg>
 );
-export const Kitchen: React.FC<{ cam: Cam; f: number; dark?: number; children?: React.ReactNode; open?: boolean }> = ({ cam, f, dark = 0.3, children, open }) => (
+export const Kitchen: React.FC<{ cam: Cam; f: number; dark?: number; children?: React.ReactNode; open?: boolean; food?: boolean }> = ({ cam, f, dark = 0.3, children, open, food = true }) => (
   <Svg>
     <Layer cam={cam} d={1}>
       <rect x={-1500} y={CEIL - 600} width={5000} height={GY - CEIL + 600} fill="#4a5aa0" />
-      {Array.from({ length: 80 }, (_, i) => <rect key={i} x={-600 + (i % 20) * 130} y={GY - 560 + Math.floor(i / 20) * 70} width={130} height={70} fill={(i + Math.floor(i / 20)) % 2 ? "#5a6ab0" : "#6a7ac0"} stroke={INK} strokeWidth={3} />)}
-      <rect x={-700} y={GY - 300} width={1100} height={300} fill="#ff8fb0" stroke={INK} strokeWidth={7} />
-      <rect x={-720} y={GY - 320} width={1140} height={30} fill="#e8e4ff" stroke={INK} strokeWidth={7} />
-      {[0, 1, 2].map((i) => <rect key={i} x={-680 + i * 360} y={GY - 270} width={330} height={250} rx={8} fill="#ff9ac0" stroke={INK} strokeWidth={5} />)}
+      {Array.from({ length: 80 }, (_, i) => <rect key={i} x={-600 + (i % 20) * 130} y={GY - 505 + Math.floor(i / 20) * 70} width={130} height={70} fill={(i + Math.floor(i / 20)) % 2 ? "#5a6ab0" : "#6a7ac0"} stroke={INK} strokeWidth={3} />)}
+      <rect x={-700} y={GY - 200} width={1100} height={200} fill="#ff8fb0" stroke={INK} strokeWidth={7} />
+      <rect x={-720} y={GY - 225} width={1140} height={30} fill="#e8e4ff" stroke={INK} strokeWidth={7} />
+      {[0, 1, 2].map((i) => <rect key={i} x={-680 + i * 360} y={GY - 180} width={330} height={160} rx={8} fill="#ff9ac0" stroke={INK} strokeWidth={5} />)}
+      {/* мойка с краном */}
+      <rect x={-140} y={GY - 228} width={220} height={20} rx={8} fill="#8a86a8" stroke={INK} strokeWidth={5} />
+      <path d={`M 40 ${GY - 225} L 40 ${GY - 300} Q 40 ${GY - 330} 0 ${GY - 330} L -30 ${GY - 330} L -30 ${GY - 310}`} stroke="#b8b4d0" strokeWidth={16} fill="none" strokeLinecap="round" />
+      <path d={`M 40 ${GY - 225} L 40 ${GY - 300} Q 40 ${GY - 330} 0 ${GY - 330} L -30 ${GY - 330} L -30 ${GY - 310}`} stroke={INK} strokeWidth={3} fill="none" />
       {/* холодильник */}
       <rect x={480} y={GY - 640} width={260} height={640} rx={20} fill="#9fdcff" stroke={INK} strokeWidth={7} />
       <path d={`M 480 ${GY - 420} L 740 ${GY - 420}`} stroke={INK} strokeWidth={6} />
       {open ? <g><rect x={496} y={GY - 404} width={228} height={390} fill="#2a2a5a" stroke={INK} strokeWidth={5} />{[0, 1, 2].map((r) => <path key={r} d={`M 496 ${GY - 300 + r * 100} L 724 ${GY - 300 + r * 100}`} stroke="#8a86a8" strokeWidth={6} />)}
+        {food ? <><rect x={516} y={GY - 360} width={60} height={56} rx={6} fill="#ff6a5a" stroke={INK} strokeWidth={4} /><rect x={600} y={GY - 380} width={50} height={76} fill="#fff" stroke={INK} strokeWidth={4} /><ellipse cx={560} cy={GY - 222} rx={46} ry={20} fill="#ffd23c" stroke={INK} strokeWidth={4} /><rect x={630} y={GY - 250} width={70} height={46} rx={8} fill="#5ac84a" stroke={INK} strokeWidth={4} /></> : null}
         <path d={`M 740 ${GY - 420} L 900 ${GY - 380} L 900 ${GY} L 740 ${GY}`} fill="#9fdcff" stroke={INK} strokeWidth={7} /></g>
         : <rect x={700} y={GY - 380} width={16} height={120} rx={8} fill="#fff" stroke={INK} strokeWidth={4} />}
       <rect x={-1500} y={GY} width={5000} height={700} fill="#6a4a8a" stroke={INK} strokeWidth={8} />
