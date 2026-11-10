@@ -115,22 +115,22 @@ export const P2 = makePart(V, [
     <CampStove x={-230} y={GY - 225} f={f} /><Steam2 x={-230} y={GY - 345} f={f} />
     <Hero x={95} y={GY} f={f} expr="grin" gaze={-1} pose={{ armL: [66, 8], armR: [15, 8] }} /></Kitchen> },
   { at: "Ice", s: (g, f, len) => { const k = (Math.sin(f * 0.25) + 1) / 2;
-    return <Kitchen cam={C(1160, GY - 250, 2.2)} f={f} dark={0.45}>
-      <rect x={1100} y={GY - 80} width={130} height={80} rx={8} fill="#5a4a9a" stroke={INK} strokeWidth={6} />
-      <Bean x={1165} y={GY} s={HS} look={HERO2D} f={f} expr={k > 0.7 ? "laugh" : "grin"} open={0.4} sit={80 / HS} pose={{ armR: [70 + k * 70, 120 - k * 40], armL: [40, 50] }}
+    return <Kitchen cam={C(1160, GY - 200, 2.2)} f={f} dark={0.45}>
+      <rect x={1100} y={GY - 90} width={130} height={90} rx={8} fill="#5a4a9a" stroke={INK} strokeWidth={6} />
+      <Bean x={1165} y={GY} s={HS} look={HERO2D} f={f} expr={k > 0.7 ? "laugh" : "grin"} open={0.4} sit={90 / HS} pose={{ armR: [70 + k * 70, 120 - k * 40], armL: [40, 50] }}
         holdR={{ node: <g><rect x={-5} y={-50} width={10} height={50} rx={5} fill="#b8b4d0" stroke={INK} strokeWidth={3} /><ellipse cx={0} cy={-56} rx={12} ry={9} fill="#ff9ac0" stroke={INK} strokeWidth={3} /></g>, k: 1, rot: 180 }} />
-      <rect x={950} y={GY - 210} width={440} height={26} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
-      {[980, 1350].map((x) => <rect key={x} x={x} y={GY - 186} width={22} height={186} fill="#a85a3a" stroke={INK} strokeWidth={5} />)}
-      <g transform={`translate(1060 ${GY - 210})`}><path d="M -60 -40 Q -55 10 0 12 Q 55 10 60 -40 Z" fill="#5ad8c8" stroke={INK} strokeWidth={5} /><ellipse cx={0} cy={-42} rx={56} ry={12} fill="#ff9ac0" stroke={INK} strokeWidth={4} /></g>
-      <g transform={`translate(1290 ${GY - 210})`}><ellipse cx={0} cy={-6} rx={70} ry={14} fill="#f4f2ff" stroke={INK} strokeWidth={5} /><path d="M -40 -12 Q -40 -34 -5 -36 Q 34 -38 40 -20 Q 44 -10 30 -10 Z" fill="#a8483a" stroke={INK} strokeWidth={4} /></g>
+      <rect x={950} y={GY - 150} width={440} height={26} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
+      {[980, 1350].map((x) => <rect key={x} x={x} y={GY - 126} width={22} height={126} fill="#a85a3a" stroke={INK} strokeWidth={5} />)}
+      <g transform={`translate(1060 ${GY - 150})`}><path d="M -60 -40 Q -55 10 0 12 Q 55 10 60 -40 Z" fill="#5ad8c8" stroke={INK} strokeWidth={5} /><ellipse cx={0} cy={-42} rx={56} ry={12} fill="#ff9ac0" stroke={INK} strokeWidth={4} /></g>
+      <g transform={`translate(1290 ${GY - 150})`}><ellipse cx={0} cy={-6} rx={70} ry={14} fill="#f4f2ff" stroke={INK} strokeWidth={5} /><path d="M -40 -12 Q -40 -34 -5 -36 Q 34 -38 40 -20 Q 44 -10 30 -10 Z" fill="#a8483a" stroke={INK} strokeWidth={4} /></g>
     </Kitchen>;
   } },
-  { at: "Everything", s: (g, f, len) => <Kitchen cam={C(1160, GY - 250, 1.8)} f={f} dark={0.5}>
-    <rect x={1100} y={GY - 80} width={130} height={80} rx={8} fill="#5a4a9a" stroke={INK} strokeWidth={6} />
-    <Bean x={1165} y={GY} s={HS} look={HERO2D} f={f} expr="tired" sit={80 / HS} pose={{ armL: [60, 70], armR: [60, 70], lean: 4 }} />
-    <rect x={950} y={GY - 210} width={440} height={26} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
-    {[980, 1350].map((x) => <rect key={x} x={x} y={GY - 186} width={22} height={186} fill="#a85a3a" stroke={INK} strokeWidth={5} />)}
-    {[1040, 1290].map((x) => <ellipse key={x} cx={x} cy={GY - 216} rx={60} ry={12} fill="#f4f2ff" stroke={INK} strokeWidth={5} />)}
+  { at: "Everything", s: (g, f, len) => <Kitchen cam={C(1160, GY - 200, 1.8)} f={f} dark={0.5}>
+    <rect x={1100} y={GY - 90} width={130} height={90} rx={8} fill="#5a4a9a" stroke={INK} strokeWidth={6} />
+    <Bean x={1165} y={GY} s={HS} look={HERO2D} f={f} expr="tired" sit={90 / HS} pose={{ armL: [60, 70], armR: [60, 70], lean: 4 }} />
+    <rect x={950} y={GY - 150} width={440} height={26} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
+    {[980, 1350].map((x) => <rect key={x} x={x} y={GY - 126} width={22} height={126} fill="#a85a3a" stroke={INK} strokeWidth={5} />)}
+    {[1040, 1290].map((x) => <ellipse key={x} cx={x} cy={GY - 156} rx={60} ry={12} fill="#f4f2ff" stroke={INK} strokeWidth={5} />)}
   </Kitchen> },
   { at: "By", n: 2, s: (g, f, len) => <Kitchen cam={C(560, GY - 280, 1.7)} f={f} open dark={0.35}>
     <Smell x={520} y={GY - 280} f={f} /><Smell x={620} y={GY - 120} f={f + 10} />

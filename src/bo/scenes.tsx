@@ -281,3 +281,92 @@ export const walkDx = (g: number, sp = 0.2, s = HS) => {
   return k * 2 * U + U - L * Math.sin(A * Math.cos(ph)) + U;
 };
 export const walkSpeed = (sp = 0.2, s = HS) => (2 * 168 * s * Math.sin((WALK_A * Math.PI) / 180) * sp) / Math.PI;
+
+// ---------- магазин ----------
+export const Can: React.FC<{ x: number; y: number; c?: string; s?: number }> = ({ x, y, c = "#ff6a5a", s = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}><rect x={-22} y={-56} width={44} height={56} rx={5} fill="#b8b4d0" stroke={INK} strokeWidth={4} /><rect x={-22} y={-44} width={44} height={30} fill={c} stroke={INK} strokeWidth={3} /></g>
+);
+export const Grocery: React.FC<{ k: number; x: number; y: number; s?: number }> = ({ k, x, y, s = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    {k === 0 ? <Can x={0} y={0} c="#ff6a5a" /> : k === 1 ? <path d="M -34 0 L -40 -70 Q -40 -84 -24 -84 L 24 -84 Q 40 -84 40 -70 L 34 0 Z" fill="#fff4e0" stroke={INK} strokeWidth={4} />
+      : k === 2 ? <g><rect x={-26} y={-60} width={52} height={60} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={4} /><rect x={-28} y={-74} width={56} height={16} rx={4} fill="#ff4a6a" stroke={INK} strokeWidth={4} /></g>
+      : k === 3 ? <rect x={-40} y={-90} width={80} height={90} rx={4} fill="#ffd23c" stroke={INK} strokeWidth={4} />
+      : <g>{[-28, 0, 28].map((d) => <g key={d}><rect x={d - 12} y={-80} width={24} height={80} rx={8} fill="#9fdcff" fillOpacity={0.8} stroke={INK} strokeWidth={4} /><rect x={d - 6} y={-92} width={12} height={14} fill="#5a7cf0" stroke={INK} strokeWidth={3} /></g>)}</g>}
+  </g>
+);
+export const Cart: React.FC<{ x: number; y: number; items?: number; f?: number; s?: number; flip?: boolean }> = ({ x, y, items = 0, f = 0, s = 1, flip }) => (
+  <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
+    <g clipPath="url(#cartclip)">{Array.from({ length: items }, (_, i) => <Grocery key={i} k={i % 5} x={-110 + (i % 6) * 44} y={-70 - Math.floor(i / 6) * 40} s={0.8} />)}</g>
+    <clipPath id="cartclip"><rect x={-150} y={-260} width={300} height={196} /></clipPath>
+    <path d="M -140 -170 L 140 -170 L 120 -60 L -120 -60 Z" fill="#b8b4d0" fillOpacity={0.35} stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+    {[-90, -40, 10, 60, 110].map((k) => <path key={k} d={`M ${k} -170 L ${k * 0.86} -60`} stroke={INK} strokeWidth={3} opacity={0.6} />)}
+    <path d="M -130 -115 L 130 -115" stroke={INK} strokeWidth={3} opacity={0.6} />
+    <path d="M 140 -170 L 175 -200 L 210 -200" stroke={INK} strokeWidth={8} fill="none" strokeLinecap="round" />
+    <path d="M -120 -60 L -110 -30 L 110 -30 L 120 -60" stroke={INK} strokeWidth={6} fill="none" />
+    {[-95, 95].map((k) => <g key={k} transform={`translate(${k} -16) rotate(${f * 8})`}><circle r={16} fill="#262838" stroke={INK} strokeWidth={4} /><path d="M -10 0 L 10 0" stroke="#b8b4d0" strokeWidth={3} /></g>)}
+  </g>
+);
+export const Shelf: React.FC<{ x: number; w?: number; seed?: number; empty?: number }> = ({ x, w = 520, seed = 1, empty = 0.3 }) => {
+  const r = rand(seed);
+  return (
+    <g>
+      <rect x={x} y={GY - 520} width={w} height={520} fill="#5a4a8a" stroke={INK} strokeWidth={7} />
+      {[0, 1, 2, 3].map((row) => <g key={row}>
+        <rect x={x + 10} y={GY - 140 - row * 120} width={w - 20} height={16} fill="#8a86a8" stroke={INK} strokeWidth={4} />
+        {Array.from({ length: Math.floor((w - 40) / 54) }, (_, i) => r() < empty ? null : <Grocery key={i} k={Math.floor(r() * 5)} x={x + 40 + i * 54} y={GY - 140 - row * 120} s={0.7} />)}
+      </g>)}
+    </g>
+  );
+};
+export const Freezer: React.FC<{ x: number; w?: number }> = ({ x, w = 600 }) => (
+  <g>
+    <rect x={x} y={GY - 470} width={w} height={470} fill="#3a4a8a" stroke={INK} strokeWidth={7} />
+    {Array.from({ length: Math.floor(w / 150) }, (_, i) => <g key={i}><rect x={x + 14 + i * 150} y={GY - 450} width={136} height={380} rx={6} fill="#9fdcff" fillOpacity={0.25} stroke={INK} strokeWidth={5} />
+      <rect x={x + 30 + i * 150} y={GY - 320} width={50} height={40} rx={6} fill={["#ff9ac0", "#ffd27a", "#c8b8e8"][i % 3]} stroke={INK} strokeWidth={3} opacity={0.7} /><rect x={x + 136 + i * 150} y={GY - 300} width={8} height={70} rx={4} fill="#e8e4ff" /></g>)}
+  </g>
+);
+// магазин изнутри; kind: "aisle" | "freezer"
+export const Store: React.FC<{ cam: Cam; f: number; kind?: "aisle" | "freezer"; dark?: number; children?: React.ReactNode }> = ({ cam, kind = "aisle", dark = 0.35, children }) => (
+  <Svg>
+    <Layer cam={cam} d={1}>
+      <rect x={-2000} y={-800} width={7000} height={GY + 800} fill="#4a4a8a" />
+      <rect x={-2000} y={GY - 760} width={7000} height={30} fill="#3a3a7a" stroke={INK} strokeWidth={5} />
+      {Array.from({ length: 10 }, (_, i) => <rect key={i} x={-1600 + i * 600} y={GY - 730} width={300} height={22} rx={8} fill="#8a86a8" stroke={INK} strokeWidth={4} />)}
+      {kind === "aisle" ? [-1300, -700, -100, 500, 1100, 1700, 2300].map((x, i) => <Shelf key={x} x={x} seed={i + 3} />)
+        : <>{[-1300, -650, 0, 650, 1300, 1950].map((x) => <Freezer key={x} x={x} />)}
+          {[[-500, 300], [300, 420], [1200, 360], [2000, 280]].map(([x, w], i) => <ellipse key={i} cx={x} cy={GY + 30} rx={w} ry={26} fill={["#ffb0d0", "#c8b8e8", "#ffd27a", "#ffb0d0"][i]} opacity={0.55} stroke={INK} strokeWidth={4} />)}</>}
+      <rect x={-2000} y={GY} width={7000} height={700} fill="#8a86b8" stroke={INK} strokeWidth={8} />
+      {Array.from({ length: 50 }, (_, i) => <path key={i} d={`M ${-2000 + i * 160} ${GY} L ${-2000 + i * 160} ${GY + 700}`} stroke={INK} strokeWidth={3} opacity={0.25} />)}
+      {children}
+    </Layer>
+    <rect width={1920} height={1080} fill="#0a0628" opacity={dark} />
+  </Svg>
+);
+// фасад магазина на улице (рисуется в back у Street): стеклянные двери, gap — щель между створками
+export const StoreFront: React.FC<{ x: number; gap?: number }> = ({ x, gap = 0 }) => (
+  <g>
+    <rect x={x - 500} y={GY - 700} width={1000} height={460} fill="#5ad8c8" stroke={INK} strokeWidth={8} />
+    <rect x={x - 520} y={GY - 740} width={1040} height={70} fill="#ff6a5a" stroke={INK} strokeWidth={7} />
+    {[-380, 300].map((d) => <rect key={d} x={x + d} y={GY - 640} width={80} height={60} rx={8} fill="#fff4f0" stroke={INK} strokeWidth={5} />)}
+    <rect x={x - 220} y={GY - 600} width={440} height={340} fill="#1c1a40" stroke={INK} strokeWidth={7} />
+    <rect x={x - 220 - gap} y={GY - 600} width={220} height={340} fill="#9fdcff" fillOpacity={0.4} stroke={INK} strokeWidth={6} />
+    <rect x={x + gap} y={GY - 600} width={220} height={340} fill="#9fdcff" fillOpacity={0.4} stroke={INK} strokeWidth={6} />
+    <path d={`M ${x - 180 - gap} ${GY - 560} L ${x - 120 - gap} ${GY - 500}`} stroke="#fff" strokeWidth={8} strokeLinecap="round" opacity={0.6} />
+  </g>
+);
+export const Flashlight: React.FC<{ on?: boolean }> = ({ on = true }) => (
+  <g><rect x={-10} y={-60} width={20} height={60} rx={6} fill="#262838" stroke={INK} strokeWidth={4} /><rect x={-15} y={-74} width={30} height={18} rx={4} fill="#ffd23c" stroke={INK} strokeWidth={4} />{on ? <Glow x={0} y={-70} r={40} g="gY" /> : null}</g>
+);
+export const Mattress: React.FC<{ x: number; y: number; w?: number; c?: string }> = ({ x, y, w = 420, c = "#e8e4ff" }) => (
+  <g><rect x={x - w / 2} y={y - 50} width={w} height={50} rx={16} fill={c} stroke={INK} strokeWidth={6} />{[0.25, 0.5, 0.75].map((k) => <circle key={k} cx={x - w / 2 + w * k} cy={y - 25} r={5} fill={INK} opacity={0.4} />)}</g>
+);
+// темнота с кругом света фонарика (экранные координаты)
+export const Torch: React.FC<{ cx: number; cy: number; r?: number; o?: number }> = ({ cx, cy, r = 320, o = 0.75 }) => (
+  <svg width={1920} height={1080} style={{ position: "absolute", inset: 0 }}>
+    <defs><radialGradient id="torchg"><stop offset="0%" stopColor="#000" stopOpacity={0} /><stop offset="70%" stopColor="#000" stopOpacity={0} /><stop offset="100%" stopColor="#05030f" stopOpacity={o} /></radialGradient>
+      <mask id="torchm"><rect width={1920} height={1080} fill="#fff" /><circle cx={cx} cy={cy} r={r} fill="#000" /></mask></defs>
+    <rect width={1920} height={1080} fill="#05030f" opacity={o} mask="url(#torchm)" />
+    <circle cx={cx} cy={cy} r={r} fill="url(#torchg)" />
+    <circle cx={cx} cy={cy} r={r} fill="#fff2c0" opacity={0.08} />
+  </svg>
+);
