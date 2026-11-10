@@ -200,9 +200,8 @@ export const Aisle: React.FC<{ fill?: number; signs?: boolean; lightsDim?: numbe
       ))}
       {items}
       {signs ? [-1, 1].map((s) => [3, 7].map((z) => <g key={`${s}${z}`}><polygon points={poly([q(s * SX, 3.0, z), q(s * SX, 3.0, z + 0.8), q(s * SX, 2.6, z + 0.8), q(s * SX, 2.6, z)])} fill="#d8443a" stroke={OL} strokeWidth={3} /></g>)) : null}
-      <polygon points={poly([q(-6, 4, ZF), q(6, 4, ZF), q(6, 0, ZF), q(-6, 0, ZF)])} fill="#d8c49c" />
-      <polygon points={poly([q(-1.4, 2.3, ZF), q(1.4, 2.3, ZF), q(1.4, 0, ZF), q(-1.4, 0, ZF)])} fill="#bcd8e4" stroke={OL} strokeWidth={2} />
-      <polygon points={poly([q(-1.2, 3.2, ZF), q(1.2, 3.2, ZF), q(1.2, 2.6, ZF), q(-1.2, 2.6, ZF)])} fill="#3a6a9a" />
+      <defs><radialGradient id="aisleFar" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="rgba(250,240,215,1)" /><stop offset="100%" stopColor="rgba(250,240,215,0)" /></radialGradient></defs>
+      <ellipse cx={q(0, 1.6, ZF)[0]} cy={q(0, 1.6, ZF)[1]} rx={220} ry={160} fill="url(#aisleFar)" />
     </g>
   );
 };

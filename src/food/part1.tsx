@@ -91,7 +91,7 @@ const Delivery: Shot = ({ g }) => {
       <Street />
       {[0, 1, 2].map((i) => <path key={i} d={steam(i)} stroke="rgba(255,255,255,0.75)" strokeWidth={6} fill="none" strokeLinecap="round" />)}
       <Truck x={2080} boxes={5} />
-      <Person x={700 + g * 6.75} y={STREET_Y} s={s} look={PEOPLE.girl} pose={walking(g, g * 9, 1, { seed: 6 })} uid="dg" />
+      <Person x={1380 - g * 6.75} y={STREET_Y} s={s} look={PEOPLE.girl} pose={walking(g, g * 9, -1, { seed: 6 })} uid="dg" />
       <Person x={wx} y={STREET_Y} s={s} look={PEOPLE.worker} pose={pose} uid="dw" />
       {goingIn ? <rect x={wx - 34} y={STREET_Y - 330 * s - 30} width={68} height={58} fill="#c89a5a" stroke={OL} strokeWidth={4} /> : null}
     </CamG><Clock label="DAY 1" time="08:14" /></Svg>
