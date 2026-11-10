@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Рендер шортса про еду: bash scripts/make_foodshort.sh → videos/food/short_part1.mp4
+# Рендер шортса про еду: bash scripts/make_foodshort.sh → videos/food/short_part1.mp4; с аргументом ru → short_part1_ru.mp4
 set -e; cd "$(dirname "$0")/.."; mkdir -p out videos/food
-npx remotion render src/foodshort/index.tsx FoodShort out/_fs.mp4 --crf=18 --log=error --concurrency=4
-ffmpeg -v error -y -i out/_fs.mp4 -af "loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 160k -movflags +faststart videos/food/short_part1.mp4
-rm -f out/_fs.mp4; echo "готово: videos/food/short_part1.mp4"
+if [ "$1" = ru ]; then ID=FoodShortRU; OUT=videos/food/short_part1_ru.mp4; else ID=FoodShort; OUT=videos/food/short_part1.mp4; fi
+npx remotion render src/foodshort/index.tsx $ID out/_fs.mp4 --crf=18 --log=error --concurrency=4
+ffmpeg -v error -y -i out/_fs.mp4 -af "loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 160k -movflags +faststart $OUT
+rm -f out/_fs.mp4; echo "готово: $OUT"

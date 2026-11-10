@@ -1,7 +1,15 @@
 # Звук для шортса foodshort: гул, сердцебиение, удары на сменах кадра, стук в дверь и т.д. Всё синтезируется.
-# Запуск: python3 scripts/foodshort_sound.py -> public/foodshort/sfx.wav
-import numpy as np, wave
-SR = 44100; DUR = 67.0; N = int(SR * DUR)
+# Запуск: python3 scripts/foodshort_sound.py [ru] -> public/foodshort/sfx.wav (ru: public/foodshort_ru/sfx.wav, времена пересчитаны под русскую озвучку)
+import numpy as np, wave, sys
+RU = len(sys.argv) > 1 and sys.argv[1] == "ru"
+WARP = [[0, 0], [3.889, 4.331], [5.45, 5.93], [7.012, 7.512], [7.964, 8.951], [10.15, 11.03], [13.514, 13.351], [14.826, 14.71], [16.35, 16.38], [18.634, 17.972],   [21.42, 20.561], [21.95, 21.53], [22.755, 22.837], [23.127, 23.545], [23.789, 24.52], [24.45, 25.287], [25.7, 26.3], [27.6, 28.28], [29.408, 29.222],   [31.033, 31.092], [32.531, 32.52], [33.355, 33.855], [34.45, 34.8], [36.826, 37.954], [37.7, 39.26], [40.0, 41.58], [44.222, 45.094], [45.5, 46.88],   [48.042, 49.192], [49.818, 50.736], [51.5, 52.55], [51.943, 53.0], [53.023, 53.987], [53.88, 55.14], [56.982, 57.481], [57.82, 58.27], [58.05, 58.503],   [58.909, 59.478], [61.4, 62.74], [66.3, 68.5],]
+def wt(x):
+    if not RU: return x
+    for i in range(1, len(WARP)):
+        if x <= WARP[i][0]:
+            a, b = WARP[i-1], WARP[i]; return a[1] + (b[1]-a[1]) * max(0, (x-a[0])/(b[0]-a[0]))
+    return WARP[-1][1] + x - WARP[-1][0]
+SR = 44100; DUR = 69.0; N = int(SR * DUR)
 rng = np.random.default_rng(3)
 L = np.zeros(N); R = np.zeros(N)
 def tt(n): return np.arange(n) / SR
@@ -10,7 +18,7 @@ def lpf(x, c):
 def bpf(x, lo, hi):
     X = np.fft.rfft(x); f = np.fft.rfftfreq(len(x), 1 / SR); X *= (f > lo) & (f < hi); return np.fft.irfft(X, len(x))
 def put(at, s, g=1.0, pan=0.0):
-    i = int(at * SR); n = min(len(s), N - i)
+    i = int(wt(at) * SR); n = min(len(s), N - i)
     if n <= 0: return
     L[i:i+n] += s[:n] * g * (1 - max(0, pan)); R[i:i+n] += s[:n] * g * (1 + min(0, pan))
 def env(n, a, d):
@@ -64,6 +72,6 @@ for a in [58.05, 58.4, 58.75]: put(a, knock(), 1.6)
 put(61.4, boom(2.2), 1.0)
 m = np.max(np.abs(np.stack([L, R]))); L /= m / 0.8; R /= m / 0.8
 out = (np.stack([L, R], 1) * 32767).astype(np.int16)
-with wave.open("public/foodshort/sfx.wav", "wb") as w:
+with wave.open("public/foodshort_ru/sfx.wav" if RU else "public/foodshort/sfx.wav", "wb") as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(out.tobytes())
 print("ok")

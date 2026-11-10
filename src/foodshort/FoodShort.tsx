@@ -1,33 +1,40 @@
 // Шортс «The last crate» (≈66 с, 1080×1920): ночная история от «you» про то, как пропала еда.
 // Подача: картинка сверху, крупные субтитры с подсветкой слов, красная метка времени, «Part 1» и обрыв в конце.
 import React from "react";
-import { AbsoluteFill, Audio, Sequence, continueRender, delayRender, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, continueRender, delayRender, staticFile, useCurrentFrame } from "remotion";
 import { HERO, OL, P, Pose, Toon } from "../brand/corridor/rig";
 import { ip, stand, walking } from "../food/common";
 import { VOICE } from "./voice";
+import { VOICE as VOICE_RU } from "./voice_ru";
 
 const fh = delayRender("font");
 new FontFace("FsMont", `url(${staticFile("towers/fonts/Montserrat-latin.woff2")}) format("woff2")`, { weight: "100 900" })
-  .load().then((f) => { document.fonts.add(f); continueRender(fh); });
+  .load().then((f) => { document.fonts.add(f);
+    return new FontFace("FsMont", `url(${staticFile("towers/fonts/Montserrat-cyrillic.woff2")}) format("woff2")`, { weight: "100 900", unicodeRange: "U+0400-04FF" }).load(); })
+  .then((f) => { document.fonts.add(f); continueRender(fh); });
+// язык ролика: ставится в корневом компоненте до отрисовки сцен (в одном рендере только одна композиция)
+let LANG: "en" | "ru" = "en";
+const tr = (en: string, ru: string) => (LANG === "ru" ? ru : en);
 
 export const FPS = 30;
 export const FS_FRAMES = Math.ceil((VOICE.dur + 1.6) * FPS);
+export const FS_FRAMES_RU = Math.ceil((VOICE_RU.dur + 1.6) * FPS);
 const W = 1080, PH = 1180; // ширина и высота области картинки
 const RED = "#ff3b3b", YEL = "#ffc53a", CYAN = "#5fd8f0", LIT = "#f4b448", WALL = "#1d2752";
-const MONO = "ui-monospace, Menlo, monospace";
+const MONO = "'DejaVu Sans Mono', 'Liberation Mono', ui-monospace, monospace";
 const rnd = (i: number) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 const S = (sec: number) => Math.round(sec * FPS);
 type Shot = React.FC<{ g: number; t: number }>; // g — кадр сцены, t — секунды сцены
 
 // ---------- общие детали ----------
-const Tag: React.FC<{ x: number; y: number; title: string; sub?: string; c?: string; o?: number; w?: number }> = ({ x, y, title, sub, c = CYAN, o = 1, w = 300 }) => (
+const Tag: React.FC<{ x: number; y: number; title: string; sub?: string; c?: string; o?: number; w?: number }> = ({ x, y, title, sub, c = CYAN, o = 1, w: w0 = 300 }) => { const w = Math.max(w0, title.length * 20 + 80, (sub ?? "").length * 11.5 + 80); return (
   <g transform={`translate(${x} ${y})`} opacity={o}>
     <rect x={-w / 2} y={-34} width={w} height={sub ? 76 : 60} rx={8} fill="rgba(8,12,30,0.85)" stroke={c} strokeWidth={3} />
     <rect x={-w / 2 + 14} y={-20} width={18} height={18} rx={3} fill="none" stroke={c} strokeWidth={3} />
     <text x={-w / 2 + 44} y={-3} fontFamily="FsMont" fontWeight={900} fontSize={28} fill="#fff">{title}</text>
     {sub ? <text x={-w / 2 + 44} y={28} fontFamily={MONO} fontSize={18} fill={c} letterSpacing={1}>{sub}</text> : null}
   </g>
-);
+); };
 const Brackets: React.FC<{ x: number; y: number; w: number; h: number; c?: string }> = ({ x, y, w, h, c = YEL }) => {
   const k = 22;
   return <g stroke={c} strokeWidth={5} fill="none" strokeLinecap="round">
@@ -47,7 +54,7 @@ const Crate: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) 
     {[-36, 0, 36].map((k) => <path key={k} d={`M -95 ${k} L 95 ${k}`} stroke="#8a5628" strokeWidth={5} />)}
     <path d="M -95 -70 L 95 70 M 95 -70 L -95 70" stroke="#8a5628" strokeWidth={6} opacity={0.6} />
     <rect x={-50} y={-20} width={100} height={40} rx={4} fill="#efe2c4" stroke={OL} strokeWidth={4} />
-    <text x={0} y={10} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={22} fill="#7a3a1a">FOOD</text>
+    <text x={0} y={10} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={22} fill="#7a3a1a">{tr("FOOD", "ЕДА")}</text>
   </g>
 );
 const Hand: React.FC<{ p: P; x: number; y: number; s: number }> = ({ p, x, y, s }) => <circle cx={x + p[0] * s} cy={y + p[1] * s} r={15 * s} fill={HERO.skin} stroke={OL} strokeWidth={6 * s} />;
@@ -94,14 +101,14 @@ const Building: Shot = ({ g, t }) => {
       <Facade lit={wake} watchers={ip(t, [4.3, 5], [0, 1])} />
       <g opacity={ip(t, [2, 2.4], [0, 1])}>
         <Brackets x={hx - 12} y={hy - 116} w={144} h={128} />
-        <Tag x={hx + 60} y={hy + 70} title="5TH FLOOR" sub="APT 12 · YOU" c={YEL} w={260} />
+        <Tag x={hx + 60} y={hy + 70} title={tr("5TH FLOOR", "5 ЭТАЖ")} sub={tr("APT 12 · YOU", "КВ. 12 · ВЫ")} c={YEL} w={260} />
         <Crate x={hx + 60} y={hy - 30} s={0.3} />
       </g>
     </Cam>
     <g transform="translate(540 190)" opacity={ip(t, [0, 0.2, 2.2, 2.6], [0, 1, 1, 0])}>
       <rect x={-140} y={-52} width={280} height={104} rx={8} fill="#f1e2b8" transform="rotate(-3)" />
-      <text x={0} y={2} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={46} fill="#2a1a10" transform="rotate(-3)">PART 1</text>
-      <text x={0} y={34} textAnchor="middle" fontFamily={MONO} fontSize={18} fill="#6a4a2a" transform="rotate(-3)" letterSpacing={3}>THE LAST CRATE</text>
+      <text x={0} y={2} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={46} fill="#2a1a10" transform="rotate(-3)">{tr("PART 1", "ЧАСТЬ 1")}</text>
+      <text x={0} y={34} textAnchor="middle" fontFamily={MONO} fontSize={18} fill="#6a4a2a" transform="rotate(-3)" letterSpacing={3}>{tr("THE LAST CRATE", "ПОСЛЕДНИЙ ЯЩИК")}</text>
     </g>
   </g>;
 };
@@ -125,16 +132,16 @@ const Room: React.FC<{ tv: number; children?: React.ReactNode; tvText?: React.Re
   </g>
 );
 const News: Shot = ({ g, t }) => {
-  const line = t < 1.55 ? ["FOOD DELIVERIES", "SUSPENDED · DAY 3"] : t < 2.5 ? ["DO NOT", "HOARD FOOD"] : ["KEEP YOUR", "SUPPLIES PRIVATE"];
+  const line = t < 1.55 ? [tr("FOOD DELIVERIES", "ПОСТАВКИ ЕДЫ"), tr("SUSPENDED · DAY 3", "ОСТАНОВЛЕНЫ · ДЕНЬ 3")] : t < 2.5 ? [tr("DO NOT", "НЕ ДЕЛАЙТЕ"), tr("HOARD FOOD", "ЗАПАСОВ")] : [tr("KEEP YOUR", "НИКОМУ НЕ"), tr("SUPPLIES PRIVATE", "РАССКАЗЫВАЙТЕ")];
   const flick = 0.85 + 0.15 * Math.sin(g * 1.7) * Math.sin(g * 0.6);
   const pose = stand(g, { turn: 0.55, expr: { mouth: "flat", eyes: "dot", look: [1, 0], browA: -0.3 }, handL: [-50, -150], handR: [60, -150], hipY: -150 });
   return <Cam s={ip(g, [0, 140], [1, 1.08])} cx={600} cy={560}>
     <Room tv={flick} tvText={<g>
       <rect x={16} y={16} width={408} height={50} fill={RED} />
-      <text x={36} y={52} fontFamily="FsMont" fontWeight={900} fontSize={30} fill="#fff">BREAKING</text>
+      <text x={36} y={52} fontFamily="FsMont" fontWeight={900} fontSize={30} fill="#fff">{tr("BREAKING", "СРОЧНО")}</text>
       {line.map((l, i) => <text key={l} x={220} y={140 + i * 50} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={38} fill="#0b1030">{l}</text>)}
       <rect x={16} y={228} width={408} height={26} fill="#0b1030" />
-      <text x={30 - (g * 4) % 400} y={248} fontFamily={MONO} fontSize={18} fill="#fff">STAY HOME · STAY CALM · STAY HOME · STAY CALM · STAY HOME</text>
+      <text x={30 - (g * 4) % 400} y={248} fontFamily={MONO} fontSize={18} fill="#fff">{tr("STAY HOME · STAY CALM · STAY HOME · STAY CALM · STAY HOME", "СОХРАНЯЙТЕ СПОКОЙСТВИЕ · ОСТАВАЙТЕСЬ ДОМА · СОХРАНЯЙТЕ СПОКОЙСТВИЕ")}</text>
     </g>}>
       <path d="M 120 760 Q 120 700 180 700 L 520 700 Q 580 700 580 760 L 580 960 L 120 960 Z" fill="#3a2a4a" stroke="#0a0d22" strokeWidth={8} />
       <Toon x={330} y={1010} s={0.85} look={HERO} pose={pose} uid="news" />
@@ -154,7 +161,7 @@ const Market: Shot = ({ g, t }) => {
       <rect x={0} y={200} width={W} height={560} fill={WALL} />
       {Array.from({ length: 7 }, (_, i) => <rect key={i} x={40 + i * 150} y={230} width={90} height={80} fill={i === 4 ? LIT : "#0e1430"} opacity={i === 4 ? 0.7 : 1} />)}
       <rect x={60} y={380} width={960} height={90} fill="#0a0e24" />
-      <text x={540} y={445} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={64} letterSpacing={10} fill="#3a8a5a" opacity={0.35}>FRESH<tspan opacity={flick > 0.5 ? 2.5 : 0.4} fill="#6fe39a"> M</tspan>ARKET</text>
+      <text x={540} y={445} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={64} letterSpacing={10} fill="#3a8a5a" opacity={0.35}>{tr("FRESH", "ПРОДУ")}<tspan opacity={flick > 0.5 ? 2.5 : 0.4} fill="#6fe39a">{tr(" M", "К")}</tspan>{tr("ARKET", "ТЫ")}</text>
       <rect x={60} y={490} width={600} height={340} fill="#0c1228" stroke="#05081a" strokeWidth={10} />
       {[560, 640, 720, 800].map((y) => <g key={y}><rect x={90} y={y} width={540} height={8} fill="#3a4470" />
         {y === 720 ? <rect x={480} y={y - 30} width={34} height={30} fill="#c84a3a" /> : null}</g>)}
@@ -162,7 +169,7 @@ const Market: Shot = ({ g, t }) => {
       <path d="M 780 560 L 830 620 L 800 680 M 830 620 L 900 600 M 830 620 L 870 720" stroke="#9fb0e8" strokeWidth={4} fill="none" opacity={0.8} />
       <rect x={0} y={830} width={W} height={400} fill="#0c1024" />
       {Array.from({ length: 8 }, (_, i) => <path key={i} d={`M ${720 + rnd(i) * 220} 840 l 12 -8 l 10 10 z`} fill="#9fb0e8" opacity={0.6} />)}
-      <Tag x={360} y={215} title="GROUND FLOOR" sub="EMPTY SINCE MONDAY" c={RED} w={330} o={ip(t, [0.4, 0.8], [0, 1])} />
+      <Tag x={360} y={215} title={tr("GROUND FLOOR", "1 ЭТАЖ · МАГАЗИН")} sub={tr("EMPTY SINCE MONDAY", "ПУСТО С ПОНЕДЕЛЬНИКА")} c={RED} w={330} o={ip(t, [0.4, 0.8], [0, 1])} />
     </Cam>
   </g>;
 };
@@ -198,7 +205,7 @@ const BackRoom: Shot = ({ g, t }) => {
 // ---------- ящик крупно ----------
 const CrateClose: Shot = ({ t }) => {
   const pop = (a: number) => ip(t, [a, a + 0.25], [0, 1]);
-  const items: [string, string, string, number, number][] = [["RICE", "#f2ead6", "#3a2a1a", 22.755, -230], ["BEANS", "#c8402a", "#fff", 23.127, 0], ["SOUP", "#e8b23a", "#3a1a0a", 23.789, 230]];
+  const items: [string, string, string, number, number][] = [[tr("RICE", "РИС"), "#f2ead6", "#3a2a1a", 22.755, -230], [tr("BEANS", "ФАСОЛЬ"), "#c8402a", "#fff", 23.127, 0], [tr("SOUP", "СУП"), "#e8b23a", "#3a1a0a", 23.789, 230]];
   return <g>
     <rect width={W} height={PH} fill="#05060c" />
     <circle cx={540} cy={640} r={520} fill="#2a2418" />
@@ -212,7 +219,7 @@ const CrateClose: Shot = ({ t }) => {
         <text x={0} y={18} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={40} fill={fg}>{n}</text>
       </g>;
     })}
-    <g opacity={ip(t, [2.45, 2.75], [0, 1])}><Tag x={540} y={215} title="30 DAYS OF FOOD" sub="RICE · BEANS · SOUP" c={YEL} w={400} /></g>
+    <g opacity={ip(t, [2.45, 2.75], [0, 1])}><Tag x={540} y={215} title={tr("30 DAYS OF FOOD", "ЕДА НА 30 ДНЕЙ")} sub={tr("RICE · BEANS · SOUP", "РИС · ФАСОЛЬ · СУП")} c={YEL} w={400} /></g>
   </g>;
 };
 
@@ -234,7 +241,7 @@ const Stairs: Shot = ({ g, t }) => {
         </g>;
       })}
     </g>
-    <Tag x={300} y={215} title={`▲ ${floor} FLOOR`} sub="STAIRWELL" c={RED} w={260} />
+    <Tag x={300} y={215} title={tr(`▲ ${floor} FLOOR`, `▲ ${floor} ЭТАЖ`)} sub={tr("STAIRWELL", "ЛЕСТНИЦА")} c={RED} w={260} />
   </g>;
 };
 
@@ -256,7 +263,7 @@ const Landing: Shot = ({ g, t }) => {
     <circle cx={700} cy={140} r={20} fill="#ffe8a0" /><path d="M 700 120 L 700 0" stroke="#0a0e24" strokeWidth={4} />
     <polygon points="700,150 420,840 980,840" fill="#ffe8a0" opacity={0.07} />
     <Carrier x={hx} y={850} s={0.7} pose={pose} uid="land" />
-    <Tag x={260} y={210} title="3RD FLOOR" sub="APT 7 · AWAKE" c={RED} w={280} o={ip(t, [2.0, 2.4], [0, 1])} />
+    <Tag x={300} y={260} title={tr("3RD FLOOR", "3 ЭТАЖ")} sub={tr("APT 7 · AWAKE", "КВ. 7 · НЕ СПЯТ")} c={RED} w={280} o={ip(t, [2.0, 2.4], [0, 1])} />
   </Cam>;
 };
 
@@ -274,7 +281,7 @@ const MyDoor: Shot = ({ t }) => {
     <circle cx={740} cy={680} r={20} fill="#d8b04a" stroke={OL} strokeWidth={5} />
     <path d={`M 690 760 Q ${640 + shut * 40} ${840 - shut * 30} 600 760`} stroke="#b8b8c4" strokeWidth={8} fill="none" />
     <circle cx={540} cy={560} r={22} fill="#05060d" stroke="#c8c8d4" strokeWidth={6} />
-    <g opacity={bolt}><Tag x={540} y={1000} title="LOCKED" sub="5TH FLOOR · APT 12" c="#6fe39a" w={300} /></g>
+    <g opacity={bolt}><Tag x={540} y={1000} title={tr("LOCKED", "ЗАПЕРТО")} sub={tr("5TH FLOOR · APT 12", "5 ЭТАЖ · КВ. 12")} c="#6fe39a" w={300} /></g>
   </g>;
 };
 
@@ -338,13 +345,13 @@ const Section: Shot = ({ g, t }) => {
       const x0 = rx(1) + 305, y0 = ry(5) + 100, x1 = rx(i % 2) + 200 + rnd(i) * 120, y1 = ry(1 + (i % 5)) + 60;
       return <path key={i} d={`M ${x0} ${y0} Q ${(x0 + x1) / 2 + (rnd(i + 9) - 0.5) * 300} ${(y0 + y1) / 2} ${x1} ${y1}`} stroke="#d8e8c0" strokeWidth={10} fill="none" strokeLinecap="round" strokeDasharray="20 26" strokeDashoffset={-g * 3} opacity={0.35 * p} pathLength={1000} style={{ strokeDasharray: `${p * 1000} 1000` }} />;
     })}
-    <Tag x={540} y={215} title="NOBODY HAS EATEN" sub="FOR 48 HOURS" c={RED} w={400} o={ip(t, [1.2, 1.6], [0, 1])} />
+    <Tag x={540} y={215} title={tr("NOBODY HAS EATEN", "НИКТО НЕ ЕЛ")} sub={tr("FOR 48 HOURS", "УЖЕ 48 ЧАСОВ")} c={RED} w={400} o={ip(t, [1.2, 1.6], [0, 1])} />
   </g>;
 };
 
 // ---------- телефон: чат дома ----------
 const Chat: Shot = ({ g, t }) => {
-  const msgs: [number, string, string][] = [[0.6, "Apt 3", "does anyone smell that??"], [1.3, "Apt 7", "soup. someone has SOUP"], [2.5, "Apt 9", "WHO'S COOKING ON 5?"]];
+  const msgs: [number, string, string][] = [[0.6, tr("Apt 3", "Кв. 3"), tr("does anyone smell that??", "чем это пахнет??")], [1.3, tr("Apt 7", "Кв. 7"), tr("soup. someone has SOUP", "суп. у кого-то есть СУП")], [2.5, tr("Apt 9", "Кв. 9"), tr("WHO'S COOKING ON 5?", "КТО ВАРИТ НА 5-М?")]];
   const typing = t > 4.3;
   return <g>
     <rect width={W} height={PH} fill="#0a0d1c" />
@@ -352,8 +359,8 @@ const Chat: Shot = ({ g, t }) => {
       <rect x={-300} y={-560} width={600} height={1120} rx={60} fill="#111" stroke="#333" strokeWidth={10} />
       <rect x={-275} y={-530} width={550} height={1060} rx={40} fill="#13182c" />
       <rect x={-275} y={-530} width={550} height={120} rx={40} fill="#1e2648" />
-      <text x={0} y={-468} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={30} fill="#fff">BUILDING 14 · CHAT</text>
-      <text x={0} y={-432} textAnchor="middle" fontFamily={MONO} fontSize={18} fill="#8a9ad0">38 residents</text>
+      <text x={0} y={-468} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={30} fill="#fff">{tr("BUILDING 14 · CHAT", "ДОМ 14 · ЧАТ")}</text>
+      <text x={0} y={-432} textAnchor="middle" fontFamily={MONO} fontSize={18} fill="#8a9ad0">{tr("38 residents", "38 жильцов")}</text>
       {msgs.map(([at, who, m], i) => {
         const o = ip(t, [at, at + 0.2], [0, 1]), hot = i === 2;
         return <g key={i} opacity={o} transform={`translate(0 ${-330 + i * 170 + (1 - o) * 30})`}>
@@ -365,7 +372,7 @@ const Chat: Shot = ({ g, t }) => {
       <g opacity={typing ? 1 : 0}>
         <rect x={-250} y={300} width={500} height={90} rx={26} fill="#26304f" />
         {[0, 1, 2].map((k) => <circle key={k} cx={-200 + k * 34} cy={345} r={10} fill="#fff" opacity={0.3 + 0.7 * Math.max(0, Math.sin(g / 4 - k))} />)}
-        <text x={-90} y={356} fontFamily="FsMont" fontWeight={800} fontSize={30} fill={YEL}>12 people typing…</text>
+        <text x={-90} y={356} fontFamily="FsMont" fontWeight={800} fontSize={30} fill={YEL}>{tr("12 people typing…", "12 человек печатают…")}</text>
       </g>
     </g>
     {t < 1.2 ? <g opacity={Math.max(0, Math.sin(g * 1.5))}><path d="M 180 300 l -40 -20 M 180 640 l -50 0 M 180 980 l -40 20 M 900 300 l 40 -20 M 900 640 l 50 0 M 900 980 l 40 20" stroke={YEL} strokeWidth={8} strokeLinecap="round" /></g> : null}
@@ -392,7 +399,7 @@ const Stairwell: Shot = ({ g, t }) => {
         {i % 3 === 0 ? <polygon points={`0,0 ${Math.cos(ang + 3.4) * 400},${Math.sin(ang + 3.4) * 400 - 60} ${Math.cos(ang + 3.4) * 400},${Math.sin(ang + 3.4) * 400 + 60}`} fill="#fff6d0" opacity={0.2} /> : null}
       </g>;
     })}
-    <Tag x={540} y={215} title={`▲ ${t < 1.4 ? 3 : t < 2.8 ? 4 : 5} FLOOR`} sub="FOOTSTEPS" c={RED} w={260} />
+    <Tag x={540} y={215} title={`▲ ${t < 1.4 ? 3 : t < 2.8 ? 4 : 5} ${tr("FLOOR", "ЭТАЖ")}`} sub={tr("FOOTSTEPS", "ШАГИ")} c={RED} w={260} />
   </g>;
 };
 
@@ -413,7 +420,7 @@ const Peephole: Shot = ({ g, t }) => {
     </g>
     <circle cx={540} cy={620} r={440} fill="none" stroke="#111" strokeWidth={30} />
     {knock ? <rect width={W} height={PH} fill="#fff" opacity={0.08} /> : null}
-    <g opacity={ip(t, [1.1, 1.3], [0, 1])}><Tag x={540} y={215} title="APT 12" sub="SOMEONE AT THE DOOR" c={RED} w={340} /></g>
+    <g opacity={ip(t, [1.1, 1.3], [0, 1])}><Tag x={540} y={215} title={tr("APT 12", "КВ. 12")} sub={tr("SOMEONE AT THE DOOR", "КТО-ТО ЗА ДВЕРЬЮ")} c={RED} w={340} /></g>
   </g>;
 };
 
@@ -424,13 +431,13 @@ const EndCard: Shot = ({ g, t }) => {
     <defs><radialGradient id="eg"><stop offset="0" stopColor="#3a0a10" /><stop offset="1" stopColor="#000" /></radialGradient></defs>
     <rect width={W} height={PH} fill="url(#eg)" />
     <g opacity={ip(t, [0, 0.4], [0, 1])} style={{ filter: "drop-shadow(0 0 30px #ff2a2a)" }}>
-      <text x={540 + gl} y={540} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={104} fill={RED}>THEY'RE AT</text>
-      <text x={540 - gl} y={660} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={104} fill={RED}>THE DOOR</text>
+      <text x={540 + gl} y={540} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={104} fill={RED}>{tr("THEY'RE AT", "ОНИ УЖЕ")}</text>
+      <text x={540 - gl} y={660} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={104} fill={RED}>{tr("THE DOOR", "ЗА ДВЕРЬЮ")}</text>
       {gl ? <rect x={0} y={560 + gl * 3} width={W} height={10} fill={CYAN} opacity={0.6} /> : null}
     </g>
     <g opacity={ip(t, [0.6, 1.0], [0, 1])}>
       <path d="M 340 740 L 440 740 M 640 740 L 740 740" stroke="#888" strokeWidth={3} />
-      <text x={540} y={750} textAnchor="middle" fontFamily={MONO} fontSize={30} fill="#bbb" letterSpacing={6}>PART 2</text>
+      <text x={540} y={750} textAnchor="middle" fontFamily={MONO} fontSize={30} fill="#bbb" letterSpacing={6}>{tr("PART 2", "ЧАСТЬ 2")}</text>
     </g>
   </g>;
 };
@@ -440,35 +447,37 @@ const CUTS: [Shot, number][] = [
   [Building, 0], [News, 5.45], [Market, 10.15], [BackRoom, 16.35], [CrateClose, 21.95], [Stairs, 25.7], [Landing, 27.6],
   [MyDoor, 34.45], [Kitchen, 37.7], [Section, 40.0], [Chat, 45.5], [StoveOff, 51.5], [Stairwell, 53.88], [Peephole, 57.82], [EndCard, 61.4],
 ];
-const CLOCK: [number, string][] = [[0, "DAY 3 — 23:41"], [16.35, "DAY 4 — 00:04"], [27.6, "DAY 4 — 00:19"], [37.7, "DAY 4 — 00:37"], [53.88, "DAY 4 — 00:41"]];
+const CLOCK: [number, string][] = [[0, "3 — 23:41"], [16.35, "4 — 00:04"], [27.6, "4 — 00:19"], [37.7, "4 — 00:37"], [53.88, "4 — 00:41"]];
 
 // ---------- субтитры ----------
 type Wd = { t: number; e: number; w: string; end: boolean; pause: boolean };
-const WORDS: Wd[] = (() => {
+const mkWords = (src: Wd[]): Wd[] => {
   const out: Wd[] = [];
-  for (const w of VOICE.words as Wd[]) {
+  for (const w of src) {
     const prev = out[out.length - 1];
     if (prev && /^(t|s|re|ll|d)$/i.test(w.w)) { prev.w += "'" + w.w; prev.e = w.e; prev.end = w.end; prev.pause = w.pause; continue; }
     out.push({ ...w });
   }
-  return out.map((w) => ({ ...w, w: w.w + (w.end ? (/^five$/i.test(w.w) ? "?" : ".") : w.pause ? "," : "") }));
-})();
-const GROUPS: Wd[][] = (() => {
+  return out.map((w) => ({ ...w, w: w.w + (w.end ? (/^(five|пятом)$/i.test(w.w) ? "?" : ".") : w.pause ? "," : "") }));
+};
+const mkGroups = (words: Wd[]): Wd[][] => {
   const gs: Wd[][] = []; let cur: Wd[] = [];
-  WORDS.forEach((w) => { cur.push(w); if (w.end || (w.pause && cur.length >= 3) || cur.length >= 6) { gs.push(cur); cur = []; } });
+  words.forEach((w) => { cur.push(w); if (w.end || (w.pause && cur.length >= 3) || cur.length >= 6) { gs.push(cur); cur = []; } });
   if (cur.length) gs.push(cur);
   // короткие хвосты (1 слово после точки) склеиваем с предыдущей группой, если там ≤ 3 слов
   const m: Wd[][] = [];
   gs.forEach((g) => { const p = m[m.length - 1]; if (p && g.length === 1 && p.length <= 3 && g[0].t - p[p.length - 1].e < 0.9) p.push(...g); else m.push(g); });
   return m;
-})();
-const KEY_RED = /^(knows|mistake|late|many|knock|food|door|sees|crack|hoard|anyone|open|broken|stairs|nobody|typing|smell|travels|empty)/i;
-const KEY_YEL = /^(crate|rice|beans|soup|month|twelve|fifth|five|third|flashlight|midnight|cook|pot|chat|phone|follow|two|tomorrow)/i;
+};
+const GROUPS = { en: mkGroups(mkWords(VOICE.words as Wd[])), ru: mkGroups(mkWords(VOICE_RU.words as Wd[])) };
+const KEY_RED = /^(knows|mistake|late|many|knock|food|door|sees|crack|hoard|anyone|open|broken|stairs|nobody|typing|smell|travels|empty|знает|ошибка|поздно|много|стук|еда|еду|дверь|видит|приоткрывается|разбитая|запасов|никому|никто|запах|расходится|печатают|пустой|откройте|шаги|лестнице)/i;
+const KEY_YEL = /^(crate|rice|beans|soup|month|twelve|fifth|five|third|flashlight|midnight|cook|pot|chat|phone|follow|two|tomorrow|ящик|рис|фасоль|суп|месяц|двенадцать|пятый|пятом|третьем|фонариком|полночь|варите|кастрюлю|чат|телефон|подпишитесь|вторая|завтра|нашли|два)/i;
 const Captions: React.FC<{ sec: number }> = ({ sec }) => {
-  const gi = GROUPS.findIndex((g, i) => sec >= g[0].t - 0.08 && (i === GROUPS.length - 1 || sec < GROUPS[i + 1][0].t - 0.08));
-  if (gi < 0 || sec > VOICE.dur + 0.4) return null;
-  const grp = GROUPS[gi], appear = Math.min(1, (sec - grp[0].t + 0.08) / 0.12);
-  return <div style={{ position: "absolute", top: 1230, left: 60, right: 60, textAlign: "center", fontFamily: "FsMont", fontWeight: 900, fontSize: 84, lineHeight: 1.08, textTransform: "uppercase", letterSpacing: -1, opacity: appear, transform: `scale(${0.94 + 0.06 * appear})` }}>
+  const G = GROUPS[LANG], dur = (LANG === "ru" ? VOICE_RU : VOICE).dur;
+  const gi = G.findIndex((g, i) => sec >= g[0].t - 0.08 && (i === G.length - 1 || sec < G[i + 1][0].t - 0.08));
+  if (gi < 0 || sec > dur + 0.4) return null;
+  const grp = G[gi], appear = Math.min(1, (sec - grp[0].t + 0.08) / 0.12);
+  return <div style={{ position: "absolute", top: 1230, left: 50, right: 50, textAlign: "center", fontFamily: "FsMont", fontWeight: 900, fontSize: LANG === "ru" ? 78 : 84, lineHeight: 1.08, textTransform: "uppercase", letterSpacing: -1, opacity: appear, transform: `scale(${0.94 + 0.06 * appear})` }}>
     {grp.map((w, i) => {
       const said = sec >= w.t, now = said && (i === grp.length - 1 || sec < grp[i + 1].t);
       const c = KEY_RED.test(w.w) ? RED : KEY_YEL.test(w.w) ? YEL : "#fff";
@@ -483,32 +492,50 @@ const Clock: React.FC<{ sec: number }> = ({ sec }) => {
   if (sec > 61.4) return null;
   return <div style={{ position: "absolute", top: 28, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
     <div style={{ background: "rgba(40,6,10,0.85)", border: `2px solid ${RED}`, borderRadius: 8, padding: "8px 18px", fontFamily: MONO, fontSize: 30, color: RED, letterSpacing: 3, fontWeight: 700 }}>
-      <span style={{ opacity: Math.floor(sec * 1.5) % 2 ? 1 : 0.25 }}>●</span> {label}
+      <span style={{ opacity: Math.floor(sec * 1.5) % 2 ? 1 : 0.25 }}>●</span> {tr("DAY", "ДЕНЬ")} {label}
     </div>
   </div>;
 };
 
-const ShotView: React.FC<{ C: Shot }> = ({ C }) => { const g = useCurrentFrame(); return <C g={g} t={g / FPS} />; };
-export const FoodShort: React.FC = () => {
+// Русская озвучка идёт в другом темпе: время картинки берём из английского монтажа через пары «англ. слово ↔ рус. слово».
+// [время в английском ролике, время в русском]
+export const WARP_RU: [number, number][] = [
+  [0, 0], [3.889, 4.331], [5.45, 5.93], [7.012, 7.512], [7.964, 8.951], [10.15, 11.03], [13.514, 13.351], [14.826, 14.71], [16.35, 16.38], [18.634, 17.972],
+  [21.42, 20.561], [21.95, 21.53], [22.755, 22.837], [23.127, 23.545], [23.789, 24.52], [24.45, 25.287], [25.7, 26.3], [27.6, 28.28], [29.408, 29.222],
+  [31.033, 31.092], [32.531, 32.52], [33.355, 33.855], [34.45, 34.8], [36.826, 37.954], [37.7, 39.26], [40.0, 41.58], [44.222, 45.094], [45.5, 46.88],
+  [48.042, 49.192], [49.818, 50.736], [51.5, 52.55], [51.943, 53.0], [53.023, 53.987], [53.88, 55.14], [56.982, 57.481], [57.82, 58.27], [58.05, 58.503],
+  [58.909, 59.478], [61.4, 62.74], [66.3, 68.5],
+];
+const warp = (x: number, pairs: [number, number][], from: 0 | 1) => {
+  const to = 1 - from;
+  for (let i = 1; i < pairs.length; i++) if (x <= pairs[i][from]) {
+    const a = pairs[i - 1], b = pairs[i], k = (x - a[from]) / (b[from] - a[from]);
+    return a[to] + (b[to] - a[to]) * Math.max(0, k);
+  }
+  const l = pairs[pairs.length - 1]; return l[to] + (x - l[from]);
+};
+
+export const FoodShort: React.FC<{ lang?: "en" | "ru" }> = ({ lang = "en" }) => {
+  LANG = lang;
   const f = useCurrentFrame(), sec = f / FPS;
+  const vsec = lang === "ru" ? warp(sec, WARP_RU, 1) : sec, vf = Math.round(vsec * FPS);
+  const ci = CUTS.reduce((acc, [, a], i) => (vf >= S(a) ? i : acc), 0);
+  const [C, a] = CUTS[ci], g = vf - S(a);
   return <AbsoluteFill style={{ background: "#000" }}>
     <svg width={W} height={1920} viewBox={`0 0 ${W} 1920`} style={{ position: "absolute", top: 0 }}>
       <defs><linearGradient id="fadeB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" /></linearGradient>
         <radialGradient id="vig" cx="50%" cy="45%" r="70%"><stop offset="0.55" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" stopOpacity={0.75} /></radialGradient></defs>
       <svg width={W} height={PH} viewBox={`0 0 ${W} ${PH}`} overflow="hidden">
-        {CUTS.map(([C, a], i) => {
-          const from = S(a), to = i + 1 < CUTS.length ? S(CUTS[i + 1][1]) : FS_FRAMES;
-          return <Sequence key={i} from={from} durationInFrames={to - from} layout="none"><ShotView C={C} /></Sequence>;
-        })}
+        <C key={ci} g={g} t={g / FPS} />
         <rect width={W} height={PH} fill="url(#vig)" />
       </svg>
       <rect y={PH - 260} width={W} height={262} fill="url(#fadeB)" />
       {/* мигание на склейках */}
-      {CUTS.map(([, a], i) => { const d = f - S(a); return d >= 0 && d < 4 ? <rect key={i} width={W} height={PH} fill="#000" opacity={1 - d / 4} /> : null; })}
+      {g >= 0 && g < 4 ? <rect width={W} height={PH} fill="#000" opacity={1 - g / 4} /> : null}
     </svg>
-    <Clock sec={sec} />
+    <Clock sec={vsec} />
     <Captions sec={sec} />
-    <Audio src={staticFile("foodshort/voice.mp3")} />
-    <Audio src={staticFile("foodshort/sfx.wav")} volume={0.55} />
+    <Audio src={staticFile(lang === "ru" ? "foodshort_ru/voice.mp3" : "foodshort/voice.mp3")} />
+    <Audio src={staticFile(lang === "ru" ? "foodshort_ru/sfx.wav" : "foodshort/sfx.wav")} volume={0.55} />
   </AbsoluteFill>;
 };
