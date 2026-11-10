@@ -253,7 +253,7 @@ export const Tally: React.FC<{ n: number; x: number; y: number }> = ({ n, x, y }
 // герой спит под одеялом (голова на подушке)
 export const InBed: React.FC<{ f: number; expr?: any; open?: number; gaze?: number; raise?: number }> = ({ f, expr = "sleep", open = 0, gaze = 0, raise = 0 }) => (
   <g>
-    <g transform={`rotate(${-raise * 30} 610 ${GY - 90})`}><Bean x={628} y={GY - 147} s={HS} look={HERO2D} expr={expr} open={open} f={f} gaze={gaze} lying shadow={false} pose={{ bob: Math.sin(f * 0.08) * 2 }} /></g>
+    <g transform={`rotate(${raise * 30} 840 ${GY - 90})`}><Bean x={628} y={GY - 147} s={HS} look={HERO2D} expr={expr} open={open} f={f} gaze={gaze} lying shadow={false} pose={{ bob: Math.sin(f * 0.08) * 2 }} /></g>
     <path d={`M 400 ${GY - 66} Q 396 ${GY - 152 + Math.sin(f * 0.08) * 3} 470 ${GY - 156 + Math.sin(f * 0.08) * 3} L 790 ${GY - 130} Q 846 ${GY - 120} 840 ${GY - 66} Z`} fill="#5ad8c8" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
     <path d={`M 470 ${GY - 120} Q 600 ${GY - 110} 760 ${GY - 102}`} stroke="#3aa898" strokeWidth={6} fill="none" />
   </g>
