@@ -2,10 +2,12 @@
 import React from "react";
 import { Composition, registerRoot } from "remotion";
 import { PART1_FRAMES, Part1 } from "./part1";
+import { PART2_FRAMES, Part2 } from "./part2";
 
 const Root: React.FC = () => (
   <>
     <Composition id="Food-1" component={Part1} durationInFrames={PART1_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="Food-2" component={Part2} durationInFrames={PART2_FRAMES} fps={30} width={1920} height={1080} />
   </>
 );
 registerRoot(Root);

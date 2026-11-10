@@ -310,3 +310,70 @@ export const PhoneScreen: React.FC<{ t: number }> = ({ t }) => {
     </g>
   );
 };
+
+// ================= ШОССЕ =================
+export const Highway: React.FC = () => (
+  <g>
+    <defs><linearGradient id="skyH" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f0c894" /><stop offset="100%" stopColor="#fbe6c0" /></linearGradient></defs>
+    <rect x={-W} width={W * 4} height={H} fill="url(#skyH)" />
+    <path d={`M ${-W} 560 Q 0 470 600 540 Q 1200 600 1800 500 Q 2600 430 ${W * 3} 560 L ${W * 3} 700 L ${-W} 700 Z`} fill="#b8b07a" />
+    <path d={`M ${-W} 620 Q 400 560 1000 610 Q 1700 660 ${W * 3} 600 L ${W * 3} 720 L ${-W} 720 Z`} fill="#9aa06a" />
+    <rect x={-W} y={700} width={W * 4} height={40} fill="#c8bca0" stroke={OL} strokeWidth={5} />
+    <rect x={-W} y={740} width={W * 4} height={H} fill="#6e675e" stroke={OL} strokeWidth={5} />
+    {Array.from({ length: 30 }, (_, i) => <rect key={i} x={-W + i * 220} y={930} width={110} height={12} fill="#f2e6c4" />)}
+    {Array.from({ length: 40 }, (_, i) => <rect key={"g" + i} x={-W + i * 150} y={690} width={10} height={40} fill="#8a8478" stroke={OL} strokeWidth={3} />)}
+    <rect x={-W} y={686} width={W * 4} height={14} fill="#b0aaa0" stroke={OL} strokeWidth={4} />
+  </g>
+);
+
+// ================= КАССА =================
+export const Checkout: React.FC<{ t: number; belt?: boolean }> = ({ t, belt = true }) => (
+  <g>
+    <rect width={W * 1.5} height={H} fill="#efe2c4" />
+    <rect x={-200} y={140} width={W * 1.8} height={420} fill="#e2d2b0" />
+    {Array.from({ length: 6 }, (_, i) => <g key={i}><rect x={-100 + i * 380} y={180} width={300} height={340} fill="#d0b88e" stroke={OL} strokeWidth={4} />
+      {Array.from({ length: 4 }, (_, r) => Array.from({ length: 6 }, (_, c) => <rect key={`${r}${c}`} x={-86 + i * 380 + c * 48} y={196 + r * 82} width={40} height={60} fill={["#d8443a", "#e8b23a", "#5a9a4a", "#3a7ad8", "#e07a3a", "#f2e6cc"][(r + c + i) % 6]} stroke={OL} strokeWidth={2} opacity={0.8} />))}</g>)}
+    <rect x={860} y={60} width={200} height={70} rx={10} fill="#3a6a9a" stroke={OL} strokeWidth={5} />
+    <text x={960} y={108} textAnchor="middle" fontFamily="sans-serif" fontWeight={900} fontSize={36} fill="#f6efe2">3</text>
+    <rect x={-200} y={560} width={W * 1.8} height={H} fill="#d8c8a6" />
+  </g>
+);
+/** стойка кассы спереди (рисовать поверх кассира) */
+export const CheckoutCounter: React.FC<{ t: number; belt?: boolean }> = ({ t, belt = true }) => (
+  <g>
+    <rect x={300} y={720} width={1300} height={400} fill="#8a6a4a" stroke={OL} strokeWidth={6} />
+    <rect x={300} y={690} width={1300} height={40} fill="#3a3a40" stroke={OL} strokeWidth={5} />
+    {belt ? Array.from({ length: 30 }, (_, i) => <rect key={i} x={300 + ((i * 50 + t * 3) % 1300)} y={692} width={6} height={36} fill="#55555e" />) : null}
+    <rect x={1300} y={560} width={180} height={130} rx={10} fill="#3a3a44" stroke={OL} strokeWidth={5} />
+    <rect x={1316} y={576} width={148} height={70} rx={6} fill="#7ae0c8" />
+    <text x={1390} y={622} textAnchor="middle" fontFamily="monospace" fontWeight={900} fontSize={30} fill="#1e3a30">$4.20</text>
+  </g>
+);
+export const RiceBag: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <path d="M -40 0 L -46 -80 Q -30 -96 0 -94 Q 30 -96 46 -80 L 40 0 Z" fill="#f2e8d4" stroke={OL} strokeWidth={5} strokeLinejoin="round" />
+    <rect x={-34} y={-62} width={68} height={30} rx={4} fill="#d8443a" />
+    <text x={0} y={-40} textAnchor="middle" fontFamily="sans-serif" fontWeight={900} fontSize={18} fill="#fff">RICE</text>
+  </g>
+);
+
+// ================= ТЕЛЕВИЗОР: студия новостей =================
+export const TVFrame: React.FC<{ children: React.ReactNode; headline: string; t: number }> = ({ children, headline, t }) => (
+  <g>
+    <rect x={180} y={90} width={1560} height={900} rx={30} fill="#2a2420" stroke={OL} strokeWidth={10} />
+    <clipPath id="tvclip"><rect x={220} y={130} width={1480} height={820} rx={10} /></clipPath>
+    <g clipPath="url(#tvclip)">
+      <rect x={220} y={130} width={1480} height={820} fill="#3a5a7a" />
+      {Array.from({ length: 8 }, (_, i) => <rect key={i} x={240 + i * 190} y={160} width={160} height={90} fill="#4a6c8c" opacity={0.6} />)}
+      <circle cx={1450} cy={380} r={170} fill="#5a7c9c" />
+      <path d="M 1340 330 Q 1450 260 1560 330 M 1300 400 L 1600 400 M 1340 470 Q 1450 540 1560 470" stroke="#7a9cbc" strokeWidth={8} fill="none" />
+      {children}
+      <rect x={220} y={790} width={1480} height={110} fill="#c0302a" />
+      <rect x={220} y={790} width={260} height={110} fill="#f6efe2" />
+      <text x={350} y={860} textAnchor="middle" fontFamily="sans-serif" fontWeight={900} fontSize={42} fill="#c0302a">LIVE</text>
+      <text x={510} y={862} fontFamily="sans-serif" fontWeight={900} fontSize={46} fill="#ffffff">{headline}</text>
+      <rect x={220} y={900} width={1480} height={50} fill="#1e1a18" />
+      <text x={1700 - ((t * 5) % 2600)} y={936} fontFamily="sans-serif" fontWeight={700} fontSize={30} fill="#f6e6c4">PORTS IDLE IN 40+ COUNTRIES • SHIPPING SYSTEMS OFFLINE • OFFICIALS URGE CALM • PORTS IDLE IN 40+ COUNTRIES</text>
+    </g>
+  </g>
+);

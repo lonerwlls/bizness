@@ -2,6 +2,7 @@
 import React from "react";
 import { AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { Look, P, Pose, Toon } from "../brand/corridor/rig";
+import { FadeOut } from "./transitions";
 import { Blur, CamG, Clock, H, HERO, OL, PEOPLE, Vignette, W, ip, lerp, sitting, stand, talk, track, trackP, walking } from "./common";
 import { Aisle, CafeTable, Cart, ControlRoom, Cup, Kitchen, Ocean, PhoneScreen, Port, Product, STREET_Y, ShipShape, Street, Truck, aisleFloorY, aisleX, kitFloorY, kitPhonePos, kitX } from "./places";
 
@@ -220,12 +221,12 @@ const Shrug: Shot = ({ g }) => {
 };
 // ---------- супермаркет: полки полны (пока) ----------
 const AisleEnd: Shot = ({ g }) => {
-  const z2 = 7, s2 = 0.75 * (3.6 / z2), cx0 = aisleX(-1.2, z2), mx = lerp(cx0, aisleX(1.4, z2), g / 190);
+  const z2 = 7, s2 = 0.75 * (3.6 / z2), cx0 = aisleX(-0.9, z2), mx = lerp(cx0, aisleX(0.7, z2), ip(g, [0, 150], [0, 1], (t) => t));
   const zc = 4.2, sc = 0.75 * (3.6 / zc), cartX = lerp(aisleX(-0.2, zc), aisleX(-0.6, zc), g / 190);
   return (
     <Svg><CamG cam={{ s: lerp(1.0, 1.35, ip(g, [0, 190], [0, 1])), cx: 960, cy: 520 }}>
       <Aisle fill={1} />
-      <Person x={mx} y={aisleFloorY(z2)} s={s2} look={PEOPLE.girl} pose={walking(g, (mx - cx0) / s2, 1, { seed: 15 })} uid="e1" />
+      <Person x={mx} y={aisleFloorY(z2)} s={s2} look={PEOPLE.girl} pose={g < 150 ? walking(g, (mx - cx0) / s2, 1, { seed: 15 }) : stand(g, { turn: 0.7, seed: 15, expr: { look: [1, -0.3] } })} uid="e1" />
       <Person x={cartX - 120 * sc} y={aisleFloorY(zc)} s={sc} look={PEOPLE.oldman} pose={stand(g, { turn: 0.4, handR: [150, -250], handL: [110, -260], seed: 16, expr: { look: [1, 0], mouth: "smile" } })} uid="e2" />
       <Cart x={cartX + 30 * sc} y={aisleFloorY(zc)} s={sc} items={4} />
     </CamG><Clock label="DAY 1" time="08:54" /></Svg>
@@ -243,5 +244,6 @@ export const Part1: React.FC = () => (
   <AbsoluteFill style={{ background: "#000" }}>
     {CUTS.map(([S, a, b], i) => <Sequence key={i} from={a} durationInFrames={b - a}><ShotView S={S} /></Sequence>)}
     <Sequence from={6}><Audio src={staticFile("food/part1.mp3")} /></Sequence>
+    <FadeOut total={PART1_FRAMES} />
   </AbsoluteFill>
 );
