@@ -141,7 +141,7 @@ export const CityWindow: React.FC<{ x: number; y: number; w: number; h: number; 
   </g>
 );
 export const CEIL = GY - 820;
-export const Apartment: React.FC<{ cam: Cam; f: number; tod?: Tod; dark?: number; children?: React.ReactNode; tally?: number }> = ({ cam, f, tod = "dawn", dark = 0.25, children, tally = 0 }) => (
+export const Apartment: React.FC<{ cam: Cam; f: number; tod?: Tod; dark?: number; children?: React.ReactNode; tally?: number; sleeping?: boolean }> = ({ cam, f, tod = "dawn", dark = 0.25, children, tally = 0, sleeping }) => (
   <Svg>
     <Layer cam={cam} d={1}>
       <rect x={-1500} y={CEIL - 600} width={5000} height={GY - CEIL + 600} fill="#3e4a96" />
@@ -156,17 +156,21 @@ export const Apartment: React.FC<{ cam: Cam; f: number; tod?: Tod; dark?: number
       {/* выключатель */}
       <rect x={960} y={GY - 430} width={50} height={80} rx={8} fill="#e8e4ff" stroke={INK} strokeWidth={5} />
       {/* отметки дней мелом */}
-      {Array.from({ length: tally }, (_, i) => <path key={i} d={i % 5 === 4 ? `M ${-200 + Math.floor(i / 5) * 120 - 70} ${GY - 520} L ${-200 + Math.floor(i / 5) * 120 + 10} ${GY - 430}` : `M ${-260 + Math.floor(i / 5) * 120 + (i % 5) * 18} ${GY - 530} L ${-260 + Math.floor(i / 5) * 120 + (i % 5) * 18} ${GY - 420}`} stroke="#fff" strokeWidth={7} strokeLinecap="round" />)}
+      <Tally n={tally} x={-200} y={GY - 330} />
       {/* пол */}
       <rect x={-1500} y={GY} width={5000} height={700} fill="#6a4a8a" stroke={INK} strokeWidth={8} />
       {Array.from({ length: 30 }, (_, i) => <path key={i} d={`M ${-1500 + i * 170} ${GY} L ${-1500 + i * 170} ${GY + 700}`} stroke={INK} strokeWidth={4} opacity={0.3} />)}
-      {/* кровать */}
-      <g><rect x={210} y={GY - 330} width={36} height={330} rx={10} fill="#c87a4a" stroke={INK} strokeWidth={7} />
-        <rect x={250} y={GY - 170} width={560} height={110} rx={14} fill="#e8e4ff" stroke={INK} strokeWidth={7} />
-        <rect x={430} y={GY - 186} width={400} height={86} rx={22} fill="#5ad8c8" stroke={INK} strokeWidth={7} />
-        <rect x={260} y={GY - 210} width={150} height={60} rx={26} fill="#ffffff" stroke={INK} strokeWidth={7} />
-        <rect x={250} y={GY - 60} width={560} height={30} fill="#c87a4a" stroke={INK} strokeWidth={7} /></g>
-      <rect x={820} y={GY - 180} width={160} height={180} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={7} />
+      {/* кровать: матрас на высоте ~0,5 м */}
+      <g><rect x={210} y={GY - 260} width={36} height={260} rx={10} fill="#c87a4a" stroke={INK} strokeWidth={7} />
+        <rect x={250} y={GY - 70} width={580} height={44} rx={14} fill="#e8e4ff" stroke={INK} strokeWidth={7} />
+        <rect x={250} y={GY - 34} width={580} height={24} fill="#c87a4a" stroke={INK} strokeWidth={7} />
+        {[262, 806].map((k) => <rect key={k} x={k} y={GY - 12} width={16} height={12} fill="#8a4a2a" stroke={INK} strokeWidth={4} />)}
+        <rect x={262} y={GY - 102} width={150} height={48} rx={22} fill="#ffffff" stroke={INK} strokeWidth={7} />
+        {sleeping ? null : <path d={`M 600 ${GY - 70} Q 600 ${GY - 98} 640 ${GY - 98} L 820 ${GY - 98} Q 840 ${GY - 98} 836 ${GY - 66} L 836 ${GY - 30} L 600 ${GY - 30} Z`} fill="#5ad8c8" stroke={INK} strokeWidth={7} strokeLinejoin="round" />}</g>
+      <rect x={850} y={GY - 110} width={150} height={110} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={7} />
+      <rect x={866} y={GY - 86} width={118} height={36} rx={6} fill="#a85a3a" stroke={INK} strokeWidth={5} />
+      {/* розетка */}
+      <g transform={`translate(1060 ${GY - 70})`}><rect x={-26} y={-30} width={52} height={60} rx={8} fill="#e8e4ff" stroke={INK} strokeWidth={5} /><rect x={-12} y={-12} width={6} height={14} fill={INK} /><rect x={6} y={-12} width={6} height={14} fill={INK} /></g>
       {children}
     </Layer>
     <rect width={1920} height={1080} fill="#0a0628" opacity={dark} />
@@ -220,12 +224,6 @@ export const Rooftop: React.FC<{ cam: Cam; f: number; tod?: Tod; children?: Reac
     <Layer cam={cam} d={1}>
       <rect x={-3000} y={GY - 40} width={9000} height={900} fill="#4a4080" stroke={INK} strokeWidth={7} />
       <rect x={-3000} y={GY - 70} width={9000} height={34} fill="#6a5ab0" stroke={INK} strokeWidth={6} />
-      {/* водонапорный бак */}
-      <g transform={`translate(${1700} ${GY - 70})`}>
-        {[-70, 70].map((k) => <path key={k} d={`M ${k} 0 L ${k * 0.7} -180`} stroke={INK} strokeWidth={12} />)}
-        <path d="M -110 -180 L 110 -180 L 100 -400 L -100 -400 Z" fill="#c87a4a" stroke={INK} strokeWidth={8} />
-        <path d="M -120 -400 L 0 -470 L 120 -400 Z" fill="#8a4a2a" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
-      </g>
       {children}
     </Layer>
   </Svg>
@@ -240,3 +238,35 @@ export const NoIcon: React.FC<{ x: number; y: number; k: "bulb" | "phone" | "wif
     <path d="M -110 -110 L 110 110" stroke="#ff3a4a" strokeWidth={26} strokeLinecap="round" opacity={p >= 1 ? 1 : 0} />
   </g>
 );
+
+// отметки дней мелом: палочки по 5, пятая — поперёк
+export const Tally: React.FC<{ n: number; x: number; y: number }> = ({ n, x, y }) => (
+  <g>{Array.from({ length: n }, (_, i) => { const gx = x + Math.floor(i / 5) * 110; return i % 5 === 4
+    ? <path key={i} d={`M ${gx - 12} ${y + 70} L ${gx + 84} ${y + 14}`} stroke="#fff" strokeWidth={7} strokeLinecap="round" />
+    : <path key={i} d={`M ${gx + (i % 5) * 18} ${y} L ${gx + (i % 5) * 18 + 2} ${y + 90}`} stroke="#fff" strokeWidth={7} strokeLinecap="round" />; })}</g>
+);
+// герой спит под одеялом (голова на подушке)
+export const InBed: React.FC<{ f: number; expr?: any; open?: number; gaze?: number; raise?: number }> = ({ f, expr = "sleep", open = 0, gaze = 0, raise = 0 }) => (
+  <g>
+    <g transform={`rotate(${-raise * 30} 610 ${GY - 90})`}><Bean x={628} y={GY - 147} s={HS} look={HERO2D} expr={expr} open={open} f={f} gaze={gaze} lying shadow={false} pose={{ bob: Math.sin(f * 0.08) * 2 }} /></g>
+    <path d={`M 400 ${GY - 66} Q 396 ${GY - 152 + Math.sin(f * 0.08) * 3} 470 ${GY - 156 + Math.sin(f * 0.08) * 3} L 790 ${GY - 130} Q 846 ${GY - 120} 840 ${GY - 66} Z`} fill="#5ad8c8" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+    <path d={`M 470 ${GY - 120} Q 600 ${GY - 110} 760 ${GY - 102}`} stroke="#3aa898" strokeWidth={6} fill="none" />
+  </g>
+);
+// скамейка на остановке (сиденье на высоте 70)
+export const Bench: React.FC<{ x: number; y: number }> = ({ x, y }) => (
+  <g>
+    <rect x={x - 150} y={y - 330} width={14} height={330} fill="#2a2450" stroke={INK} strokeWidth={5} />
+    <rect x={x - 180} y={y - 360} width={380} height={40} rx={8} fill="#5a5ab0" stroke={INK} strokeWidth={6} />
+    <rect x={x - 130} y={y - 170} width={260} height={70} rx={8} fill="#c87a4a" stroke={INK} strokeWidth={6} />
+    <rect x={x - 130} y={y - 78} width={260} height={18} rx={6} fill="#c87a4a" stroke={INK} strokeWidth={6} />
+    {[-110, 110].map((k) => <rect key={k} x={x + k - 6} y={y - 62} width={12} height={62} fill="#2a2450" stroke={INK} strokeWidth={4} />)}
+  </g>
+);
+// шаг без «скольжения»: ноги ±18°, скорость тела совпадает с шагом
+export const WALK_A = 18;
+export const walk = (f: number, sp = 0.22, a = 0): import("../sp/kit").BeanPose => {
+  const p = Math.sin(f * sp + a);
+  return { legL: p * WALK_A, legR: -p * WALK_A, bob: (1 - Math.abs(p)) * 4, lean: 3, armL: [14 - p * 16, 10], armR: [14 + p * 16, 10], tilt: 0 };
+};
+export const walkSpeed = (sp = 0.22, s = HS) => (2 * 168 * s * Math.sin((WALK_A * Math.PI) / 180) * sp) / Math.PI;
