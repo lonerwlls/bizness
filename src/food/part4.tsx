@@ -1,7 +1,7 @@
 // Часть 4 (≈55 с): «Спустя неделю». Карточка времени, озвучка с кадра 60, звуки — scripts/food_sfx4.py.
 import React from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, staticFile, useCurrentFrame } from "remotion";
-import { Look, Pose, Toon } from "../brand/corridor/rig";
+import { Look, Pose, Toon, rigGeo } from "../brand/corridor/rig";
 import { CamG, Clock, H, HERO, OL, PEOPLE, Vignette, W, ip, lerp, sitting, stand, talk, trackP, walking } from "./common";
 import { Aisle, Box, CafeTable, Kitchen, Pallet, RiceBag, STREET_Y, Street, Tent, Truck, Warehouse, aisleFloorY, aisleX, kitFloorY, kitX } from "./places";
 import { FadeOut, TimeCard } from "./transitions";
@@ -123,32 +123,37 @@ const LongLine: Shot = ({ g }) => {
 };
 // 7. коробка пайка: достаёт по одному
 const RationBox: Shot = ({ g }) => {
-  const s = 1.0, x = 860, y = 1080;
-  const items: [string, number][] = [["RICE", 24], ["BEANS", 42], ["FLOUR", 52], ["CANS", 70]];
-  const out = items.filter(([, t]) => g >= t + 8).length;
-  const reachIn: [number, number] = [210, -360], drop = (i: number): [number, number] => [-30 + i * 120, -330];
+  // герой стоит ЗА прилавком, достаёт продукты из коробки и ставит их перед собой на прилавок
+  const s = 1.0, x = 760, y = 1000, TOP = 760;
+  const items: [string, number][] = [["RICE", 20], ["BEANS", 38], ["FLOUR", 56], ["CANS", 74]];
+  const reachIn: [number, number] = [200, -380];
+  const lxs = [-95, -35, 25, 85];
+  const drop = (i: number): [number, number] => [lxs[i], -(y - (TOP - 40)) / s];
   const keys: [number, [number, number]][] = [[0, [60, -180]], [14, reachIn]];
-  items.forEach(([, t], i) => { keys.push([t, reachIn]); keys.push([t + 8, [drop(i)[0] + 200, drop(i)[1]]]); keys.push([t + 12, reachIn]); });
-  keys.push([90, [60, -180]]);
-  const hand = g < 90 ? trackP(g, keys) : trackP(g, [[90, [60, -180]], [110, [20, -250]]]);
-  const pose = stand(g, { turn: 0.5, handR: hand, handL: g > 110 ? [10, -250] : [-60, -180], tilt: g > 120 ? 6 : 0, expr: g > 110 ? { mouth: "wavy", browA: -0.6, browH: 0.5, look: [0.5, 0.8] } : { mouth: "flat", look: [1, 0.8] }, seed: 40 });
+  items.forEach(([, t], i) => { keys.push([t, reachIn]); keys.push([t + 10, drop(i)]); keys.push([t + 18, reachIn]); });
+  keys.push([100, [60, -180]]);
+  const hand = g < 100 ? trackP(g, keys) : trackP(g, [[100, [60, -180]], [118, [20, -250]]]);
+  const pose = stand(g, { turn: 0.5, handR: hand, handL: g > 118 ? [10, -250] : [-60, -180], tilt: g > 125 ? 6 : 0, expr: g > 118 ? { mouth: "wavy", browA: -0.6, browH: 0.5, look: [0.5, 0.8] } : { mouth: "flat", look: [1, 0.8] }, seed: 40 });
+  const hR = rigGeo(pose).hR;
+  const hw: [number, number] = [x + hR[0] * s, y + hR[1] * s];
+  const cur = items.findIndex(([, t]) => g >= t + 3 && g < t + 10);
+  const Item: React.FC<{ lb: string; px: number; py: number }> = ({ lb, px, py }) => lb === "CANS"
+    ? <g>{[0, 1, 2].map((k) => <rect key={k} x={px - 30 + k * 20} y={py - 34} width={20} height={34} rx={3} fill="#9aa0a8" stroke={OL} strokeWidth={3} />)}</g>
+    : <g><RiceBag x={px} y={py} s={0.6} />{lb !== "RICE" ? <rect x={px - 20} y={py - 37} width={40} height={18} fill={lb === "BEANS" ? "#8a3a2a" : "#f6efe2"} /> : null}</g>;
   return (
-    <Svg><CamG cam={{ s: 1.0, cx: 960, cy: 600 }}>
+    <Svg><CamG cam={{ s: 1.7, cx: 870, cy: 640 }}>
       <rect width={W} height={H} fill="#e3c896" />
-      <rect x={0} y={760} width={W} height={60} fill="#b9844e" stroke={OL} strokeWidth={6} />
-      <rect x={0} y={820} width={W} height={300} fill="#8a5a30" stroke={OL} strokeWidth={5} />
       <Person x={x} y={y} s={s} look={HERO} pose={pose} uid="hr" />
-      <g transform="translate(1150 760)">
+      <rect x={-20} y={TOP} width={W + 40} height={60} fill="#b9844e" stroke={OL} strokeWidth={6} />
+      <rect x={-20} y={TOP + 60} width={W + 40} height={400} fill="#8a5a30" stroke={OL} strokeWidth={5} />
+      <g transform={`translate(1010 ${TOP})`}>
         <rect x={-110} y={-130} width={220} height={130} fill="#c89a5a" stroke={OL} strokeWidth={5} />
-        <path d={`M -110 -130 L ${-110 - 70 * ip(g, [0, 14], [0, 1])} ${-130 - 50 * ip(g, [0, 14], [0, 1])}`} stroke={OL} strokeWidth={14} />
+        <path d={`M -110 -130 L ${-110 - 60 * ip(g, [0, 14], [0, 1])} ${-130 - 50 * ip(g, [0, 14], [0, 1])}`} stroke={OL} strokeWidth={14} />
         <path d={`M 110 -130 L ${110 + 70 * ip(g, [0, 14], [0, 1])} ${-130 - 50 * ip(g, [0, 14], [0, 1])}`} stroke={OL} strokeWidth={14} />
         {txt(0, -50, 28, "#5a3a20", "RATION")}
       </g>
-      {items.slice(0, out).map(([lb], i) => <g key={lb} transform={`translate(${760 + i * 120} 760)`}>
-        {lb === "CANS" ? [0, 1, 2].map((k) => <g key={k}><rect x={-30 + k * 22} y={-60} width={34} height={56} rx={4} fill="#9aa0a8" stroke={OL} strokeWidth={3} /></g>) : <RiceBag x={0} y={0} s={0.8} />}
-        {lb !== "CANS" && lb !== "RICE" ? <rect x={-30} y={-48} width={60} height={22} fill={lb === "BEANS" ? "#8a3a2a" : "#f6efe2"} /> : null}
-      </g>)}
-      {g >= 10 && g < 90 ? (() => { const hw: [number, number] = [x + hand[0] * s, y + hand[1] * s]; const cur = items.findIndex(([, t]) => g >= t && g < t + 8); return cur >= 0 ? <RiceBag x={hw[0]} y={hw[1] + 40} s={0.6} /> : null; })() : null}
+      {items.map(([lb, t], i) => g >= t + 10 ? <Item key={lb} lb={lb} px={x + lxs[i] * s} py={TOP} /> : null)}
+      {cur >= 0 ? <Item lb={items[cur][0]} px={hw[0]} py={hw[1] + 40} /> : null}
     </CamG></Svg>
   );
 };
@@ -174,14 +179,14 @@ const Closed: Shot = ({ g }) => {
 const NoWork: Shot = ({ g }) => {
   const bar = sitting(g, { turn: 0.3, nod: 14, handL: [-30, -260], handR: [30, -260], expr: { mouth: "flat", eyes: "half", browA: -0.6, look: [0, 1] }, seed: 50 });
   bar.hip = [0, -110];
-  const wx = 1500 - g * 6.2;
+  const wx = 1500 - g * 3.8; // останавливается правее баристы, не проходит сквозь неё
   return (
     <Svg><CamG cam={{ s: 1.35, cx: 760, cy: 620 }}>
       <Street stock={0} closedCafe />
       <Shutter x={840} y={470} w={400} h={360} />
       <Person x={520} y={STREET_Y + 30} s={0.75} look={PEOPLE.barista} pose={bar} uid="sb" />
       <Box x={520} y={STREET_Y - 6} s={1.5} label="CAFÉ" />
-      <Person x={wx} y={STREET_Y + 20} s={0.78} look={PEOPLE.man} pose={walking(g, g * 8, -1, { handL: [-40, -300], handR: [40, -300], seed: 51, expr: { mouth: "flat", browA: -0.5 } })} uid="wm" />
+      <Person x={wx} y={STREET_Y + 20} s={0.78} look={PEOPLE.man} pose={walking(g, g * 3.8 / 0.78, -1, { handL: [-40, -300], handR: [40, -300], seed: 51, expr: { mouth: "flat", browA: -0.5 } })} uid="wm" />
       <Box x={wx} y={STREET_Y + 20 - 300 * 0.78} s={0.85} label="DESK" />
     </CamG></Svg>
   );
@@ -213,13 +218,13 @@ const Aid: Shot = ({ g }) => {
 // 11. шёпот в очереди
 const Whisper: Shot = ({ g }) => {
   const s = 0.95, y = 1000;
-  const a = stand(g, { turn: 0.7, lean: 8, handR: [70, -470], expr: { mouth: "open", open: talk(g, 1) * 0.35, browA: -0.6, browH: 0.4, look: [1, 0] }, seed: 70 });
+  const a = stand(g, { turn: 0.7, lean: 5, handR: [42, -428], expr: { mouth: "open", open: talk(g, 1) * 0.35, browA: -0.6, browH: 0.4, look: [1, 0] }, seed: 70 });
   const b = stand(g, { turn: -0.4, tilt: -8, expr: { mouth: "wavy", eyes: g > 60 ? "wide" : "dot", browH: 0.6, look: [-1, 0] }, seed: 71 });
   const h = stand(g, { turn: g < 60 ? 0.6 : 0.1, expr: { mouth: "flat", browA: -0.8, browH: 0.6, eyes: g > 80 ? "wide" : "dot", look: [g < 60 ? 1 : 0, 0] }, seed: 72 });
   return (
     <Svg><CamG cam={{ s: lerp(1.5, 1.7, ip(g, [0, 180], [0, 1])), cx: 880, cy: 620 }}>
       <Tent />
-      <Person x={1080} y={y} s={s} look={PEOPLE.oldman} pose={b} uid="wb" />
+      <Person x={1150} y={y} s={s} look={PEOPLE.oldman} pose={b} uid="wb" />
       <Person x={900} y={y} s={s} look={PEOPLE.woman} pose={a} uid="wa" />
       <Person x={640} y={y} s={s} look={HERO} pose={h} uid="wh" />
     </CamG></Svg>
