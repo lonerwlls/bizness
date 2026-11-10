@@ -52,8 +52,8 @@ export const walking = (f: number, dist: number, dir: number, o: StandOpts & { c
   if (expr.blink === undefined) expr.blink = blinkAt(f, (o.seed ?? 0) + 2);
   return {
     footL: w.footL, footR: w.footR, hip: w.hip, dir, lean: dir * 4,
-    handL: o.handL ?? [-58 - dir * sw * 24, -180], handR: o.handR ?? [58 + dir * sw * 24, -180],
-    turn: o.turn ?? dir * 0.55, tilt: o.tilt ?? 0, nod: o.nod ?? 0, expr,
+    handL: o.handL ?? [-50 - dir * sw * 46, -184 - Math.abs(sw) * 14], handR: o.handR ?? [50 + dir * sw * 46, -184 - Math.abs(sw) * 14],
+    turn: o.turn ?? dir * 0.8, tilt: o.tilt ?? 0, nod: o.nod ?? 0, expr,
   };
 };
 /** сидит за столом (ноги скрыты столом) */
@@ -71,12 +71,10 @@ export const Blur: React.FC<{ r: number; children: React.ReactNode; id: string }
 );
 
 // ---------- счётчик времени ----------
-export const Clock: React.FC<{ label: string; time: string; o?: number }> = ({ label, time, o = 1 }) => (
+export const Clock: React.FC<{ label: string; time?: string; o?: number }> = ({ label, o = 1 }) => (
   <g transform="translate(56 50)" opacity={o}>
-    <rect width={330} height={78} rx={14} fill="rgba(40,24,12,0.72)" stroke="#e8c88a" strokeWidth={3} />
-    <circle cx={42} cy={39} r={8} fill="#e8503a" />
-    <text x={64} y={51} fontFamily="sans-serif" fontWeight={900} fontSize={34} fill="#f6e6c4" letterSpacing={2}>{label}</text>
-    <text x={312} y={51} textAnchor="end" fontFamily="monospace" fontWeight={700} fontSize={32} fill="#e8c88a">{time}</text>
+    <rect width={200} height={78} rx={14} fill="rgba(40,24,12,0.72)" stroke="#e8c88a" strokeWidth={3} />
+    <text x={100} y={52} textAnchor="middle" fontFamily="sans-serif" fontWeight={900} fontSize={36} fill="#f6e6c4" letterSpacing={3}>{label}</text>
   </g>
 );
 export const Vignette: React.FC = () => (

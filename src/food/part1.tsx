@@ -79,8 +79,8 @@ const Cafe: Shot = ({ g }) => {
 };
 // ---------- улица: пекарня и разгрузка ----------
 const Delivery: Shot = ({ g }) => {
-  const s = 0.75, cycle = 64, ph = g % cycle, goingIn = ph < cycle / 2;
-  const x0 = 1730, x1 = 1610;
+  const s = 0.75, cycle = 72, ph = g % cycle, goingIn = ph < cycle / 2;
+  const x0 = 1760, x1 = 1560;
   const u = goingIn ? ph / (cycle / 2) : 1 - (ph - cycle / 2) / (cycle / 2);
   const wx = lerp(x0, x1, u);
   const pose = walking(g, Math.abs(wx - x0) / s + Math.floor(g / cycle) * 320, goingIn ? -1 : 1, goingIn ? { handL: [-40, -290], handR: [40, -290], seed: 5 } : { seed: 5 });
@@ -91,7 +91,7 @@ const Delivery: Shot = ({ g }) => {
       <Street />
       {[0, 1, 2].map((i) => <path key={i} d={steam(i)} stroke="rgba(255,255,255,0.75)" strokeWidth={6} fill="none" strokeLinecap="round" />)}
       <Truck x={2080} boxes={5} />
-      <Person x={1000} y={STREET_Y} s={s} look={PEOPLE.girl} pose={walking(g, g * 9, 1, { seed: 6, turn: 0.3 })} uid="dg" />
+      <Person x={700 + g * 6.75} y={STREET_Y} s={s} look={PEOPLE.girl} pose={walking(g, g * 9, 1, { seed: 6 })} uid="dg" />
       <Person x={wx} y={STREET_Y} s={s} look={PEOPLE.worker} pose={pose} uid="dw" />
       {goingIn ? <rect x={wx - 34} y={STREET_Y - 330 * s - 30} width={68} height={58} fill="#c89a5a" stroke={OL} strokeWidth={4} /> : null}
     </CamG><Clock label="DAY 1" time="08:14" /></Svg>

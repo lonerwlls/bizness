@@ -5,6 +5,7 @@ import React from "react";
 export type P = [number, number];
 export const OL = "#3a2414";
 const D = Math.PI / 180;
+const shade = (c: string, k: number) => { const n = parseInt(c.slice(1), 16); const ch = (v: number) => Math.round(v * k).toString(16).padStart(2, "0"); return `#${ch((n >> 16) & 255)}${ch((n >> 8) & 255)}${ch(n & 255)}`; };
 const add = (a: P, b: P): P => [a[0] + b[0], a[1] + b[1]];
 const rot = (p: P, deg: number): P => { const c = Math.cos(deg * D), s = Math.sin(deg * D); return [p[0] * c - p[1] * s, p[0] * s + p[1] * c]; };
 
@@ -127,9 +128,9 @@ export const Toon: React.FC<{ x: number; y: number; s: number; look: Look; pose:
     const bL = add(h, rot([-56, 26], lean)), bR = add(h, rot([56, 26], lean));
     return `M ${tL[0] - 10} ${tL[1] + 6} Q ${(tL[0] + tR[0]) / 2} ${tL[1] - 14} ${tR[0] + 10} ${tR[1] + 6} Q ${tR[0] + 22} ${(tR[1] + bR[1]) / 2} ${bR[0]} ${bR[1]} Q ${(bL[0] + bR[0]) / 2} ${bR[1] + 10} ${bL[0]} ${bL[1]} Q ${tL[0] - 22} ${(tL[1] + bL[1]) / 2} ${tL[0] - 10} ${tL[1] + 6} Z`;
   })();
-  const shoe = (f: P, side: number) => {
+  const shoe = (f: P, side: number, far = false) => {
     const d = pose.dir ? pose.dir : side * 0.5;
-    return <ellipse cx={f[0] + d * 12} cy={f[1] - 6} rx={24} ry={12} fill={look.shoe} stroke={OL} strokeWidth={6} />;
+    return <ellipse cx={f[0] + d * 14} cy={f[1] - 6} rx={26} ry={12} fill={far ? shade(look.shoe, 0.8) : look.shoe} stroke={OL} strokeWidth={6} />;
   };
   const hand = (p: P) => <circle cx={p[0]} cy={p[1]} r={15} fill={look.skin} stroke={OL} strokeWidth={6} />;
   const hc = g.head;
@@ -141,9 +142,14 @@ export const Toon: React.FC<{ x: number; y: number; s: number; look: Look; pose:
       </defs>
       <ellipse cx={(g.fL[0] + g.fR[0]) / 2} cy={4} rx={95} ry={16} fill="rgba(70,40,15,0.28)" />
       {look.kind === "hero" ? <rect x={pose.hip[0] - 66} y={pose.hip[1] - 168} width={132} height={140} rx={30} fill="#e8b23a" stroke={OL} strokeWidth={7} transform={`rotate(${lean} ${pose.hip[0]} ${pose.hip[1]})`} /> : null}
-      <Limb pts={[g.hipL, g.knL, g.fL]} c={look.pants} w={22} />
-      <Limb pts={[g.hipR, g.knR, g.fR]} c={look.pants} w={22} />
-      {shoe(g.fL, -1)}{shoe(g.fR, 1)}
+      {(() => {
+        const dir = pose.dir ?? 0, farL = dir > 0, farR = dir < 0;
+        const dark = (c: string, far: boolean) => (far ? shade(c, 0.72) : c);
+        const legL = <g key="lL"><Limb pts={[g.hipL, g.knL, g.fL]} c={dark(look.pants, farL)} w={22} />{shoe(g.fL, -1, farL)}</g>;
+        const legR = <g key="lR"><Limb pts={[g.hipR, g.knR, g.fR]} c={dark(look.pants, farR)} w={22} />{shoe(g.fR, 1, farR)}</g>;
+        return farR ? [legR, legL] : [legL, legR];
+      })()}
+      {pose.dir ? (pose.dir > 0 ? <g><Limb pts={[g.shL, g.elL, g.hL]} c={shade(look.top, 0.75)} w={20} />{hand(g.hL)}</g> : <g><Limb pts={[g.shR, g.elR, g.hR]} c={shade(look.top, 0.75)} w={20} />{hand(g.hR)}</g>) : null}
       <path d={torso} fill={`url(#${tp})`} stroke={OL} strokeWidth={7} strokeLinejoin="round" />
       {look.apron ? <path d={`M ${pose.hip[0] - 40} ${pose.hip[1] - 120} L ${pose.hip[0] + 40} ${pose.hip[1] - 120} L ${pose.hip[0] + 50} ${pose.hip[1] + 24} L ${pose.hip[0] - 50} ${pose.hip[1] + 24} Z`} fill={look.apron} stroke={OL} strokeWidth={5} transform={`rotate(${lean} ${pose.hip[0]} ${pose.hip[1]})`} /> : null}
       {look.kind === "hero" ? (
@@ -157,9 +163,9 @@ export const Toon: React.FC<{ x: number; y: number; s: number; look: Look; pose:
           <rect x={pose.hip[0] + 8 + lean * 1.2} y={pose.hip[1] - 140} width={34} height={14} rx={3} fill="#f2ead6" stroke={OL} strokeWidth={3} />
         </g>
       )}
-      <Limb pts={[g.shL, g.elL, g.hL]} c={look.top} w={20} />
-      <Limb pts={[g.shR, g.elR, g.hR]} c={look.top} w={20} />
-      {hand(g.hL)}{hand(g.hR)}
+      {pose.dir && pose.dir > 0 ? null : <Limb pts={[g.shL, g.elL, g.hL]} c={look.top} w={20} />}
+      {pose.dir && pose.dir < 0 ? null : <Limb pts={[g.shR, g.elR, g.hR]} c={look.top} w={20} />}
+      {pose.dir && pose.dir > 0 ? null : hand(g.hL)}{pose.dir && pose.dir < 0 ? null : hand(g.hR)}
       <g transform={`translate(${hc[0]} ${hc[1]}) rotate(${pose.tilt ?? 0})`}>
         {look.kind === "janitor" ? [-1, 1].map((k) => <path key={k} d={`M ${k * 66 - turn * 10} -10 Q ${k * 86 - turn * 10} -24 ${k * 78 - turn * 10} 12 Q ${k * 74} 22 ${k * 64} 16 Z`} fill="#d8d2c4" stroke={OL} strokeWidth={5} />) : null}
         <circle r={76} fill={`url(#${sk})`} stroke={OL} strokeWidth={7.5} />
@@ -182,15 +188,15 @@ export const Toon: React.FC<{ x: number; y: number; s: number; look: Look; pose:
 
 /** ступни и таз при ходьбе: dist — пройденный путь (лок. ед.), dir ±1. Шаг L = 190, опора 60 % цикла. */
 export const walk = (dist: number, dir: number) => {
-  const L = 190, S = L * 0.6, p = dist / L;
+  const L = 250, S = L * 0.6, p = dist / L;
   const foot = (off: number): P => {
     const u = (((p + off) % 1) + 1) % 1;
     if (u < 0.6) return [dir * (S / 2 - (u / 0.6) * S), 0];
     const w = (u - 0.6) / 0.4, e = w * w * (3 - 2 * w);
-    return [dir * (-S / 2 + e * S), -Math.sin(Math.PI * w) * 30];
+    return [dir * (-S / 2 + e * S), -Math.sin(Math.PI * w) * 42];
   };
   const fl = foot(0), fr = foot(0.5);
   const bob = 7 * (1 - Math.cos(4 * Math.PI * p)) / 2;
   const sw = Math.sin(2 * Math.PI * p);
-  return { footL: [fl[0] - 14, fl[1]] as P, footR: [fr[0] + 14, fr[1]] as P, hip: [0, -230 - bob] as P, swing: sw };
+  return { footL: [fl[0] - 6, fl[1]] as P, footR: [fr[0] + 6, fr[1]] as P, hip: [0, -226 - bob] as P, swing: sw };
 };

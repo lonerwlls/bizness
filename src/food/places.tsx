@@ -55,7 +55,13 @@ export const Kitchen: React.FC<{ open?: number }> = ({ open = 0 }) => {
         <g>
           {[0.45, 0.85, 1.25, 1.6].map((y) => <polyline key={y} points={poly([q(F.x0 + 0.05, y, F.z0), q(F.x1 - 0.05, y, F.z0)])} stroke="#b8c8d4" strokeWidth={5} />)}
           {/* коробка пиццы, яйца, молоко, банки */}
-          <polygon points={poly([q(F.x0 + 0.08, 1.0, F.z0), q(F.x0 + 0.6, 1.0, F.z0), q(F.x0 + 0.6, 0.86, F.z0), q(F.x0 + 0.08, 0.86, F.z0)])} fill="#d8a860" stroke={OL} strokeWidth={3} />
+          <g transform={`translate(${q(F.x0 + 0.4, 0.9, F.z0)[0]} ${q(0, 0.9, F.z0)[1]})`}>
+            <path d="M -70 0 L 70 0 L 64 -10 L -64 -10 Z" fill="#d8a860" stroke={OL} strokeWidth={3} />
+            <ellipse cx={0} cy={-14} rx={58} ry={16} fill="#f2c25a" stroke={OL} strokeWidth={3} />
+            <ellipse cx={0} cy={-14} rx={46} ry={11} fill="#e0703a" />
+            {[[-24, -16], [6, -10], [26, -17], [-6, -19]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={5} fill="#a8302a" />)}
+            <path d="M 0 -14 L 50 -10 M 0 -14 L -30 -24" stroke="#c8883a" strokeWidth={2} />
+          </g>
           {Array.from({ length: 5 }, (_, i) => <ellipse key={i} cx={q(F.x0 + 0.12 + i * 0.09, 1.3, F.z0)[0]} cy={q(0, 1.3, F.z0)[1]} rx={9} ry={11} fill="#fbf2e0" stroke={OL} strokeWidth={2} />)}
           <polygon points={poly([q(F.x1 - 0.3, 0.75, F.z0), q(F.x1 - 0.12, 0.75, F.z0), q(F.x1 - 0.12, 0.47, F.z0), q(F.x1 - 0.3, 0.47, F.z0)])} fill="#f6f6f6" stroke={OL} strokeWidth={3} />
           <polygon points={poly([q(F.x1 - 0.3, 0.75, F.z0), q(F.x1 - 0.12, 0.75, F.z0), q(F.x1 - 0.12, 0.68, F.z0), q(F.x1 - 0.3, 0.68, F.z0)])} fill="#3a7ad8" />
@@ -162,7 +168,7 @@ export const aisleX = (X: number, Z: number) => MP(X, 0, Z)[0];
 const PROD = ["#d8443a", "#e8b23a", "#5a9a4a", "#3a7ad8", "#e07a3a", "#f2e6cc", "#a85aa8", "#c89a5a"];
 /** fill 0..1 — заполненность полок (детерминированно «съедаются» товары), sale — таблички */
 export const Aisle: React.FC<{ fill?: number; signs?: boolean; lightsDim?: number }> = ({ fill = 1, signs = true, lightsDim = 0 }) => {
-  const SX = 1.6, ZN = 1.2, ZF = 22, levels = [0.15, 0.6, 1.05, 1.5, 1.95];
+  const SX = 1.6, ZN = 1.2, ZF = 34, levels = [0.15, 0.6, 1.05, 1.5, 1.95];
   const q = MP;
   const items: React.ReactNode[] = [];
   for (const s of [-1, 1]) for (let li = 0; li < levels.length; li++) {
@@ -194,7 +200,9 @@ export const Aisle: React.FC<{ fill?: number; signs?: boolean; lightsDim?: numbe
       ))}
       {items}
       {signs ? [-1, 1].map((s) => [3, 7].map((z) => <g key={`${s}${z}`}><polygon points={poly([q(s * SX, 3.0, z), q(s * SX, 3.0, z + 0.8), q(s * SX, 2.6, z + 0.8), q(s * SX, 2.6, z)])} fill="#d8443a" stroke={OL} strokeWidth={3} /></g>)) : null}
-      <polygon points={poly([q(-6, 4, ZF), q(6, 4, ZF), q(6, 0, ZF), q(-6, 0, ZF)])} fill="#e8d8b6" />
+      <polygon points={poly([q(-6, 4, ZF), q(6, 4, ZF), q(6, 0, ZF), q(-6, 0, ZF)])} fill="#d8c49c" />
+      <polygon points={poly([q(-1.4, 2.3, ZF), q(1.4, 2.3, ZF), q(1.4, 0, ZF), q(-1.4, 0, ZF)])} fill="#bcd8e4" stroke={OL} strokeWidth={2} />
+      <polygon points={poly([q(-1.2, 3.2, ZF), q(1.2, 3.2, ZF), q(1.2, 2.6, ZF), q(-1.2, 2.6, ZF)])} fill="#3a6a9a" />
     </g>
   );
 };
