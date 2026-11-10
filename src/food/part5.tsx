@@ -346,15 +346,15 @@ const Exodus: Shot = ({ g }) => {
 };
 // 7b. герой идёт по обочине, мимо медленно едут машины, указатель FARMS / VILLAGES
 const Roadside: Shot = ({ g }) => {
-  const sp = 2.4, hx = 520 + g * sp;
+  const sp = 3.0, hs = 0.27, hx = 700 + g * sp; // герой на дальней обочине: в реальном масштабе рядом с машинами
   return (
-    <Svg><CamG cam={{ s: 1.15, cx: lerp(900, 1080, g / 102), cy: 560 }}>
+    <Svg><CamG cam={{ s: 1.6, cx: hx + 260, cy: 700 }}>
       <Highway />
-      {[0, 1, 2, 3].map((i) => <Car key={i} x={-300 + i * 420 + g * 3.4} y={900} c={["#7a9a4a", "#c8603a", "#3a7a9a", "#e0b040"][i]} roof={i % 3} />)}
-      <g transform="translate(1500 720)"><rect x={-8} y={-300} width={16} height={300} fill="#5a5a60" stroke={OL} strokeWidth={3} />
+      {[0, 1, 2, 3, 4].map((i) => <Car key={i} x={-100 + i * 420 + g * 3.4} y={900} c={["#7a9a4a", "#c8603a", "#3a7a9a", "#e0b040", "#9a5a8a"][i]} roof={i % 3} />)}
+      <g transform="translate(1160 720) scale(0.62)"><rect x={-8} y={-300} width={16} height={300} fill="#5a5a60" stroke={OL} strokeWidth={3} />
         <path d="M -150 -290 L 130 -290 L 170 -255 L 130 -220 L -150 -220 Z" fill="#3a7a4a" stroke={OL} strokeWidth={4} />{txt(-10, -242, 32, "#f6efe2", "FARMS")}
         <path d="M -150 -200 L 130 -200 L 170 -165 L 130 -130 L -150 -130 Z" fill="#3a7a4a" stroke={OL} strokeWidth={4} />{txt(-10, -152, 32, "#f6efe2", "VILLAGES")}</g>
-      <Person x={hx} y={720} s={0.75} look={HERO} pose={walking(g, (g * sp) / 0.75, 1, { expr: { mouth: "flat" }, seed: 60 })} uid="h" />
+      <Person x={hx} y={722} s={hs} look={HERO} pose={walking(g, (g * sp) / hs, 1, { expr: { mouth: "flat" }, seed: 60 })} uid="h" />
     </CamG></Svg>
   );
 };
@@ -375,7 +375,7 @@ const Farm: Shot = ({ g }) => {
       <g transform="translate(260 560)"><rect x={-180} y={-260} width={360} height={260} fill="#a8443a" stroke={OL} strokeWidth={6} /><path d="M -210 -250 L 0 -400 L 210 -250 Z" fill="#7a3a30" stroke={OL} strokeWidth={6} strokeLinejoin="round" /><rect x={-60} y={-150} width={120} height={150} fill="#5a2a22" stroke={OL} strokeWidth={4} /></g>
       {Array.from({ length: 7 }, (_, i) => <path key={i} d={`M -300 ${620 + i * 70} L 2300 ${600 + i * 76}`} stroke="#9a8a4a" strokeWidth={14} opacity={0.7} />)}
       {Array.from({ length: 16 }, (_, i) => <path key={"w" + i} d={`M ${520 + i * 46} 640 l -10 -60 M ${520 + i * 46} 640 l 10 -54`} stroke="#d8a840" strokeWidth={6} />)}
-      <Tractor x={620} y={940} />
+      <g transform="translate(560 860) scale(1.55)"><Tractor x={0} y={0} /></g>
       <rect x={crate[0] - 70} y={crate[1]} width={140} height={120} fill="#b08050" stroke={OL} strokeWidth={5} />
       <g transform={`translate(${crate[0] + 120} ${fy})`}><path d="M -60 0 L -70 -70 Q -40 -84 0 -80 Q 40 -84 60 -70 L 60 0 Z" fill="#e8dcc0" stroke={OL} strokeWidth={4} />{txt(0, -30, 20, "#8a3a2a", "EMPTY", 900)}</g>
       <Person x={fx} y={fy} s={s} look={FARMER} pose={farmer} uid="f" />
