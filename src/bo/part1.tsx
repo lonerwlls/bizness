@@ -11,8 +11,8 @@ const since = (w: string, from: string, g: number, n = 1, nf = 1) => g - (atWord
 const SoundOff: React.FC<{ x: number; y: number }> = ({ x, y }) => <g transform={`translate(${x} ${y})`}>{[30, 55].map((r) => <path key={r} d={`M ${r} ${-r * 0.7} A ${r} ${r} 0 0 1 ${r} ${r * 0.7}`} stroke="#b8b4d0" strokeWidth={8} fill="none" />)}<path d="M 0 -50 L 90 50" stroke="#ff3a4a" strokeWidth={12} strokeLinecap="round" /></g>;
 // брошенные машины
 const Abandoned: React.FC = () => <>
-  <BoCar x={-300} y={GY - 40} c="#5a7cf0" rot={-8} door /><BoCar x={420} y={GY - 120} c="#ff6a5a" rot={12} flip />
-  <BoCar x={2350} y={GY - 50} c="#5ad8c8" rot={-14} door flip /><BoCar x={3000} y={GY - 110} c="#ffd23c" rot={6} />
+  <BoCar x={-600} y={GY - 30} c="#5a7cf0" rot={-6} door s={2.2} /><BoCar x={400} y={GY - 60} c="#ff6a5a" rot={8} flip s={2.2} />
+  <BoCar x={2750} y={GY - 40} c="#5ad8c8" rot={-8} door flip s={2.2} /><BoCar x={3650} y={GY - 60} c="#ffd23c" rot={5} s={2.2} />
 </>;
 // рука героя «от первого лица»: рукав куртки + кисть
 const PovHand: React.FC<{ x: number; y: number; rot?: number; point?: boolean; s?: number }> = ({ x, y, rot = 0, point, s = 1 }) => (
@@ -70,8 +70,8 @@ export const P1 = makePart(V, [
   } },
   // у окна: смотрит наружу, тревога
   { at: "look", s: (g, f, len) => <Apartment cam={camLerp(g, len, C(1300, 560, 1.3), C(1450, 520, 1.6))} f={f}><Hero x={1350} y={GY} f={f} expr={g > 25 ? "scared" : "worried"} gaze={1} pose={{ tilt: 12, armL: [20, 30], armR: [60, 60] }} /></Apartment> },
-  { at: "Cars", s: (g, f, len) => <Street cam={camLerp(g, len, C(300, 620, 1.2), C(500, 620, 1.3))} f={f}><Abandoned /></Street> },
-  { at: "bus", s: (g, f, len) => <Street cam={camLerp(g, len, C(1200, 600, 1.1), C(1300, 600, 1.2))} f={f}><Abandoned /><Bus x={1250} y={GY - 60} /></Street> },
+  { at: "Cars", s: (g, f, len) => <Street cam={camLerp(g, len, C(-100, 500, 0.8), C(150, 500, 0.85))} f={f}><Abandoned /></Street> },
+  { at: "bus", s: (g, f, len) => <Street cam={camLerp(g, len, C(1450, 450, 0.75), C(1550, 450, 0.8))} f={f}><Abandoned /><Bus x={1500} y={GY - 30} s={1.8} /></Street> },
   // далёкий звук: прислушивается у окна
   { at: "Somewhere", s: (g, f, len) => <Apartment cam={C(1400, GY - 330, 2.0)} f={f}>
     <Hero x={1350} y={GY} f={f} expr="worried" gaze={1} pose={{ tilt: 14, armR: [150, 80], armL: [20, 30] }} />

@@ -54,9 +54,9 @@ const DustyShop: React.FC<{ x: number }> = ({ x }) => (
 // мигающая сигнализация машины
 const AlarmCar: React.FC<{ on: boolean; f: number }> = ({ on, f }) => {
   const blink = on && Math.floor(f / 6) % 2 === 0;
-  return <g><BoCar x={960} y={GY + 120} c="#5a7cf0" />
-    {blink ? <><Glow x={1105} y={GY + 47} r={110} g="gY" /><Glow x={808} y={GY + 47} r={90} g="gR" /></> : null}
-    {on ? <SoundRings x={960} y={GY - 40} f={f * 2} c={YEL} n={3} /> : null}</g>;
+  return <g><BoCar x={960} y={GY - 20} c="#5a7cf0" s={2.2} />
+    {blink ? <><Glow x={1294} y={GY - 180} r={200} g="gY" /><Glow x={621} y={GY - 180} r={160} g="gR" /></> : null}
+    {on ? <SoundRings x={960} y={GY - 330} f={f * 2} c={YEL} n={3} /> : null}</g>;
 };
 // дневник
 const Diary: React.FC<{ g: number }> = ({ g }) => (
@@ -95,11 +95,11 @@ export const P4 = makePart(V, [
   { at: "Day", n: 2, s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={since("seven", "Day", g, 1, 2) > 4 ? 7 : 6}>
     <Hero x={-80} y={GY} f={f} expr="tired" gaze={-1} pose={{ armL: [150, ip(g, [0, 20], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} /></Apartment> },
   { at: "week", s: (g, f, len) => <Apartment cam={camLerp(g, len, C(-120, GY - 300, 2.4), C(-120, GY - 300, 2.8))} f={f} tally={7} /> },
-  { at: "city", s: (g, f, len) => <Street cam={camLerp(g, len, C(800, 560, 0.95), C(1100, 560, 1.0))} f={f} tod="day"><BoCar x={300} y={GY - 50} c="#ff6a5a" rot={10} /></Street> },
+  { at: "city", s: (g, f, len) => <Street cam={camLerp(g, len, C(800, 560, 0.95), C(1100, 560, 1.0))} f={f} tod="day"><BoCar x={300} y={GY - 40} c="#ff6a5a" rot={8} s={2.2} /></Street> },
   { at: "Trash", s: (g, f, len) => <Street cam={C(1000, GY - 100, 1.6)} f={f} tod="day"><Trash x={900} y={GY + 160} n={5} /></Street> },
   { at: "Shop", s: (g, f, len) => <Street cam={C(1000, GY - 400, 1.5)} f={f} tod="day" back={<DustyShop x={1000} />} /> },
-  { at: "Somewhere", s: (g, f, len) => <Street cam={C(960, GY, 1.4)} f={f} tod="day"><AlarmCar on={since("dies", "Somewhere", g) < 0} f={f} /></Street> },
-  { at: "quiet", s: (g, f, len) => <Street cam={camLerp(g, len, C(960, GY, 1.4), C(960, 560, 0.9))} f={f} tod="day"><AlarmCar on={false} f={f} /></Street> },
+  { at: "Somewhere", s: (g, f, len) => <Street cam={C(960, GY - 140, 0.95)} f={f} tod="day"><AlarmCar on={since("dies", "Somewhere", g) < 0} f={f} /></Street> },
+  { at: "quiet", s: (g, f, len) => <Street cam={camLerp(g, len, C(960, GY - 140, 0.95), C(960, 540, 0.8))} f={f} tod="day"><AlarmCar on={false} f={f} /></Street> },
   // разговаривает сам с собой
   { at: "start", s: (g, f, len) => <Apartment cam={C(1150, GY - 260, 1.8)} f={f} tally={7}>
     <Hero x={1150} y={GY} f={f} expr="talk" open={0.2 + 0.5 * Math.abs(Math.sin(f * 0.35))} pose={{ armR: [70 + Math.sin(f * 0.2) * 20, 50], armL: [20, 20] }} /></Apartment> },
