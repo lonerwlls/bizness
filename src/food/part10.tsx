@@ -50,7 +50,7 @@ const Suez: Shot = ({ g }) => (
     <path d={`M ${-W} 380 L ${W * 2} 380`} stroke={OL} strokeWidth={6} /><path d={`M ${-W} 710 L ${W * 2} 710`} stroke={OL} strokeWidth={6} />
     {Array.from({ length: 30 }, (_, i) => <path key={i} d={`M ${-200 + i * 90 + Math.sin(g / 20 + i) * 6} ${420 + (i % 6) * 48} q 24 -6 48 0`} stroke="rgba(255,255,255,0.3)" strokeWidth={4} fill="none" />)}
     <g transform="translate(960 545) rotate(-22) scale(0.62)"><ShipShape /></g>
-    {[[700, 640], [1240, 470]].map(([tx, ty], i) => <g key={i} transform={`translate(${tx + Math.sin(g / 8 + i) * 6} ${ty})`}><path d="M -50 0 L 50 0 L 40 26 L -40 26 Z" fill="#c8402e" stroke={OL} strokeWidth={4} /><rect x={-20} y={-24} width={36} height={24} fill="#f2ead6" stroke={OL} strokeWidth={3} /></g>)}
+    {[[560, 450], [1360, 650]].map(([tx, ty], i) => /* буксиры — в воде рядом с кораблём, не поверх него */ <g key={i} transform={`translate(${tx + Math.sin(g / 8 + i) * 6} ${ty})`}><path d="M -50 0 L 50 0 L 40 26 L -40 26 Z" fill="#c8402e" stroke={OL} strokeWidth={4} /><rect x={-20} y={-24} width={36} height={24} fill="#f2ead6" stroke={OL} strokeWidth={3} /></g>)}
     {[[230, 500], [60, 640]].map(([sx, sy], i) => <g key={"q" + i} transform={`translate(${sx} ${sy}) scale(0.2)`}><ShipShape /></g>)}
     {[[1700, 640], [1880, 500]].map(([sx, sy], i) => <g key={"r" + i} transform={`translate(${sx} ${sy}) scale(-0.2 0.2)`}><ShipShape /></g>)}
   </CamG><Year y="2021" g={g} /></Svg>
