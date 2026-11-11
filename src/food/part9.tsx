@@ -54,10 +54,16 @@ const Silos: Shot = ({ g }) => {
       {Array.from({ length: 10 }, (_, i) => <rect key={i} x={-900 + i * 130} y={520 - (i % 4) * 70} width={110} height={300 + (i % 4) * 70} fill="#c8b490" stroke={OL} strokeWidth={4} />)}
       <rect x={-W * 2} y={820} width={W * 5} height={H} fill="#c8b06a" stroke={OL} strokeWidth={5} />
       {[1000, 1250, 1500].map((x) => <g key={x}><rect x={x - 110} y={260} width={220} height={560} fill="#d8dcdc" stroke={OL} strokeWidth={6} />{Array.from({ length: 7 }, (_, k) => <path key={k} d={`M ${x - 110} ${320 + k * 70} L ${x + 110} ${320 + k * 70}`} stroke="#a8acae" strokeWidth={4} />)}<path d={`M ${x - 120} 262 L ${x} 170 L ${x + 120} 262 Z`} fill="#b8bcbe" stroke={OL} strokeWidth={6} strokeLinejoin="round" /></g>)}
-      <path d="M 760 760 L 900 760 L 900 300 L 990 220" stroke="#8a8e90" strokeWidth={30} fill="none" strokeLinejoin="round" /><path d="M 760 760 L 900 760 L 900 300 L 990 220" stroke={OL} strokeWidth={36} fill="none" opacity={0.25} strokeLinejoin="round" />
-      {Array.from({ length: 10 }, (_, i) => { const t = ((g * 0.02 + i / 10) % 1); const p: P = t < 0.15 ? [lerp(760, 900, t / 0.15), 760] : t < 0.85 ? [900, lerp(760, 300, (t - 0.15) / 0.7)] : [lerp(900, 990, (t - 0.85) / 0.15), lerp(300, 220, (t - 0.85) / 0.15)]; return <circle key={i} cx={p[0]} cy={p[1]} r={7} fill="#e0b860" stroke={OL} strokeWidth={2} />; })}
-      <g transform="translate(600 900) scale(0.8)"><Truck x={0} y={0} boxes={0} /></g>
-      <path d="M 520 650 L 760 760" stroke="#8a8e90" strokeWidth={22} />
+      {/* приёмный бункер на земле, рядом с ним вертикальная нория до верха силоса — не касается грузовика */}
+      <path d="M 900 300 L 990 220" stroke="#8a8e90" strokeWidth={30} strokeLinecap="round" />
+      <rect x={885} y={300} width={30} height={560} fill="#8a8e90" stroke={OL} strokeWidth={4} />
+      <path d="M 830 820 L 960 820 L 930 880 L 860 880 Z" fill="#9aa0a8" stroke={OL} strokeWidth={5} strokeLinejoin="round" />
+      {Array.from({ length: 10 }, (_, i) => { const t = ((g * 0.02 + i / 10) % 1); const p: P = t < 0.85 ? [900, lerp(820, 300, t / 0.85)] : [lerp(900, 990, (t - 0.85) / 0.15), lerp(300, 220, (t - 0.85) / 0.15)]; return <circle key={i} cx={p[0]} cy={p[1]} r={6} fill="#e0b860" stroke={OL} strokeWidth={2} opacity={0.9} />; })}
+      <g transform="translate(400 900) scale(0.8)"><Truck x={0} y={0} boxes={0} flip /></g>
+      <rect x={346} y={722} width={220} height={60} fill="#f2eee4" /><text x={456} y={766} textAnchor="middle" fontFamily="sans-serif" fontWeight={900} fontSize={36} fill="#3a6a4a">GRAIN</text>
+      {/* лоток из задней двери грузовика в бункер */}
+      <path d="M 640 690 L 850 805" stroke="#a8aeb6" strokeWidth={26} strokeLinecap="round" /><path d="M 640 690 L 850 805" stroke={OL} strokeWidth={32} strokeLinecap="round" opacity={0.25} />
+      {Array.from({ length: 8 }, (_, i) => { const t = ((g * 0.05 + i / 8) % 1); return <circle key={"c" + i} cx={lerp(650, 850, t)} cy={lerp(684, 800, t) + Math.pow(t, 2) * 10} r={6} fill="#e0b860" stroke={OL} strokeWidth={2} />; })}
       <Person x={wx + 760} y={wy} s={s} look={PEOPLE.worker} pose={worker} uid="w" />
       <rect x={wx + 760 + 30 * s} y={wy - 300 * s} width={18} height={23} fill="#f6efe2" stroke={OL} strokeWidth={3} />
       <g transform="translate(1250 420)"><rect x={-120} y={-36} width={240} height={60} rx={6} fill="#2e6a9a" stroke={OL} strokeWidth={4} />{txt(0, 6, 28, "#f6efe2", "GRAIN RESERVE")}</g>
@@ -200,11 +206,13 @@ const Sunday: Shot = ({ g }) => {
         const drinker = i === 3 ? ip(g, [90, 104, 124, 138], [0, 1, 1, 0]) : 0;
         const turn = i === speaker ? 0 : Math.max(-0.6, Math.min(0.6, (seats[speaker][0] - x) / 500));
         const m = mouthW(x, y, ks, turn, 80 + i, g + i * 11, true);
-        const cupLift: P = [(m[0] + 20 - x) / ks, (m[1] + 10 - y) / ks];
-        const handR: P = [lerp(cupRest[0], cupLift[0], drinker), lerp(cupRest[1], cupLift[1], drinker)];
+        const restC: P = [x + 30, top - 22], liftC: P = [m[0] + 22, m[1] + 22];
+        const C: P = [lerp(restC[0], liftC[0], drinker), lerp(restC[1], liftC[1], drinker)], cupA = -28 * drinker;
+        const handR: P = [(C[0] + 26 - x) / ks, (C[1] - y) / ks]; // кисть держит ручку справа от кружки
         const p = sitting(g + i * 11, { turn, handR, handL: [cupRest[0] - 50, cupRest[1] + 6], expr: { mouth: i === speaker ? "open" : drinker > 0.8 ? "flat" : "smile", open: i === speaker ? talk(g, i) * 0.35 : 0, eyes: drinker > 0.8 ? "half" : "dot", look: [turn > 0 ? 1 : turn < 0 ? -1 : 0, 0] }, seed: 80 + i });
         const h = handW(x, y, ks, p, "R");
-        return <g key={i}><Person x={x} y={y} s={ks} look={lk} pose={p} uid={"t" + i} /><rect x={h[0] - 18} y={h[1] - 34} width={36} height={40} rx={5} fill="#f2e6cc" stroke={OL} strokeWidth={3} /></g>;
+        const hc: P = [h[0] - 26, h[1]];
+        return <g key={i}><Person x={x} y={y} s={ks} look={lk} pose={p} uid={"t" + i} /><g transform={`translate(${hc[0]} ${hc[1]}) rotate(${cupA})`}><path d="M 18 -10 q 14 0 14 10 q 0 10 -14 10" stroke={OL} strokeWidth={5} fill="none" /><rect x={-18} y={-20} width={36} height={40} rx={5} fill="#f2e6cc" stroke={OL} strokeWidth={3} /></g></g>;
       })}
       <rect x={180} y={top} width={1640} height={24} fill="#b08050" stroke={OL} strokeWidth={5} />
       <rect x={200} y={top + 24} width={1600} height={200} fill="#8a6a4a" stroke={OL} strokeWidth={5} />
@@ -216,10 +224,10 @@ const Sunday: Shot = ({ g }) => {
 const Pizza: Shot = ({ g }) => {
   const s = 0.9, x = 900, top = 760, y = top + 150 * s - 10;
   const turn = 0.3, m = mouthW(x, y, s, turn, 11, g, true);
-  const box: P = [1160, top];
+  const box: P = [1110, top];
   const loc = (p: P): P => [(p[0] - x) / s, (p[1] - y) / s];
   const atMouth: P = [m[0] + 24, m[1] + 8];
-  const handR: P = trackP(g, [[0, [60, -200]], [14, loc([box[0] - 40, box[1] - 20])], [22, loc([box[0] - 40, box[1] - 20])], [38, loc(atMouth)], [46, loc(atMouth)], [60, loc([1040, 640])]]);
+  const handR: P = trackP(g, [[0, [60, -200]], [14, loc([box[0] - 40, box[1] - 26])], [22, loc([box[0] - 40, box[1] - 26])], [38, loc(atMouth)], [46, loc(atMouth)], [60, loc([1040, 640])]]);
   const bite = g >= 44, chew = g >= 46 && g < 80;
   const pose = sitting(g, { turn, handR, handL: [-60, -230], expr: g >= 34 && g < 44 ? { mouth: "open", open: 0.6 } : chew ? { mouth: Math.floor((g - 46) / 5) % 2 ? "flat" : "wavy", eyes: "happy" } : { mouth: "smile", eyes: "dot", look: [1, 0.6] }, seed: 11 });
   const h = handW(x, y, s, pose, "R");
@@ -229,7 +237,7 @@ const Pizza: Shot = ({ g }) => {
       <Kitchen open={0} />
       <Person x={x} y={y} s={s} look={HERO} pose={pose} uid="h" />
       <rect x={600} y={top} width={800} height={22} fill="#b08050" stroke={OL} strokeWidth={5} /><rect x={620} y={top + 22} width={760} height={300} fill="#8a6a4a" stroke={OL} strokeWidth={5} />
-      <g transform={`translate(${box[0]} ${box[1]})`}><rect x={-110} y={-14} width={220} height={14} fill="#e8d0a0" stroke={OL} strokeWidth={4} /><path d="M -110 -14 L -110 -170 L 110 -170 L 110 -14" fill="#f2e2b8" stroke={OL} strokeWidth={4} /><ellipse cx={0} cy={-14} rx={96} ry={10} fill="#f2c25a" stroke={OL} strokeWidth={3} />{txt(0, -90, 26, "#c8402e", "PIZZA")}</g>
+      <g transform={`translate(${box[0]} ${box[1]})`}><rect x={-110} y={-14} width={220} height={14} fill="#e8d0a0" stroke={OL} strokeWidth={4} /><ellipse cx={0} cy={-16} rx={96} ry={10} fill="#f2c25a" stroke={OL} strokeWidth={3} />{[-40, 0, 40].map((d) => <circle key={d} cx={d} cy={-17} r={5} fill="#c8402a" />)}<rect x={120} y={-12} width={200} height={12} fill="#f2e2b8" stroke={OL} strokeWidth={4} />{txt(220, -16, 18, "#c8402e", "PIZZA")}</g>
       {held ? <Slice at={[h[0] - 6, h[1] + 4]} bite={bite ? 1 : 0} s={1.1} /> : null}
     </CamG></Svg>
   );
