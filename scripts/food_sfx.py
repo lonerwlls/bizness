@@ -156,3 +156,31 @@ if part == 7:
     for k in range(6): add(ping(rng.uniform(2600, 3200), 0.15, 30), a + rng.uniform(0.5, 6), 0.04, rng.uniform(-0.5, 0.5))
     add(chirp(), a + 4.5, 0.04, 0.6); add(chirp(), a + 4.7, 0.04, 0.6)
     save("public/food/sfx7.wav")
+
+def birds(d, n=6):
+    out = np.zeros(int(d * SR))
+    for _ in range(n):
+        a = rng.uniform(0, d - 0.5)
+        for k in range(rng.integers(2, 4)):
+            c = chirp(); i = int((a + k * 0.14) * SR); out[i:i + len(c)] += c[: len(out) - i] * rng.uniform(0.4, 1)
+    return norm(out)
+
+if part == 8:
+    F = 1 / 30
+    a = S(0); add(birds(2.7, 4), a, 0.05, 0.4); add(wind(2.7) * 0.4, a, 0.05)
+    a = S(2.7); add(birds(8.0, 6), a, 0.04, -0.3)
+    for k in range(0, 240, 60): add(water(1.2) * env(int(1.2 * SR), 0.1, 0.2), a + k * F, 0.05, -0.3)
+    for k in range(20, 240, 40): add(dig(), a + k * F, 0.14, 0.4)
+    a = S(10.7); add(hum(3.6, 55) * 0.5, a, 0.05); add(box_down(), a + 70 * F, 0.3); add(ping(900, 0.5, 8), a + 70 * F, 0.06)
+    a = S(14.3); add(engine(2.7, 0.8), a, 0.14)
+    a = S(17.0); add(engine(3.6, 0.6), a, 0.08); add(engine(1.0, 0.9), a + 60 * F, 0.06)
+    a = S(20.6); add(click(1500, 0.04, 140), a + 22 * F, 0.2); add(norm(filt(noise(1.7), 300, 2500) * (np.abs(np.sin(2 * np.pi * 14 * t(int(1.7 * SR)))))), a + 26 * F, 0.08); add(click(2000, 0.03, 200), a + 80 * F, 0.1)
+    a = S(24.2); add(hum(1.1, 120) * 0.3, a, 0.03)
+    a = S(25.3); add(room(4.4), a, 0.05); add(paper(0.3), a + 104 * F, 0.15)
+    a = S(29.7); add(room(3.7), a, 0.05); add(box_down() * 0.5, a + 68 * F, 0.1)
+    a = S(33.4); add(room(2.2), a, 0.05); add(paper(0.35), a + 28 * F, 0.14)
+    a = S(35.6); add(murmur(4.6), a, 0.16)
+    for k in range(6): add(ping(rng.uniform(2800, 3400), 0.15, 30), a + rng.uniform(0.3, 4.2), 0.04)
+    a = S(40.2); add(birds(5.4, 4), a, 0.03, 0.5); add(click(600, 0.05, 90), a + 26 * F, 0.15); add(crunch(), a + 114 * F, 0.12)
+    a = S(45.6); add(hum(5.0, 120) * 0.3, a, 0.03); add(room(5.0), a, 0.05)
+    save("public/food/sfx8.wav")
