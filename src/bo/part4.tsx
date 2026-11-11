@@ -78,8 +78,9 @@ export const P4 = makePart(V, [
   // день 6: дождь
   { at: "", s: (g, f, len) => <><Svg><Skyline cam={camLerp(g, len, C(960, 520, 0.9), C(960, 520, 1.0))} f={f} tod="dusk" midBase={GY + 100} /></Svg><Rain f={f} /></> },
   { at: "And", s: (g, f, len) => <><Apartment cam={C(1450, 520, 1.6)} f={f} tally={5}>
-    <Hero x={1360} y={GY} f={f} expr={g > 25 ? "grin" : "neutral"} gaze={1} pose={{ armL: [20, 30], armR: [150, 30], tilt: 10 }} /></Apartment>
-    <Rain f={f} o={0.25} /></> },
+    <Hero x={1360} y={GY} f={f} expr={g > 25 ? "grin" : "neutral"} gaze={1} pose={{ armL: [20, 30], armR: [150, 30], tilt: 10 }} />
+    <clipPath id="winrain"><rect x={1250} y={GY - 670} width={560} height={430} /></clipPath>
+    <g clipPath="url(#winrain)">{Array.from({ length: 40 }, (_, i) => { const x = 1250 + (i * 137 + f * 5) % 600, y = GY - 700 + (i * 97 + f * 30) % 480; return <path key={i} d={`M ${x} ${y} l -8 30`} stroke="#bfd8ff" strokeWidth={4} strokeLinecap="round" opacity={0.7} />; })}</g></Apartment></> },
   { at: "put", s: (g, f, len) => <><Rooftop cam={C(900, GY - 250, 1.15)} f={f} tod="dusk"><RoofCollect lvl={ip(g, [0, len], [0.05, 0.4])} />
     <Hero x={850} y={GY - 50} f={f} expr="determined" pose={{ armL: [60, 20], armR: [60, 20], lean: 10 }} holdL={{ node: <g transform="translate(0 40) scale(0.6)"><Bucket x={0} y={0} lvl={0} c="#5ac84a" /></g>, k: 1 }} /></Rooftop><Rain f={f} /></> },
   { at: "evening", s: (g, f, len) => <><Rooftop cam={C(900, GY - 220, 1.3)} f={f} tod="dusk"><RoofCollect lvl={0.85} /></Rooftop><Rain f={f} o={0.25} /></> },
@@ -112,9 +113,9 @@ export const P4 = makePart(V, [
     </Kitchen>; } },
   // Гэри
   { at: "give", s: (g, f, len) => <Apartment cam={C(1480, GY - 420, 2.1)} f={f} tally={7}>
-    <Gary x={1500} y={GY - 296} f={f} s={0.9} />
+    <Gary x={1500} y={GY - 240} f={f} s={0.9} />
     <Hero x={1300} y={GY} f={f} expr="grin" gaze={1} pose={{ armR: [80, 20], tilt: 10 }} /></Apartment> },
-  { at: "Gary", s: (g, f, len) => <Apartment cam={C(1510, GY - 430, 3.2)} f={f} tally={7}><Gary x={1500} y={GY - 296} f={f} s={0.9} /></Apartment> },
+  { at: "Gary", s: (g, f, len) => <Apartment cam={C(1510, GY - 430, 3.2)} f={f} tally={7}><Gary x={1500} y={GY - 240} f={f} s={0.9} /></Apartment> },
   // одиночество и мозг
   { at: "Scientists", s: (g, f, len) => <Frame bg="#1e1a50"><rect width={1920} height={1080} fill="#2a2470" />
     <g transform="translate(960 520)"><circle r={300} fill="#3a3478" stroke={INK} strokeWidth={10} /><Bean x={0} y={240} s={0.75} look={HERO2D} f={f} expr="sad" sit={70 / 0.75} pose={{ armL: [30, 40], armR: [30, 40], tilt: -8 }} /></g>
@@ -135,7 +136,7 @@ export const P4 = makePart(V, [
     <Hero x={1150} y={GY} f={f} expr="determined" pose={{ armR: [150, 10], armL: [15, 8] }} /></Apartment> },
   { at: "Wake", s: (g, f, len) => <Apartment cam={C(640, GY - 150, 1.9)} f={f} tally={7} sleeping>
     <g transform={`translate(925 ${GY - 110})`}><circle cx={0} cy={-50} r={44} fill="#ff4a6a" stroke={INK} strokeWidth={6} /><circle cx={0} cy={-50} r={30} fill="#fff6e0" stroke={INK} strokeWidth={4} /><path d="M 0 -50 L 0 -72 M 0 -50 L 14 -44" stroke={INK} strokeWidth={5} strokeLinecap="round" /></g>
-    <InBed f={f} expr={g > 8 ? "determined" : "sleep"} raise={ip(g, [8, 22], [0, 0.4])} /></Apartment> },
+    {g < 16 ? <InBed f={f} expr={g > 8 ? "neutral" : "sleep"} /> : <Bean x={640} y={GY} s={HS} look={HERO2D} f={f} expr="determined" sit={70 / HS} pose={{ armL: [30, 40], armR: [30, 40] }} />}</Apartment> },
   { at: "Exercise", s: (g, f, len) => { const k = Math.abs(Math.sin(f * 0.25));
     return <Apartment cam={C(1150, GY - 250, 1.8)} f={f} tally={7}>
       <Bean x={1150} y={GY} s={HS} look={HERO2D} f={f} expr="determined" sweat sit={ip(k, [0, 1], [168, 80])} pose={{ armL: [90, 0], armR: [90, 0] }} /></Apartment>; } },

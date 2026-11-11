@@ -47,7 +47,7 @@ export const P1 = makePart(V, [
   { at: "traffic", s: (g, f, len) => <Street cam={camLerp(g, len, C(1100, 640, 1.2), C(1300, 640, 1.25))} f={f}><Abandoned /></Street> },
   { at: "alarm", s: (g, f, len) => <Apartment cam={C(640, GY - 140, 2.3)} f={f} sleeping>
     <g transform={`translate(925 ${GY - 110})`}><rect x={-60} y={-80} width={120} height={80} rx={10} fill="#262838" stroke={INK} strokeWidth={6} /><rect x={-46} y={-66} width={92} height={50} rx={4} fill="#141228" /></g>
-    <InBed f={f} expr={g > 18 ? "worried" : "neutral"} gaze={g > 10 ? 1 : 0} raise={ip(g, [18, len], [0, 0.4])} /></Apartment> },
+    <InBed f={f} expr={g > 18 ? "worried" : "neutral"} gaze={g > 10 ? 1 : 0} /></Apartment> },
   // сидит на краю кровати, телефон на зарядке — но экран чёрный
   { at: "because", s: (g, f, len) => <Apartment cam={C(780, GY - 230, 2.0)} f={f}><PhoneOnBed f={f} expr={g > 20 ? "worried" : "neutral"} /></Apartment> },
   { at: "charger", s: (g, f, len) => <Frame bg="#3e4a96"><rect width={1920} height={1080} fill="#3e4a96" />
