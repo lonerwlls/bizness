@@ -200,3 +200,19 @@ if part == 9:
     a = S(43.2); add(room(3.4), a, 0.05); add(paper(0.3), a + 14 * F, 0.08); add(crunch() * 0.6, a + 44 * F, 0.08); add(crunch() * 0.4, a + 54 * F, 0.05)
     a = S(46.6); add(hum(6.0, 60) * 0.5, a, 0.05); add(creak(0.4, 500), a, 0.04)
     save("public/food/sfx9.wav")
+
+if part == 10:
+    F = 1 / 30
+    a = S(0); add(room(6.3, 50, 250), a, 0.06); add(pass_car(3.0), a + 2.0, 0.03, 0.5)
+    a = S(6.3); add(water(6.6) * env(int(6.6 * SR), 0.5, 0.5), a, 0.05); add(horn(), a + 0.6, 0.1); add(horn(1.6), a + 3.6, 0.05)
+    a = S(12.9); add(hum(6.2, 120) * 0.4, a, 0.04); add(room(6.2), a, 0.06)
+    a = S(19.1); add(room(4.8), a, 0.05); add(stamp(), a + 50 * F, 0.4)
+    a = S(23.9); add(room(3.7), a, 0.05)
+    for i in range(3): add(scribble(0.3), a + (20 + i * 18) * F, 0.08)
+    a = S(27.6); add(room(3.8), a, 0.05)
+    for i in range(5): add(click(900 + i * 60, 0.05, 90), a + (80 + i * 5 + 8) * F, 0.22)
+    add(thud(70, 0.4), a + 110 * F, 0.15)
+    a = S(31.4); add(room(6.0), a, 0.05); add(box_down() * 0.5, a + 36 * F, 0.1); add(dig() * 0.4, a + (87 + 26) * F, 0.08)
+    a = S(37.4); add(hum(9.0, 60) * 0.5, a, 0.05); add(birds(9.0, 4), a, 0.025, 0.6)
+    a = S(46.4); add(click(1200, 0.04, 140), a + 50 * F, 0.15); add(ping(1760, 0.6, 5), a + 52 * F, 0.06)
+    save("public/food/sfx10.wav")
