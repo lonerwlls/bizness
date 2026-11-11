@@ -21,7 +21,7 @@ const W1: Look = { ...PEOPLE.woman, top: "#8a4a5a", topDark: "#6a3646" };
 const CASHIER: Look = PEOPLE.girl;
 
 // ---------- грядки ----------
-const Bed: React.FC<{ x: number; y: number; w: number; kind: "lettuce" | "beans" | "potato"; name: string; grow?: number }> = ({ x, y, w, kind, name, grow = 1 }) => (
+export const Bed: React.FC<{ x: number; y: number; w: number; kind: "lettuce" | "beans" | "potato"; name: string; grow?: number }> = ({ x, y, w, kind, name, grow = 1 }) => (
   <g transform={`translate(${x} ${y})`}>
     <rect x={0} y={-30} width={w} height={40} rx={8} fill="#6a4a2e" stroke={OL} strokeWidth={4} />
     {Array.from({ length: Math.floor(w / 60) }, (_, i) => { const cx = 30 + i * 60; return <g key={i} transform={`translate(${cx} -26) scale(${grow})`}>
@@ -32,14 +32,14 @@ const Bed: React.FC<{ x: number; y: number; w: number; kind: "lettuce" | "beans"
     <g transform="translate(-10 0)"><rect x={-4} y={-70} width={8} height={70} fill="#8a6a4a" /><rect x={-50} y={-100} width={100} height={36} rx={4} fill="#f6efe2" stroke={OL} strokeWidth={3} />{txt(0, -75, 18, "#3a2a1e", name, 800)}</g>
   </g>
 );
-const Tomato: React.FC<{ x: number; y: number; bite?: number; r?: number }> = ({ x, y, bite = 0, r = 26 }) => (
+export const Tomato: React.FC<{ x: number; y: number; bite?: number; r?: number }> = ({ x, y, bite = 0, r = 26 }) => (
   <g transform={`translate(${x} ${y})`}>
     <path d={`M ${-r} 0 Q ${-r} ${-r * 1.05} 0 ${-r} Q ${r * 0.9} ${-r * 1.1} ${r} ${-r * 0.1} Q ${r} ${r * 0.95} 0 ${r} Q ${-r * 1.05} ${r * 0.9} ${-r} 0 Z`} fill="#d8443a" stroke={OL} strokeWidth={4} />
     <path d={`M -8 ${-r} L 0 ${-r - 8} L 8 ${-r} M 0 ${-r} L 0 ${-r - 12}`} stroke="#4a8a3a" strokeWidth={5} fill="none" />
     {bite > 0 ? <g><path d={`M ${-r * 1.05} ${-r * 0.55} Q ${-r * 0.35} ${-r * 0.35} ${-r * 0.45} 0 Q ${-r * 0.35} ${r * 0.35} ${-r * 1.05} ${r * 0.55} Z`} fill="#f08a6a" stroke={OL} strokeWidth={3} />{[0, 1, 2].map((k) => <circle key={k} cx={-r * 0.62} cy={-r * 0.25 + k * r * 0.25} r={2.5} fill="#f6e0a0" />)}</g> : null}
   </g>
 );
-const Loaf: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
+export const Loaf: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}><path d="M -70 0 Q -80 -50 -30 -56 Q 0 -66 30 -56 Q 80 -50 70 0 Z" fill="#d8954a" stroke={OL} strokeWidth={5} />{[-30, 0, 30].map((d) => <path key={d} d={`M ${d - 10} -46 q 10 -10 20 0`} stroke="#b8763a" strokeWidth={5} fill="none" />)}</g>
 );
 

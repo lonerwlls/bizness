@@ -15,10 +15,10 @@ const Svg: React.FC<{ children: React.ReactNode; bg?: string }> = ({ children, b
 type Shot = React.FC<{ g: number }>;
 
 // ---------- кухня: герой у холодильника ----------
-const HZ = 3.4, HX = 1.3;
-const heroK = { x: kitX(HX, HZ), y: kitFloorY(HZ), s: 0.75 * (3.6 / HZ) };
-const PIZZA_W: P = [1489, 613];
-const Slice: React.FC<{ at: P; bite: number; s?: number }> = ({ at, bite, s = 1 }) => (
+export const HZ = 3.4, HX = 1.3;
+export const heroK = { x: kitX(HX, HZ), y: kitFloorY(HZ), s: 0.75 * (3.6 / HZ) };
+export const PIZZA_W: P = [1489, 613];
+export const Slice: React.FC<{ at: P; bite: number; s?: number }> = ({ at, bite, s = 1 }) => (
   <g transform={`translate(${at[0]} ${at[1]}) scale(${s}) rotate(-20)`}>
     <path d={bite > 0 ? "M 0 0 L 44 -14 Q 40 -24 30 -24 Q 26 -14 16 -18 Q 10 -30 0 -28 Z" : "M 0 0 L 48 -12 Q 50 -30 40 -38 L 0 -30 Z"} fill="#f2c25a" stroke={OL} strokeWidth={4} strokeLinejoin="round" />
     <circle cx={14} cy={-14} r={5} fill="#c8402a" /><circle cx={30} cy={-20} r={4} fill="#c8402a" />

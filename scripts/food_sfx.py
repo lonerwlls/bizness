@@ -184,3 +184,19 @@ if part == 8:
     a = S(40.2); add(birds(5.4, 4), a, 0.03, 0.5); add(click(600, 0.05, 90), a + 26 * F, 0.15); add(crunch(), a + 110 * F, 0.12); add(crunch() * 0.5, a + 120 * F, 0.06); add(crunch() * 0.5, a + 130 * F, 0.05)
     a = S(45.6); add(hum(5.0, 120) * 0.3, a, 0.03); add(room(5.0), a, 0.05)
     save("public/food/sfx8.wav")
+
+if part == 9:
+    F = 1 / 30
+    a = S(0); add(hum(4.5, 120) * 0.3, a, 0.03); add(room(4.5), a, 0.05); add(box_down() * 0.5, a + 68 * F, 0.1)
+    a = S(4.5); add(engine(9.5, 0.7) * 0.6, a, 0.06); add(norm(filt(noise(9.5), 1500, 6000)) * env(int(9.5 * SR), 0.5, 0.5), a, 0.04); add(wind(9.5) * 0.4, a, 0.05)
+    a = S(14.0); add(room(5.3), a, 0.06); add(scribble(5.0) * 0.6, a + 0.2, 0.05); add(hum(5.3, 55) * 0.4, a, 0.03)
+    a = S(19.3); add(wind(4.4) * 0.4, a, 0.05)
+    for k in range(0, 132, 66): add(cardboard(0.2) * 0.6, a + (k + 20) * F, 0.08); add(box_down() * 0.4, a + (k + 48) * F, 0.08)
+    a = S(23.7); add(room(2.7), a, 0.05); add(murmur(2.7) * 0.3, a, 0.05)
+    a = S(26.4); add(birds(3.8, 4), a, 0.04, 0.3); steps(a, a + 3.8, 0.55, 0.1, -0.2); add(water(3.8) * env(int(3.8 * SR), 0.2, 0.2), a, 0.03, 0.5)
+    a = S(30.2); add(room(6.8), a, 0.05); add(box_down() * 0.6, a + 40 * F, 0.15)
+    a = S(37.0); add(murmur(6.2), a, 0.15)
+    for k in range(5): add(ping(rng.uniform(2800, 3400), 0.15, 30), a + rng.uniform(0.3, 5.8), 0.04)
+    a = S(43.2); add(room(3.4), a, 0.05); add(paper(0.3), a + 14 * F, 0.08); add(crunch() * 0.6, a + 44 * F, 0.08); add(crunch() * 0.4, a + 54 * F, 0.05)
+    a = S(46.6); add(hum(6.0, 60) * 0.5, a, 0.05); add(creak(0.4, 500), a, 0.04)
+    save("public/food/sfx9.wav")
