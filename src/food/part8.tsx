@@ -1,10 +1,10 @@
 // Часть 8 (≈55 с): «Спустя год». Весна: огород во дворе, корабли и грузовики возвращаются, магазин открывается, хлеб дорогой, кафе снова полное, первый помидор.
 import React from "react";
 import { AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame } from "remotion";
-import { Look, Pose, Toon } from "../brand/corridor/rig";
+import { Look, Pose, Toon, rigGeo } from "../brand/corridor/rig";
 import { CamG, Clock, H, HERO, OL, PEOPLE, Vignette, W, ip, lerp, sitting, stand, talk, trackP } from "./common";
 import { Aisle, CafeTable, Checkout, CheckoutCounter, Cup, Highway, STREET_Y, ShipShape, Street, Truck, aisleFloorY, aisleX } from "./places";
-import { Car, Shovel, handW } from "./part5";
+import { Car, handW } from "./part5";
 import { Courtyard, KID } from "./part6";
 import { FadeOut, TimeCard } from "./transitions";
 
@@ -36,7 +36,7 @@ const Tomato: React.FC<{ x: number; y: number; bite?: number; r?: number }> = ({
   <g transform={`translate(${x} ${y})`}>
     <path d={`M ${-r} 0 Q ${-r} ${-r * 1.05} 0 ${-r} Q ${r * 0.9} ${-r * 1.1} ${r} ${-r * 0.1} Q ${r} ${r * 0.95} 0 ${r} Q ${-r * 1.05} ${r * 0.9} ${-r} 0 Z`} fill="#d8443a" stroke={OL} strokeWidth={4} />
     <path d={`M -8 ${-r} L 0 ${-r - 8} L 8 ${-r} M 0 ${-r} L 0 ${-r - 12}`} stroke="#4a8a3a" strokeWidth={5} fill="none" />
-    {bite > 0 ? <g><circle cx={r * 0.8} cy={-r * 0.3} r={r * 0.5} fill="#f6d9a4" /><circle cx={r * 0.62} cy={-r * 0.25} r={r * 0.3} fill="#f08a6a" stroke={OL} strokeWidth={3} />{[0, 1, 2].map((k) => <circle key={k} cx={r * 0.5 + k * 6} cy={-r * 0.2 + (k % 2) * 6} r={2.5} fill="#f6e0a0" />)}</g> : null}
+    {bite > 0 ? <g><path d={`M ${-r * 1.05} ${-r * 0.55} Q ${-r * 0.35} ${-r * 0.35} ${-r * 0.45} 0 Q ${-r * 0.35} ${r * 0.35} ${-r * 1.05} ${r * 0.55} Z`} fill="#f08a6a" stroke={OL} strokeWidth={3} />{[0, 1, 2].map((k) => <circle key={k} cx={-r * 0.62} cy={-r * 0.25 + k * r * 0.25} r={2.5} fill="#f6e0a0" />)}</g> : null}
   </g>
 );
 const Loaf: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
@@ -63,8 +63,9 @@ const Garden: Shot = ({ g }) => {
   const can = stand(g, { turn: 0.6, handR: [170, -250], handL: [60, -230], expr: { mouth: "smile", look: [1, 1] }, seed: 1 });
   const ch = handW(wx, wy, s, can, "R");
   const pour = Math.sin(g / 30) > -0.3;
-  const ox = 1360, c = (g % 40) / 40, k = c < 0.5 ? c * 2 : 2 - c * 2;
-  const hoe = stand(g, { turn: -0.6, lean: -8, handL: [lerp(-20, -40, k), lerp(-260, -180, k)], handR: [lerp(-70, -110, k), lerp(-180, -100, k)], expr: { mouth: "flat", look: [-1, 1] }, seed: 2 });
+  const ox = 1360, c = (g % 40) / 40, k = c < 0.6 ? c / 0.6 : 1 - (c - 0.6) / 0.4; // k=0 — тяпка в земле, k=1 — замах
+  const SOIL = 836;
+  const hoe = stand(g, { turn: -0.6, lean: lerp(-12, -2, k), handL: [lerp(-40, -10, k), lerp(-210, -330, k)], handR: [lerp(-110, -50, k), lerp(-130, -250, k)], expr: { mouth: "flat", look: [-1, 1] }, seed: 2 });
   const a = handW(ox, wy, s, hoe, "L"), b = handW(ox, wy, s, hoe, "R");
   return (
     <Svg><CamG cam={{ s: lerp(1.2, 1.3, g / 240), cx: 980, cy: 600 }}>
@@ -76,7 +77,10 @@ const Garden: Shot = ({ g }) => {
       <g transform={`translate(${ch[0]} ${ch[1]}) rotate(${pour ? 30 : 8})`}><rect x={-30} y={-6} width={60} height={46} rx={6} fill="#3a8a6a" stroke={OL} strokeWidth={4} /><path d="M 30 8 L 74 -16" stroke={OL} strokeWidth={8} /></g>
       {pour ? [0, 1, 2, 3, 4].map((i) => { const sx = ch[0] + 70, sy = ch[1] + 30; const yy = sy + ((g * 7 + i * 18) % Math.max(10, 820 - sy)); return <circle key={i} cx={sx + i * 3} cy={yy} r={4} fill="#6ab0e0" />; }) : null}
       <Person x={ox} y={wy} s={s} look={PEOPLE.oldman} pose={hoe} uid="o" />
-      <Shovel a={a} b={b} />
+      {(() => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L; const ext = uy > 0.05 ? Math.min(240, (SOIL - b[1]) / uy) : 160; const tip: P = [b[0] + ux * ext, b[1] + uy * ext]; const top: P = [a[0] - ux * 40, a[1] - uy * 40]; const inSoil = tip[1] >= SOIL - 2;
+        return <g><path d={`M ${top[0]} ${top[1]} L ${tip[0]} ${tip[1]}`} stroke={OL} strokeWidth={13} strokeLinecap="round" /><path d={`M ${top[0]} ${top[1]} L ${tip[0]} ${tip[1]}`} stroke="#8a5a30" strokeWidth={8} strokeLinecap="round" />
+          <path d={`M ${tip[0] - 4} ${tip[1] - 30} L ${tip[0] - 40} ${tip[1] + (inSoil ? 0 : 6)} L ${tip[0] + 10} ${tip[1] + (inSoil ? 0 : 6)} Z`} fill="#9aa0a8" stroke={OL} strokeWidth={4} strokeLinejoin="round" />
+          {c < 0.25 ? [0, 1, 2, 3].map((i) => <circle key={i} cx={tip[0] - 20 + (i - 1.5) * 18 * (1 + c * 6)} cy={SOIL - 6 - Math.sin((c / 0.25) * Math.PI) * (16 + i * 6)} r={5} fill="#5a3e2a" stroke={OL} strokeWidth={2} />) : null}</g>; })()}
     </CamG></Svg>
   );
 };
@@ -226,10 +230,19 @@ const Pick: Shot = ({ g }) => {
   const tom: P = [1050, 660];
   const loc = (p: P): P => [(p[0] - x) / s, (p[1] - y) / s];
   const look: P = [930, 600];
-  const mouth: P = [x + 66 * s, y - 470 * s];
-  const handR: P = trackP(g, [[0, [60, -200]], [16, loc([tom[0] - 6, tom[1] + 4])], [26, loc([tom[0] - 6, tom[1] + 4])], [34, loc([tom[0] - 20, tom[1] + 20])], [52, loc(look)], [96, loc(look)], [108, loc([mouth[0] + 20, mouth[1] + 14])], [118, loc([mouth[0] + 20, mouth[1] + 14])], [134, loc(look)]]);
-  const bit = g >= 114;
-  const hero = stand(g, { turn: 0.5, handR, expr: g >= 114 && g < 140 ? { mouth: "smile", eyes: "happy" } : { mouth: g > 50 ? "smile" : "flat", look: g < 34 ? [1, 0] : [0.6, 0.3] }, seed: 50 });
+  const base = stand(g, { turn: 0.5, seed: 50 });
+  const hd = rigGeo(base).head;
+  const mouth: P = [x + (hd[0] + 0.5 * 30 * 1.05) * s, y + (hd[1] + 28) * s];
+  const r = 26, atMouth: P = [mouth[0] + r + 2, mouth[1] - 2]; // левый край помидора касается губ
+  const holdOff: P = [4, -8];
+  const toHand = (p: P): P => loc([p[0] - holdOff[0], p[1] - holdOff[1]]);
+  const handR: P = trackP(g, [[0, [60, -200]], [16, loc([tom[0] - 6, tom[1] + 4])], [26, loc([tom[0] - 6, tom[1] + 4])], [34, loc([tom[0] - 20, tom[1] + 20])], [52, loc(look)], [92, loc(look)], [106, toHand(atMouth)], [114, toHand(atMouth)], [128, loc([960, 690])]]);
+  const bit = g >= 112;
+  const chew = g >= 114 && g < 146;
+  const expr = g >= 100 && g < 112 ? { mouth: "open" as const, open: ip(g, [100, 106], [0, 0.6]), look: [0.4, 0.3] as P }
+    : chew ? { mouth: (Math.floor((g - 114) / 5) % 2 ? "flat" : "wavy") as "flat" | "wavy", eyes: g > 124 ? ("happy" as const) : ("dot" as const) }
+    : { mouth: (g > 50 ? "smile" : "flat") as "smile" | "flat", eyes: g >= 146 ? ("happy" as const) : ("dot" as const), look: (g < 34 ? [1, 0] : [0.6, 0.3]) as P };
+  const hero = stand(g, { turn: 0.5, handR, expr, seed: 50 });
   const h = handW(x, y, s, hero, "R");
   const picked = g >= 26;
   const tomPos: P = picked ? [h[0] + 4, h[1] - 8] : tom;
