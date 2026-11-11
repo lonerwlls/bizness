@@ -42,7 +42,7 @@ const Limb: React.FC<{ a: P; m: P; b: P; w0: number; w1: number; c: string }> = 
 
 export type PLook = Partial<typeof PETYA>;
 /** look — другие цвета (так из рига Пети делаются другие люди, например мальчик) */
-export const Petya: React.FC<{ x: number; y: number; s: number; pose: PPose; flip?: boolean; look?: PLook }> = ({ x, y, s, pose, flip, look }) => {
+export const Petya: React.FC<{ x: number; y: number; s: number; pose: PPose; flip?: boolean; look?: PLook; old?: boolean }> = ({ x, y, s, pose, flip, look, old }) => {
   const C = look ? { ...PETYA, ...look } : PETYA;
   const lean = pose.lean ?? 0, turn = pose.turn ?? 0, dir = pose.dir ?? 0, light = pose.light ?? 1;
   const kneePref: P = pose.knee === "up" ? [0.4, -1] : pose.knee === "back" ? [1, 0.3] : dir ? [dir, -0.15] : [0.1, -1];
@@ -131,6 +131,12 @@ export const Petya: React.FC<{ x: number; y: number; s: number; pose: PPose; fli
         {[-1, 1].map(eye)}
         <path d={`M ${fx * 1.15 + 1} 4 L ${fx * 1.15 + 4 + turn * 3} 16 L ${fx * 1.15 - 2} 17`} stroke={C.skinSh} strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
         {mouth}
+        {/* морщины (постаревший Петя) */}
+        {old ? <g stroke={C.skinSh} strokeWidth={2.6} fill="none" strokeLinecap="round">
+          {[9, 16].map((d) => <path key={d} d={`M ${fx - 15} ${browY - d} Q ${fx} ${browY - d - 3} ${fx + 15} ${browY - d}`} />)}
+          {[-1, 1].map((k) => <path key={"u" + k} d={`M ${fx + k * eyeSp - 7} ${eyeY + 8} Q ${fx + k * eyeSp} ${eyeY + 12} ${fx + k * eyeSp + 7} ${eyeY + 8}`} />)}
+          {[-1, 1].map((k) => <path key={"c" + k} d={`M ${fx * 1.05 + k * 11} 16 Q ${fx * 1.05 + k * 15} 26 ${fx * 1.05 + k * 12} 35`} />)}
+        </g> : null}
       </g>
       {!farL ? arm(shL, armL, false, "aL") : null}{!farR ? arm(shR, armR, false, "aR") : null}
     </g>

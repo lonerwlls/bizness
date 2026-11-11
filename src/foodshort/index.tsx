@@ -7,6 +7,7 @@ import { Avatar } from "./avatar";
 import { FoodShort3, TM3 } from "./FoodShort3";
 import { Lift1, TM_L1 } from "../stories/lift1";
 import { Lift2, TM_L2 } from "../stories/lift2";
+import { Lift3, TM_L3 } from "../stories/lift3";
 import { FS2_FRAMES, FoodShort2 } from "./FoodShort2";
 
 const Root: React.FC = () => <>
@@ -16,6 +17,7 @@ const Root: React.FC = () => <>
   <Composition id="FoodShort3" component={FoodShort3} durationInFrames={TM3.frames} fps={30} width={1080} height={1920} />
   <Composition id="Story-lift1" component={Lift1} durationInFrames={TM_L1.frames} fps={30} width={1080} height={1920} />
   <Composition id="Story-lift2" component={Lift2} durationInFrames={TM_L2.frames} fps={30} width={1080} height={1920} />
+  <Composition id="Story-lift3" component={Lift3} durationInFrames={TM_L3.frames} fps={30} width={1080} height={1920} />
   <Composition id="Avatar" component={Avatar} durationInFrames={1} fps={30} width={1080} height={1080} />
   <Composition id="PetyaSheet" component={PetyaSheet} durationInFrames={30} fps={30} width={1800} height={900} />
 </>;

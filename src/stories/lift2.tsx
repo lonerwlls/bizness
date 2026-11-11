@@ -12,10 +12,10 @@ const { wd, at, b } = words(VOICE);
 const INK = "#0b0f22";
 export const AD1_L2 = wd("Пети").e + 0.4;
 export const TM_L2 = timing(VOICE, AD1_L2, AD_LEN_VX, false);
-const CONC = "#2a2c34", CONC_D = "#1c1d24";
+export const CONC = "#2a2c34", CONC_D = "#1c1d24";
 
 // коридор подвала в перспективе: двери слева и справа, номера квартир
-const Corridor: React.FC<{ nums?: boolean }> = ({ nums = true }) => {
+export const Corridor: React.FC<{ nums?: boolean }> = ({ nums = true }) => {
   const vp: [number, number] = [540, 560];
   return <g>
     <rect width={W} height={PH} fill={CONC_D} />
@@ -36,7 +36,7 @@ const Corridor: React.FC<{ nums?: boolean }> = ({ nums = true }) => {
     })}
   </g>;
 };
-const Flash: React.FC<{ x: number; y: number; r?: number; children: React.ReactNode; id: string; dark?: number }> = ({ x, y, r = 260, children, id, dark = 0.93 }) => (
+export const Flash: React.FC<{ x: number; y: number; r?: number; children: React.ReactNode; id: string; dark?: number }> = ({ x, y, r = 260, children, id, dark = 0.93 }) => (
   <g>
     <defs><radialGradient id={`fg${id}`}><stop offset="0" stopColor="#000" /><stop offset="0.6" stopColor="#000" stopOpacity={0.9} /><stop offset="1" stopColor="#000" stopOpacity={0} /></radialGradient>
       <mask id={`fm${id}`}><rect width={W} height={PH} fill="#fff" /><circle cx={x} cy={y} r={r} fill={`url(#fg${id})`} /></mask></defs>
@@ -44,7 +44,7 @@ const Flash: React.FC<{ x: number; y: number; r?: number; children: React.ReactN
     <rect width={W} height={PH} fill="#020308" opacity={dark} mask={`url(#fm${id})`} />
   </g>
 );
-const BigDoor: React.FC<{ num: string; glow?: number; feet?: number; T: number }> = ({ num, glow = 0, feet = 0, T }) => (
+export const BigDoor: React.FC<{ num: string; glow?: number; feet?: number; T: number }> = ({ num, glow = 0, feet = 0, T }) => (
   <g>
     <rect width={W} height={PH} fill={CONC} />
     <rect x={240} y={120} width={600} height={1000} fill="#3a2a22" stroke={INK} strokeWidth={10} />
@@ -57,7 +57,7 @@ const BigDoor: React.FC<{ num: string; glow?: number; feet?: number; T: number }
     {feet > 0 ? [470, 590].map((x, i) => <rect key={i} x={x + Math.sin(T * 2 + i) * 4} y={1110} width={46} height={12} fill="#05060d" opacity={feet} />) : null}
   </g>
 );
-const PhoneScreen: React.FC<{ pct: number; T: number }> = ({ pct, T }) => (
+export const PhoneScreen: React.FC<{ pct: number; T: number }> = ({ pct, T }) => (
   <g transform="translate(540 600)">
     <rect x={-240} y={-460} width={480} height={920} rx={50} fill="#111" stroke="#333" strokeWidth={10} />
     <rect x={-215} y={-430} width={430} height={860} rx={34} fill="#141a2e" />
