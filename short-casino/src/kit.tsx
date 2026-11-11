@@ -33,7 +33,7 @@ export const Box: React.FC<{ p: V3; s: V3; c: string; r?: number; rot?: V3; e?: 
   ({ p, s, c, r = 0.75, rot = [0, 0, 0], e, ei = 0, metal = 0, line = true, shadow = true, map = null }) => {
     const { size } = useThree();
     const edges = useMemo(() => {
-      if (!line) return null;
+      if (!line || process.env.REMOTION_NOLINE) return null;
       const eg = new THREE.EdgesGeometry(new THREE.BoxGeometry(...s));
       return new LineSegments2(new LineSegmentsGeometry().setPositions(eg.attributes.position.array as Float32Array), getLineMat(size.width, size.height));
     }, [line, s[0], s[1], s[2]]);
@@ -262,7 +262,7 @@ const Lights: React.FC<{ preset: LightPreset; windowX: number }> = ({ preset, wi
     <hemisphereLight args={["#5a6fb0", "#0c1430", 0.5]} />
     <directionalLight position={[windowX - 3, 4, 1]} intensity={1.4} color="#7d95ff" castShadow shadow-mapSize-width={2048} shadow-mapSize-height={2048} shadow-radius={8}
       shadow-camera-left={-5} shadow-camera-right={5} shadow-camera-top={5} shadow-camera-bottom={-5} />
-    <pointLight position={[0.5, 1.6, 0.4]} intensity={7} decay={1.3} color="#ffc477" castShadow />
+    <pointLight position={[0.5, 1.6, 0.4]} intensity={7} decay={1.3} color="#ffc477" />
   </>) : (<>
     <hemisphereLight args={["#cfd8ff", "#141a33", 0.5]} />
     <spotLight position={[-1, 6, 2]} angle={0.5} penumbra={0.6} intensity={60} decay={1} color="#ff8a7a" castShadow />
@@ -274,24 +274,29 @@ const Lights: React.FC<{ preset: LightPreset; windowX: number }> = ({ preset, wi
 export const Scene3D: React.FC<{ t0: number; cam: CamKey[]; focus: V3; light?: LightPreset; bg?: string; windowX?: number; children: React.ReactNode }> =
   ({ t0, cam, focus, light = "day", bg = "#9fbfe0", windowX = -3, children }) => {
     const frame = useCurrentFrame();
-    const { width, height } = useVideoConfig();
+    const vc = useVideoConfig();
+    // 3D считаем в уменьшенном размере и растягиваем: без видеокарты это в разы быстрее, а размытие фона скрывает разницу
+    // цель фокуса — один и тот же объект на весь шот, иначе размытие пересоздаётся (и пересобирает шейдер) каждый кадр
+    const focusV = useMemo(() => new THREE.Vector3(...focus), [focus[0], focus[1], focus[2]]);
+    const RES = Number(process.env.REMOTION_RES ?? 0.67);
+    const width = Math.round(vc.width * RES), height = Math.round(vc.height * RES);
     const t = t0 + frame / FPS;
     const [, p, l, fov] = camAt(t, cam);
     const pos = new THREE.Vector3(...p);
     pos.x += Math.sin(frame / 23) * 0.012; pos.y += Math.sin(frame / 17) * 0.008;   // «ручная» камера
     return (
       <ShotCtx.Provider value={{ t0, cam: pos }}>
-        <ThreeCanvas width={width} height={height} shadows={{ type: THREE.PCFSoftShadowMap }}
-          gl={{ toneMapping: THREE.AgXToneMapping, toneMappingExposure: 1.25, antialias: false }} style={{ backgroundColor: bg }}>
+        <ThreeCanvas width={width} height={height} shadows={process.env.REMOTION_NOSH ? false : { type: THREE.PCFSoftShadowMap }}
+          gl={{ toneMapping: THREE.AgXToneMapping, toneMappingExposure: 1.25, antialias: false }} style={{ backgroundColor: bg, transform: `scale(${1 / RES})`, transformOrigin: "0 0" }}>
           <ShotCtx.Provider value={{ t0, cam: pos }}>
             <CamRig pos={pos} look={new THREE.Vector3(...l)} fov={fov ?? 74} />
             <Lights preset={light} windowX={windowX} />
             {children}
-            <EffectComposer multisampling={4}>
-              <DepthOfField target={focus} focalLength={0.012} bokehScale={7} height={1080} />
+            {process.env.REMOTION_NOFX ? null : <EffectComposer multisampling={0}>
+              {process.env.REMOTION_NODOF ? null : <DepthOfField target={focusV} focalLength={0.012} bokehScale={(7 * Number(process.env.REMOTION_DOFH ?? 480)) / 1080} height={Number(process.env.REMOTION_DOFH ?? 480)} />}
               <Bloom luminanceThreshold={1.0} intensity={0.35} mipmapBlur />
               <Vignette eskil={false} offset={0.25} darkness={0.45} />
-            </EffectComposer>
+            </EffectComposer>}
           </ShotCtx.Provider>
         </ThreeCanvas>
       </ShotCtx.Provider>

@@ -61,7 +61,7 @@ export const Casino: React.FC<{ chips?: number; poster?: boolean; table?: boolea
   {[0, 0.25, 0.5, 0.75].map((z, i) => <Box key={z} p={[2.75, 1.25, z]} s={[0.07, 0.2, 0.07]} c={["#3f8a4b", "#d64545", "#f2c230", "#2f9e9a"][i]} line={false} />)}
   <Lamp p={[-1.2, 2.97, -0.6]} len={1.6} glow={1.25} /><Lamp p={[1.2, 2.97, -0.6]} len={1.6} glow={1.25} />
   <pointLight position={[-1.5, 2.2, -0.8]} intensity={4} decay={1.3} color="#ff6fa8" />
-  <pointLight position={[1.2, 2.4, 0.2]} intensity={6} decay={1.3} color="#ffd08a" castShadow />
+  <pointLight position={[1.2, 2.4, 0.2]} intensity={6} decay={1.3} color="#ffd08a" />
 </>);
 
 export const Glass: React.FC<{ p: V3; c?: string }> = ({ p, c = "#ff9d2e" }) => (
