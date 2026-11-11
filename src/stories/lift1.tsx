@@ -15,7 +15,7 @@ export const TM_L1 = timing(VOICE, AD1_L1, AD_LEN_VX);
 
 // ---------- детали лифта ----------
 /** кабина спереди: стены, потолочная лампа (light 0…1), зеркало на задней стене */
-const Cabin: React.FC<{ light: number; children?: React.ReactNode; mirror?: React.ReactNode }> = ({ light, children, mirror }) => (
+export const Cabin: React.FC<{ light: number; children?: React.ReactNode; mirror?: React.ReactNode }> = ({ light, children, mirror }) => (
   <g>
     <rect width={W} height={PH} fill="#05060d" />
     <polygon points="140,120 940,120 820,260 260,260" fill={METAL_D} />
@@ -35,14 +35,14 @@ const Cabin: React.FC<{ light: number; children?: React.ReactNode; mirror?: Reac
     <rect width={W} height={PH} fill="#000" opacity={0.75 * (1 - light)} />
   </g>
 );
-const Display: React.FC<{ x: number; y: number; s?: number; text: string; c?: string; arrow?: number }> = ({ x, y, s = 1, text, c = "#ff6a3a", arrow = 0 }) => (
+export const Display: React.FC<{ x: number; y: number; s?: number; text: string; c?: string; arrow?: number }> = ({ x, y, s = 1, text, c = "#ff6a3a", arrow = 0 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     <rect x={-150} y={-90} width={300} height={180} rx={14} fill="#0a0a0e" stroke="#5a6078" strokeWidth={8} />
     <text x={arrow ? 30 : 0} y={50} textAnchor="middle" fontFamily={MONO} fontWeight={700} fontSize={130} fill={c} style={{ filter: `drop-shadow(0 0 12px ${c})` }}>{text}</text>
     {arrow ? <path d={arrow > 0 ? "M -110 30 L -80 -30 L -50 30 Z" : "M -110 -30 L -80 30 L -50 -30 Z"} fill={c} /> : null}
   </g>
 );
-const PanelBtns: React.FC<{ pressed?: number; bell?: number }> = ({ pressed = 0, bell = 0 }) => (
+export const PanelBtns: React.FC<{ pressed?: number; bell?: number }> = ({ pressed = 0, bell = 0 }) => (
   <g>
     <rect x={330} y={80} width={420} height={1040} rx={20} fill="#8a90a4" stroke={INK} strokeWidth={6} />
     {Array.from({ length: 9 }, (_, i) => {
@@ -56,7 +56,7 @@ const PanelBtns: React.FC<{ pressed?: number; bell?: number }> = ({ pressed = 0,
     {Array.from({ length: 5 }, (_, k) => <rect key={k} x={400} y={1030 + k * 16} width={280} height={7} rx={3} fill={INK} />)}
   </g>
 );
-const Finger: React.FC<{ x: number; y: number; push: number }> = ({ x, y, push }) => (
+export const Finger: React.FC<{ x: number; y: number; push: number }> = ({ x, y, push }) => (
   <g transform={`translate(${x + 40 - push * 40} ${y + 60 - push * 50})`}>
     <path d="M 0 0 L 420 520" stroke={INK} strokeWidth={96} strokeLinecap="round" /><path d="M 0 0 L 420 520" stroke={PETYA.top} strokeWidth={88} strokeLinecap="round" />
     <ellipse cx={0} cy={0} rx={40} ry={46} fill={PETYA.skin} stroke={INK} strokeWidth={5} />
@@ -112,7 +112,7 @@ const Floors: SShot = ({ T }) => {
   const n = T < at("Третий") - 0.6 ? "1" : T < at("Третий") ? "2" : T < at("Четвёртый") ? "3" : T < at("Пятый") ? "4" : "5";
   return <Cam s={1} cx={540} cy={590}><rect width={W} height={PH} fill="#2a2f42" /><Display x={540} y={560} s={2} text={n} arrow={1} /></Cam>;
 };
-const Shaft: React.FC<{ y: number; down?: number; red?: boolean }> = ({ y, down = 0, red }) => (
+export const Shaft: React.FC<{ y: number; down?: number; red?: boolean }> = ({ y, down = 0, red }) => (
   <g>
     <rect width={W} height={PH} fill="#07080f" />
     <rect x={340} y={0} width={400} height={PH} fill="#11131c" stroke="#2a2f42" strokeWidth={10} />
@@ -177,7 +177,7 @@ const PhoneLight: SShot = ({ t, T }) => {
   </g>;
 };
 /** отражение в зеркале: Петя и кто-то за ним; smile — отражение улыбается */
-const Mirror: React.FC<{ T: number; who: number; smile?: number; real?: boolean }> = ({ T, who, smile = 0, real }) => (
+export const Mirror: React.FC<{ T: number; who: number; smile?: number; real?: boolean }> = ({ T, who, smile = 0, real }) => (
   <g>
     <rect width={W} height={PH} fill="#05060d" />
     <rect x={90} y={90} width={900} height={1000} rx={14} fill="#1c2236" stroke="#8a90a4" strokeWidth={14} />

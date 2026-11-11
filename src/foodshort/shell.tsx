@@ -17,13 +17,13 @@ export const words = (v: Voice) => {
   return { wd: at, at: (w: string, n = 1) => at(w, n).t, b: (w: string, n = 1) => at(w, n).t - 0.1 };
 };
 /** тайминги ролика: ad1 — время истории, где встаёт первая реклама */
-export const timing = (v: Voice, ad1: number, adLen = AD_LEN) => {
+export const timing = (v: Voice, ad1: number, adLen = AD_LEN, endAd = true) => {
   const end = v.dur + END_CARD, hold = AD_DELAY + adLen + 0.25;
   return {
-    end, ad1, hold, frames: Math.ceil((end + 2 * hold) * FPS),
+    end, ad1, hold, frames: Math.ceil((end + (endAd ? 2 : 1) * hold) * FPS),
     storyT: (s: number) => (s < ad1 ? s : s < ad1 + hold ? ad1 : Math.min(end, s - hold)),
     /** идёт ли сейчас реклама (для затемнения стоп-кадра) */
-    inAd: (s: number) => (s >= ad1 + AD_DELAY && s < ad1 + hold) || s >= end + hold + AD_DELAY,
+    inAd: (s: number) => (s >= ad1 + AD_DELAY && s < ad1 + hold) || (endAd && s >= end + hold + AD_DELAY),
     adTimes: [ad1 + AD_DELAY, end + hold + AD_DELAY],
   };
 };
@@ -58,9 +58,9 @@ const Clock: React.FC<{ T: number; clock: [number, string][]; dur: number }> = (
   </div>;
 };
 
-export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false }) => {
+export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean; endAd?: boolean }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false, endAd = true }) => {
   setLang("ru");
-  const tm = timing(voice, ad1, adLen);
+  const tm = timing(voice, ad1, adLen, endAd);
   const G = React.useMemo(() => groupsOf(voice, ask), [voice, ask]);
   const f = useCurrentFrame(), T = tm.storyT(f / FPS);
   const ci = cuts.reduce((acc, [, a], i) => (T >= a ? i : acc), 0);
