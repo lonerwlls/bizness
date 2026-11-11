@@ -125,3 +125,34 @@ if part == 6:
     a = S(47.4); add(murmur(6.0), a, 0.18); add(crackle(6.0) * 0.4, a, 0.05)
     for k in range(14): add(ping(rng.uniform(2800, 3600), 0.15, 30), a + rng.uniform(0.3, 5.5), 0.05, rng.uniform(-0.6, 0.6))
     save("public/food/sfx6.wav")
+
+def snowstep(): return norm(crunch() * 0.7 + mixlen(step(), int(0.3 * SR)) * 0.5)
+def snowsteps(a, b, every, gain=0.12, pan=0.0):
+    for tt in np.arange(a, b, every): add(snowstep(), tt + rng.uniform(-0.01, 0.01), gain, pan)
+def static(d): n = int(d * SR); return norm(filt(rng.standard_normal(n), 800, 5000) * (0.7 + 0.3 * rng.standard_normal(n) * 0.2))
+def radio_voice(d):
+    n = int(d * SR); x = t(n); f0 = 130 + 20 * np.sin(2 * np.pi * 0.8 * x)
+    v = np.sign(np.sin(2 * np.pi * np.cumsum(f0) / SR)) * (0.5 + 0.5 * np.sin(2 * np.pi * 3.3 * x) * np.sin(2 * np.pi * 1.7 * x + 1)) ** 2
+    return norm(filt(v, 400, 2600))
+def horn(d=2.2): x = t(int(d * SR)); return norm(np.sin(2 * np.pi * 98 * x) + 0.6 * np.sin(2 * np.pi * 147 * x) + 0.3 * np.sin(2 * np.pi * 196 * x)) * env(len(x), 0.15, 0.6)
+
+if part == 7:
+    F = 1 / 30
+    a = S(0); add(wind(4.7), a, 0.16); snowsteps(a + 0.3, a + 4.7, 36 * F, 0.14)
+    a = S(4.7); add(wind(3.6), a, 0.16); add(ping(3200, 0.4, 10), a + 1.4, 0.03); add(ping(2900, 0.4, 10), a + 2.6, 0.03)
+    a = S(8.3); add(room(5.2, 50, 300), a, 0.1); add(plop() * 0.4, a + 1.0, 0.04); add(plop() * 0.4, a + 3.4, 0.04); add(scribble(0.7), a + 80 * F, 0.12)
+    a = S(13.5); add(creak(0.7, 260), a, 0.08); steps(a, a + 80 * F, 15 * F, 0.12, 0.3); steps(a + 0.25, a + 80 * F, 15 * F, 0.12, 0.5); add(room(4.9), a, 0.06)
+    a = S(18.4); add(crackle(4.7), a, 0.18); add(wind(4.7) * 0.5, a, 0.06)
+    a = S(23.1); add(room(4.1), a, 0.05)
+    for k in range(0, 123, 22): add(click(1400, 0.03, 160), a + (k + 16) * F, 0.1)
+    a = S(27.2)
+    for k in range(4): add(crunch(), a + (8 + k * 15.7) * F, 0.1)
+    a = S(28.9); add(tinkle(1.1, 20, 1500, 4000), a + 6 * F, 0.06); add(paper(0.4), a + 44 * F, 0.12); add(click(1600, 0.04, 140), a + 86 * F, 0.15)
+    a = S(32.5); add(click(1200, 0.04, 140), a + 0.2, 0.12); add(static(4.9) * env(int(4.9 * SR), 0.3, 0.3), a, 0.05); add(radio_voice(3.4), a + 40 * F, 0.08)
+    a = S(37.4); add(water(4.2) * env(int(4.2 * SR), 0.6, 0.6), a, 0.06); add(horn(), a + 0.8, 0.12)
+    a = S(41.6); add(wind(8.2) * 0.6, a, 0.08); add(paper(0.4), a + 0.3, 0.12); add(click(2400, 0.03, 300), a + 58 * F, 0.15)
+    for i in range(3): snowsteps(a + 90 * F + i * 0.15, a + 170 * F, 16 * F, 0.08, 0.2 + i * 0.2)
+    a = S(49.8); add(murmur(6.6) * 0.6, a, 0.12)
+    for k in range(6): add(ping(rng.uniform(2600, 3200), 0.15, 30), a + rng.uniform(0.5, 6), 0.04, rng.uniform(-0.5, 0.5))
+    add(chirp(), a + 4.5, 0.04, 0.6); add(chirp(), a + 4.7, 0.04, 0.6)
+    save("public/food/sfx7.wav")

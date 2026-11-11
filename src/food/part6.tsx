@@ -17,11 +17,11 @@ const Svg: React.FC<{ children: React.ReactNode; bg?: string; night?: number }> 
 type Shot = React.FC<{ g: number }>;
 const txt = (x: number, y: number, size: number, fill: string, t: string, w = 900) => <text x={x} y={y} textAnchor="middle" fontFamily="sans-serif" fontWeight={w} fontSize={size} fill={fill}>{t}</text>;
 const DOCTOR: Look = { kind: "person", skin: "#f0c690", skinDark: "#c89a60", top: "#f2f2ee", topDark: "#cfd2d0", pants: "#4a5a7a", shoe: "#2a2a30", hair: "#5a3a22", hairStyle: "short" };
-const KID: Look = { kind: "person", skin: "#f3cf96", skinDark: "#cfa565", top: "#e0b040", topDark: "#b48a20", pants: "#3a4a6a", shoe: "#c84a3a", hair: "#4a2a16", hairStyle: "short" };
+export const KID: Look = { kind: "person", skin: "#f3cf96", skinDark: "#cfa565", top: "#e0b040", topDark: "#b48a20", pants: "#3a4a6a", shoe: "#c84a3a", hair: "#4a2a16", hairStyle: "short" };
 const GUARD: Look = { kind: "person", skin: "#e2a868", skinDark: "#b98040", top: "#4a4a40", topDark: "#36362e", pants: "#3a3a34", shoe: "#2a2a20", hairStyle: "cap", cap: "#3a3a30" };
 
 // ---------- места и предметы ----------
-const Courtyard: React.FC<{ warm?: number }> = ({ warm = 0 }) => (
+export const Courtyard: React.FC<{ warm?: number }> = ({ warm = 0 }) => (
   <g>
     <rect x={-W} width={W * 3} height={H} fill={warm ? "#e8b880" : "#e8cfa0"} />
     {[-300, 500, 1300].map((x, i) => <g key={x}>
