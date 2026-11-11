@@ -1,0 +1,1340 @@
+{
+ "fps": 30,
+ "total": 1815,
+ "video": "video.mp4",
+ "voice": "voice.mp3",
+ "music": "music.wav",
+ "mix": {
+  "voice": 1,
+  "music": 0.11
+ },
+ "caption": {
+  "size": 92,
+  "stroke": 16,
+  "bottom": 600,
+  "highlight": null
+ },
+ "groups": [
+  {
+   "text": "There isn't a",
+   "start": 0,
+   "end": 17,
+   "words": [
+    {
+     "text": "There",
+     "start": 0,
+     "end": 8
+    },
+    {
+     "text": "isn't",
+     "start": 8,
+     "end": 14
+    },
+    {
+     "text": "a",
+     "start": 14,
+     "end": 17
+    }
+   ]
+  },
+  {
+   "text": "single clock in",
+   "start": 17,
+   "end": 39,
+   "words": [
+    {
+     "text": "single",
+     "start": 17,
+     "end": 28
+    },
+    {
+     "text": "clock",
+     "start": 28,
+     "end": 36
+    },
+    {
+     "text": "in",
+     "start": 36,
+     "end": 39
+    }
+   ]
+  },
+  {
+   "text": "a casino.",
+   "start": 39,
+   "end": 63,
+   "words": [
+    {
+     "text": "a",
+     "start": 39,
+     "end": 41
+    },
+    {
+     "text": "casino.",
+     "start": 41,
+     "end": 63
+    }
+   ]
+  },
+  {
+   "text": "And that's no",
+   "start": 63,
+   "end": 86,
+   "words": [
+    {
+     "text": "And",
+     "start": 63,
+     "end": 70
+    },
+    {
+     "text": "that's",
+     "start": 70,
+     "end": 80
+    },
+    {
+     "text": "no",
+     "start": 80,
+     "end": 86
+    }
+   ]
+  },
+  {
+   "text": "accident.",
+   "start": 86,
+   "end": 111,
+   "words": [
+    {
+     "text": "accident.",
+     "start": 86,
+     "end": 111
+    }
+   ]
+  },
+  {
+   "text": "Imagine you walk",
+   "start": 111,
+   "end": 141,
+   "words": [
+    {
+     "text": "Imagine",
+     "start": 111,
+     "end": 128
+    },
+    {
+     "text": "you",
+     "start": 128,
+     "end": 132
+    },
+    {
+     "text": "walk",
+     "start": 132,
+     "end": 141
+    }
+   ]
+  },
+  {
+   "text": "in just for",
+   "start": 141,
+   "end": 164,
+   "words": [
+    {
+     "text": "in",
+     "start": 141,
+     "end": 149
+    },
+    {
+     "text": "just",
+     "start": 149,
+     "end": 158
+    },
+    {
+     "text": "for",
+     "start": 158,
+     "end": 164
+    }
+   ]
+  },
+  {
+   "text": "10 minutes.",
+   "start": 164,
+   "end": 190,
+   "words": [
+    {
+     "text": "10",
+     "start": 164,
+     "end": 169
+    },
+    {
+     "text": "minutes.",
+     "start": 169,
+     "end": 190
+    }
+   ]
+  },
+  {
+   "text": "$20 in your",
+   "start": 190,
+   "end": 218,
+   "words": [
+    {
+     "text": "$20",
+     "start": 190,
+     "end": 211
+    },
+    {
+     "text": "in",
+     "start": 211,
+     "end": 214
+    },
+    {
+     "text": "your",
+     "start": 214,
+     "end": 218
+    }
+   ]
+  },
+  {
+   "text": "pocket,",
+   "start": 218,
+   "end": 239,
+   "words": [
+    {
+     "text": "pocket,",
+     "start": 218,
+     "end": 239
+    }
+   ]
+  },
+  {
+   "text": "and the last",
+   "start": 239,
+   "end": 258,
+   "words": [
+    {
+     "text": "and",
+     "start": 239,
+     "end": 245
+    },
+    {
+     "text": "the",
+     "start": 245,
+     "end": 249
+    },
+    {
+     "text": "last",
+     "start": 249,
+     "end": 258
+    }
+   ]
+  },
+  {
+   "text": "bus leaves at",
+   "start": 258,
+   "end": 290,
+   "words": [
+    {
+     "text": "bus",
+     "start": 258,
+     "end": 266
+    },
+    {
+     "text": "leaves",
+     "start": 266,
+     "end": 274
+    },
+    {
+     "text": "at",
+     "start": 274,
+     "end": 290
+    }
+   ]
+  },
+  {
+   "text": "9.",
+   "start": 290,
+   "end": 305,
+   "words": [
+    {
+     "text": "9.",
+     "start": 290,
+     "end": 305
+    }
+   ]
+  },
+  {
+   "text": "Inside,",
+   "start": 305,
+   "end": 324,
+   "words": [
+    {
+     "text": "Inside,",
+     "start": 305,
+     "end": 324
+    }
+   ]
+  },
+  {
+   "text": "it's always evening:",
+   "start": 324,
+   "end": 368,
+   "words": [
+    {
+     "text": "it's",
+     "start": 324,
+     "end": 331
+    },
+    {
+     "text": "always",
+     "start": 331,
+     "end": 344
+    },
+    {
+     "text": "evening:",
+     "start": 344,
+     "end": 368
+    }
+   ]
+  },
+  {
+   "text": "no windows,",
+   "start": 368,
+   "end": 398,
+   "words": [
+    {
+     "text": "no",
+     "start": 368,
+     "end": 374
+    },
+    {
+     "text": "windows,",
+     "start": 374,
+     "end": 398
+    }
+   ]
+  },
+  {
+   "text": "soft lights,",
+   "start": 398,
+   "end": 432,
+   "words": [
+    {
+     "text": "soft",
+     "start": 398,
+     "end": 411
+    },
+    {
+     "text": "lights,",
+     "start": 411,
+     "end": 432
+    }
+   ]
+  },
+  {
+   "text": "music that never",
+   "start": 432,
+   "end": 458,
+   "words": [
+    {
+     "text": "music",
+     "start": 432,
+     "end": 442
+    },
+    {
+     "text": "that",
+     "start": 442,
+     "end": 450
+    },
+    {
+     "text": "never",
+     "start": 450,
+     "end": 458
+    }
+   ]
+  },
+  {
+   "text": "stops.",
+   "start": 458,
+   "end": 488,
+   "words": [
+    {
+     "text": "stops.",
+     "start": 458,
+     "end": 488
+    }
+   ]
+  },
+  {
+   "text": "A waiter hands",
+   "start": 488,
+   "end": 511,
+   "words": [
+    {
+     "text": "A",
+     "start": 488,
+     "end": 493
+    },
+    {
+     "text": "waiter",
+     "start": 493,
+     "end": 503
+    },
+    {
+     "text": "hands",
+     "start": 503,
+     "end": 511
+    }
+   ]
+  },
+  {
+   "text": "you a free",
+   "start": 511,
+   "end": 524,
+   "words": [
+    {
+     "text": "you",
+     "start": 511,
+     "end": 515
+    },
+    {
+     "text": "a",
+     "start": 515,
+     "end": 518
+    },
+    {
+     "text": "free",
+     "start": 518,
+     "end": 524
+    }
+   ]
+  },
+  {
+   "text": "juice.",
+   "start": 524,
+   "end": 540,
+   "words": [
+    {
+     "text": "juice.",
+     "start": 524,
+     "end": 540
+    }
+   ]
+  },
+  {
+   "text": "Thanks!",
+   "start": 540,
+   "end": 573,
+   "words": [
+    {
+     "text": "Thanks!",
+     "start": 540,
+     "end": 573
+    }
+   ]
+  },
+  {
+   "text": "You win.",
+   "start": 573,
+   "end": 602,
+   "words": [
+    {
+     "text": "You",
+     "start": 573,
+     "end": 580
+    },
+    {
+     "text": "win.",
+     "start": 580,
+     "end": 602
+    }
+   ]
+  },
+  {
+   "text": "You lose.",
+   "start": 602,
+   "end": 636,
+   "words": [
+    {
+     "text": "You",
+     "start": 602,
+     "end": 610
+    },
+    {
+     "text": "lose.",
+     "start": 610,
+     "end": 636
+    }
+   ]
+  },
+  {
+   "text": "You win again.",
+   "start": 636,
+   "end": 684,
+   "words": [
+    {
+     "text": "You",
+     "start": 636,
+     "end": 642
+    },
+    {
+     "text": "win",
+     "start": 642,
+     "end": 648
+    },
+    {
+     "text": "again.",
+     "start": 648,
+     "end": 684
+    }
+   ]
+  },
+  {
+   "text": "You go to",
+   "start": 684,
+   "end": 697,
+   "words": [
+    {
+     "text": "You",
+     "start": 684,
+     "end": 689
+    },
+    {
+     "text": "go",
+     "start": 689,
+     "end": 694
+    },
+    {
+     "text": "to",
+     "start": 694,
+     "end": 697
+    }
+   ]
+  },
+  {
+   "text": "check the time,",
+   "start": 697,
+   "end": 731,
+   "words": [
+    {
+     "text": "check",
+     "start": 697,
+     "end": 703
+    },
+    {
+     "text": "the",
+     "start": 703,
+     "end": 707
+    },
+    {
+     "text": "time,",
+     "start": 707,
+     "end": 731
+    }
+   ]
+  },
+  {
+   "text": "but your phone",
+   "start": 731,
+   "end": 749,
+   "words": [
+    {
+     "text": "but",
+     "start": 731,
+     "end": 736
+    },
+    {
+     "text": "your",
+     "start": 736,
+     "end": 740
+    },
+    {
+     "text": "phone",
+     "start": 740,
+     "end": 749
+    }
+   ]
+  },
+  {
+   "text": "died hours ago.",
+   "start": 749,
+   "end": 791,
+   "words": [
+    {
+     "text": "died",
+     "start": 749,
+     "end": 759
+    },
+    {
+     "text": "hours",
+     "start": 759,
+     "end": 769
+    },
+    {
+     "text": "ago.",
+     "start": 769,
+     "end": 791
+    }
+   ]
+  },
+  {
+   "text": "You step outside,",
+   "start": 791,
+   "end": 820,
+   "words": [
+    {
+     "text": "You",
+     "start": 791,
+     "end": 796
+    },
+    {
+     "text": "step",
+     "start": 796,
+     "end": 805
+    },
+    {
+     "text": "outside,",
+     "start": 805,
+     "end": 820
+    }
+   ]
+  },
+  {
+   "text": "and the sun",
+   "start": 820,
+   "end": 832,
+   "words": [
+    {
+     "text": "and",
+     "start": 820,
+     "end": 823
+    },
+    {
+     "text": "the",
+     "start": 823,
+     "end": 826
+    },
+    {
+     "text": "sun",
+     "start": 826,
+     "end": 832
+    }
+   ]
+  },
+  {
+   "text": "is coming up.",
+   "start": 832,
+   "end": 862,
+   "words": [
+    {
+     "text": "is",
+     "start": 832,
+     "end": 836
+    },
+    {
+     "text": "coming",
+     "start": 836,
+     "end": 845
+    },
+    {
+     "text": "up.",
+     "start": 845,
+     "end": 862
+    }
+   ]
+  },
+  {
+   "text": "How is that",
+   "start": 862,
+   "end": 879,
+   "words": [
+    {
+     "text": "How",
+     "start": 862,
+     "end": 869
+    },
+    {
+     "text": "is",
+     "start": 869,
+     "end": 872
+    },
+    {
+     "text": "that",
+     "start": 872,
+     "end": 879
+    }
+   ]
+  },
+  {
+   "text": "possible?",
+   "start": 879,
+   "end": 915,
+   "words": [
+    {
+     "text": "possible?",
+     "start": 879,
+     "end": 915
+    }
+   ]
+  },
+  {
+   "text": "Think about the",
+   "start": 915,
+   "end": 932,
+   "words": [
+    {
+     "text": "Think",
+     "start": 915,
+     "end": 922
+    },
+    {
+     "text": "about",
+     "start": 922,
+     "end": 929
+    },
+    {
+     "text": "the",
+     "start": 929,
+     "end": 932
+    }
+   ]
+  },
+  {
+   "text": "last time you",
+   "start": 932,
+   "end": 952,
+   "words": [
+    {
+     "text": "last",
+     "start": 932,
+     "end": 941
+    },
+    {
+     "text": "time",
+     "start": 941,
+     "end": 947
+    },
+    {
+     "text": "you",
+     "start": 947,
+     "end": 952
+    }
+   ]
+  },
+  {
+   "text": "opened a video",
+   "start": 952,
+   "end": 975,
+   "words": [
+    {
+     "text": "opened",
+     "start": 952,
+     "end": 961
+    },
+    {
+     "text": "a",
+     "start": 961,
+     "end": 963
+    },
+    {
+     "text": "video",
+     "start": 963,
+     "end": 975
+    }
+   ]
+  },
+  {
+   "text": "for 5 minutes",
+   "start": 975,
+   "end": 999,
+   "words": [
+    {
+     "text": "for",
+     "start": 975,
+     "end": 983
+    },
+    {
+     "text": "5",
+     "start": 983,
+     "end": 990
+    },
+    {
+     "text": "minutes",
+     "start": 990,
+     "end": 999
+    }
+   ]
+  },
+  {
+   "text": "before bed,",
+   "start": 999,
+   "end": 1028,
+   "words": [
+    {
+     "text": "before",
+     "start": 999,
+     "end": 1009
+    },
+    {
+     "text": "bed,",
+     "start": 1009,
+     "end": 1028
+    }
+   ]
+  },
+  {
+   "text": "and suddenly it",
+   "start": 1028,
+   "end": 1050,
+   "words": [
+    {
+     "text": "and",
+     "start": 1028,
+     "end": 1034
+    },
+    {
+     "text": "suddenly",
+     "start": 1034,
+     "end": 1047
+    },
+    {
+     "text": "it",
+     "start": 1047,
+     "end": 1050
+    }
+   ]
+  },
+  {
+   "text": "was 3 a.m.",
+   "start": 1050,
+   "end": 1095,
+   "words": [
+    {
+     "text": "was",
+     "start": 1050,
+     "end": 1056
+    },
+    {
+     "text": "3",
+     "start": 1056,
+     "end": 1062
+    },
+    {
+     "text": "a.m.",
+     "start": 1062,
+     "end": 1095
+    }
+   ]
+  },
+  {
+   "text": "Nothing around you",
+   "start": 1095,
+   "end": 1118,
+   "words": [
+    {
+     "text": "Nothing",
+     "start": 1095,
+     "end": 1106
+    },
+    {
+     "text": "around",
+     "start": 1106,
+     "end": 1114
+    },
+    {
+     "text": "you",
+     "start": 1114,
+     "end": 1118
+    }
+   ]
+  },
+  {
+   "text": "reminded you of",
+   "start": 1118,
+   "end": 1137,
+   "words": [
+    {
+     "text": "reminded",
+     "start": 1118,
+     "end": 1131
+    },
+    {
+     "text": "you",
+     "start": 1131,
+     "end": 1134
+    },
+    {
+     "text": "of",
+     "start": 1134,
+     "end": 1137
+    }
+   ]
+  },
+  {
+   "text": "the time.",
+   "start": 1137,
+   "end": 1164,
+   "words": [
+    {
+     "text": "the",
+     "start": 1137,
+     "end": 1141
+    },
+    {
+     "text": "time.",
+     "start": 1141,
+     "end": 1164
+    }
+   ]
+  },
+  {
+   "text": "Casinos do this",
+   "start": 1164,
+   "end": 1189,
+   "words": [
+    {
+     "text": "Casinos",
+     "start": 1164,
+     "end": 1179
+    },
+    {
+     "text": "do",
+     "start": 1179,
+     "end": 1184
+    },
+    {
+     "text": "this",
+     "start": 1184,
+     "end": 1189
+    }
+   ]
+  },
+  {
+   "text": "on purpose.",
+   "start": 1189,
+   "end": 1219,
+   "words": [
+    {
+     "text": "on",
+     "start": 1189,
+     "end": 1194
+    },
+    {
+     "text": "purpose.",
+     "start": 1194,
+     "end": 1219
+    }
+   ]
+  },
+  {
+   "text": "Without clocks or",
+   "start": 1219,
+   "end": 1247,
+   "words": [
+    {
+     "text": "Without",
+     "start": 1219,
+     "end": 1231
+    },
+    {
+     "text": "clocks",
+     "start": 1231,
+     "end": 1242
+    },
+    {
+     "text": "or",
+     "start": 1242,
+     "end": 1247
+    }
+   ]
+  },
+  {
+   "text": "windows,",
+   "start": 1247,
+   "end": 1269,
+   "words": [
+    {
+     "text": "windows,",
+     "start": 1247,
+     "end": 1269
+    }
+   ]
+  },
+  {
+   "text": "your brain loses",
+   "start": 1269,
+   "end": 1296,
+   "words": [
+    {
+     "text": "your",
+     "start": 1269,
+     "end": 1275
+    },
+    {
+     "text": "brain",
+     "start": 1275,
+     "end": 1285
+    },
+    {
+     "text": "loses",
+     "start": 1285,
+     "end": 1296
+    }
+   ]
+  },
+  {
+   "text": "track of time,",
+   "start": 1296,
+   "end": 1329,
+   "words": [
+    {
+     "text": "track",
+     "start": 1296,
+     "end": 1305
+    },
+    {
+     "text": "of",
+     "start": 1305,
+     "end": 1309
+    },
+    {
+     "text": "time,",
+     "start": 1309,
+     "end": 1329
+    }
+   ]
+  },
+  {
+   "text": "and the longer",
+   "start": 1329,
+   "end": 1349,
+   "words": [
+    {
+     "text": "and",
+     "start": 1329,
+     "end": 1335
+    },
+    {
+     "text": "the",
+     "start": 1335,
+     "end": 1339
+    },
+    {
+     "text": "longer",
+     "start": 1339,
+     "end": 1349
+    }
+   ]
+  },
+  {
+   "text": "you play,",
+   "start": 1349,
+   "end": 1376,
+   "words": [
+    {
+     "text": "you",
+     "start": 1349,
+     "end": 1354
+    },
+    {
+     "text": "play,",
+     "start": 1354,
+     "end": 1376
+    }
+   ]
+  },
+  {
+   "text": "the more money",
+   "start": 1376,
+   "end": 1394,
+   "words": [
+    {
+     "text": "the",
+     "start": 1376,
+     "end": 1381
+    },
+    {
+     "text": "more",
+     "start": 1381,
+     "end": 1387
+    },
+    {
+     "text": "money",
+     "start": 1387,
+     "end": 1394
+    }
+   ]
+  },
+  {
+   "text": "you leave behind.",
+   "start": 1394,
+   "end": 1433,
+   "words": [
+    {
+     "text": "you",
+     "start": 1394,
+     "end": 1398
+    },
+    {
+     "text": "leave",
+     "start": 1398,
+     "end": 1404
+    },
+    {
+     "text": "behind.",
+     "start": 1404,
+     "end": 1433
+    }
+   ]
+  },
+  {
+   "text": "Back in 2000,",
+   "start": 1433,
+   "end": 1471,
+   "words": [
+    {
+     "text": "Back",
+     "start": 1433,
+     "end": 1441
+    },
+    {
+     "text": "in",
+     "start": 1441,
+     "end": 1456
+    },
+    {
+     "text": "2000,",
+     "start": 1456,
+     "end": 1471
+    }
+   ]
+  },
+  {
+   "text": "former casino manager",
+   "start": 1471,
+   "end": 1508,
+   "words": [
+    {
+     "text": "former",
+     "start": 1471,
+     "end": 1481
+    },
+    {
+     "text": "casino",
+     "start": 1481,
+     "end": 1494
+    },
+    {
+     "text": "manager",
+     "start": 1494,
+     "end": 1508
+    }
+   ]
+  },
+  {
+   "text": "Bill Friedman wrote",
+   "start": 1508,
+   "end": 1549,
+   "words": [
+    {
+     "text": "Bill",
+     "start": 1508,
+     "end": 1517
+    },
+    {
+     "text": "Friedman",
+     "start": 1517,
+     "end": 1541
+    },
+    {
+     "text": "wrote",
+     "start": 1541,
+     "end": 1549
+    }
+   ]
+  },
+  {
+   "text": "these rules down",
+   "start": 1549,
+   "end": 1571,
+   "words": [
+    {
+     "text": "these",
+     "start": 1549,
+     "end": 1556
+    },
+    {
+     "text": "rules",
+     "start": 1556,
+     "end": 1565
+    },
+    {
+     "text": "down",
+     "start": 1565,
+     "end": 1571
+    }
+   ]
+  },
+  {
+   "text": "in a book.",
+   "start": 1571,
+   "end": 1605,
+   "words": [
+    {
+     "text": "in",
+     "start": 1571,
+     "end": 1574
+    },
+    {
+     "text": "a",
+     "start": 1574,
+     "end": 1577
+    },
+    {
+     "text": "book.",
+     "start": 1577,
+     "end": 1605
+    }
+   ]
+  },
+  {
+   "text": "Plenty of casinos",
+   "start": 1605,
+   "end": 1633,
+   "words": [
+    {
+     "text": "Plenty",
+     "start": 1605,
+     "end": 1616
+    },
+    {
+     "text": "of",
+     "start": 1616,
+     "end": 1619
+    },
+    {
+     "text": "casinos",
+     "start": 1619,
+     "end": 1633
+    }
+   ]
+  },
+  {
+   "text": "are still built",
+   "start": 1633,
+   "end": 1651,
+   "words": [
+    {
+     "text": "are",
+     "start": 1633,
+     "end": 1637
+    },
+    {
+     "text": "still",
+     "start": 1637,
+     "end": 1645
+    },
+    {
+     "text": "built",
+     "start": 1645,
+     "end": 1651
+    }
+   ]
+  },
+  {
+   "text": "this way.",
+   "start": 1651,
+   "end": 1690,
+   "words": [
+    {
+     "text": "this",
+     "start": 1651,
+     "end": 1658
+    },
+    {
+     "text": "way.",
+     "start": 1658,
+     "end": 1690
+    }
+   ]
+  },
+  {
+   "text": "Oh,",
+   "start": 1690,
+   "end": 1699,
+   "words": [
+    {
+     "text": "Oh,",
+     "start": 1690,
+     "end": 1699
+    }
+   ]
+  },
+  {
+   "text": "and that 9",
+   "start": 1699,
+   "end": 1716,
+   "words": [
+    {
+     "text": "and",
+     "start": 1699,
+     "end": 1703
+    },
+    {
+     "text": "that",
+     "start": 1703,
+     "end": 1710
+    },
+    {
+     "text": "9",
+     "start": 1710,
+     "end": 1716
+    }
+   ]
+  },
+  {
+   "text": "o’clock bus?",
+   "start": 1716,
+   "end": 1752,
+   "words": [
+    {
+     "text": "o’clock",
+     "start": 1716,
+     "end": 1728
+    },
+    {
+     "text": "bus?",
+     "start": 1728,
+     "end": 1752
+    }
+   ]
+  },
+  {
+   "text": "It left.",
+   "start": 1752,
+   "end": 1771,
+   "words": [
+    {
+     "text": "It",
+     "start": 1752,
+     "end": 1758
+    },
+    {
+     "text": "left.",
+     "start": 1758,
+     "end": 1771
+    }
+   ]
+  },
+  {
+   "text": "Yesterday.",
+   "start": 1771,
+   "end": 1789,
+   "words": [
+    {
+     "text": "Yesterday.",
+     "start": 1771,
+     "end": 1789
+    }
+   ]
+  }
+ ]
+}
