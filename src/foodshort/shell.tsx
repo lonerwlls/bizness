@@ -17,12 +17,14 @@ export const words = (v: Voice) => {
   return { wd: at, at: (w: string, n = 1) => at(w, n).t, b: (w: string, n = 1) => at(w, n).t - 0.1 };
 };
 /** тайминги ролика: ad1 — время истории, где встаёт первая реклама */
-export const timing = (v: Voice, ad1: number) => {
-  const end = v.dur + END_CARD;
+export const timing = (v: Voice, ad1: number, adLen = AD_LEN) => {
+  const end = v.dur + END_CARD, hold = AD_DELAY + adLen + 0.25;
   return {
-    end, ad1, frames: Math.ceil((end + 2 * AD_HOLD) * FPS),
-    storyT: (s: number) => (s < ad1 ? s : s < ad1 + AD_HOLD ? ad1 : Math.min(end, s - AD_HOLD)),
-    adTimes: [ad1 + AD_DELAY, end + AD_HOLD + AD_DELAY],
+    end, ad1, hold, frames: Math.ceil((end + 2 * hold) * FPS),
+    storyT: (s: number) => (s < ad1 ? s : s < ad1 + hold ? ad1 : Math.min(end, s - hold)),
+    /** идёт ли сейчас реклама (для затемнения стоп-кадра) */
+    inAd: (s: number) => (s >= ad1 + AD_DELAY && s < ad1 + hold) || s >= end + hold + AD_DELAY,
+    adTimes: [ad1 + AD_DELAY, end + hold + AD_DELAY],
   };
 };
 
@@ -33,11 +35,11 @@ const groupsOf = (v: Voice, ask: Wd[] = []): Wd[][] => {
   if (cur.length) gs.push(cur);
   return gs;
 };
-const Captions: React.FC<{ T: number; G: Wd[][]; dur: number; red: RegExp; yel: RegExp }> = ({ T, G, dur, red, yel }) => {
+const Captions: React.FC<{ T: number; G: Wd[][]; dur: number; red: RegExp; yel: RegExp; top: number }> = ({ T, G, dur, red, yel, top }) => {
   const gi = G.findIndex((g, i) => T >= g[0].t - 0.08 && (i === G.length - 1 || T < G[i + 1][0].t - 0.08));
   if (gi < 0 || T > dur + 0.1) return null;
   const grp = G[gi], appear = Math.min(1, (T - grp[0].t + 0.08) / 0.12);
-  return <div style={{ position: "absolute", top: 1230, left: 50, right: 50, textAlign: "center", fontFamily: "FsMont", fontWeight: 900, fontSize: 78, lineHeight: 1.08, textTransform: "uppercase", letterSpacing: -1, opacity: appear, transform: `scale(${0.94 + 0.06 * appear})` }}>
+  return <div style={{ position: "absolute", top, left: 50, right: 50, textAlign: "center", fontFamily: "FsMont", fontWeight: 900, fontSize: 78, lineHeight: 1.08, textTransform: "uppercase", letterSpacing: -1, opacity: appear, transform: `scale(${0.94 + 0.06 * appear})` }}>
     {grp.map((w, i) => {
       const said = T >= w.t, now = said && (i === grp.length - 1 || T < grp[i + 1].t);
       const c = red.test(w.w) ? RED : yel.test(w.w) ? YEL : "#fff";
@@ -56,14 +58,14 @@ const Clock: React.FC<{ T: number; clock: [number, string][]; dur: number }> = (
   </div>;
 };
 
-export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[] }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [] }) => {
+export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false }) => {
   setLang("ru");
-  const tm = timing(voice, ad1);
+  const tm = timing(voice, ad1, adLen);
   const G = React.useMemo(() => groupsOf(voice, ask), [voice, ask]);
   const f = useCurrentFrame(), T = tm.storyT(f / FPS);
   const ci = cuts.reduce((acc, [, a], i) => (T >= a ? i : acc), 0);
   const [C, a] = cuts[ci], next = ci + 1 < cuts.length ? cuts[ci + 1][1] : tm.end, t = T - a;
-  const ad1F = S(ad1), holdF = S(AD_HOLD);
+  const ad1F = S(ad1), holdF = S(tm.hold), dim = dimAd && tm.inAd(f / FPS);
   return <AbsoluteFill style={{ background: "#000" }}>
     <svg width={W} height={1920} viewBox={`0 0 ${W} 1920`} style={{ position: "absolute", top: 0 }}>
       <defs><linearGradient id="fadeB3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" /></linearGradient>
@@ -77,7 +79,8 @@ export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, num
       {t >= 0 && t < 4 / FPS ? <rect width={W} height={PH} fill="#000" opacity={1 - t * FPS / 4} /> : null}
     </svg>
     <Clock T={T} clock={clock} dur={voice.dur} />
-    <Captions T={T} G={G} dur={voice.dur} red={red} yel={yel} />
+    <Captions T={T} G={G} dur={voice.dur} red={red} yel={yel} top={capTop} />
+    {dim ? <AbsoluteFill style={{ background: "rgba(0,0,0,0.62)" }} /> : null}
     <Sequence from={0} durationInFrames={ad1F}><Audio src={staticFile(`${dir}/voice.mp3`)} /><Audio src={staticFile(`${dir}/bed.wav`)} volume={0.85} /></Sequence>
     <Sequence from={ad1F + holdF} durationInFrames={S(tm.end) - ad1F}><Audio src={staticFile(`${dir}/voice.mp3`)} startFrom={ad1F} /><Audio src={staticFile(`${dir}/bed.wav`)} volume={0.85} startFrom={ad1F} /></Sequence>
   </AbsoluteFill>;
