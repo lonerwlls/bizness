@@ -1,7 +1,7 @@
 // Часть 6/10: дни 11–14 — заправки не работают, костёр в бочке на крыше, затопленное метро, ночь-лабиринт.
 import React from "react";
 import { Bean, Cam, Defs, Frame, Glow, HERO2D, Layer, Voice, atWord, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, Flashlight, GY, HS, Hero, INK, Rooftop, SkyDefs, Skyline, Stars, Street, Svg, Torch, YEL, walk, walkDx } from "./scenes";
+import { Apartment, Flashlight, GY, HS, Hero, INK, Rooftop, SkyDefs, Skyline, Stars, Street, Svg, Torch, YEL, walk, walkDx, ChalkHero, chalkCam } from "./scenes";
 import { VOICE } from "./voices/p6";
 
 const V = VOICE as Voice;
@@ -129,8 +129,8 @@ export const P6 = makePart(V, [
   { at: "follow", s: (g, f, len) => <NightStreet cam={C(900 + walkDx(g) * 0.9, 580, 0.9)} f={f} star={1}><Hero x={600 + walkDx(g)} y={GY + 150} f={f} expr="determined" pose={walk(g)} /></NightStreet> },
   { at: "block", s: (g, f, len) => <NightStreet cam={C(1500 + walkDx(g) * 0.9, 580, 0.9)} f={f} star={1}><Hero x={1200 + walkDx(g)} y={GY + 150} f={f} expr="determined" pose={walk(g)} /></NightStreet> },
   // дома: правило
-  { at: "From", n: 2, s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={14} tod="night" dark={0.45}>
-    <Hero x={-80} y={GY} f={f} expr="determined" gaze={-1} pose={{ armL: [150, ip(g, [0, 20], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} /></Apartment> },
+  { at: "From", n: 2, s: (g, f, len) => <Apartment cam={chalkCam(13)} f={f} tally={g > 15 ? 14 : 13} tod="night" dark={0.45}>
+    <ChalkHero i={13} g={g} f={f} expr="determined" /></Apartment> },
   { at: "always", s: (g, f, len) => <Apartment cam={camLerp(g, len, C(700, GY - 250, 1.8), C(800, 520, 1.0))} f={f} tally={14} tod="night" dark={0.5}>
     <Bean x={640} y={GY} s={HS} look={HERO2D} f={f} expr="tired" sit={70 / HS} pose={{ armL: [30, 40], armR: [30, 40] }} /></Apartment> },
 ], { id: 6, dir: "bo" });

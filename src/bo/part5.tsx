@@ -1,7 +1,7 @@
 // Часть 5/10: дни 8–10 — аккумулятор машины, солнечные фонари, велосипед-генератор и радио.
 import React from "react";
 import { Bean, Cam, Frame, Glow, HERO2D, SoundRings, Voice, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, BoCar, GY, HS, Hero, INK, Street, Svg, Skyline, StoreFront, walk, walkDx } from "./scenes";
+import { Apartment, BoCar, GY, HS, Hero, INK, Street, Svg, Skyline, StoreFront, walk, walkDx, ChalkHero, chalkCam } from "./scenes";
 import { VOICE } from "./voices/p5";
 
 const V = VOICE as Voice;
@@ -75,7 +75,7 @@ const CRANK = (bx: number): [number, number] => [bx + 20, GY - 82];
 const BAR = (bx: number): [number, number] => [bx + 120, GY - 290];
 const PR = 34;
 const pedals = (bx: number, ped: number): [number, number][] => { const [cx, cy] = CRANK(bx); return [[cx + Math.cos(ped + Math.PI) * PR, cy + Math.sin(ped + Math.PI) * PR + 8], [cx + Math.cos(ped) * PR, cy + Math.sin(ped) * PR + 8]]; };
-const BikeRig: React.FC<{ x: number; ped: number; on?: boolean; f: number; front?: boolean }> = ({ x, ped, on, f, front }) => {
+export const BikeRig: React.FC<{ x: number; ped: number; on?: boolean; f: number; front?: boolean }> = ({ x, ped, on, f, front }) => {
   const R: [number, number] = [x - 150, GY - 72], Fw: [number, number] = [x + 190, GY - 72], [sx, sy] = SEAT(x), [cx, cy] = CRANK(x), [hx, hy] = BAR(x);
   const crank = (k: number) => { const a = ped + k * Math.PI; return <g key={k}><path d={`M ${cx} ${cy} L ${cx + Math.cos(a) * PR} ${cy + Math.sin(a) * PR}`} stroke={INK} strokeWidth={7} /><rect x={cx + Math.cos(a) * PR - 16} y={cy + Math.sin(a) * PR + 4} width={32} height={9} rx={4} fill="#262838" /></g>; };
   return (
@@ -102,14 +102,14 @@ const FrontCrank: React.FC<{ x: number; ped: number }> = ({ x, ped }) => { const
 // шум радио: зигзаги
 const Static: React.FC<{ x: number; y: number; f: number }> = ({ x, y, f }) => <g>{[0, 1, 2].map((i) => <path key={i} d={`M ${x + i * 50} ${y - i * 40} ${Array.from({ length: 6 }, (_, k) => `l 14 ${((f + k + i) % 2 ? -1 : 1) * (14 + ((f * 7 + k * 3) % 10))}`).join(" ")}`} stroke="#e8e4ff" strokeWidth={5} fill="none" opacity={0.8} />)}</g>;
 // герой сидит на седле, руки на руле, ступни на педалях (крутит)
-const RIDER = (bx: number, ped: number, f: number, expr: any, sweat = false) => { const [sx, sy] = SEAT(bx);
+export const RIDER = (bx: number, ped: number, f: number, expr: any, sweat = false) => { const [sx, sy] = SEAT(bx);
   return <><Bean x={sx} y={GY} s={HS} look={HERO2D} f={f} expr={expr} sweat={sweat} sit={(GY - sy + 6) / HS} feet={pedals(bx, ped)} pose={{ armL: [-82, -6], armR: [98, 4], lean: 12, bob: Math.abs(Math.sin(ped)) * 3 }} />
     <FrontCrank x={bx} ped={ped} /></>; };
 
 export const P5 = makePart(V, [
   // день 8: нужно электричество
-  { at: "", s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={ip(g, [0, 20], [7, 8]) > 7.5 ? 8 : 7}>
-    <Hero x={-80} y={GY} f={f} expr="determined" gaze={-1} pose={{ armL: [150, ip(g, [0, 20], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} /></Apartment> },
+  { at: "", s: (g, f, len) => <Apartment cam={chalkCam(7)} f={f} tally={ip(g, [0, 20], [7, 8]) > 7.5 ? 8 : 7}>
+    <ChalkHero i={7} g={g} f={f} expr="determined" /></Apartment> },
   { at: "city", s: (g, f, len) => <Street cam={camLerp(g, len, C(1100, 520, 0.7), C(1300, 520, 0.75))} f={f} tod="day"><OpenCar open={0} batt={false} /><g transform={`translate(2300 ${CARY}) scale(${CK}) translate(-2300 ${-CARY})`}><BoCar x={2300} y={CARY} c="#ff6a5a" /></g></Street> },
   { at: "Every", s: (g, f, len) => <Street cam={C(1500, 480, 0.55)} f={f} tod="day">{[0, 900, 1800, 2700].map((x, i) => <g key={x} transform={`translate(${x} ${CARY}) scale(${CK}) translate(${-x} ${-CARY})`}><BoCar x={x} y={CARY} c={["#5ad8c8", "#ff6a5a", "#ffd23c", "#5a7cf0"][i]} /></g>)}
     {[0, 900, 1800, 2700].map((x, i) => <g key={"b" + x} opacity={ip(g, [i * 5, i * 5 + 6], [0, 1])}><Glow x={x + 200} y={CARY - 170} r={120} g="gY" /></g>)}</Street> },

@@ -1,7 +1,7 @@
 // Часть 3/10: дни 4–5 — супермаркет, тележка с едой, своя база.
 import React from "react";
 import { Bean, Cam, Frame, HERO2D, SoundRings, Voice, atWord, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, Can, Cart, Flashlight, GY, Grocery, HS, Hero, INK, Mattress, Rooftop, Store, StoreFront, Street, Svg, Skyline, Torch, walk, walkDx } from "./scenes";
+import { Apartment, Can, Cart, Flashlight, GY, Grocery, HS, Hero, INK, Mattress, Rooftop, Store, StoreFront, Street, Svg, Skyline, Torch, walk, walkDx, ChalkHero, chalkCam } from "./scenes";
 import { VOICE } from "./voices/p3";
 
 const V = VOICE as Voice;
@@ -105,8 +105,8 @@ export const P3 = makePart(V, [
     <svg><PovArm x={1250} y={640} rot={-25}>{[0, 1, 2, 3].map((i) => <g key={i} transform={`translate(${-60 + i * 40} ${-40}) rotate(${-10 + i * 7})`}><rect x={-14} y={-60} width={28} height={70} rx={6} fill="#ffd23c" stroke={INK} strokeWidth={4} /><rect x={-14} y={-60} width={28} height={22} rx={6} fill="#262838" stroke={INK} strokeWidth={4} /></g>)}</PovArm></svg>
     <rect width={1920} height={1080} fill="#0a0628" opacity={0.2} /></Frame> },
   // палочки мелом: 4 → 5
-  { at: "wall", n: 2, s: (g, f, len) => <Base cam={C(-140, GY - 280, 2.0)} f={f} mats={2} lights={5} cans={40} tally={since("lines", "wall", g, 1, 2) > 0 ? 5 : 4}>
-    <Hero x={-80} y={GY} f={f} expr="determined" gaze={-1} pose={{ armL: [150, ip(g, [0, 30], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} /></Base> },
+  { at: "wall", n: 2, s: (g, f, len) => <Base cam={chalkCam(4)} f={f} mats={2} lights={5} cans={40} tally={since("lines", "wall", g, 1, 2) > 0 ? 5 : 4}>
+    <ChalkHero i={4} g={g} f={f} expr="determined" /></Base> },
   { at: "One", s: (g, f, len) => <Base cam={camLerp(g, Math.min(len, 20), C(-120, GY - 300, 2.2), C(300, GY - 230, 1.6))} f={f} mats={2} lights={5} cans={40} tally={5}>
     <Bean x={640} y={GY} s={HS} look={HERO2D} f={f} expr="tired" gaze={-1} sit={70 / HS} pose={{ armL: [30, 40], armR: [30, 40], tilt: -6 }} /></Base> },
 ], { id: 3, dir: "bo" });

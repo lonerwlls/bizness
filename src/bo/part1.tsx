@@ -2,7 +2,7 @@
 // Правдоподобно: спит под одеялом, сидит по-человечески, стучит в дверь, шнур в розетке, шаг без скольжения, мимика по ситуации.
 import React from "react";
 import { Bean, Cam, Frame, HERO2D, Phone, SoundRings, Voice, atWord, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, BoCar, Bench, Bus, GY, HS, Hallway, Hero, INK, InBed, Kitchen, LampPost, NoIcon, Notice, Rooftop, Skyline, Street, Svg, YEL, walk, walkDx } from "./scenes";
+import { Apartment, BoCar, Bench, Bus, GY, HS, Hallway, Hero, INK, InBed, Kitchen, LampPost, NoIcon, Notice, Rooftop, Skyline, Street, Svg, YEL, walk, walkDx, ChalkHero, chalkCam } from "./scenes";
 import { VOICE } from "./voices/p1";
 
 const V = VOICE as Voice;
@@ -99,8 +99,8 @@ export const P1 = makePart(V, [
     {[0, 1, 2].map((i) => <g key={i} transform={`translate(${360 + i * 50} ${GY - 260 - i * 50 - (g % 20)})`}><path d="M -14 -14 L 14 -14 L -14 14 L 14 14" stroke="#e8e4ff" strokeWidth={6} fill="none" strokeLinejoin="round" /></g>)}
   </Apartment> },
   // день первый: первая палочка мелом
-  { at: "This", s: (g, f, len) => <Apartment cam={C(-120, GY - 260, 2.0)} f={f} tally={g > 14 ? 1 : 0}>
-    <Hero x={-80} y={GY} f={f} expr="determined" gaze={-1} pose={{ armL: [150, ip(g, [0, 14], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} />
+  { at: "This", s: (g, f, len) => <Apartment cam={chalkCam(0)} f={f} tally={g > 14 ? 1 : 0}>
+    <ChalkHero i={0} g={g} f={f} expr="determined" />
   </Apartment> },
   { at: "power", n: 2, s: (g, f, len) => <Frame bg="#1e1a50"><rect width={1920} height={1080} fill="#2a2470" /><NoIcon x={960} y={540} k="bulb" p={ip(g, [0, 8], [0.3, 1])} /></Frame> },
   { at: "phone", n: 2, s: (g, f, len) => <Frame bg="#1e1a50"><rect width={1920} height={1080} fill="#2a2470" /><NoIcon x={960} y={540} k="phone" p={ip(g, [0, 8], [0.3, 1])} /></Frame> },

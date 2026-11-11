@@ -1,7 +1,7 @@
 // Часть 4/10: дни 6–7 — дождевая вода, неделя одиночества, правила, чтобы не сойти с ума.
 import React from "react";
 import { Bean, Cam, Frame, Glow, HERO2D, SoundRings, Voice, atWord, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, BoCar, Can, GY, HS, Hero, INK, InBed, Kitchen, Rooftop, Street, Svg, Skyline, YEL, walk, walkDx } from "./scenes";
+import { Apartment, BoCar, Can, GY, HS, Hero, INK, InBed, Kitchen, Rooftop, Street, Svg, Skyline, YEL, walk, walkDx, ChalkHero, chalkCam } from "./scenes";
 import { VOICE } from "./voices/p4";
 
 const V = VOICE as Voice;
@@ -92,8 +92,8 @@ export const P4 = makePart(V, [
     <g style={{ filter: "blur(3px)" }}>{[0, 1, 2].map((i) => { const t = ((f * 0.8 + i * 33) % 100) / 100; return <path key={i} d={`M ${-260 + i * 30} ${GY - 400 - t * 60} q 12 -20 0 -40 q -12 -20 0 -40`} stroke="#fff" strokeWidth={8} fill="none" opacity={0.45 * Math.sin(t * Math.PI)} />; })}</g>
     <Hero x={95} y={GY} f={f} expr="neutral" gaze={-1} pose={{ armL: [40, 40], armR: [15, 8] }} /></Kitchen> },
   // день 7: неделя
-  { at: "Day", n: 2, s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={since("seven", "Day", g, 1, 2) > 4 ? 7 : 6}>
-    <Hero x={-80} y={GY} f={f} expr="tired" gaze={-1} pose={{ armL: [150, ip(g, [0, 20], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} /></Apartment> },
+  { at: "Day", n: 2, s: (g, f, len) => <Apartment cam={chalkCam(6)} f={f} tally={since("seven", "Day", g, 1, 2) > 4 ? 7 : 6}>
+    <ChalkHero i={6} g={g} f={f} expr="tired" /></Apartment> },
   { at: "week", s: (g, f, len) => <Apartment cam={camLerp(g, len, C(-120, GY - 300, 2.4), C(-120, GY - 300, 2.8))} f={f} tally={7} /> },
   { at: "city", s: (g, f, len) => <Street cam={camLerp(g, len, C(800, 560, 0.95), C(1100, 560, 1.0))} f={f} tod="day"><BoCar x={300} y={GY - 40} c="#ff6a5a" rot={8} s={2.2} /></Street> },
   { at: "Trash", s: (g, f, len) => <Street cam={C(1000, GY - 100, 1.6)} f={f} tod="day"><Trash x={900} y={GY + 160} n={5} /></Street> },

@@ -1,7 +1,7 @@
 // Часть 8/10: дни 19–23 — пожар от молнии, порез, тёмная больница, жар.
 import React from "react";
 import { Bean, BeanLook, Cam, Frame, Glow, HERO2D, LOOKS, Layer, Voice, atWord, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, Flashlight, GY, HS, Hero, INK, Rooftop, Store, Street, Svg, Torch, YEL, walk, walkDx } from "./scenes";
+import { Apartment, Flashlight, GY, HS, Hero, INK, Rooftop, Store, Street, Svg, Torch, YEL, walk, walkDx, ChalkHero, chalkCam } from "./scenes";
 import { VOICE } from "./voices/p8";
 
 const V = VOICE as Voice;
@@ -92,22 +92,24 @@ const Faces: React.FC<{ friends?: number; f: number }> = ({ friends = 0, f }) =>
       <g opacity={1 - k} stroke="#fff" strokeWidth={7} fill="none" strokeLinecap="round"><circle cx={x} cy={y} r={r} /><circle cx={x - r * 0.35} cy={y - r * 0.2} r={6} fill="#fff" /><circle cx={x + r * 0.35} cy={y - r * 0.2} r={6} fill="#fff" /><path d={`M ${x - r * 0.45} ${y + r * 0.2} Q ${x} ${y + r * 0.65} ${x + r * 0.45} ${y + r * 0.2}`} /></g>
     </g>; })}</g>
 );
-const CHALK = { node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 };
 // лежит больной на матрасе на полу у стены с лицами
 const SickBed: React.FC<{ f: number; expr?: any; gaze?: number }> = ({ f, expr = "tired", gaze = -1 }) => (
   <g>
-    <rect x={-560} y={GY - 44} width={520} height={44} rx={16} fill="#5ad8c8" stroke={INK} strokeWidth={6} />
-    <Bean x={-220} y={GY - 82} s={HS} look={HERO2D} f={f} expr={expr} gaze={gaze} sweat lying shadow={false} pose={{ bob: Math.sin(f * 0.15) * 3 }} />
-    <path d={`M -470 ${GY - 40} Q -470 ${GY - 110 + Math.sin(f * 0.15) * 3} -400 ${GY - 112} L -90 ${GY - 96} Q -40 ${GY - 90} -44 ${GY - 40} Z`} fill="#ff9ac0" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
-    <g transform={`translate(-20 ${GY})`}><rect x={-22} y={-110} width={44} height={110} rx={12} fill="#9fdcff" fillOpacity={0.7} stroke={INK} strokeWidth={5} /><rect x={-10} y={-130} width={20} height={22} fill="#5a7cf0" stroke={INK} strokeWidth={4} /></g>
+    {/* матрас на полу: верх на GY - 44; тело лежит на нём целиком под одеялом (как в кровати) */}
+    <rect x={-620} y={GY - 44} width={580} height={44} rx={16} fill="#5ad8c8" stroke={INK} strokeWidth={6} />
+    <rect x={-608} y={GY - 76} width={150} height={44} rx={20} fill="#ffffff" stroke={INK} strokeWidth={6} />
+    <Bean x={-242} y={GY - 121} s={HS} look={HERO2D} f={f} expr={expr} gaze={gaze} sweat lying shadow={false} pose={{ bob: Math.sin(f * 0.15) * 2, armL: [2, 0], armR: [2, 0] }} />
+    <path d={`M -470 ${GY - 40} Q -474 ${GY - 126 + Math.sin(f * 0.15) * 3} -400 ${GY - 130 + Math.sin(f * 0.15) * 3} L -80 ${GY - 104} Q -24 ${GY - 94} -30 ${GY - 40} Z`} fill="#ff9ac0" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+    <path d={`M -400 ${GY - 96} Q -260 ${GY - 86} -110 ${GY - 78}`} stroke="#d87aa0" strokeWidth={6} fill="none" />
+    <g transform={`translate(30 ${GY})`}><rect x={-22} y={-110} width={44} height={110} rx={12} fill="#9fdcff" fillOpacity={0.7} stroke={INK} strokeWidth={5} /><rect x={-10} y={-130} width={20} height={22} fill="#5a7cf0" stroke={INK} strokeWidth={4} /></g>
   </g>
 );
 const Heat: React.FC<{ f: number }> = ({ f }) => <svg width={1920} height={1080} style={{ position: "absolute", inset: 0 }}><rect width={1920} height={1080} fill="#ff6a5a" opacity={0.08 + 0.05 * Math.sin(f * 0.1)} /></svg>;
 
 export const P8 = makePart(V, [
   // день 19: гроза
-  { at: "", s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={g > 18 ? 19 : 18} tod="night" dark={0.45}>
-    <Hero x={-30} y={GY} f={f} expr="worried" gaze={-1} pose={{ armL: [150, ip(g, [0, 20], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={CHALK} /></Apartment> },
+  { at: "", s: (g, f, len) => <Apartment cam={chalkCam(18)} f={f} tally={g > 18 ? 19 : 18} tod="night" dark={0.45}>
+    <ChalkHero i={18} g={g} f={f} expr="worried" /></Apartment> },
   { at: "storm", s: (g, f, len) => <><NightView cam={C(1100, 400, 0.75)} f={f} fire={0} strike={since("hits", "storm", g) > 0 && since("hits", "storm", g) < 6} /><Rain f={f} />
     {since("hits", "storm", g) > 0 && since("hits", "storm", g) < 4 ? <svg width={1920} height={1080} style={{ position: "absolute", inset: 0 }}><rect width={1920} height={1080} fill="#e8f0ff" opacity={0.6} /></svg> : null}</> },
   { at: "With", s: (g, f, len) => <><NightView cam={C(1260, GY - 500, 1.3)} f={f} fire={ip(g, [0, len], [0.3, 0.9])} /><Rain f={f} /></> },
@@ -140,8 +142,8 @@ export const P8 = makePart(V, [
   { at: "bandages", s: (g, f, len) => { const cam = C(860, GY - 260, 1.6); return <><Pharmacy cam={cam}><Hero x={800} y={GY} f={f} expr="neutral" pose={{ armR: [130, 30], armL: [80, 10] }} holdL={TORCH} holdR={{ node: <rect x={-30} y={-50} width={60} height={50} rx={6} fill="#f4f2ff" stroke={INK} strokeWidth={4} />, k: 1 }} /></Pharmacy><Torch cx={960} cy={500} r={460} o={0.65} /></>; } },
   { at: "clean", s: (g, f, len) => <Frame bg="#4a4a8a"><rect width={1920} height={1080} fill="#4a4a8a" /><PovHand x={1000} y={560} rot={-20} cut={ip(g, [0, 25], [1, 0.3])} wrap={ip(g, [20, 40], [0, 1])} /></Frame> },
   // день 22: жар
-  { at: "twenty-two", s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={g > 18 ? 22 : 21} dark={0.4}><Faces f={f} />
-    <Hero x={-30} y={GY} f={f} expr="tired" sweat gaze={-1} pose={{ armL: [150, ip(g, [0, 20], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={CHALK} /></Apartment> },
+  { at: "twenty-two", s: (g, f, len) => <Apartment cam={chalkCam(21)} f={f} tally={g > 18 ? 22 : 21} dark={0.4}><Faces f={f} />
+    <ChalkHero i={21} g={g} f={f} expr="tired" sweat /></Apartment> },
   { at: "fever", s: (g, f, len) => <><Apartment cam={C(-300, GY - 160, 1.8)} f={f} tally={22} dark={0.45}><Faces f={f} /><SickBed f={f} /></Apartment><Heat f={f} /></> },
   { at: "drinking", s: (g, f, len) => <><Apartment cam={C(-250, GY - 120, 2.4)} f={f} tally={22} dark={0.45}><Faces f={f} /><SickBed f={f} expr="sad" /></Apartment><Heat f={f} /></> },
   { at: "talk", s: (g, f, len) => <><Apartment cam={camLerp(g, len, C(-450, GY - 200, 1.4), C(-640, GY - 280, 1.6))} f={f} tally={22} dark={0.45}><Faces f={f} /><SickBed f={f} expr="talk" /></Apartment><Heat f={f} /></> },

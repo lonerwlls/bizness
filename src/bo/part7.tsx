@@ -1,7 +1,7 @@
 // Часть 7/10: дни 15–18 — природа возвращается, пустой стадион и кинотеатр, лица на стене.
 import React from "react";
 import { Bean, Cam, Glow, HERO2D, Layer, Voice, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, GY, HS, Hero, INK, Street, Svg, YEL, walk, walkDx } from "./scenes";
+import { Apartment, GY, HS, Hero, INK, Street, Svg, YEL, walk, walkDx, ChalkHero, chalkCam } from "./scenes";
 import { VOICE } from "./voices/p7";
 
 const V = VOICE as Voice;
@@ -93,8 +93,8 @@ const CHALK = { node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" st
 
 export const P7 = makePart(V, [
   // день 15: природа возвращается
-  { at: "", s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={g > 18 ? 15 : 14}>
-    <Hero x={-30} y={GY} f={f} expr="neutral" gaze={-1} pose={{ armL: [150, ip(g, [0, 20], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={CHALK} /></Apartment> },
+  { at: "", s: (g, f, len) => <Apartment cam={chalkCam(14)} f={f} tally={g > 18 ? 15 : 14}>
+    <ChalkHero i={14} g={g} f={f} expr="neutral" /></Apartment> },
   { at: "notice", s: (g, f, len) => <Street cam={C(960, 600, 0.95)} f={f} tod="day"><Tree x={300} y={GY + 60} f={f} /><Tree x={1650} y={GY + 60} f={f} s={0.9} />
     <Hero x={960} y={GY + 150} f={f} expr="neutral" gaze={Math.sin(f * 0.06)} pose={{ tilt: 8, armL: [15, 8], armR: [15, 8] }} /></Street> },
   { at: "weeds", s: (g, f, len) => <Street cam={C(960, GY + 80, 2.0)} f={f} tod="day">{[[780, 0], [960, 8], [1150, 16]].map(([x, d]) => <g key={x}><Crack x={x} y={GY + 160} /><Weeds x={x - 20} y={GY + 160} grow={ip(g, [d, d + 20], [0, 1])} f={f} /></g>)}</Street> },
@@ -129,8 +129,8 @@ export const P7 = makePart(V, [
     <Bean x={840} y={GY - 140} s={HS} look={HERO2D} f={f} expr="grin" sit={80 / HS} pose={{ armR: [70, 60], armL: [30, 40] }} holdR={{ node: <Popcorn />, k: 0.8 }} /></Theater> },
   { at: "pretty", s: (g, f, len) => <Theater cam={C(880, SEATY - 250, 2.4)} glow={0.6}><Bean x={840} y={GY - 140} s={HS} look={HERO2D} f={f} expr="grin" sit={80 / HS} pose={{ armR: [70, 60], armL: [30, 40] }} holdR={{ node: <Popcorn />, k: 0.8 }} /></Theater> },
   // день 18: тоска по людям
-  { at: "eighteen", n: 1, s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={18} dark={0.4}>
-    <Hero x={-30} y={GY} f={f} expr="sad" gaze={-1} pose={{ armL: [150, 10], armR: [15, 8], tilt: -8 }} holdL={CHALK} /></Apartment> },
+  { at: "eighteen", n: 1, s: (g, f, len) => <Apartment cam={chalkCam(17)} f={f} tally={g > 15 ? 18 : 17} dark={0.4}>
+    <ChalkHero i={17} g={g} f={f} expr="sad" /></Apartment> },
   { at: "haven", s: (g, f, len) => <Apartment cam={camLerp(g, len, C(700, GY - 250, 1.8), C(700, GY - 250, 2.1))} f={f} tally={18} dark={0.45}>
     <Bean x={640} y={GY} s={HS} look={HERO2D} f={f} expr="sad" sit={70 / HS} pose={{ armL: [60, 70], armR: [60, 70], tilt: -12 }} /></Apartment> },
   { at: "catch", s: (g, f, len) => <Street cam={C(1050, GY - 220, 1.4)} f={f} tod="day">

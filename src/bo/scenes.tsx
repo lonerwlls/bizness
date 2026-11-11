@@ -144,10 +144,10 @@ export const CEIL = GY - 820;
 export const Apartment: React.FC<{ cam: Cam; f: number; tod?: Tod; dark?: number; children?: React.ReactNode; tally?: number; sleeping?: boolean }> = ({ cam, f, tod = "dawn", dark = 0.25, children, tally = 0, sleeping }) => (
   <Svg>
     <Layer cam={cam} d={1}>
-      <rect x={-1500} y={CEIL - 600} width={5000} height={GY - CEIL + 600} fill="#3e4a96" />
-      {Array.from({ length: 40 }, (_, i) => <rect key={i} x={-1500 + i * 120} y={CEIL} width={46} height={GY - CEIL} fill="#36418a" />)}
-      <rect x={-1500} y={CEIL - 600} width={5000} height={600} fill="#1e1a50" stroke={INK} strokeWidth={8} />
-      <rect x={-1500} y={CEIL - 10} width={5000} height={24} fill="#5ad8c8" stroke={INK} strokeWidth={6} />
+      <rect x={-2500} y={CEIL - 600} width={6000} height={GY - CEIL + 600} fill="#3e4a96" />
+      {Array.from({ length: 50 }, (_, i) => <rect key={i} x={-2500 + i * 120} y={CEIL} width={46} height={GY - CEIL} fill="#36418a" />)}
+      <rect x={-2500} y={CEIL - 600} width={6000} height={600} fill="#1e1a50" stroke={INK} strokeWidth={8} />
+      <rect x={-2500} y={CEIL - 10} width={6000} height={24} fill="#5ad8c8" stroke={INK} strokeWidth={6} />
       <CityWindow x={1250} y={CEIL + 150} w={560} h={430} tod={tod} id="aptwin" />
       <path d={`M 1250 ${CEIL + 600} L 1050 ${GY} L 1950 ${GY} L 1810 ${CEIL + 600} Z`} fill="#ffd8c0" opacity={0.12} style={{ mixBlendMode: "screen" }} />
       {/* лампа под потолком (не горит) */}
@@ -156,10 +156,10 @@ export const Apartment: React.FC<{ cam: Cam; f: number; tod?: Tod; dark?: number
       {/* выключатель */}
       <rect x={960} y={GY - 430} width={50} height={80} rx={8} fill="#e8e4ff" stroke={INK} strokeWidth={5} />
       {/* отметки дней мелом */}
-      <Tally n={tally} x={-200} y={GY - 330} />
+      <Tally n={tally} x={TALLY_X} y={TALLY_Y} />
       {/* пол */}
-      <rect x={-1500} y={GY} width={5000} height={700} fill="#6a4a8a" stroke={INK} strokeWidth={8} />
-      {Array.from({ length: 30 }, (_, i) => <path key={i} d={`M ${-1500 + i * 170} ${GY} L ${-1500 + i * 170} ${GY + 700}`} stroke={INK} strokeWidth={4} opacity={0.3} />)}
+      <rect x={-2500} y={GY} width={6000} height={700} fill="#6a4a8a" stroke={INK} strokeWidth={8} />
+      {Array.from({ length: 36 }, (_, i) => <path key={i} d={`M ${-2500 + i * 170} ${GY} L ${-2500 + i * 170} ${GY + 700}`} stroke={INK} strokeWidth={4} opacity={0.3} />)}
       {/* кровать: матрас на высоте ~0,5 м */}
       <g><rect x={210} y={GY - 260} width={36} height={260} rx={10} fill="#c87a4a" stroke={INK} strokeWidth={7} />
         <rect x={250} y={GY - 70} width={580} height={44} rx={14} fill="#e8e4ff" stroke={INK} strokeWidth={7} />
@@ -370,3 +370,22 @@ export const Torch: React.FC<{ cx: number; cy: number; r?: number; o?: number }>
     <circle cx={cx} cy={cy} r={r} fill="#fff2c0" opacity={0.08} />
   </svg>
 );
+
+// ---------- мел: герой рисует палочку ровно там, где она появляется ----------
+export const TALLY_X = -1760, TALLY_Y = GY - 330;
+// центр палочки №i (0 — первая) на стене квартиры
+export const tallyPos = (i: number): [number, number] => { const gx = TALLY_X + Math.floor(i / 5) * 110;
+  return i % 5 === 4 ? [gx + 36, TALLY_Y + 42] : [gx + (i % 5) * 18 + 1, TALLY_Y + 45]; };
+// кисть левой руки при позе armL [a0, a1] (мировое смещение от ступней героя)
+const handL = (a0: number, a1: number): [number, number] => { const D = Math.PI / 180, sx = -58, sy = -318;
+  const ex = sx + Math.sin(-a0 * D) * 78, ey = sy + Math.cos(-a0 * D) * 78; return [(ex + Math.sin(-(a0 + a1) * D) * 72) * HS, (ey + Math.cos(-(a0 + a1) * D) * 72) * HS]; };
+const CHALK_ARM = 150;
+// камера на стену с палочками
+export const chalkCam = (i: number) => ({ x: tallyPos(i)[0] + 60, y: GY - 280, z: 2.0 });
+// герой с мелом в левой руке: кончик мела у палочки №i, рука чуть водит вверх-вниз
+export const ChalkHero: React.FC<{ i: number; g: number; f: number; expr?: any; sweat?: boolean }> = ({ i, g, f, expr = "determined", sweat }) => {
+  const [mx, my] = tallyPos(i), a1 = Math.sin(g * 0.5) * 6, [hx, hy] = handL(CHALK_ARM, 0);
+  const tip = 40 * 1.2 * HS; // мел торчит вверх из кулака
+  return <Bean x={mx - hx} y={my - hy + tip * 0.6} s={HS} look={HERO2D} f={f} expr={expr} sweat={sweat} gaze={-1}
+    pose={{ armL: [CHALK_ARM, a1], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} />;
+};

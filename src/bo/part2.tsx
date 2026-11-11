@@ -1,7 +1,7 @@
 // Часть 2/10: дни 2–3 — уходит вода, пир из размороженной еды, первая тёмная ночь со звёздами.
 import React from "react";
 import { Bean, Cam, Defs, Frame, Glow, HERO2D, Layer, Voice, atWord, camLerp, ip, makePart } from "../sp/kit";
-import { Apartment, GY, HS, Hero, INK, InBed, Kitchen, Rooftop, Stars, Street, Svg, YEL, walk, walkDx } from "./scenes";
+import { Apartment, GY, HS, Hero, INK, InBed, Kitchen, Rooftop, Stars, Street, Svg, YEL, walk, walkDx, ChalkHero, chalkCam } from "./scenes";
 import { VOICE } from "./voices/p2";
 
 const V = VOICE as Voice;
@@ -135,8 +135,8 @@ export const P2 = makePart(V, [
   { at: "By", n: 2, s: (g, f, len) => <Kitchen cam={C(560, GY - 280, 1.7)} f={f} open dark={0.35}>
     <Smell x={520} y={GY - 280} f={f} /><Smell x={620} y={GY - 120} f={f + 10} />
     <Hero x={880} y={GY} f={f} expr="scared" gaze={-1} pose={{ armL: [150, 75], armR: [20, 20], tilt: 12, lean: 8 }} /></Kitchen> },
-  { at: "party", s: (g, f, len) => <Apartment cam={C(-120, GY - 260, 2.0)} f={f} tally={g > 12 ? 3 : 2}>
-    <Hero x={-80} y={GY} f={f} expr="tired" gaze={-1} pose={{ armL: [150, ip(g, [0, 12], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} /></Apartment> },
+  { at: "party", s: (g, f, len) => <Apartment cam={chalkCam(2)} f={f} tally={g > 12 ? 3 : 2}>
+    <ChalkHero i={2} g={g} f={f} expr="tired" /></Apartment> },
   // первая настоящая ночь
   { at: "first", s: (g, f, len) => <Street cam={camLerp(g, len, C(960, 560, 1.0), C(960, 600, 1.1))} f={f} tod="night">
     <Hero x={650 + walkDx(g, 0.16)} y={GY + 140} f={f} expr="worried" gaze={1} pose={walk(g, 0.16)} /></Street> },
