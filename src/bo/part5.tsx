@@ -8,8 +8,10 @@ const V = VOICE as Voice;
 const C = (x: number, y: number, z: number): Cam => ({ x, y, z });
 const CARX = 900, CARY = GY + 120;
 // машина с открытым капотом: капот (перед справа) поднят, внутри виден аккумулятор
-const OpenCar: React.FC<{ open?: number; batt?: boolean }> = ({ open = 1, batt = true }) => (
-  <g>
+const CK = 2.2; // машина в реальном размере рядом с героем (рост героя ≈ 1,8 м)
+const BATT: [number, number] = [CARX + 90 * CK, CARY - 140 * CK]; // аккумулятор под капотом (мир)
+const OpenCar: React.FC<{ open?: number; batt?: boolean; x?: number }> = ({ open = 1, batt = true, x = CARX }) => (
+  <g transform={`translate(${x} ${CARY}) scale(${CK}) translate(${-CARX} ${-CARY})`}>
     <BoCar x={CARX} y={CARY} c="#5ad8c8" />
     <g transform={`translate(${CARX + 30} ${CARY - 98})`}>
       <rect x={10} y={-6} width={110} height={30} fill="#262838" stroke={INK} strokeWidth={4} />
@@ -18,6 +20,11 @@ const OpenCar: React.FC<{ open?: number; batt?: boolean }> = ({ open = 1, batt =
     </g>
   </g>
 );
+const INV: [number, number] = [CARX + 470, CARY + 30];
+const Cables: React.FC = () => <>
+  <path d={`M ${BATT[0] - 15} ${BATT[1]} Q ${BATT[0] + 60} ${CARY - 40} ${INV[0] - 40} ${INV[1] - 40}`} stroke="#ff4a6a" strokeWidth={6} fill="none" />
+  <path d={`M ${BATT[0] + 20} ${BATT[1]} Q ${BATT[0] + 90} ${CARY - 30} ${INV[0] - 20} ${INV[1] - 40}`} stroke={INK} strokeWidth={6} fill="none" />
+</>;
 // инвертор с проводами к аккумулятору и телефоном
 const Inverter: React.FC<{ x: number; y: number; on?: boolean }> = ({ x, y, on }) => (
   <g transform={`translate(${x} ${y})`}>
@@ -62,46 +69,58 @@ const SolarLamp: React.FC<{ x: number; y: number; on?: boolean; s?: number }> = 
     {on ? <Glow x={0} y={-98} r={90} g="gY" /> : null}
   </g>
 );
-// велосипед на подставке с генератором и радио; ped — фаза педалей
-const BikeRig: React.FC<{ x: number; ped: number; on?: boolean; f: number }> = ({ x, ped, on, f }) => (
-  <g>
-    <path d={`M ${x - 200} ${GY} L ${x - 160} ${GY - 120} L ${x - 120} ${GY}`} stroke={INK} strokeWidth={12} fill="none" />
-    <circle cx={x - 160} cy={GY - 120} r={100} fill="none" stroke="#262838" strokeWidth={16} />
-    <g transform={`rotate(${ped * 57} ${x - 160} ${GY - 120})`}>{[0, 60, 120].map((a) => <path key={a} d={`M ${x - 260} ${GY - 120} L ${x - 60} ${GY - 120}`} stroke="#8a86a8" strokeWidth={4} transform={`rotate(${a} ${x - 160} ${GY - 120})`} />)}</g>
-    <path d={`M ${x - 160} ${GY - 120} L ${x} ${GY - 110} L ${x - 30} ${GY - 270} L ${x + 120} ${GY - 270} L ${x} ${GY - 110} M ${x - 30} ${GY - 270} L ${x - 160} ${GY - 120} M ${x + 120} ${GY - 270} L ${x + 150} ${GY - 330}`} stroke="#ff6a5a" strokeWidth={14} fill="none" strokeLinejoin="round" />
-    <path d={`M ${x - 70} ${GY - 285} L ${x + 10} ${GY - 285}`} stroke={INK} strokeWidth={22} strokeLinecap="round" />
-    <path d={`M ${x + 120} ${GY - 330} L ${x + 180} ${GY - 330}`} stroke={INK} strokeWidth={12} strokeLinecap="round" />
-    <path d={`M ${x + 150} ${GY - 270} L ${x + 180} ${GY}`} stroke={INK} strokeWidth={12} />
-    <g transform={`translate(${x} ${GY - 110})`}><circle r={10} fill={INK} />{[0, 1].map((k) => { const a = ped + k * Math.PI; return <g key={k}><path d={`M 0 0 L ${Math.cos(a) * 50} ${Math.sin(a) * 50}`} stroke={INK} strokeWidth={8} /><rect x={Math.cos(a) * 50 - 18} y={Math.sin(a) * 50 - 5} width={36} height={10} rx={4} fill="#262838" /></g>; })}</g>
-    {/* генератор у заднего колеса и провод к радио */}
-    <rect x={x - 300} y={GY - 160} width={60} height={70} rx={10} fill="#5a5680" stroke={INK} strokeWidth={5} />
-    <path d={`M ${x - 300} ${GY - 120} Q ${x - 380} ${GY - 40} ${x - 460} ${GY - 50}`} stroke={INK} strokeWidth={6} fill="none" />
-    <g transform={`translate(${x - 560} ${GY})`}><rect x={-100} y={-120} width={200} height={120} rx={16} fill="#c87a4a" stroke={INK} strokeWidth={6} /><circle cx={-45} cy={-60} r={34} fill="#5a4a3a" stroke={INK} strokeWidth={4} /><rect x={10} y={-90} width={70} height={30} rx={4} fill={on ? "#ffd27a" : "#3a3a5a"} stroke={INK} strokeWidth={4} /><path d="M 60 -120 L 100 -220" stroke={INK} strokeWidth={6} />
-      {on ? <Glow x={45} y={-75} r={60} g="gY" o={0.6 + 0.3 * Math.sin(f)} /> : null}</g>
-  </g>
-);
+// велосипед на подставке с генератором и радио, под пропорции героя: седло, каретка, руль
+const SEAT = (bx: number): [number, number] => [bx - 10, GY - 200];
+const CRANK = (bx: number): [number, number] => [bx + 20, GY - 82];
+const BAR = (bx: number): [number, number] => [bx + 120, GY - 290];
+const PR = 34;
+const pedals = (bx: number, ped: number): [number, number][] => { const [cx, cy] = CRANK(bx); return [[cx + Math.cos(ped + Math.PI) * PR, cy + Math.sin(ped + Math.PI) * PR + 8], [cx + Math.cos(ped) * PR, cy + Math.sin(ped) * PR + 8]]; };
+const BikeRig: React.FC<{ x: number; ped: number; on?: boolean; f: number; front?: boolean }> = ({ x, ped, on, f, front }) => {
+  const R: [number, number] = [x - 150, GY - 72], Fw: [number, number] = [x + 190, GY - 72], [sx, sy] = SEAT(x), [cx, cy] = CRANK(x), [hx, hy] = BAR(x);
+  const crank = (k: number) => { const a = ped + k * Math.PI; return <g key={k}><path d={`M ${cx} ${cy} L ${cx + Math.cos(a) * PR} ${cy + Math.sin(a) * PR}`} stroke={INK} strokeWidth={7} /><rect x={cx + Math.cos(a) * PR - 16} y={cy + Math.sin(a) * PR + 4} width={32} height={9} rx={4} fill="#262838" /></g>; };
+  return (
+    <g>
+      {/* стойка под задним колесом */}
+      <path d={`M ${R[0] - 70} ${GY} L ${R[0]} ${R[1]} L ${R[0] + 70} ${GY}`} stroke={INK} strokeWidth={10} fill="none" />
+      {[R, Fw].map(([wx, wy], i) => <g key={i}><circle cx={wx} cy={wy} r={70} fill="none" stroke="#262838" strokeWidth={13} />
+        <g transform={`rotate(${(i ? 0 : ped) * 57} ${wx} ${wy})`}>{[0, 60, 120].map((a) => <path key={a} d={`M ${wx - 66} ${wy} L ${wx + 66} ${wy}`} stroke="#8a86a8" strokeWidth={3} transform={`rotate(${a} ${wx} ${wy})`} />)}</g></g>)}
+      <path d={`M ${R[0]} ${R[1]} L ${cx} ${cy} L ${sx + 6} ${sy + 20} Z M ${cx} ${cy} L ${hx - 20} ${hy + 40} L ${sx + 6} ${sy + 20} M ${hx - 20} ${hy + 40} L ${Fw[0]} ${Fw[1]}`} stroke="#ff6a5a" strokeWidth={12} fill="none" strokeLinejoin="round" />
+      <path d={`M ${sx - 30} ${sy} L ${sx + 30} ${sy}`} stroke={INK} strokeWidth={18} strokeLinecap="round" />
+      <path d={`M ${hx - 20} ${hy + 40} L ${hx} ${hy} L ${hx + 26} ${hy}`} stroke={INK} strokeWidth={10} fill="none" strokeLinecap="round" />
+      {crank(1)}{front ? null : crank(0)}
+      <circle cx={cx} cy={cy} r={12} fill={INK} />
+      {/* генератор у заднего колеса и провод к радио */}
+      <rect x={R[0] - 120} y={R[1] - 40} width={56} height={64} rx={10} fill="#5a5680" stroke={INK} strokeWidth={5} />
+      <path d={`M ${R[0] - 120} ${R[1]} Q ${R[0] - 200} ${GY - 20} ${R[0] - 280} ${GY - 50}`} stroke={INK} strokeWidth={6} fill="none" />
+      <g transform={`translate(${R[0] - 380} ${GY})`}><rect x={-100} y={-120} width={200} height={120} rx={16} fill="#c87a4a" stroke={INK} strokeWidth={6} /><circle cx={-45} cy={-60} r={34} fill="#5a4a3a" stroke={INK} strokeWidth={4} /><rect x={10} y={-90} width={70} height={30} rx={4} fill={on ? "#ffd27a" : "#3a3a5a"} stroke={INK} strokeWidth={4} /><path d="M 60 -120 L 100 -220" stroke={INK} strokeWidth={6} />
+        {on ? <Glow x={45} y={-75} r={60} g="gY" o={0.6 + 0.3 * Math.sin(f)} /> : null}</g>
+    </g>
+  );
+};
+// ближний шатун рисуется поверх ног героя
+const FrontCrank: React.FC<{ x: number; ped: number }> = ({ x, ped }) => { const [cx, cy] = CRANK(x); return <g><path d={`M ${cx} ${cy} L ${cx + Math.cos(ped) * PR} ${cy + Math.sin(ped) * PR}`} stroke={INK} strokeWidth={7} /><rect x={cx + Math.cos(ped) * PR - 16} y={cy + Math.sin(ped) * PR + 4} width={32} height={9} rx={4} fill="#262838" /><circle cx={cx} cy={cy} r={12} fill={INK} /></g>; };
 // шум радио: зигзаги
 const Static: React.FC<{ x: number; y: number; f: number }> = ({ x, y, f }) => <g>{[0, 1, 2].map((i) => <path key={i} d={`M ${x + i * 50} ${y - i * 40} ${Array.from({ length: 6 }, (_, k) => `l 14 ${((f + k + i) % 2 ? -1 : 1) * (14 + ((f * 7 + k * 3) % 10))}`).join(" ")}`} stroke="#e8e4ff" strokeWidth={5} fill="none" opacity={0.8} />)}</g>;
-const RIDER = (g: number, f: number, expr: any, sweat = false) => { const p = g * 0.3;
-  return <Bean x={1700} y={GY} s={HS} look={HERO2D} f={f} expr={expr} sweat={sweat} sit={200 / HS} pose={{ armL: [60, 20], armR: [60, 20], lean: 10, bob: Math.abs(Math.sin(p)) * 4 }} />; };
+// герой сидит на седле, руки на руле, ступни на педалях (крутит)
+const RIDER = (bx: number, ped: number, f: number, expr: any, sweat = false) => { const [sx, sy] = SEAT(bx);
+  return <><Bean x={sx} y={GY} s={HS} look={HERO2D} f={f} expr={expr} sweat={sweat} sit={(GY - sy + 6) / HS} feet={pedals(bx, ped)} pose={{ armL: [-82, -6], armR: [98, 4], lean: 12, bob: Math.abs(Math.sin(ped)) * 3 }} />
+    <FrontCrank x={bx} ped={ped} /></>; };
 
 export const P5 = makePart(V, [
   // день 8: нужно электричество
   { at: "", s: (g, f, len) => <Apartment cam={C(-140, GY - 280, 2.0)} f={f} tally={ip(g, [0, 20], [7, 8]) > 7.5 ? 8 : 7}>
     <Hero x={-80} y={GY} f={f} expr="determined" gaze={-1} pose={{ armL: [150, ip(g, [0, 20], [-10, 10])], armR: [15, 8], tilt: -8 }} holdL={{ node: <rect x={-8} y={-40} width={16} height={40} fill="#fff" stroke={INK} strokeWidth={4} />, k: 1.2 }} /></Apartment> },
-  { at: "city", s: (g, f, len) => <Street cam={camLerp(g, len, C(900, 560, 0.85), C(1100, 560, 0.9))} f={f} tod="day"><OpenCar open={0} batt={false} /><BoCar x={2200} y={GY + 110} c="#ff6a5a" /></Street> },
-  { at: "Every", s: (g, f, len) => <Street cam={C(1400, 600, 0.9)} f={f} tod="day">{[600, 1100, 1600, 2100].map((x, i) => <BoCar key={x} x={x} y={GY + 110} c={["#5ad8c8", "#ff6a5a", "#ffd23c", "#5a7cf0"][i]} />)}
-    {[600, 1100, 1600, 2100].map((x, i) => <g key={"b" + x} opacity={ip(g, [i * 5, i * 5 + 6], [0, 1])}><Glow x={x + 90} y={GY + 30} r={60} g="gY" /></g>)}</Street> },
+  { at: "city", s: (g, f, len) => <Street cam={camLerp(g, len, C(1100, 520, 0.7), C(1300, 520, 0.75))} f={f} tod="day"><OpenCar open={0} batt={false} /><g transform={`translate(2300 ${CARY}) scale(${CK}) translate(-2300 ${-CARY})`}><BoCar x={2300} y={CARY} c="#ff6a5a" /></g></Street> },
+  { at: "Every", s: (g, f, len) => <Street cam={C(1500, 480, 0.55)} f={f} tod="day">{[0, 900, 1800, 2700].map((x, i) => <g key={x} transform={`translate(${x} ${CARY}) scale(${CK}) translate(${-x} ${-CARY})`}><BoCar x={x} y={CARY} c={["#5ad8c8", "#ff6a5a", "#ffd23c", "#5a7cf0"][i]} /></g>)}
+    {[0, 900, 1800, 2700].map((x, i) => <g key={"b" + x} opacity={ip(g, [i * 5, i * 5 + 6], [0, 1])}><Glow x={x + 200} y={CARY - 170} r={120} g="gY" /></g>)}</Street> },
   // открывает капот
-  { at: "pop", s: (g, f, len) => <Street cam={C(1050, GY - 80, 1.6)} f={f} tod="day"><OpenCar open={ip(g, [4, 14], [0, 1])} />
-    <Hero x={CARX + 300} y={GY + 150} f={f} expr="determined" flip pose={{ armR: [130, 20], armL: [15, 8] }} /></Street> },
-  { at: "cheap", s: (g, f, len) => <Street cam={C(1000, GY - 20, 2.2)} f={f} tod="day"><OpenCar />
-    <path d={`M ${CARX + 70} ${CARY - 136} Q ${CARX + 120} ${CARY - 60} ${CARX + 220} ${CARY - 60}`} stroke="#ff4a6a" strokeWidth={6} fill="none" />
-    <path d={`M ${CARX + 100} ${CARY - 136} Q ${CARX + 150} ${CARY - 70} ${CARX + 220} ${CARY - 70}`} stroke={INK} strokeWidth={6} fill="none" />
-    <Inverter x={CARX + 270} y={CARY + 20} on={g > 15} /></Street> },
-  { at: "charge", s: (g, f, len) => <Street cam={C(1150, GY + 20, 2.2)} f={f} tod="day"><OpenCar /><Inverter x={CARX + 270} y={CARY + 20} on />
-    <path d={`M ${CARX + 330} ${CARY - 4} Q ${CARX + 380} ${CARY + 20} ${CARX + 420} ${CARY - 30}`} stroke="#f4f2ff" strokeWidth={6} fill="none" />
-    <g transform={`translate(${CARX + 430} ${CARY - 40}) rotate(-80)`}><rect x={-30} y={-55} width={60} height={110} rx={10} fill="#262838" stroke={INK} strokeWidth={5} /><rect x={-22} y={-44} width={44} height={86} rx={4} fill="#141228" /><rect x={-14} y={-20} width={28} height={14} rx={3} fill="none" stroke="#5ac84a" strokeWidth={3} /><rect x={-12} y={-18} width={24 * ip(g, [0, len], [0.1, 1])} height={10} fill="#5ac84a" /></g></Street> },
+  { at: "pop", s: (g, f, len) => <Street cam={C(1150, GY - 60, 1.0)} f={f} tod="day"><OpenCar open={ip(g, [4, 14], [0, 1])} />
+    <Hero x={CARX + 420} y={CARY + 30} f={f} expr="determined" flip pose={{ armR: [130, 20], armL: [15, 8] }} /></Street> },
+  { at: "cheap", s: (g, f, len) => <Street cam={C(CARX + 330, CARY - 140, 1.5)} f={f} tod="day"><OpenCar /><Cables />
+    <Inverter x={INV[0]} y={INV[1]} on={g > 15} /></Street> },
+  { at: "charge", s: (g, f, len) => <Street cam={C(INV[0] + 60, CARY - 60, 2.0)} f={f} tod="day"><OpenCar /><Cables /><Inverter x={INV[0]} y={INV[1]} on />
+    <path d={`M ${INV[0] + 60} ${INV[1] - 24} Q ${INV[0] + 110} ${INV[1]} ${INV[0] + 150} ${INV[1] - 40}`} stroke="#f4f2ff" strokeWidth={6} fill="none" />
+    <g transform={`translate(${INV[0] + 160} ${INV[1] - 30}) rotate(-80)`}><rect x={-30} y={-55} width={60} height={110} rx={10} fill="#262838" stroke={INK} strokeWidth={5} /><rect x={-22} y={-44} width={44} height={86} rx={4} fill="#141228" /><rect x={-14} y={-20} width={28} height={14} rx={3} fill="none" stroke="#5ac84a" strokeWidth={3} /><rect x={-12} y={-18} width={24 * ip(g, [0, len], [0.1, 1])} height={10} fill="#5ac84a" /></g></Street> },
   // включает телефон — его глазами
   { at: "turn", s: (g, f, len) => <Frame bg="#4a3a8a"><rect width={1920} height={1080} fill="#4a3a8a" /><PovHands /><BigPhone kind="boot" g={g} shake={3} /></Frame> },
   { at: "photos", s: (g, f, len) => <Frame bg="#4a3a8a"><rect width={1920} height={1080} fill="#4a3a8a" /><PovHands /><BigPhone kind="photos" g={g} shake={1.5} /></Frame> },
@@ -129,11 +148,11 @@ export const P5 = makePart(V, [
   // день 10: велосипед-генератор
   { at: "ten", s: (g, f, len) => <Apartment cam={C(1400, GY - 250, 1.3)} f={f} tally={10}>
     <BikeRig x={1700} ped={0} f={f} />
-    <Hero x={1900} y={GY} f={f} expr="determined" flip pose={{ armR: [90, 0], armL: [15, 8] }} /></Apartment> },
+    <Hero x={2060} y={GY} f={f} expr="determined" flip pose={{ armR: [90, 0], armL: [15, 8] }} /></Apartment> },
   { at: "bicycle", s: (g, f, len) => <Apartment cam={C(1420, GY - 260, 1.6)} f={f} tally={10}><BikeRig x={1700} ped={0} f={f} /></Apartment> },
   { at: "connected", s: (g, f, len) => <Apartment cam={C(1260, GY - 120, 2.6)} f={f} tally={10}><BikeRig x={1700} ped={0} f={f} /></Apartment> },
-  { at: "Pedal", s: (g, f, len) => <Apartment cam={C(1500, GY - 260, 1.5)} f={f} tally={10}><BikeRig x={1700} ped={g * 0.3} on={g > 30} f={f} />{RIDER(g, f, "determined")}</Apartment> },
-  { at: "legs", s: (g, f, len) => <Apartment cam={C(1680, GY - 260, 2.3)} f={f} tally={10}><BikeRig x={1700} ped={g * 0.35} on f={f} />{RIDER(g, f, "tired", true)}</Apartment> },
+  { at: "Pedal", s: (g, f, len) => <Apartment cam={C(1500, GY - 260, 1.5)} f={f} tally={10}><BikeRig x={1700} ped={g * 0.25} on={g > 30} f={f} front />{RIDER(1700, g * 0.25, f, "determined")}</Apartment> },
+  { at: "legs", s: (g, f, len) => <Apartment cam={C(1720, GY - 270, 2.0)} f={f} tally={10}><BikeRig x={1700} ped={g * 0.32} on f={f} front />{RIDER(1700, g * 0.32, f, "tired", true)}</Apartment> },
   // ищет станцию — его глазами: рука крутит ручку
   { at: "scan", s: (g, f, len) => <Frame bg="#3e4a96"><rect width={1920} height={1080} fill="#3e4a96" />
     <rect x={460} y={300} width={1000} height={560} rx={60} fill="#c87a4a" stroke={INK} strokeWidth={12} />
@@ -145,5 +164,5 @@ export const P5 = makePart(V, [
     <rect width={1920} height={1080} fill="#0a0628" opacity={0.2} /></Frame> },
   { at: "Static", n: 1, s: (g, f, len) => <Apartment cam={C(1180, GY - 140, 2.6)} f={f} tally={10}><BikeRig x={1700} ped={0} on f={f} /><Static x={1180} y={GY - 260} f={f} /></Apartment> },
   { at: "Nobody", s: (g, f, len) => <Apartment cam={camLerp(g, len, C(1600, GY - 250, 2.0), C(1400, 520, 1.0))} f={f} tally={10} dark={0.4}>
-    <BikeRig x={1700} ped={0} on f={f} />{RIDER(0, f, "sad")}<SoundRings x={1140} y={GY - 140} f={f} c="#e8e4ff" n={2} /></Apartment> },
+    <BikeRig x={1700} ped={0.6} on f={f} front />{RIDER(1700, 0.6, f, "sad")}<SoundRings x={1140} y={GY - 140} f={f} c="#e8e4ff" n={2} /></Apartment> },
 ], { id: 5, dir: "bo" });

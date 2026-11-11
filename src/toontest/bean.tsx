@@ -64,11 +64,22 @@ const Face: React.FC<{ expr: Expr; open: number; blink: boolean; sweat?: boolean
 
 export type BeanPose = { armL?: [number, number]; armR?: [number, number]; legL?: number; legR?: number; lean?: number; bob?: number; tilt?: number };
 export type Hold = { node: React.ReactNode; rot?: number; k?: number };
-export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; expr?: Expr; open?: number; f: number; pose?: BeanPose; sweat?: boolean; flip?: boolean; shadow?: boolean; noEyes?: boolean; blind?: boolean; holdR?: Hold; holdL?: Hold; lying?: boolean; gaze?: number; sit?: number }> = ({ x, y, s = 1, look, expr = "neutral", open = 0, f, pose = {}, sweat, flip, shadow = true, noEyes, blind, holdR, holdL, lying, gaze = 0, sit }) => {
+export const Bean: React.FC<{ x: number; y: number; s?: number; look: BeanLook; expr?: Expr; open?: number; f: number; pose?: BeanPose; sweat?: boolean; flip?: boolean; shadow?: boolean; noEyes?: boolean; blind?: boolean; holdR?: Hold; holdL?: Hold; lying?: boolean; gaze?: number; sit?: number; feet?: [number, number][] }> = ({ x, y, s = 1, look, expr = "neutral", open = 0, f, pose = {}, sweat, flip, shadow = true, noEyes, blind, holdR, holdL, lying, gaze = 0, sit, feet }) => {
   const { armL = [12, 8], armR = [12, 8], legL = 4, legR = 4, lean = 0, bob = 0, tilt = 0 } = pose;
   const blink = f % 84 < 3;
   const hipY = -168, shY = -318, headY = -432;
   const leg = (side: number, a: number) => {
+    if (feet) { // ступни в заданных точках (мировые координаты): бедро + голень, колено вперёд по ходу (+x мира)
+      const off = -bob + (sit !== undefined ? 168 - sit : 0), fs = flip ? -1 : 1;
+      const [wx, wy] = feet[side < 0 ? 0 : 1];
+      const fx = (wx - x) / (s * fs), fy = (wy - y) / s - off, hx = side * 20, hy = hipY;
+      const L = 112, dx = fx - hx, dy = fy - hy, d = Math.min(2 * L - 1, Math.hypot(dx, dy)), base = Math.atan2(dy, dx), b = Math.acos(d / (2 * L));
+      const k1 = [hx + L * Math.cos(base + b), hy + L * Math.sin(base + b)], k2 = [hx + L * Math.cos(base - b), hy + L * Math.sin(base - b)];
+      const k = (k1[0] * fs > k2[0] * fs) ? k1 : k2;
+      const ex = hx + Math.cos(base) * d, ey = hy + Math.sin(base) * d;
+      return <g key={"l" + side}><path d={`M ${hx} ${hy} L ${k[0]} ${k[1]} L ${ex} ${ey}`} stroke={look.limb} strokeWidth={13} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <ellipse cx={ex + 8 * fs} cy={ey} rx={22} ry={11} fill={look.shoe} stroke={INK} strokeWidth={5} /></g>;
+    }
     if (sit !== undefined) { // сидит: бедро уходит вперёд (укорочено), голень вниз до пола; тело опущено на 168 - sit
       return <g key={"l" + side}><path d={`M ${side * 26} ${hipY} L ${side * 62} ${hipY + 30} L ${side * 58} ${hipY + sit}`} stroke={look.limb} strokeWidth={13} strokeLinecap="round" strokeLinejoin="round" fill="none" />
         <ellipse cx={side * 64} cy={hipY + sit - 2} rx={22} ry={11} fill={look.shoe} stroke={INK} strokeWidth={5} /></g>;
