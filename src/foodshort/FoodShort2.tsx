@@ -26,13 +26,13 @@ export const AD_TIMES = [AD1_T + AD_DELAY, STORY_END + AD_HOLD + AD_DELAY]; // �
 
 // ---------- общие детали интерьера ----------
 const INK = "#0b0f22", WALLC = "#1b2246", FLOOR = "#11162c", DOOR = "#4a3426";
-const Holding: React.FC<{ x: number; y: number; s: number; pose: PPose; item: React.ReactNode; at: P }> = ({ x, y, s, pose, item, at: a }) => (
+export const Holding: React.FC<{ x: number; y: number; s: number; pose: PPose; item: React.ReactNode; at: P }> = ({ x, y, s, pose, item, at: a }) => (
   <g><Petya x={x} y={y} s={s} pose={pose} />
     <g transform={`translate(${x + a[0] * s} ${y + a[1] * s}) scale(${s})`}>{item}</g>
     {[pose.handL, pose.handR].map((h, i) => <ellipse key={i} cx={x + h[0] * s} cy={y + h[1] * s} rx={13 * s} ry={15 * s} fill={PETYA.skin} stroke={INK} strokeWidth={3 * s} />)}
   </g>
 );
-const SoupCan: React.FC<{ s?: number }> = ({ s = 1 }) => (
+export const SoupCan: React.FC<{ s?: number }> = ({ s = 1 }) => (
   <g transform={`scale(${s})`}>
     <rect x={-26} y={-36} width={52} height={72} rx={6} fill="#b8bcc8" stroke={INK} strokeWidth={4} />
     <rect x={-26} y={-18} width={52} height={36} fill="#e8b23a" stroke={INK} strokeWidth={3} />
@@ -40,7 +40,7 @@ const SoupCan: React.FC<{ s?: number }> = ({ s = 1 }) => (
   </g>
 );
 /** дверь квартиры изнутри: open 0…1 — насколько приоткрыта (внутрь), chain — цепочка */
-const DoorIn: React.FC<{ x: number; y: number; w?: number; h?: number; open?: number; chain?: boolean; gapGlow?: number; t: number; feet?: number; knob?: number }> = ({ x, y, w = 330, h = 700, open = 0, chain = true, gapGlow = 1, t, feet = 0, knob = 0 }) => {
+export const DoorIn: React.FC<{ x: number; y: number; w?: number; h?: number; open?: number; chain?: boolean; gapGlow?: number; t: number; feet?: number; knob?: number }> = ({ x, y, w = 330, h = 700, open = 0, chain = true, gapGlow = 1, t, feet = 0, knob = 0 }) => {
   const gap = open * w * 0.22;
   return <g>
     <rect x={x - 18} y={y - 18} width={w + 36} height={h + 18} fill="#2a2030" stroke={INK} strokeWidth={4} />
@@ -67,7 +67,7 @@ const DoorIn: React.FC<{ x: number; y: number; w?: number; h?: number; open?: nu
     }) : null}
   </g>;
 };
-const Interior: React.FC<{ children?: React.ReactNode; dark?: number }> = ({ children, dark = 0 }) => (
+export const Interior: React.FC<{ children?: React.ReactNode; dark?: number }> = ({ children, dark = 0 }) => (
   <g>
     <rect width={W} height={PH} fill={WALLC} />
     <rect y={1000} width={W} height={PH - 1000} fill={FLOOR} />

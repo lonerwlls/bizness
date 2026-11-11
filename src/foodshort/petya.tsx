@@ -18,11 +18,11 @@ export type PPose = {
 };
 
 const INK = "#0b0f22";
+export const BOY = { hair: "#8a6440", hairSh: "#5e4228", top: "#3e5a48", topSh: "#2c4234", pants: "#3a3a46", pantsSh: "#2a2a34", shoe: "#4a3a30" };
 export const PETYA = {
   skin: "#e3b496", skinSh: "#b98670", hair: "#3b2a20", hairSh: "#271b14",
   top: "#434a5a", topSh: "#30364a", pants: "#2d3c5c", pantsSh: "#212c46", shoe: "#5a5f6a", sole: "#d8d8d4", string: "#cfd2d8",
 };
-const C = PETYA;
 const add = (a: P, b: P): P => [a[0] + b[0], a[1] + b[1]];
 const rot = (p: P, deg: number): P => { const r = (deg * Math.PI) / 180, c = Math.cos(r), s = Math.sin(r); return [p[0] * c - p[1] * s, p[0] * s + p[1] * c]; };
 const lerpP = (a: P, b: P, t: number): P => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
@@ -40,7 +40,10 @@ const Limb: React.FC<{ a: P; m: P; b: P; w0: number; w1: number; c: string }> = 
   </g>;
 };
 
-export const Petya: React.FC<{ x: number; y: number; s: number; pose: PPose; flip?: boolean }> = ({ x, y, s, pose, flip }) => {
+export type PLook = Partial<typeof PETYA>;
+/** look — другие цвета (так из рига Пети делаются другие люди, например мальчик) */
+export const Petya: React.FC<{ x: number; y: number; s: number; pose: PPose; flip?: boolean; look?: PLook }> = ({ x, y, s, pose, flip, look }) => {
+  const C = look ? { ...PETYA, ...look } : PETYA;
   const lean = pose.lean ?? 0, turn = pose.turn ?? 0, dir = pose.dir ?? 0, light = pose.light ?? 1;
   const kneePref: P = pose.knee === "up" ? [0.4, -1] : pose.knee === "back" ? [1, 0.3] : dir ? [dir, -0.15] : [0.1, -1];
   const hip = pose.hip;
