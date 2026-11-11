@@ -80,26 +80,33 @@ const Frozen: Shot = ({ g }) => (
 );
 // 3. подвал: картошки считаны, герой мелом зачёркивает ещё одну неделю
 const Cellar: Shot = ({ g }) => {
-  const s = 0.85, x = 1000, y = 960;
+  // мелом на стене — счёт недель. Герой дописывает четвёртую палочку: мел всё время в руке, линия тянется за рукой
+  const s = 0.85, x = 1400, y = 960;
+  const gx0 = 820, gy0 = 470, step = 120;
+  const groups = 7; // полные «пятёрки»
+  const strokeX = gx0 + 3 * step + 3 * 22, sy0 = gy0 + 80 + 4, sy1 = gy0 + 80 + 54;
   const loc = (p: P): P => [(p[0] - x) / s, (p[1] - y) / s];
-  const markX = 1240, markY = 420;
-  const draw = ip(g, [80, 100], [0, 1]);
-  const handR: P = g < 70 ? [70, -200] : trackP(g, [[70, [70, -200]], [80, loc([markX - 50, markY - 30])], [100, loc([markX + 50, markY + 30])], [116, [70, -200]]]);
-  const hero = stand(g, { turn: 0.5, handR, handL: [-40, -240], expr: { mouth: "flat", browA: -0.5, look: g < 70 ? [0.2, 1] : [1, -0.3] }, seed: 10 });
-  const h = handW(x, y, s, hero, "R");
+  const handAt = (f: number): P => (f < 64 ? [70, -200] : trackP(f, [[64, [70, -200]], [80, loc([strokeX, sy0])], [100, loc([strokeX, sy1])], [104, loc([strokeX, sy1])], [120, [70, -200]]]));
+  const pose = (f: number) => stand(f, { turn: -0.5, handL: handAt(f), handR: [60, -200], expr: { mouth: "flat", browA: -0.5, look: f < 64 ? [-0.2, 1] : [-1, -0.3] }, seed: 10 });
+  const hero = pose(g);
+  const h = handW(x, y, s, hero, "L");
+  const trail: P[] = [];
+  for (let f = 80; f <= Math.min(g, 100); f++) trail.push(handW(x, y, s, pose(f), "L"));
+  const groupG = (i: number, n: number, diag: boolean) => { const bx = gx0 + (i % 4) * step, by = gy0 + Math.floor(i / 4) * 80; return <g key={i} stroke="#f6efe2" strokeWidth={6} strokeLinecap="round">{Array.from({ length: n }, (_, k) => <path key={k} d={`M ${bx + k * 22} ${by + 4} L ${bx + k * 22} ${by + 54}`} />)}{diag ? <path d={`M ${bx - 8} ${by + 44} L ${bx + 76} ${by + 12}`} /> : null}</g>; };
   return (
-    <Svg bg="#3a2a22"><CamG cam={{ s: 1.2, cx: 980, cy: 560 }}>
+    <Svg bg="#3a2a22"><CamG cam={{ s: 1.2, cx: 1060, cy: 560 }}>
       <rect x={-W} width={W * 3} height={H} fill="#8a7a6a" />
       {Array.from({ length: 12 }, (_, r) => Array.from({ length: 14 }, (_, c) => <rect key={`${r}${c}`} x={-200 + c * 170 + (r % 2) * 85} y={r * 70} width={160} height={62} fill="none" stroke="#6a5a4a" strokeWidth={3} />))}
       <rect x={-W} y={800} width={W * 3} height={H} fill="#5a4a3a" stroke={OL} strokeWidth={5} />
-      <path d="M 960 0 L 960 120" stroke={OL} strokeWidth={3} /><circle cx={960} cy={140} r={24} fill="#ffe08a" stroke={OL} strokeWidth={3} /><ellipse cx={960} cy={400} rx={700} ry={400} fill="#ffe08a" opacity={0.08} />
-      <g>{Array.from({ length: 7 }, (_, i) => <g key={i} stroke="#f6efe2" strokeWidth={6}>{[0, 1, 2, 3].map((k) => <path key={k} d={`M ${1100 + i * 0 + k * 22} ${300 + i * 0} l 0 50`} transform={`translate(${(i % 4) * 130} ${Math.floor(i / 4) * 80 - 30})`} />)}<path d="M -6 40 L 80 6" transform={`translate(${1100 + (i % 4) * 130} ${300 + Math.floor(i / 4) * 80 - 30})`} /></g>)}</g>
-      <path d={`M ${markX - 50} ${markY - 30} L ${lerp(markX - 50, markX + 50, draw)} ${lerp(markY - 30, markY + 30, draw)}`} stroke="#f6efe2" strokeWidth={7} strokeLinecap="round" />
-      {[0, 1, 2].map((i) => <g key={i} transform={`translate(${380 + i * 200} 800)`}><path d="M -80 0 L -90 -170 Q -60 -200 0 -196 Q 60 -200 90 -170 L 80 0 Z" fill={i === 2 ? "#c8b48a" : "#b8a070"} stroke={OL} strokeWidth={5} transform={i === 2 ? "scale(1 0.4)" : undefined} /></g>)}
-      <rect x={300} y={560} width={500} height={20} fill="#8a6a4a" stroke={OL} strokeWidth={4} />
-      {Array.from({ length: 9 }, (_, i) => <ellipse key={i} cx={340 + i * 50} cy={548} rx={24} ry={16} fill="#c8a060" stroke={OL} strokeWidth={3} />)}
-      <Person x={x} y={y} s={s} look={{ ...HERO, ...COAT }} pose={hero} uid="h" />
-      <rect x={h[0] - 6} y={h[1] - 14} width={12} height={22} fill="#f6efe2" stroke={OL} strokeWidth={2} />
+      <path d="M 1060 0 L 1060 120" stroke={OL} strokeWidth={3} /><circle cx={1060} cy={140} r={24} fill="#ffe08a" stroke={OL} strokeWidth={3} /><ellipse cx={1060} cy={400} rx={700} ry={400} fill="#ffe08a" opacity={0.08} />
+      {Array.from({ length: groups }, (_, i) => groupG(i, 4, true))}
+      {groupG(7, 3, false)}
+      {trail.length > 1 ? <path d={"M " + trail.map((p) => `${p[0]} ${p[1]}`).join(" L ")} stroke="#f6efe2" strokeWidth={6} strokeLinecap="round" fill="none" /> : null}
+      {[0, 1, 2].map((i) => <g key={i} transform={`translate(${300 + i * 170} 800)`}><path d="M -70 0 L -80 -150 Q -50 -176 0 -172 Q 50 -176 80 -150 L 70 0 Z" fill={i === 2 ? "#c8b48a" : "#b8a070"} stroke={OL} strokeWidth={5} transform={i === 2 ? "scale(1 0.4)" : undefined} /></g>)}
+      <rect x={200} y={560} width={460} height={20} fill="#8a6a4a" stroke={OL} strokeWidth={4} />
+      {Array.from({ length: 8 }, (_, i) => <ellipse key={i} cx={240 + i * 52} cy={548} rx={24} ry={16} fill="#c8a060" stroke={OL} strokeWidth={3} />)}
+      <Person x={x} y={y} s={s} look={HERO} pose={hero} uid="h" />
+      <rect x={h[0] - 6} y={h[1] - 16} width={12} height={22} rx={3} fill="#f6efe2" stroke={OL} strokeWidth={2} />
     </CamG></Svg>
   );
 };
@@ -144,41 +151,62 @@ const AroundStove: Shot = ({ g }) => {
 };
 // 6. сушёные яблоки на нитке: герой нанизывает дольки у окна
 const Apples: Shot = ({ g }) => {
-  const s = 1.0, x = 760, y = 1080;
-  const n = Math.min(9, 4 + Math.floor(g / 22));
-  const cyc = g % 22, push = ip(cyc, [4, 16], [0, 1]);
-  const spot: P = [1000 + (n) * 0, 520];
-  const handR: P = [lerp(180, (spot[0] - 30 - x) / s, push), lerp(-330, (spot[1] - y) / s, push)];
-  const hero = stand(g, { turn: 0.6, handR, handL: [((spot[0] + 60) - x) / s, ((spot[1] - 20) - y) / s], expr: { mouth: "flat", look: [1, 0] }, seed: 40 });
-  const h = handW(x, y, s, hero, "R");
+  // дольки лежат в миске на подоконнике; герой берёт дольку и надевает на нитку — она остаётся ровно там, где её отпустила рука
+  const s = 1.0, x = 990, y = 1080;
+  const bowl: P = [1110, 790];
+  const S0: P = [980, 520], S1: P = [1560, 520];
+  const at = (t: number): P => [lerp(S0[0], S1[0], t), lerp(S0[1], S1[1], t) + Math.sin(t * Math.PI) * 60];
+  const slots = [0.92, 0.84, 0.76, 0.68, 0.6, 0.52, 0.44, 0.36, 0.28, 0.2];
+  const pre = 5, cyc = 30;
+  const k = Math.min(4, Math.floor(g / cyc)), c = g - k * cyc; // k — какая по счёту новая долька
+  const slot = at(slots[pre + Math.min(k, 3)]);
+  const loc = (p: P): P => [(p[0] - x) / s, (p[1] - y) / s];
+  const done = k >= 4;
+  const handL: P = done ? [-50, -200] : trackP(c, [[0, [-30, -220]], [8, loc([bowl[0], bowl[1] - 24])], [12, loc([bowl[0], bowl[1] - 24])], [22, loc([slot[0], slot[1] + 18])], [28, loc([slot[0], slot[1] + 18])], [30, [-30, -220]]]);
+  const hero = stand(g, { turn: 0.4, handL: [-60, -200], handR: [60, -200], expr: { mouth: "flat", look: [1, -0.6] }, seed: 40 });
+  const hero2 = { ...hero, handR: handL, handL: [-60, -200] as P };
+  const h = handW(x, y, s, hero2, "R");
+  const placed = pre + k + (!done && c >= 25 ? 1 : 0);
+  const Slice: React.FC<{ p: P }> = ({ p }) => <g><circle cx={p[0]} cy={p[1] + 18} r={22} fill="#f0d8a0" stroke={OL} strokeWidth={4} /><circle cx={p[0]} cy={p[1] + 18} r={7} fill="#c8a070" /></g>;
+  const holding = !done && c >= 10 && c < 25;
   return (
-    <Svg><CamG cam={{ s: 1.4, cx: 1000, cy: 560 }}>
+    <Svg><CamG cam={{ s: 1.4, cx: 1180, cy: 560 }}>
       <rect x={-W} width={W * 3} height={H} fill="#c8a07a" />
       <rect x={1000} y={160} width={560} height={640} fill="#e8eef2" stroke={OL} strokeWidth={6} /><path d="M 1280 160 L 1280 800 M 1000 480 L 1560 480" stroke={OL} strokeWidth={6} />
       <Snow g={g} n={30} k={0.6} />
       <rect x={980} y={800} width={600} height={30} fill="#f2ead6" stroke={OL} strokeWidth={5} />
-      <path d="M 1000 300 Q 1280 380 1560 300" stroke="#8a6a4a" strokeWidth={4} fill="none" />
-      {Array.from({ length: n }, (_, i) => { const t = (i + 1) / 10, px = 1000 + t * 560, py = 300 + Math.sin(t * Math.PI) * 80; return <g key={i}><circle cx={px} cy={py + 18} r={22} fill="#f0d8a0" stroke={OL} strokeWidth={4} /><circle cx={px} cy={py + 18} r={7} fill="#c8a070" /></g>; })}
-      <Person x={x} y={y} s={s} look={{ ...HERO, ...COAT }} pose={hero} uid="h" />
-      {push < 1 ? <g><circle cx={h[0] + 12} cy={h[1] - 6} r={22} fill="#f0d8a0" stroke={OL} strokeWidth={4} /><circle cx={h[0] + 12} cy={h[1] - 6} r={7} fill="#c8a070" /></g> : null}
+      <path d={`M ${S0[0]} ${S0[1]} Q 1270 ${S0[1] + 120} ${S1[0]} ${S1[1]}`} stroke="#8a6a4a" strokeWidth={4} fill="none" />
+      {slots.slice(0, Math.min(placed, slots.length)).map((t, i) => <Slice key={i} p={at(t)} />)}
+      <Person x={x} y={y} s={s} look={HERO} pose={hero2} uid="h" />
+      <path d={`M ${bowl[0] - 60} ${bowl[1] - 20} Q ${bowl[0]} ${bowl[1] + 30} ${bowl[0] + 60} ${bowl[1] - 20} Z`} fill="#c8603a" stroke={OL} strokeWidth={4} />
+      {[0, 1, 2].map((i) => <ellipse key={i} cx={bowl[0] - 26 + i * 26} cy={bowl[1] - 22} rx={16} ry={7} fill="#f0d8a0" stroke={OL} strokeWidth={2} />)}
+      {holding ? <Slice p={[h[0], h[1] - 18]} /> : null}
     </CamG></Svg>
   );
 };
-// 7. женщина солит капусту в банке
+// 7. женщина кладёт рубленую капусту в открытую банку и утрамбовывает рукой; крышка лежит рядом
 const Cabbage: Shot = ({ g }) => {
-  const s = 1.0, x = 760, y = 1080, jx = 1040, jy = 820;
-  const press = Math.abs(Math.sin(g * 0.2));
-  const hero = stand(g, { turn: 0.6, lean: 6, handR: [(jx - 10 - x) / s, (jy - 150 + press * 40 - y) / s], handL: [(jx + 40 - x) / s, (jy - 60 - y) / s], expr: { mouth: "flat", look: [1, 1] }, seed: 50 });
+  const s = 1.0, x = 900, y = 1080, jx = 1080, jy = 820, bowl: P = [960, jy];
+  const loc = (p: P): P => [(p[0] - x) / s, (p[1] - y) / s];
+  const cyc = 25, c = g % cyc, n = Math.floor(g / cyc);
+  const handR: P = trackP(c, [[0, loc([bowl[0], bowl[1] - 40])], [8, loc([jx, jy - 190])], [14, loc([jx, jy - 80 - n * 10])], [18, loc([jx, jy - 80 - n * 10])], [25, loc([bowl[0], bowl[1] - 40])]]);
+  const hero = stand(g, { turn: 0.5, lean: 6, handR, handL: [((jx - 50) - x) / s, ((jy - 60) - y) / s], expr: { mouth: "flat", look: [1, 1] }, seed: 50 });
+  const h = handW(x, y, s, hero, "R");
+  const carry = c < 14;
   return (
-    <Svg><CamG cam={{ s: 1.35, cx: 980, cy: 600 }}>
+    <Svg><CamG cam={{ s: 1.45, cx: 1000, cy: 640 }}>
       <rect x={-W} width={W * 3} height={H} fill="#c8a07a" />
       <rect x={300} y={300} width={500} height={16} fill="#8a6a4a" stroke={OL} strokeWidth={4} />
       {[0, 1, 2, 3].map((i) => <Jar key={i} x={360 + i * 120} y={300} fill={1} c={i % 2 ? "#c8d88a" : "#d8a8a0"} />)}
-      <Person x={x} y={y} s={s} look={{ ...W1, ...COAT }} pose={hero} uid="w" />
+      <Person x={x} y={y} s={s} look={W1} pose={hero} uid="w" />
       <rect x={600} y={jy} width={900} height={30} fill="#b08050" stroke={OL} strokeWidth={5} /><rect x={600} y={jy + 30} width={900} height={300} fill="#8a6a4a" stroke={OL} strokeWidth={5} />
-      <Jar x={jx} y={jy} fill={lerp(0.5, 0.9, ip(g, [0, 51], [0, 1]))} />
-      <g transform={`translate(1260 ${jy})`}><circle cx={0} cy={-70} r={70} fill="#c8d88a" stroke={OL} strokeWidth={5} /><path d="M -50 -70 Q 0 -110 50 -70 M -40 -40 Q 0 -70 40 -40" stroke="#9ab060" strokeWidth={4} fill="none" /></g>
-      <g transform={`translate(1400 ${jy})`}><rect x={-30} y={-70} width={60} height={70} rx={6} fill="#f2f2ee" stroke={OL} strokeWidth={4} />{txt(0, -26, 20, "#3a3a40", "SALT")}</g>
+      <path d={`M ${bowl[0] - 80} ${bowl[1] - 50} Q ${bowl[0]} ${bowl[1] + 30} ${bowl[0] + 80} ${bowl[1] - 50} Z`} fill="#e8e0c8" stroke={OL} strokeWidth={4} />
+      {Array.from({ length: 8 }, (_, i) => <path key={i} d={`M ${bowl[0] - 60 + i * 15} ${bowl[1] - 50} q 8 -16 16 0`} stroke="#9ab060" strokeWidth={5} fill="none" />)}
+      <rect x={jx - 40} y={jy - 120 * lerp(0.4, 0.85, Math.min(1, n / 4))} width={80} height={120 * lerp(0.4, 0.85, Math.min(1, n / 4))} fill="#c8d88a" />
+      {carry ? <g>{[0, 1, 2].map((k) => <path key={k} d={`M ${h[0] - 18 + k * 12} ${h[1] + 10} q 6 -14 12 0`} stroke="#9ab060" strokeWidth={5} fill="none" />)}</g> : null}
+      <rect x={jx - 44} y={jy - 130} width={88} height={130} rx={10} fill="#d8eef4" opacity={0.35} stroke={OL} strokeWidth={5} />
+      <g transform={`translate(${jx + 120} ${jy})`}><rect x={-36} y={-16} width={72} height={16} rx={4} fill="#c8a040" stroke={OL} strokeWidth={4} /></g>
+      <g transform={`translate(1360 ${jy})`}><rect x={-30} y={-70} width={60} height={70} rx={6} fill="#f2f2ee" stroke={OL} strokeWidth={4} />{txt(0, -26, 20, "#3a3a40", "SALT")}</g>
     </CamG></Svg>
   );
 };
@@ -281,8 +309,10 @@ const Plan: Shot = ({ g }) => {
 };
 // 12. люди говорят о будущем: за столом, утро, солнце в окне
 const Future: Shot = ({ g }) => {
+  // спокойный разговор: руки лежат на столе у кружек, говорит один человек, остальные слушают и иногда кивают
   const seats: [number, Look][] = [[560, PEOPLE.oldman], [800, W1], [1040, HERO], [1280, PEOPLE.man], [1500, KID]];
   const top = 800;
+  const speaker = [3, 1, 0, 3][Math.min(3, Math.floor(g / 55))];
   return (
     <Svg><CamG cam={{ s: lerp(1.2, 1.0, ip(g, [0, 170], [0, 1])), cx: 1000, cy: 600 }}>
       <rect x={-W} width={W * 3} height={H} fill="#d8b890" />
@@ -292,7 +322,14 @@ const Future: Shot = ({ g }) => {
       <path d="M 1040 100 L 1040 540 M 760 320 L 1320 320" stroke={OL} strokeWidth={6} />
       {[0, 1, 2].map((k) => <circle key={k} cx={800 + k * 200} cy={548 + ((g * 2 + k * 30) % 60)} r={5} fill="#a8d0e8" />)}
       <rect width={W} height={H} fill="#ffe0a0" opacity={0.08} />
-      {seats.map(([x, lk], i) => { const ks = lk === KID ? 0.55 : 0.8; const y = top + 150 * ks - 10; return <Person key={i} x={x} y={y} s={ks} look={{ ...lk, ...COAT }} pose={sitting(g + i * 11, { turn: (2 - i) * 0.18, handL: [-40, -230], handR: i % 2 ? [90, -300 + Math.sin(g / 6) * 20] : [40, -230], expr: { mouth: i % 2 ? "open" : "smile", open: talk(g, i) * 0.5, look: [(2 - i) * 0.3, 0] }, seed: 80 + i })} uid={"f" + i} />; })}
+      {seats.map(([x, lk], i) => {
+        const ks = lk === KID ? 0.55 : 0.8; const y = top + 150 * ks - 10;
+        const cup: P = [(x + 20 - x) / ks - 14, (top - 30 - y) / ks];
+        const talking = i === speaker;
+        const nod = !talking && Math.floor(g / 40 + i) % 3 === 0 ? Math.sin(g / 6) * 4 : 0;
+        const lookAt = (seats[speaker][0] - x) / 600;
+        return <Person key={i} x={x} y={y} s={ks} look={lk} pose={sitting(g + i * 11, { turn: talking ? 0 : Math.max(-0.6, Math.min(0.6, lookAt)), nod, handL: [cup[0] - 40, cup[1] + 6], handR: cup, expr: { mouth: talking ? "open" : "smile", open: talking ? talk(g, i) * 0.35 : 0, look: [talking ? 0 : Math.max(-1, Math.min(1, lookAt)), 0] }, seed: 80 + i })} uid={"f" + i} />;
+      })}
       <rect x={380} y={top} width={1300} height={24} fill="#b08050" stroke={OL} strokeWidth={5} /><rect x={400} y={top + 24} width={1260} height={260} fill="#8a6a4a" stroke={OL} strokeWidth={5} />
       {[560, 800, 1040, 1280, 1500].map((x) => <g key={x} transform={`translate(${x + 20} ${top})`}><rect x={-22} y={-50} width={44} height={50} rx={6} fill="#f2e6cc" stroke={OL} strokeWidth={4} />{[0, 1].map((k) => <path key={k} d={`M ${-6 + k * 12} -56 q 8 -20 0 -40`} stroke="#f6efe2" strokeWidth={4} fill="none" opacity={0.5} />)}</g>)}
     </CamG></Svg>
