@@ -176,11 +176,11 @@ type Key = [number, number, number];   // [секунда голоса, x, z] �
 export const HIP = 0.4;
 export const REST_F: [number, number] = [-0.2, HIP + 0.06], REST_B: [number, number] = [0.2, HIP + 0.06];
 export const HEAD_Z = HIP + 0.36 + 0.27 * 0.78;                       // центр головы
-const track = (t: number, keys: Key[]): [number, number] => {
+const track = (t: number, keys: Key[], ease = Easing.out(Easing.back(1.8))): [number, number] => {
   if (t <= keys[0][0]) return [keys[0][1], keys[0][2]];
   for (let i = 1; i < keys.length; i++) if (t <= keys[i][0]) {
     const a = keys[i - 1], b = keys[i];
-    const k = Easing.out(Easing.back(1.8))((t - a[0]) / Math.max(1e-6, b[0] - a[0]));   // выброс с перелётом
+    const k = ease((t - a[0]) / Math.max(1e-6, b[0] - a[0]));   // по умолчанию — выброс с перелётом
     return [a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
   }
   const l = keys[keys.length - 1]; return [l[1], l[2]];
@@ -221,7 +221,9 @@ export const Doodle: React.FC<{ a: Actor }> = ({ a }) => {
   };
   drawDoodle(canvas.getContext("2d")!, a.look, pose, rnd);
   tex.needsUpdate = true;
-  const pos = a.walk ? (() => { const [x, z] = track(t, a.walk!); return [x, a.pos[1], z] as V3; })() : a.pos;
+  const pos: V3 = a.walk ? (() => { const [x, z] = track(t, a.walk!, Easing.inOut(Easing.quad)); return [x, a.pos[1], z] as V3; })() : [...a.pos];
+  // шаги: пока герой идёт, он слегка подпрыгивает
+  if (a.walk) { const [x0, z0] = track(t - 0.05, a.walk, Easing.inOut(Easing.quad)); if (Math.hypot(pos[0] - x0, pos[2] - z0) > 0.004) pos[1] += Math.abs(Math.sin(t * 14)) * 0.04; }
   const yaw = Math.atan2(cam.x - pos[0], cam.z - pos[2]);
   return (
     <mesh position={[pos[0], pos[1] + PLANE_H / 2, pos[2]]} rotation={[0, yaw, 0]} receiveShadow>

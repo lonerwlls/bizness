@@ -19,7 +19,29 @@ const X = (x: number) => CW / 2 + x * K;
 const Y = (z: number) => CH - z * K;
 const R0 = 0.27, W = 0.27, H = 0.36, HIP = 0.4;
 
-const EXPR: Record<string, { eyes: string; brow: [number, number]; mouth: [string, number]; sweat?: boolean; cheeks?: boolean; shake?: boolean; look?: number }> = {
+type Ex = { eyes: string; brow: [number, number]; brow2?: [number, number]; mouth: [string, number]; sweat?: boolean; cheeks?: boolean; shake?: boolean;
+  look?: number; px?: number; py?: number; mark?: string; tears?: boolean };
+const EXPR: Record<string, Ex> = {
+  // ---- новые эмоции героя (каждая — под свой момент рассказа)
+  suspicious: { eyes: "half", brow: [-0.3, -0.01], brow2: [0.5, 0.05], mouth: ["side", 0], px: 0.7 },          // подозрительно косится
+  skeptic: { eyes: "lid", brow: [-0.2, 0], brow2: [0.55, 0.06], mouth: ["smirk", 0.6], mark: "?" },             // бровь домиком, ухмылка
+  dreamy: { eyes: "happy", brow: [0.35, 0.03], mouth: ["smile", 0], py: -0.6, cheeks: true },                   // «всего на 10 минут»
+  wink: { eyes: "wink", brow: [0.1, 0.02], mouth: ["grin", 0.9] },                                              // уверенно подмигивает
+  awe: { eyes: "sparkle", brow: [0.5, 0.06], mouth: ["o", 0.9] },                                               // восхищение залом
+  money: { eyes: "dollar", brow: [0.4, 0.05], mouth: ["grin", 1.1], mark: "$" },                                // глаза-доллары
+  grimace: { eyes: "wide", brow: [0.5, 0.04], mouth: ["teeth", 0], px: -0.2, sweat: true },                     // проигрыш: «и-и-и»
+  ecstatic: { eyes: "star", brow: [0.5, 0.06], mouth: ["open", 1], shake: true, mark: "!!" },                   // снова выиграл
+  panic: { eyes: "tiny", brow: [0.6, 0.07], mouth: ["wobble", 0], sweat: true, shake: true, mark: "!" },        // телефон сел
+  squint: { eyes: "squeeze", brow: [-0.3, -0.02], mouth: ["teeth", 0] },                                        // слепит рассвет
+  dizzy: { eyes: "spiral", brow: [0.3, 0.03], mouth: ["wobble", 0], mark: "?" },                                // «как такое возможно?»
+  sleepy: { eyes: "half", brow: [0.1, -0.01], mouth: ["yawn", 0], mark: "z" },                                  // зевает перед сном
+  thinking: { eyes: "oval", brow: [-0.2, 0], brow2: [0.4, 0.04], mouth: ["side", 0], px: 0.5, py: -0.7 },       // вспоминает
+  aha: { eyes: "wide", brow: [0.5, 0.07], mouth: ["grin", 0.7], mark: "!" },                                    // догадался
+  angry: { eyes: "lid", brow: [-0.7, -0.03], mouth: ["teeth", 0], cheeks: false },                              // «нарочно!»
+  sad: { eyes: "oval", brow: [0.7, 0.03], mouth: ["frown", 0], py: 0.5 },                                       // деньги уходят
+  smart: { eyes: "lid", brow: [0.15, 0.02], mouth: ["smile", 0], mark: "" },                                    // лектор у плаката
+  deadpan: { eyes: "half", brow: [0, -0.02], mouth: ["pressed", 0] },                                           // «It left.»
+  crying: { eyes: "teary", brow: [0.8, 0.04], mouth: ["wobble", 0], tears: true, shake: true },                 // «Yesterday.»
   neutral: { eyes: "oval", brow: [0, 0], mouth: ["flat", 0] },
   smug: { eyes: "lid", brow: [0.25, 0.015], mouth: ["smirk", 0.6] },
   proud: { eyes: "happy", brow: [0.2, 0.02], mouth: ["grin", 0.8] },
@@ -164,28 +186,61 @@ export function drawDoodle(ctx: CanvasRenderingContext2D, look: Look, p: Pose, r
   if (p.blink && ["oval", "wide", "lid"].includes(eyes)) eyes = "closed";
   const lx = ((p.lookX ?? 0) + (E.look ? 0 : 0)) * r;
   const [bt, bhh] = E.brow;
+  const pxo = (E.px ?? 0) * r * 0.06, pyo = (E.py ?? 0) * r * 0.06;
+  const halfClip = (ex: number, ey: number, top: number, draw: () => void) => {
+    ctx.save(); ctx.beginPath(); ctx.rect(ex - r * 0.25, ey + top, r * 0.5, r * 0.4); ctx.clip(); draw(); ctx.restore();
+  };
   for (const s of [-1, 1]) {
     const ex = s * r * 0.34, ey = -r * 0.02;
+    let ee = eyes;
+    if (ee === "wink") ee = s < 0 ? "oval" : "happy";
     ctx.fillStyle = INK;
-    if (eyes === "oval") {
-      ctx.beginPath(); ctx.ellipse(ex + lx * 0.06, ey, r * 0.095, r * 0.13, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(ex + lx * 0.06 - r * 0.03, ey - r * 0.05, r * 0.03, r * 0.035, 0, 0, Math.PI * 2); ctx.fill();
-    } else if (eyes === "wide") {
-      ctx.fillStyle = "#fff"; stroke(0.016); ctx.beginPath(); ctx.ellipse(ex, ey, r * 0.19, r * 0.15, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = INK; ctx.beginPath(); ctx.ellipse(ex + lx * 0.09, ey + (E.look ?? 0) * -r * 0.1, r * 0.045, r * 0.05, 0, 0, Math.PI * 2); ctx.fill();
-    } else if (eyes === "lid") {
-      ctx.beginPath(); ctx.ellipse(ex + lx * 0.05, ey + r * 0.02, r * 0.09, r * 0.08, 0, 0, Math.PI * 2); ctx.fill();
+    if (ee === "oval") {
+      ctx.beginPath(); ctx.ellipse(ex + lx * 0.06 + pxo, ey + pyo, r * 0.095, r * 0.13, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(ex + lx * 0.06 + pxo - r * 0.03, ey + pyo - r * 0.05, r * 0.03, r * 0.035, 0, 0, Math.PI * 2); ctx.fill();
+    } else if (ee === "wide" || ee === "tiny") {
+      const pr = ee === "tiny" ? 0.022 : 0.045;
+      ctx.fillStyle = "#fff"; stroke(0.016); ctx.beginPath(); ctx.ellipse(ex, ey, r * 0.19, r * (ee === "tiny" ? 0.18 : 0.15), 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = INK; ctx.beginPath(); ctx.ellipse(ex + lx * 0.09 + pxo * 1.5, ey + (E.look ?? 0) * -r * 0.1 + pyo, r * pr, r * (pr + 0.005), 0, 0, Math.PI * 2); ctx.fill();
+    } else if (ee === "lid") {
+      ctx.beginPath(); ctx.ellipse(ex + lx * 0.05 + pxo, ey + r * 0.02, r * 0.09, r * 0.08, 0, 0, Math.PI * 2); ctx.fill();
       stroke(0.018); ctx.beginPath(); ctx.moveTo(ex - r * 0.14, ey - r * 0.045); ctx.lineTo(ex + r * 0.14, ey - r * 0.045); ctx.stroke();
-    } else if (eyes === "happy") {
-      stroke(0.022); ctx.beginPath(); ctx.arc(ex, ey + r * 0.07, r * 0.12, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
-    } else if (eyes === "closed") {
+    } else if (ee === "half") {
+      // тяжёлые веки: видна только нижняя половина зрачка
+      halfClip(ex, ey, r * 0.0, () => { ctx.fillStyle = INK; ctx.beginPath(); ctx.ellipse(ex + pxo * 1.4, ey + r * 0.02, r * 0.1, r * 0.11, 0, 0, Math.PI * 2); ctx.fill(); });
+      stroke(0.022); ctx.beginPath(); ctx.moveTo(ex - r * 0.15, ey + r * 0.005 - s * r * 0.01); ctx.lineTo(ex + r * 0.15, ey + r * 0.005 + s * r * 0.01); ctx.stroke();
+    } else if (ee === "happy") {
+      stroke(0.022); ctx.beginPath(); ctx.arc(ex, ey + r * 0.07 + pyo * 0.5, r * 0.12, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+    } else if (ee === "closed") {
       stroke(0.018); ctx.beginPath(); ctx.arc(ex, ey - r * 0.08, r * 0.11, Math.PI * 0.2, Math.PI * 0.8); ctx.stroke();
-    } else if (eyes === "squeeze") {
+    } else if (ee === "squeeze") {
       stroke(0.022); ctx.beginPath(); ctx.moveTo(ex - s * r * 0.13, ey - r * 0.08); ctx.lineTo(ex + s * r * 0.09, ey); ctx.lineTo(ex - s * r * 0.13, ey + r * 0.08); ctx.stroke();
+    } else if (ee === "sparkle") {
+      // большие блестящие глаза с двумя бликами
+      ctx.beginPath(); ctx.ellipse(ex, ey, r * 0.13, r * 0.16, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(ex - r * 0.04, ey - r * 0.06, r * 0.05, r * 0.055, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(ex + r * 0.05, ey + r * 0.06, r * 0.022, 0, Math.PI * 2); ctx.fill();
+    } else if (ee === "dollar" || ee === "star") {
+      ctx.save(); ctx.translate(ex, ey);
+      if (ee === "dollar") { ctx.fillStyle = "#2f9e4a"; ctx.font = `900 ${r * 0.42}px Arial Black, Arial`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        stroke(0.012); ctx.strokeText("$", 0, r * 0.01); ctx.fillText("$", 0, r * 0.01); }
+      else { ctx.fillStyle = "#ffc93a"; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + (i * Math.PI) / 5, rr = (i % 2 ? 0.075 : 0.18) * r; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+        ctx.closePath(); ctx.fill(); stroke(0.012); ctx.stroke(); }
+      ctx.restore();
+    } else if (ee === "spiral") {
+      stroke(0.015); ctx.beginPath(); for (let i = 0; i <= 40; i++) { const a = i * 0.33 * s, rr = (i / 40) * r * 0.19; i ? ctx.lineTo(ex + Math.cos(a) * rr, ey + Math.sin(a) * rr) : ctx.moveTo(ex, ey); } ctx.stroke();
+    } else if (ee === "teary") {
+      ctx.beginPath(); ctx.ellipse(ex, ey, r * 0.12, r * 0.15, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#7cc4ff"; ctx.beginPath(); ctx.ellipse(ex, ey + r * 0.08, r * 0.11, r * 0.06, 0, 0, Math.PI); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(ex - r * 0.04, ey - r * 0.06, r * 0.045, r * 0.05, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(ex + r * 0.05, ey + r * 0.02, r * 0.025, 0, Math.PI * 2); ctx.fill();
     }
-    const by = ey - r * 0.27 - bhh * r * 2 - (eyes === "wide" ? 0.04 * r : 0);
+    const [bt2, bh2] = s > 0 && E.brow2 ? E.brow2 : [bt, bhh];
+    const by = ey - r * 0.27 - bh2 * r * 2 - (["wide", "tiny", "sparkle", "teary"].includes(ee) ? 0.04 * r : 0);
     const inner = ex - s * r * 0.13, outer = ex + s * r * 0.15;
-    stroke(0.028); ctx.beginPath(); ctx.moveTo(outer, by + bt * r * 0.07); ctx.lineTo((inner + outer) / 2, by - r * 0.02); ctx.lineTo(inner, by - bt * r * 0.14); ctx.stroke();
+    stroke(0.028); ctx.beginPath(); ctx.moveTo(outer, by + bt2 * r * 0.07); ctx.lineTo((inner + outer) / 2, by - r * 0.02); ctx.lineTo(inner, by - bt2 * r * 0.14); ctx.stroke();
+    if (E.tears) { ctx.fillStyle = "#7cc4ff"; stroke(0.008, "#3d7fd0"); ctx.beginPath(); ctx.moveTo(ex + s * r * 0.06, ey + r * 0.14);
+      ctx.quadraticCurveTo(ex + s * r * 0.12, ey + r * 0.4, ex + s * r * 0.06, ey + r * 0.48); ctx.quadraticCurveTo(ex, ey + r * 0.4, ex + s * r * 0.06, ey + r * 0.14); ctx.fill(); ctx.stroke(); }
   }
   if (E.cheeks) { ctx.fillStyle = "#f0b3a4"; for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * r * 0.55, r * 0.3, r * 0.2, r * 0.14, 0, 0, Math.PI * 2); ctx.fill(); } }
   // рот
@@ -203,11 +258,30 @@ export function drawDoodle(ctx: CanvasRenderingContext2D, look: Look, p: Pose, r
     const mw = r * 0.36;
     ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(mx - mw, my - r * 0.05); ctx.quadraticCurveTo(mx, my + r * 0.36 * mp, mx + mw, my - r * 0.05); ctx.closePath(); ctx.fill(); ctx.stroke();
     stroke(0.008); for (const k of [-0.5, -0.17, 0.17, 0.5]) { ctx.beginPath(); ctx.moveTo(mx + k * mw, my - r * 0.04); ctx.lineTo(mx + k * mw * 0.95, my + r * 0.13 * mp); ctx.stroke(); }
+  } else if (mt === "smile") { stroke(0.02); ctx.beginPath(); ctx.arc(mx, my - r * 0.12, r * 0.16, Math.PI * 0.2, Math.PI * 0.8); ctx.stroke(); }
+  else if (mt === "side") { stroke(0.02); ctx.beginPath(); ctx.moveTo(mx + r * 0.02, my + r * 0.02); ctx.quadraticCurveTo(mx + r * 0.12, my + r * 0.03, mx + r * 0.22, my - r * 0.04); ctx.stroke(); }
+  else if (mt === "frown") { stroke(0.02); ctx.beginPath(); ctx.moveTo(mx - r * 0.16, my + r * 0.08); ctx.quadraticCurveTo(mx, my - r * 0.1, mx + r * 0.16, my + r * 0.08); ctx.stroke(); }
+  else if (mt === "teeth") {
+    const mw = r * 0.26, mh = r * 0.14;
+    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.roundRect(mx - mw, my - mh / 2, mw * 2, mh, mh * 0.4); ctx.fill(); ctx.stroke();
+    stroke(0.008); ctx.beginPath(); ctx.moveTo(mx - mw, my); ctx.lineTo(mx + mw, my); for (const k of [-0.5, 0, 0.5]) { ctx.moveTo(mx + k * mw, my - mh / 2); ctx.lineTo(mx + k * mw, my + mh / 2); } ctx.stroke();
+  } else if (mt === "wobble") {
+    ctx.fillStyle = "#5e1f22"; ctx.beginPath(); for (let i = 0; i <= 16; i++) { const x = -r * 0.2 + (i / 16) * r * 0.4; const yy = my + Math.sin((x / r) * 24) * r * 0.035; i ? ctx.lineTo(mx + x, yy) : ctx.moveTo(mx + x, yy); }
+    ctx.quadraticCurveTo(mx, my + r * 0.2, mx - r * 0.2, my); ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else if (mt === "yawn") {
+    ctx.fillStyle = "#5e1f22"; ctx.beginPath(); ctx.ellipse(mx, my + r * 0.04, r * 0.13, r * 0.2, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#d66a6c"; ctx.beginPath(); ctx.ellipse(mx, my + r * 0.16, r * 0.08, r * 0.05, 0, 0, Math.PI * 2); ctx.fill();
   } else if (mt === "open") {
     const mw = r * 0.24, mh = r * 0.08 + r * 0.24 * mp;
     ctx.fillStyle = "#5e1f22"; ctx.beginPath(); ctx.moveTo(mx - mw, my - r * 0.05); ctx.quadraticCurveTo(mx, my - r * 0.05 + mh * 1.9, mx + mw, my - r * 0.05); ctx.closePath(); ctx.fill(); ctx.stroke();
     ctx.fillStyle = "#d66a6c"; ctx.beginPath(); ctx.ellipse(mx, my + mh * 0.6, mw * 0.5, mh * 0.25, 0, 0, Math.PI * 2); ctx.fill();
     stroke(0.024, "#fff"); ctx.beginPath(); ctx.moveTo(mx - mw * 0.75, my - r * 0.025); ctx.lineTo(mx + mw * 0.75, my - r * 0.025); ctx.stroke();
+  }
+  if (E.mark) {
+    ctx.save(); ctx.translate(r * 1.3, -r * 1.05); ctx.rotate(0.2); ctx.font = `900 ${r * (E.mark === "z" ? 0.4 : 0.55)}px Arial Black, Arial`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineWidth = 0.02 * K; ctx.strokeStyle = INK;
+    ctx.fillStyle = E.mark === "$" ? "#2f9e4a" : E.mark === "z" ? "#7c9cff" : E.mark === "?" ? "#ffc93a" : "#ff4a3a";
+    const txt = E.mark === "z" ? "Zz" : E.mark; ctx.strokeText(txt, 0, 0); ctx.fillText(txt, 0, 0); ctx.restore();
   }
   if (E.sweat) { ctx.fillStyle = "#c9e6ff"; stroke(0.01, "#3d7fd0"); ctx.beginPath(); ctx.moveTo(r * 0.98, -r * 0.5); ctx.quadraticCurveTo(r * 1.1, -r * 0.25, r * 0.98, -r * 0.18); ctx.quadraticCurveTo(r * 0.86, -r * 0.25, r * 0.98, -r * 0.5); ctx.fill(); ctx.stroke(); }
   ctx.restore();

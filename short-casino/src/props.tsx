@@ -37,7 +37,7 @@ export const CardTable: React.FC<{ p: V3; chips?: number }> = ({ p, chips = 1 })
 );
 
 // Зал казино без окон и часов: бордовые стены, ковёр, автоматы, лампы, вывески, растения.
-export const Casino: React.FC<{ chips?: number; poster?: boolean; table?: boolean }> = ({ chips = 1, poster = false, table = true }) => (<>
+export const Casino: React.FC<{ chips?: number; poster?: boolean; table?: boolean }> = ({ chips = 1, poster = true, table = true }) => (<>
   <Room window={false} wall="#7a1f2b" wain="#4a1018" floor="#1f5a4f" ceil="#2a1a1a" />
   {/* золотые молдинги */}
   <Box p={[0, 2.55, -1.94]} s={[6, 0.06, 0.06]} c="#e8b54a" metal={0.5} r={0.35} />
@@ -48,11 +48,11 @@ export const Casino: React.FC<{ chips?: number; poster?: boolean; table?: boolea
   <Sign p={[1.4, 2.25, -1.98]} w={1.2} h={0.36} text="PLAY ON!" bg="#1a0b10" fg="#ff5fa2" glow={1.2} />
   {table ? <CardTable p={[1.45, 0, -0.85]} chips={chips} /> : null}
   {poster ? (<>
-    <Box p={[1.5, 1.45, -1.97]} s={[1.05, 1.25, 0.04]} c="#e8b54a" metal={0.4} r={0.4} />
-    <Sign p={[1.5, 1.85, -1.94]} w={0.95} h={0.26} text="DESIGNING" bg="#efe3c8" fg="#7a1f2b" glow={0.12} />
-    <Sign p={[1.5, 1.6, -1.94]} w={0.95} h={0.26} text="CASINOS" bg="#efe3c8" fg="#7a1f2b" glow={0.12} />
-    <Sign p={[1.5, 1.33, -1.94]} w={0.95} h={0.2} text="BILL FRIEDMAN" bg="#efe3c8" fg="#1d1f23" glow={0.12} />
-    <Sign p={[1.5, 1.08, -1.94]} w={0.95} h={0.24} text="2000" bg="#efe3c8" fg="#d61f3a" glow={0.12} />
+    <Box p={[0.55, 1.4, -1.97]} s={[1.05, 1.25, 0.04]} c="#e8b54a" metal={0.4} r={0.4} />
+    <Sign p={[0.55, 1.8, -1.94]} w={0.95} h={0.26} text="DESIGNING" bg="#efe3c8" fg="#7a1f2b" glow={0.12} />
+    <Sign p={[0.55, 1.55, -1.94]} w={0.95} h={0.26} text="CASINOS" bg="#efe3c8" fg="#7a1f2b" glow={0.12} />
+    <Sign p={[0.55, 1.28, -1.94]} w={0.95} h={0.2} text="BILL FRIEDMAN" bg="#efe3c8" fg="#1d1f23" glow={0.12} />
+    <Sign p={[0.55, 1.03, -1.94]} w={0.95} h={0.24} text="2000" bg="#efe3c8" fg="#d61f3a" glow={0.12} />
   </>) : null}
   <Plant p={[2.6, 0, -1.6]} h={0.9} /><Plant p={[-2.7, 0, 1.2]} h={0.8} />
   {/* барная стойка справа */}

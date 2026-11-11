@@ -17,9 +17,10 @@ export const HeroSheet: React.FC = () => {
     </Scene3D>);
 };
 
-const EMO = ["grin", "shock", "nervous", "laugh"];
+const EMO = ["suspicious", "skeptic", "dreamy", "wink", "awe", "money", "grimace", "ecstatic", "panic", "squint", "dizzy", "sleepy", "thinking", "aha", "angry", "sad", "smart", "deadpan", "crying", "shock"];
+// лист эмоций: 4 в ряд, 5 рядов (служебный, только для проверки)
 export const HeroEmotions: React.FC = () => (
-  <Scene3D t0={0} cam={[[0, [0, 1.0, 5.6], [0, 0.9, 0], 32]]} focus={[0, 1, 0]} bg="#cfc8bb">
-    <Backdrop />
-    {EMO.map((e, i) => <Doodle key={e} a={{ pos: [(i - 1.5) * 0.78, 0, 0], seed: i + 1, look: HERO, expr: [[0, e]] }} />)}
+  <Scene3D t0={0} cam={[[0, [0, 3.2, 14], [0, 3.2, 0], 26]]} focus={[0, 3.2, 0]} bg="#cfc8bb">
+    <Box p={[0, 3, -1]} s={[12, 10, 0.1]} c="#cfc8bb" line={false} />
+    {EMO.map((e, i) => <Doodle key={e} a={{ pos: [((i % 4) - 1.5) * 1.15, 4 * 1.3 - Math.floor(i / 4) * 1.3 - 0.6, 0], seed: i + 1, look: HERO, expr: [[-1, e]] }} />)}
   </Scene3D>);
