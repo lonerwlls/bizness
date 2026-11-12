@@ -91,18 +91,59 @@ const Q026: React.FC = () => {
 };
 
 /* 028 «Groceries, eighty-four dollars… you put back the normal cheese.» */
+/* the hand takes a cheese off the belt, turns round and puts it back on the cheese shelf behind */
+const BELT: [number, number][] = [
+	[995, 700],
+	[1028, 700],
+];
+const SHELF: [number, number][] = [
+	[808, 700],
+	[846, 700],
+];
+const lerp2 = (a: [number, number], b: [number, number], k: number): [number, number] => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+const putBack = (f: number, t0: number, i: number, HX: number) => {
+	// a: reach the belt · b: lift to the chest · c: turn and reach the shelf · d: let go, arm back
+	const ph = (x: number, y: number) => interpolate(f, [t0 + x, t0 + y], [0, 1], {...clamp, easing: ease});
+	const a = ph(0, 9);
+	const b = ph(9, 16);
+	const c = ph(17, 26);
+	const d = ph(28, 36);
+	const chestR: [number, number] = [HX + 46, 660];
+	const chestL: [number, number] = [HX - 46, 660];
+	let facing: 1 | -1 = 1;
+	let target: [number, number] = BELT[i];
+	let k = a;
+	let cheese: [number, number] = BELT[i];
+	if (f >= t0 + 9 && f < t0 + 17) {
+		target = lerp2(BELT[i], chestR, b);
+		k = 1;
+		cheese = target;
+	} else if (f >= t0 + 17 && f < t0 + 28) {
+		facing = -1;
+		target = lerp2(chestL, SHELF[i], c);
+		k = 1;
+		cheese = target;
+	} else if (f >= t0 + 28) {
+		facing = d < 1 ? -1 : 1;
+		target = SHELF[i];
+		k = 1 - d;
+		cheese = SHELF[i];
+	}
+	return {facing, target, k, cheese, active: f >= t0 && f < t0 + 36};
+};
 const Q028: React.FC = () => {
-	const {f, gf, at} = useShot();
+	const {f, gf} = useShot();
 	const w = useW();
-	const HX = 900;
-	const back1 = env(f, w('028', 0.5), w('028', 0.66), 10, 10);
-	const back2 = env(f, w('028', 0.75), w('028', 0.92), 10, 10);
+	const HX = 920;
+	const hip = FL - 157 * HS;
+	const p1 = putBack(f, w('028', 0.5), 0, HX);
+	const p2 = putBack(f, w('028', 0.76), 1, HX);
+	const p = p2.active || f >= w('028', 0.76) ? p2 : p1;
 	let hp: Pose = idle(gf, 3);
-	hp = reach(hp, 'F', toLocal(1060, 690, HX, FL - 157, HS, 1), Math.max(back1, back2));
-	const total = f < w('028', 0.62) ? '$84.00' : f < w('028', 0.88) ? '$71.50' : '$66.00';
-	const gone1 = f > w('028', 0.62);
-	const gone2 = f > w('028', 0.88);
-	const cam = usePush(camOn(1150, 600, 1.2), camOn(1200, 580, 1.35));
+	hp = reach({...hp, lean: hp.lean + 6 * p.k}, 'F', toLocal(p.target[0], p.target[1], HX, hip, HS, p.facing), p.k);
+	const facing = p.active ? p.facing : 1;
+	const total = f < w('028', 0.5) + 30 ? '$84.00' : f < w('028', 0.76) + 30 ? '$71.50' : '$66.00';
+	const cam = usePush(camOn(1080, 600, 1.2), camOn(1100, 580, 1.35));
 	return (
 		<Stage cam={cam} bg="#203a3a" light={{x: 70, y: 10, o: 0.45, c: '255,214,150'}}>
 			<Layer depth={1.5}>
@@ -113,17 +154,23 @@ const Q028: React.FC = () => {
 					<Actor who="clerk" x={1560} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.6, 0.2]} mouth="flat" pose={idle(gf, 13)} uid="clerk3" />
 					<Checkout total={total} f={gf} />
 					<GroceryItems x={1180} n={5} />
-					{gone1 ? null : (
-						<g transform={`translate(${1080 - back1 * 30},${700 - back1 * 40})`}>
-							<Cheese fancy />
-						</g>
-					)}
-					{gone2 ? null : (
-						<g transform={`translate(${1150 - back2 * 30},${700 - back2 * 40})`}>
-							<Cheese />
-						</g>
-					)}
-					<Actor who="hero" x={HX} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.8, 0.3]} expr={gone2 ? 'sad' : 'worried'} pose={hp} uid="h-gr" />
+					{/* cheese shelf behind the hero */}
+					<rect x={740} y={712} width={150} height={14} rx={4} fill="#c9ccd6" />
+					<rect x={750} y={726} width={130} height={180} fill="#3a7a8a" />
+					<rect x={760} y={746} width={110} height={60} rx={6} fill="#bfe8ff" opacity={0.6} />
+					<g transform="translate(772,700) scale(0.7)">
+						<Cheese />
+					</g>
+					<text x={815} y={850} textAnchor="middle" fontSize={22} fontFamily={FONT} fontWeight={900} fill="#e9fbff">
+						CHEESE
+					</text>
+					<g transform={`translate(${p1.cheese[0]},${p1.cheese[1]})`}>
+						<Cheese fancy />
+					</g>
+					<g transform={`translate(${p2.cheese[0]},${p2.cheese[1]})`}>
+						<Cheese />
+					</g>
+					<Actor who="hero" x={HX} floor={FL} s={HS} facing={facing} faceTurn={0.4} look={[0.8, 0.3]} expr={f > w('028', 0.85) ? 'sad' : 'worried'} pose={hp} uid="h-gr" />
 					<HeroBadge x={HX} y={badgeY(FL)} s={0.8} />
 					<Callout f={f} t0={w('028', 0.22)} t1={w('028', 0.5)} from={[1680, 470]} to={[1500, 300]} text="= 1 h 24 min" c="#ff6a5a" />
 				</Svg>

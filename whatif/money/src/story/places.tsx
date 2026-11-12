@@ -55,12 +55,28 @@ export const Cafe: React.FC<{f: number}> = ({f}) => (
 		<g>
 			<rect x={-120} y={170} width={560} height={420} rx={10} fill="#141a3c" />
 			<rect x={-110} y={180} width={540} height={400} fill="#1d2552" />
-			{[0, 1, 2, 3, 4].map((i) => (
-				<rect key={i} x={-90 + i * 110} y={300 - (i % 3) * 50} width={90} height={400} fill={i % 2 ? '#141a38' : '#18204a'} />
-			))}
-			{Array.from({length: 26}).map((_, i) => (
-				<rect key={i} x={-80 + (i % 9) * 56} y={330 + Math.floor(i / 9) * 60} width={16} height={20} fill="#ffd27a" opacity={0.35 + 0.3 * (random('cw' + i) > 0.5 ? 1 : 0)} />
-			))}
+			<clipPath id="cafe-win">
+				<rect x={-110} y={180} width={540} height={400} />
+			</clipPath>
+			<g clipPath="url(#cafe-win)">
+				{[0, 1, 2, 3, 4].map((i) => {
+					const bx = -90 + i * 110;
+					const top = 300 - (i % 3) * 50;
+					return (
+						<g key={i}>
+							<rect x={bx} y={top} width={90} height={600 - top} fill={i % 2 ? '#141a38' : '#18204a'} />
+							{Array.from({length: 8}).map((_, r) =>
+								[0, 1].map((c) => {
+									const k = `${i}-${r}-${c}`;
+									const y = top + 18 + r * 36;
+									if (y > 560 || random('cw' + k) < 0.45) return null;
+									return <rect key={k} x={bx + 16 + c * 38} y={y} width={16} height={20} fill="#ffd27a" opacity={0.6} />;
+								}),
+							)}
+						</g>
+					);
+				})}
+			</g>
 			<rect x={155} y={170} width={14} height={420} fill="#2a1f22" />
 			<rect x={-120} y={370} width={560} height={12} fill="#2a1f22" />
 			<text x={160} y={250} textAnchor="middle" fontSize={44} fontFamily={HAND} fill="#ffd27a" opacity={0.85} transform="scale(-1,1) translate(-320,0)">
@@ -164,14 +180,29 @@ export const Apartment: React.FC<{f: number; page?: number}> = ({f, page = 1}) =
 		<g>
 			<rect x={1180} y={160} width={520} height={440} rx={10} fill="#d8d4ec" />
 			<rect x={1196} y={176} width={488} height={408} fill="#0d1230" />
-			{[0, 1, 2, 3, 4, 5].map((i) => (
-				<rect key={i} x={1200 + i * 82} y={300 + ((i * 37) % 120)} width={70} height={300} fill={i % 2 ? '#151b3e' : '#1b2350'} />
-			))}
-			{Array.from({length: 40}).map((_, i) => {
-				const on = random('aw' + i) > 0.45 && !(random('af' + i + Math.floor(f / 40)) > 0.97);
-				return on ? <rect key={i} x={1210 + (i % 10) * 47} y={330 + Math.floor(i / 10) * 60} width={14} height={18} fill="#ffd27a" opacity={0.55} /> : null;
-			})}
-			<circle cx={1600} cy={240} r={30} fill="#eef1ff" opacity={0.9} />
+			<clipPath id="apt-win">
+				<rect x={1196} y={176} width={488} height={408} />
+			</clipPath>
+			<g clipPath="url(#apt-win)">
+				<circle cx={1600} cy={240} r={30} fill="#eef1ff" opacity={0.9} />
+				{[0, 1, 2, 3, 4, 5].map((i) => {
+					const bx = 1200 + i * 82;
+					const top = 300 + ((i * 37) % 120);
+					return (
+						<g key={i}>
+							<rect x={bx} y={top} width={70} height={600 - top} fill={i % 2 ? '#151b3e' : '#1b2350'} />
+							{Array.from({length: 8}).map((_, r) =>
+								[0, 1].map((c) => {
+									const k = `${i}-${r}-${c}`;
+									const y = top + 18 + r * 34;
+									if (y > 560 || random('aw' + k) < 0.45 || random('af' + k + Math.floor(f / 40)) > 0.97) return null;
+									return <rect key={k} x={bx + 12 + c * 30} y={y} width={14} height={18} fill="#ffd27a" opacity={0.55} />;
+								}),
+							)}
+						</g>
+					);
+				})}
+			</g>
 			<rect x={1432} y={176} width={14} height={408} fill="#d8d4ec" />
 			<path d="M1150,150 Q1190,380 1160,620 L1120,620 Z" fill="#7a3f52" />
 			<path d="M1730,150 Q1690,380 1720,620 L1760,620 Z" fill="#7a3f52" />

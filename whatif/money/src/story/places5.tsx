@@ -120,10 +120,18 @@ export const Office: React.FC<{f: number}> = ({f}) => (
 	<Svg>
 		<Wall id="off-w" top="#1a2240" bot="#222c50" />
 		{[0, 1, 2, 3, 4, 5].map((i) => (
-			<rect key={i} x={-300 + i * 420} y={80} width={340} height={420} fill="#141a38" stroke="#2e3a6a" strokeWidth={8} />
-		))}
-		{Array.from({length: 40}).map((_, i) => (
-			<rect key={i} x={-280 + (i % 20) * 120} y={130 + Math.floor(i / 20) * 180} width={18} height={24} fill="#ffd27a" opacity={random('ow' + i) > 0.5 ? 0.5 : 0.1} />
+			<g key={i}>
+				<rect x={-300 + i * 420} y={80} width={340} height={420} fill="#141a38" stroke="#2e3a6a" strokeWidth={8} />
+				{/* far towers seen through the pane, kept inside it */}
+				{[0, 1, 2].map((b) => (
+					<g key={b}>
+						<rect x={-280 + i * 420 + b * 105} y={200 + ((i + b) % 3) * 50} width={90} height={296 - ((i + b) % 3) * 50} fill="#1b2350" />
+						{Array.from({length: 6}).map((_, r) =>
+							random('ow' + i + b + r) > 0.5 ? <rect key={r} x={-262 + i * 420 + b * 105 + (r % 2) * 34} y={220 + ((i + b) % 3) * 50 + Math.floor(r / 2) * 60} width={16} height={22} fill="#ffd27a" opacity={0.5} /> : null,
+						)}
+					</g>
+				))}
+			</g>
 		))}
 		<g transform="translate(960,190)">
 			<circle r={90} fill="#f4f6fb" stroke="#5a6078" strokeWidth={8} />
