@@ -105,7 +105,8 @@ export const HeroBadge: React.FC<{x: number; y: number; s?: number; value?: numb
 	const ago = counterChangedAgo(gf);
 	const pop = 1 + 0.28 * Math.exp(-Math.max(0, ago) / 4) * (ago >= 0 ? 1 : 0);
 	const ring = interpolate(ago, [0, 14], [0, 1], clamp);
-	const delta = Math.round(lastChange(gf).delta);
+	const lc = lastChange(gf);
+	const delta = lc.quiet ? 0 : Math.round(lc.delta);
 	const fly = interpolate(ago, [0, 30], [0, 1], clamp);
 	return (
 		<g>
@@ -121,7 +122,7 @@ export const HeroBadge: React.FC<{x: number; y: number; s?: number; value?: numb
 					</text>
 				</g>
 			) : null}
-			{ago >= 0 && ago < 14 ? <circle cx={x} cy={y} r={60 + ring * 140 * s} fill="none" stroke="#ffe08a" strokeWidth={8 * (1 - ring)} opacity={1 - ring} /> : null}
+			{ago >= 0 && ago < 14 && !lc.quiet ? <circle cx={x} cy={y} r={60 + ring * 140 * s} fill="none" stroke="#ffe08a" strokeWidth={8 * (1 - ring)} opacity={1 - ring} /> : null}
 			<AgeBadge x={x} y={y} value={v} pop={pop} s={s} label={STORY.counter?.label} c={STORY.counter?.color} />
 		</g>
 	);

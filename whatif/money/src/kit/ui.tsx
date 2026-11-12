@@ -141,13 +141,13 @@ export const RuleCard: React.FC<{n: string; title: string; text: string; t: numb
 					<circle key={i} cx={(i * 397) % 1600 + 160} cy={(i * 211) % 820 + 120} r={60 + (i % 5) * 20} fill="#fff" opacity={0.012} />
 				))}
 				<g transform={`translate(960,${300 - (1 - k) * 60}) scale(${0.85 + 0.15 * k})`} opacity={k}>
-					<text textAnchor="middle" fontSize={64} fontFamily={HAND} fontWeight={700} fill="#f6e7a1">
+					<text textAnchor="middle" fontSize={96} fontFamily={HAND} fontWeight={700} fill="#f6e7a1">
 						{title} {n}
 					</text>
 				</g>
 				{icon ? <g transform={`translate(960,520) scale(${k})`}>{icon}</g> : null}
 				<clipPath id={`chalk${n}${t < 0 ? 0 : 1}`}>
-						<rect x={0} y={700} width={write * 1920} height={120} />
+						<rect x={0} y={690} width={write * 1920} height={160} />
 					</clipPath>
 					{write > 0 && write < 1 ? (
 						<g>
@@ -157,7 +157,7 @@ export const RuleCard: React.FC<{n: string; title: string; text: string; t: numb
 						</g>
 					) : null}
 					<g>
-						<text x={960} y={780} textAnchor="middle" fontSize={50} fontFamily={HAND} fontWeight={700} fill="#f4f1e6" clipPath={`url(#chalk${n}${t < 0 ? 0 : 1})`}>
+						<text x={960} y={800} textAnchor="middle" fontSize={text.length > 40 ? 70 : 84} fontFamily={HAND} fontWeight={700} fill="#f4f1e6" clipPath={`url(#chalk${n}${t < 0 ? 0 : 1})`}>
 							{text}
 						</text>
 					{strike > 0 ? <line x1={420} y1={765} x2={420 + 1080 * strike} y2={765} stroke="#ff6a5a" strokeWidth={9} strokeLinecap="round" /> : null}

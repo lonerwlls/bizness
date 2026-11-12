@@ -1,10 +1,434 @@
 [
- {"id": "001_N", "sp": "N", "t": "You tap your card for a coffee. Five dollars.", "action": "hero at the cafe counter taps his card on the terminal", "graphic": "terminal screen $5.00, BEEP"},
- {"id": "002_N", "sp": "N", "t": "Beep. And the number above your head drops by five.", "action": "hero freezes, looks up at the badge", "graphic": "badge MINUTES LEFT ticks down, −5"},
- {"id": "003_N", "sp": "N", "t": "Not five dollars. Five minutes. Of your life.", "action": "close-up, hero touches his face, worried", "graphic": "callout: 5 MINUTES OF YOUR LIFE"},
- {"id": "004_N", "sp": "N", "t": "What if every dollar you spent cost you one minute of your life?", "action": "hero looks at a coin that turns into a clock", "graphic": "title words fly in one by one; $1 coin flips into a clock"},
- {"id": "005_N", "sp": "N", "t": "Sounds cheap, right? A dollar a minute.", "action": "hero walks down the evening street, shrugs, smirks", "graphic": "scales: $1 = 1 MIN"},
- {"id": "006_N", "sp": "N", "t": "Then rent day comes. Fifteen hundred dollars.", "action": "hero at the kitchen table, taps PAY on the phone", "graphic": "calendar RENT DAY, phone: Pay rent $1,500"},
- {"id": "007_N", "sp": "N", "t": "That's twenty-five hours. Gone in one tap.", "action": "hands on head", "graphic": "badge rolls −1,500, callout 25 HOURS"},
- {"id": "008_N", "sp": "N", "t": "And one day, you'll get a bill that isn't even yours.", "action": "an envelope slides under the door, hero picks it up", "graphic": "red envelope FINAL NOTICE, $ ? ? ?"}
+ {
+  "id": "001_N",
+  "sp": "N",
+  "t": "You tap your card for a coffee. Five dollars.",
+  "action": "hero at the cafe counter taps his card on the terminal",
+  "graphic": "terminal screen $5.00, BEEP"
+ },
+ {
+  "id": "002_N",
+  "sp": "N",
+  "t": "Beep. And the number above your head drops by five.",
+  "action": "hero freezes, looks up at the badge",
+  "graphic": "badge MINUTES LEFT ticks down, −5"
+ },
+ {
+  "id": "003_N",
+  "sp": "N",
+  "t": "Not five dollars. Five minutes. Of your life.",
+  "action": "close-up, hero touches his face, worried",
+  "graphic": "callout: 5 MINUTES OF YOUR LIFE"
+ },
+ {
+  "id": "004_N",
+  "sp": "N",
+  "t": "What if every dollar you spent cost you one minute of your life?",
+  "action": "hero looks at a coin that turns into a clock",
+  "graphic": "title words fly in one by one; $1 coin flips into a clock"
+ },
+ {
+  "id": "005_N",
+  "sp": "N",
+  "t": "Sounds cheap, right? A dollar a minute.",
+  "action": "hero walks down the evening street, shrugs, smirks",
+  "graphic": "scales: $1 = 1 MIN"
+ },
+ {
+  "id": "006_N",
+  "sp": "N",
+  "t": "Then rent day comes. Fifteen hundred dollars.",
+  "action": "hero at the kitchen table, taps PAY on the phone",
+  "graphic": "calendar RENT DAY, phone: Pay rent $1,500"
+ },
+ {
+  "id": "007_N",
+  "sp": "N",
+  "t": "That's twenty-five hours. Gone in one tap.",
+  "action": "hands on head",
+  "graphic": "badge rolls −1,500, callout 25 HOURS"
+ },
+ {
+  "id": "008_N",
+  "sp": "N",
+  "t": "And one day, you'll get a bill that isn't even yours.",
+  "action": "an envelope slides under the door, hero picks it up",
+  "graphic": "red envelope FINAL NOTICE, $ ? ? ?"
+ },
+ {
+  "id": "009_N",
+  "sp": "N",
+  "t": "Let's go back to that morning. One hour before the coffee."
+ },
+ {
+  "id": "010_N",
+  "sp": "N",
+  "t": "You wake up, shuffle to the mirror, and there it is. A glowing number over your head."
+ },
+ {
+  "id": "011_N",
+  "sp": "N",
+  "t": "Twenty-seven million minutes. About fifty-three years."
+ },
+ {
+  "id": "012_N",
+  "sp": "N",
+  "t": "Your best friend Marco sees it too. Marco once microwaved a fork just to see what happens. So naturally, he wants to experiment on you."
+ },
+ {
+  "id": "013_N",
+  "sp": "N",
+  "t": "He grabs a pack of gum and makes you pay. One dollar."
+ },
+ {
+  "id": "014_N",
+  "sp": "N",
+  "t": "Click. Minus one minute."
+ },
+ {
+  "id": "015_N",
+  "sp": "N",
+  "t": "Rule number one: every dollar you pay costs one minute of your life."
+ },
+ {
+  "id": "016_N",
+  "sp": "N",
+  "t": "You do the math. Twenty-seven million minutes. Technically, you're a multi-millionaire. Just not in dollars."
+ },
+ {
+  "id": "017_N",
+  "sp": "N",
+  "t": "Then Marco buys you a burger. Twelve dollars."
+ },
+ {
+  "id": "018_N",
+  "sp": "N",
+  "t": "Nothing. The number doesn't move."
+ },
+ {
+  "id": "019_N",
+  "sp": "N",
+  "t": "Rule number two: if someone else pays, it's free."
+ },
+ {
+  "id": "020_N",
+  "sp": "N",
+  "t": "On Friday, your paycheck lands. Two thousand dollars."
+ },
+ {
+  "id": "021_N",
+  "sp": "N",
+  "t": "You check the number at lunch. At dinner. At three in the morning. It doesn't go up. Not by a single minute."
+ },
+ {
+  "id": "022_N",
+  "sp": "N",
+  "t": "Rule number three: earning money never gives time back. Only spending takes it."
+ },
+ {
+  "id": "023_N",
+  "sp": "N",
+  "t": "So your life is a bank account. You can only withdraw. Never deposit."
+ },
+ {
+  "id": "024_N",
+  "sp": "N",
+  "t": "Then came the coffee. And the rent. You know that part."
+ },
+ {
+  "id": "025_N",
+  "sp": "N",
+  "t": "So you start doing math. Everywhere."
+ },
+ {
+  "id": "026_N",
+  "sp": "N",
+  "t": "A streaming subscription, sixteen dollars a month. Sixteen minutes, every month, for a show you fall asleep to."
+ },
+ {
+  "id": "027_N",
+  "sp": "N",
+  "t": "Cancel."
+ },
+ {
+  "id": "028_N",
+  "sp": "N",
+  "t": "Groceries, eighty-four dollars. An hour and twenty-four minutes. You put back the fancy cheese. Then you put back the normal cheese."
+ },
+ {
+  "id": "029_N",
+  "sp": "N",
+  "t": "A taxi across town, thirty dollars. Thirty minutes. Walking takes forty."
+ },
+ {
+  "id": "030_N",
+  "sp": "N",
+  "t": "So you walk, feeling smart. Until you realize you just spent forty minutes to save thirty."
+ },
+ {
+  "id": "031_N",
+  "sp": "N",
+  "t": "A new phone, one thousand dollars. Almost seventeen hours."
+ },
+ {
+  "id": "032_N",
+  "sp": "N",
+  "t": "A gym membership you never use, forty dollars a month. You've been paying minutes just to feel guilty."
+ },
+ {
+  "id": "033_N",
+  "sp": "N",
+  "t": "Your friend's wedding in Miami. Flight, hotel, gift. Two thousand dollars. Almost a day and a half of your life. You send a card."
+ },
+ {
+  "id": "034_N",
+  "sp": "N",
+  "t": "The average new car in America costs about forty-eight thousand dollars. That's thirty-three days of your life. For a car."
+ },
+ {
+  "id": "035_N",
+  "sp": "N",
+  "t": "And rent is the real monster. Fifteen hundred a month is twelve and a half days of your life, every single year."
+ },
+ {
+  "id": "036_N",
+  "sp": "N",
+  "t": "Benjamin Franklin wrote, remember that time is money, back in seventeen forty-eight. He meant it as advice. For you, it's a receipt."
+ },
+ {
+  "id": "037_N",
+  "sp": "N",
+  "t": "But you get good at this. Really good."
+ },
+ {
+  "id": "038_N",
+  "sp": "N",
+  "t": "Coupons. Free samples. Birthday parties with free cake. You haven't paid for lunch in two weeks."
+ },
+ {
+  "id": "039_N",
+  "sp": "N",
+  "t": "Your number barely moves. You feel immortal."
+ },
+ {
+  "id": "040_N",
+  "sp": "N",
+  "t": "But there's a catch nobody warns you about."
+ },
+ {
+  "id": "041_N",
+  "sp": "N",
+  "t": "Rule two says it's free if someone else pays. So you let them."
+ },
+ {
+  "id": "042_N",
+  "sp": "N",
+  "t": "Marco pays for dinner. Then the movies. Then the gas."
+ },
+ {
+  "id": "043_N",
+  "sp": "N",
+  "t": "On a date, the check arrives, and you study the ceiling for a very long time."
+ },
+ {
+  "id": "044_N",
+  "sp": "N",
+  "t": "Mom calls and asks why you never visit. A visit means a bus ticket. A bus ticket means minutes. So you say you're busy."
+ },
+ {
+  "id": "045_N",
+  "sp": "N",
+  "t": "Slowly, people notice. You're the guy who never pays."
+ },
+ {
+  "id": "046_N",
+  "sp": "N",
+  "t": "Marco stops texting first."
+ },
+ {
+  "id": "047_N",
+  "sp": "N",
+  "t": "Your birthday comes, and nobody plans anything. Planning means somebody pays, and everyone knows who won't."
+ },
+ {
+  "id": "048_N",
+  "sp": "N",
+  "t": "And it hits you. You're saving minutes, but you're losing people."
+ },
+ {
+  "id": "049_N",
+  "sp": "N",
+  "t": "Here's what science says about that."
+ },
+ {
+  "id": "050_N",
+  "sp": "N",
+  "t": "In twenty seventeen, Harvard researcher Ashley Whillans and her team surveyed more than six thousand people in four countries."
+ },
+ {
+  "id": "051_N",
+  "sp": "N",
+  "t": "The people who paid to save time, like paying someone to do the chores they hate, were more satisfied with their lives."
+ },
+ {
+  "id": "052_N",
+  "sp": "N",
+  "t": "In another experiment, people got forty dollars on two different weekends. Once they spent it on stuff. Once on something that saved them time. The time purchase made them feel better."
+ },
+ {
+  "id": "053_N",
+  "sp": "N",
+  "t": "Researchers even have a name for always feeling short on time. Time poverty. And money can fix it, if you spend it right."
+ },
+ {
+  "id": "054_N",
+  "sp": "N",
+  "t": "Money that buys you time is the best money you'll ever spend. Money that costs you people is the worst."
+ },
+ {
+  "id": "055_N",
+  "sp": "N",
+  "t": "If this video made you count your minutes, hit subscribe. It costs you nothing. Literally."
+ },
+ {
+  "id": "056_N",
+  "sp": "N",
+  "t": "And then, one night, the envelope slides under your door."
+ },
+ {
+  "id": "057_N",
+  "sp": "N",
+  "t": "It's not your bill. It's Mom's."
+ },
+ {
+  "id": "058_N",
+  "sp": "N",
+  "t": "Her surgery. Ninety thousand dollars the insurance won't cover. Due Friday."
+ },
+ {
+  "id": "059_N",
+  "sp": "N",
+  "t": "Ninety thousand minutes. That's sixty-two days of your life."
+ },
+ {
+  "id": "060_N",
+  "sp": "N",
+  "t": "You know the trick. Rule two. Start a fundraiser, let strangers pay, lose nothing."
+ },
+ {
+  "id": "061_N",
+  "sp": "N",
+  "t": "But fundraisers take weeks. Mom has four days."
+ },
+ {
+  "id": "062_N",
+  "sp": "N",
+  "t": "You sit on the kitchen floor with the envelope and run the numbers again and again. They don't change."
+ },
+ {
+  "id": "063_N",
+  "sp": "N",
+  "t": "You call Marco. You haven't talked in a month. He picks up on the first ring."
+ },
+ {
+  "id": "064_N",
+  "sp": "N",
+  "t": "He says just one thing. Go. I'm coming with you."
+ },
+ {
+  "id": "065_N",
+  "sp": "N",
+  "t": "You take the first bus to the hospital. Four dollars. You don't even look up."
+ },
+ {
+  "id": "066_N",
+  "sp": "N",
+  "t": "Mom is sitting in a plastic chair, holding the same envelope. She tries to smile. She says, we'll figure it out, honey."
+ },
+ {
+  "id": "067_N",
+  "sp": "N",
+  "t": "At the front desk, you open the payment screen. Ninety thousand. Pay."
+ },
+ {
+  "id": "068_N",
+  "sp": "N",
+  "t": "Click."
+ },
+ {
+  "id": "069_N",
+  "sp": "N",
+  "t": "The number rolls down. Two months, gone in a second."
+ },
+ {
+  "id": "070_N",
+  "sp": "N",
+  "t": "And all you feel is relief. Two months of your life, for years of hers."
+ },
+ {
+  "id": "071_N",
+  "sp": "N",
+  "t": "Marco puts a hand on your shoulder. Two months, he says. Let's make sure the rest are good ones."
+ },
+ {
+  "id": "072_N",
+  "sp": "N",
+  "t": "Mom sees the number over your head for the first time. She doesn't understand it. But she understands your face."
+ },
+ {
+  "id": "073_N",
+  "sp": "N",
+  "t": "Here's the strange part."
+ },
+ {
+  "id": "074_N",
+  "sp": "N",
+  "t": "In real life, the federal minimum wage in America is seven dollars and twenty-five cents an hour."
+ },
+ {
+  "id": "075_N",
+  "sp": "N",
+  "t": "That means for millions of people, one dollar already costs about eight minutes of work."
+ },
+ {
+  "id": "076_N",
+  "sp": "N",
+  "t": "Your curse wasn't a curse. It was a discount."
+ },
+ {
+  "id": "077_N",
+  "sp": "N",
+  "t": "We all pay in minutes. You were just the only one who could see the price."
+ },
+ {
+  "id": "078_N",
+  "sp": "N",
+  "t": "Every shift, every overtime hour, every late night at the office. That's minutes, turned into dollars, turned into stuff."
+ },
+ {
+  "id": "079_N",
+  "sp": "N",
+  "t": "A week later, Mom is home. Marco comes over. You buy him a coffee."
+ },
+ {
+  "id": "080_N",
+  "sp": "N",
+  "t": "Five dollars. Click. Five minutes."
+ },
+ {
+  "id": "081_N",
+  "sp": "N",
+  "t": "Best five minutes you ever spent."
+ },
+ {
+  "id": "082_N",
+  "sp": "N",
+  "t": "Because the real question was never how much something costs. It's how much of your life it's worth."
+ },
+ {
+  "id": "083_N",
+  "sp": "N",
+  "t": "So tell me. If you could see the price of everything in minutes of your life, what would you stop buying first?",
+  "gap": 2.5
+ }
 ]

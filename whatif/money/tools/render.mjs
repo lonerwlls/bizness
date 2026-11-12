@@ -83,7 +83,7 @@ if (r.status !== 0) process.exit(1);
 const mix = path.join(dir, 'mix.wav');
 r = spawnSync(process.execPath, [path.join(ROOT, 'tools', 'mix-audio.mjs'), tlFile, path.join('public', c.bed ?? 'sfx/bed.wav'), String(c.bedVolume ?? 1), mix], {stdio: 'inherit', cwd: ROOT});
 if (r.status !== 0) process.exit(1);
-r = spawnSync(process.execPath, [path.join(ROOT, 'tools', 'loudness.mjs'), mix, silent, out, '-16'], {stdio: 'inherit', cwd: ROOT});
+r = spawnSync(process.execPath, [path.join(ROOT, 'tools', 'loudness.mjs'), mix, silent, out, String(c.lufs ?? -16)], {stdio: 'inherit', cwd: ROOT});
 if (r.status !== 0) process.exit(1);
 if (short) {
 	const phone = out.replace(/\.mp4$/, '_phone.mp4');

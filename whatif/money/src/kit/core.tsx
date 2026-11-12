@@ -22,13 +22,14 @@ export const lineEnd = (n: string) => L(n).from + L(n).dur;
 /* The on-screen counter (age, money, lives… — STORY.counter) over the whole video.
    Keys are tied to lines: {line: '012', off: 6, v: 17, roll: 6} = becomes 17 six frames
    into line 012, rolling over 6 frames. Tie every change to the word that causes it. */
-type CounterKey = {at: number; v: number; roll: number};
+type CounterKey = {at: number; v: number; roll: number; quiet?: boolean};
 let KEYS: CounterKey[] | null = null;
 const keys = () =>
 	(KEYS ??= (STORY.counter?.keys ?? [{line: LINES[0]?.id ?? '001', off: 0, v: 0, roll: 0}]).filter((k, i) => i === 0 || LINES.some((l) => l.id.startsWith(k.line))).map((k, i) => ({
 		at: i === 0 ? 0 : L(k.line).from + (k.off ?? 0),
 		v: k.v,
 		roll: k.roll ?? 0,
+		quiet: k.quiet,
 	})));
 export const counterAt = (gf: number) => {
 	const K = keys();
@@ -49,8 +50,8 @@ export const counterChangedAgo = (gf: number) => {
 /* the last finished change: frames since it ended and its full size (start of the roll → end) */
 export const lastChange = (gf: number) => {
 	const K = keys();
-	let r = {ago: -999, delta: 0};
-	for (let i = 1; i < K.length; i++) if (gf >= K[i].at + K[i].roll) r = {ago: gf - K[i].at - K[i].roll, delta: K[i].v - K[i - 1].v};
+	let r = {ago: -999, delta: 0, quiet: false};
+	for (let i = 1; i < K.length; i++) if (gf >= K[i].at + K[i].roll) r = {ago: gf - K[i].at - K[i].roll, delta: K[i].v - K[i - 1].v, quiet: !!K[i].quiet};
 	return r;
 };
 // the hero's body ageing (stubble, wrinkles, broader frame) follows the counter if the story wants it

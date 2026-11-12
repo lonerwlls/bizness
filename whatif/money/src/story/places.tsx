@@ -276,7 +276,7 @@ export const Hallway: React.FC<{f: number}> = ({f}) => (
 );
 
 /* the envelope from under the door, in close-up */
-export const Envelope: React.FC<{x: number; y: number; s?: number; rot?: number; open?: number; glow?: number}> = ({x, y, s = 1, rot = 0, open = 1, glow = 0}) => (
+export const Envelope: React.FC<{x: number; y: number; s?: number; rot?: number; open?: number; glow?: number; amount?: string; patient?: string; due?: number}> = ({x, y, s = 1, rot = 0, open = 1, glow = 0, amount = '$ ???,???', patient, due = 0}) => (
 	<g transform={`translate(${x},${y}) rotate(${rot}) scale(${s})`}>
 		{glow > 0 ? <rect x={-300} y={-170} width={600} height={340} rx={30} fill="#ff4a4a" opacity={0.35 * glow} style={{filter: 'blur(30px)'}} /> : null}
 		<rect x={-260} y={-150} width={520} height={300} rx={10} fill="#000" opacity={0.3} transform="translate(10,16)" style={{filter: 'blur(10px)'}} />
@@ -290,8 +290,21 @@ export const Envelope: React.FC<{x: number; y: number; s?: number; rot?: number;
 				AMOUNT DUE:
 			</text>
 			<text x={-230} y={124} fontSize={52} fontFamily={FONT} fontWeight={900} fill="#13203a">
-				$ ???,???
+				{amount}
 			</text>
+			{patient ? (
+				<text x={-230} y={-50} fontSize={30} fontFamily={FONT} fontWeight={900} fill="#d23b3b">
+					PATIENT: {patient}
+				</text>
+			) : null}
+			{due > 0 ? (
+				<g transform={`translate(150,70) rotate(8) scale(${1 + (1 - Math.min(1, due)) * 1.3})`} opacity={Math.min(1, due * 1.5)}>
+					<rect x={-100} y={-30} width={200} height={60} rx={8} fill="#d23b3b" />
+					<text y={12} textAnchor="middle" fontSize={30} fontFamily={FONT} fontWeight={900} fill="#fff">
+						DUE FRIDAY
+					</text>
+				</g>
+			) : null}
 			<g transform="translate(150,-60) rotate(-10)">
 				<rect x={-110} y={-36} width={220} height={72} rx={8} fill="none" stroke="#d23b3b" strokeWidth={6} />
 				<text x={0} y={14} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#d23b3b">

@@ -105,7 +105,7 @@ export const Bedroom: React.FC<{night?: boolean; f: number; ring?: boolean}> = (
 			<rect x={340} y={310} width={20} height={40} fill="#f2f2f2" />
 			<path d="M340,350 l-12,24 h44 l-12,-24 z" fill="#ff7a3a" />
 			<text x={350} y={420} textAnchor="middle" fontSize={24} fontFamily={FONT} fill="#fff">
-				МАРС
+				MARS
 			</text>
 		</Poster>
 		<Poster x={1360} y={220} w={200} h={140} c={night ? '#5a2f6a' : '#e86aa0'} tilt={4}>
