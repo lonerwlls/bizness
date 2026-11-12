@@ -162,12 +162,11 @@ const VARIANTS = [
 	{m: 1.42, dx: 50, dy: -70, sx: -1},
 	{m: 1.12, dx: 60, dy: -10, sx: 1},
 ];
-export const applyAngle = <C extends CamLike>(cam: C, a: Angle, gf: number): C => {
-	const v = VARIANTS[a.k % VARIANTS.length];
-	const prog = Math.max(0, Math.min(1, a.t / Math.max(1, a.len)));
+const angleCam = <C extends CamLike>(cam: C, k: number, prog: number, gf: number): C => {
+	const v = VARIANTS[k % VARIANTS.length];
 	// close-ups go wider on alternate angles instead of tighter
 	let m = v.m;
-	if (cam.zoom >= 1.55 && a.k % 2 === 1) m = Math.max(1.05 / cam.zoom, 0.8);
+	if (cam.zoom >= 1.55 && k % 2 === 1) m = Math.max(1.05 / cam.zoom, 0.8);
 	if (cam.zoom * m > 2.7) m = 2.7 / cam.zoom;
 	m *= 1 + 0.05 * prog;
 	return {
@@ -176,6 +175,16 @@ export const applyAngle = <C extends CamLike>(cam: C, a: Angle, gf: number): C =
 		x: cam.x * m + v.dx + v.sx * 36 * (prog - 0.5) + Math.sin(gf / 47) * 5,
 		y: cam.y * m + v.dy + Math.sin(gf / 61) * 3.5,
 	};
+};
+/* a new angle is reached by a quick camera glide (push in / pull out / slide), not a hard cut */
+const GLIDE = 14;
+export const applyAngle = <C extends CamLike>(cam: C, a: Angle, gf: number): C => {
+	const prog = Math.max(0, Math.min(1, a.t / Math.max(1, a.len)));
+	const now = angleCam(cam, a.k, prog, gf);
+	if (a.k === 0 || a.t >= GLIDE) return now;
+	const prev = angleCam(cam, a.k - 1, 1, gf);
+	const e = Easing.inOut(Easing.cubic)(Math.max(0, a.t) / GLIDE);
+	return {...now, zoom: prev.zoom + (now.zoom - prev.zoom) * e, x: prev.x + (now.x - prev.x) * e, y: prev.y + (now.y - prev.y) * e};
 };
 /* the same idea for flat cards (boards, rule cards): each angle is a visible new view —
    the card turns a few degrees in 3D (left / right / slightly from below) and keeps

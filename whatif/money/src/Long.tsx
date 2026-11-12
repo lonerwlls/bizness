@@ -2,6 +2,26 @@ import React from 'react';
 import {AbsoluteFill, Audio, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {AngleCtx, L, LINES, ShotCtx, TOTAL} from './kit/core';
 import {SHOT_TIMES, WHIPS, cutsFor} from './kit/coverage';
+
+/* inside one place (no whip) the shot change is a fast camera push: the old view rushes in
+   for a few frames, the new one settles from slightly closer — reads as one camera move */
+const PUSHES = SHOT_TIMES.filter((s, i) => i > 0 && !s.whip).map((s) => s.start);
+const PUSH_OUT = 5;
+const PUSH_IN = 7;
+export const pushAt = (f: number) => {
+	for (const b of PUSHES) {
+		const d = f - b;
+		if (d >= -PUSH_OUT && d < 0) {
+			const k = (d + PUSH_OUT + 1) / (PUSH_OUT + 1);
+			return k * k;
+		}
+		if (d >= 0 && d < PUSH_IN) {
+			const k = 1 - d / PUSH_IN;
+			return k * k * k;
+		}
+	}
+	return 0;
+};
 import {STORY} from './story/config';
 import {Caption} from './kit/graphics';
 
@@ -51,6 +71,7 @@ export const VoiceTrack: React.FC = () => (
 export const Long: React.FC<{sound?: boolean}> = ({sound = true}) => {
 	const f = useCurrentFrame();
 	const w = whipAt(f);
+	const pz = pushAt(f);
 	const last = LINES[LINES.length - 1];
 	return (
 		<AbsoluteFill style={{background: '#000'}}>
@@ -59,7 +80,15 @@ export const Long: React.FC<{sound?: boolean}> = ({sound = true}) => {
 					<feGaussianBlur stdDeviation={`${w ? 60 * w.k : 0} 0`} />
 				</filter>
 			</svg>
-			<AbsoluteFill style={w ? {transform: `translateX(${w.dir * 260 * w.k}px) scale(${1 + 0.12 * w.k})`, filter: 'url(#whipBlur)'} : undefined}>
+			<AbsoluteFill
+				style={
+					w
+						? {transform: `translateX(${w.dir * 260 * w.k}px) scale(${1 + 0.12 * w.k})`, filter: 'url(#whipBlur)'}
+						: pz > 0.01
+							? {transform: `scale(${1 + 0.22 * pz})`, transformOrigin: '50% 45%', filter: `blur(${(4 * pz).toFixed(2)}px)`}
+							: undefined
+				}
+			>
 				{SHOT_TIMES.map((s, i) => (
 					<Sequence key={i} from={s.start} durationInFrames={s.end - s.start} name={`shot ${i + 1} @${s.at}`}>
 						<ShotHost start={s.start} end={s.end} C={s.C} own={s.own} />

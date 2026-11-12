@@ -2,9 +2,9 @@ import React from 'react';
 import {darken, lighten} from './color';
 
 export type Expr = 'normal' | 'angry' | 'sad' | 'sleepy' | 'wide' | 'worried';
-export type Hair = 'none' | 'spiky' | 'bun' | 'cap' | 'ponytail' | 'grey' | 'bob' | 'short' | 'beanie';
-export type Outfit = 'hoodie' | 'suit' | 'gown' | 'coat' | 'apron' | 'tee';
-export type Acc = 'headphones' | 'mustache' | 'glasses';
+export type Hair = 'none' | 'spiky' | 'bun' | 'cap' | 'ponytail' | 'grey' | 'bob' | 'short' | 'beanie' | 'messy' | 'visor';
+export type Outfit = 'hoodie' | 'suit' | 'gown' | 'coat' | 'apron' | 'tee' | 'vest' | 'bomber' | 'raincoat' | 'labcoat';
+export type Acc = 'headphones' | 'mustache' | 'glasses' | 'bowtie' | 'suspenders' | 'scarf' | 'antenna' | 'neckphones';
 export type Mouth = 'line' | 'frown' | 'open' | 'smile' | 'flat' | 'smirk' | 'none';
 export type HandShape = 'fist' | 'point' | 'snap';
 
@@ -72,6 +72,11 @@ type Props = {
 	chestText?: string;
 	// draw the front arm over the face (hand to cheek, facepalm, finger to lips)
 	armOver?: boolean;
+	head?: HeadStyle;
+	skin?: string; // custom head colour (with the light-head face style)
+	shape?: 'round' | 'square';
+	accent?: string; // second colour: vest, scarf, antenna bulb, bow tie
+	t?: number; // frame, for things that flutter (scarf)
 };
 
 const Limb: React.FC<{pts: V[]; w: number; c: string; hi?: string; hiSide?: number}> = ({pts, w, c, hi, hiSide = -1}) => {
@@ -105,24 +110,39 @@ const Limb: React.FC<{pts: V[]; w: number; c: string; hi?: string; hiSide?: numb
 	);
 };
 
-const Eye: React.FC<{cx: number; cy: number; rx: number; ry: number; pr: number; look: V; lid: number}> = ({
-	cx,
-	cy,
-	rx,
-	ry,
-	pr,
-	look,
-	lid,
-}) => (
-	<>
-		<ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="#fff" />
-		<circle cx={cx + look[0] * (rx - pr - 1)} cy={cy + look[1] * (ry - pr - 1)} r={pr} fill="#000" />
-		{lid > 0.01 ? <rect x={cx - rx - 2} y={cy - ry - 3} width={rx * 2 + 4} height={2 * ry * lid + 3} fill="#000" /> : null}
-		{lid > 0.25 && lid < 0.95 ? (
-			<line x1={cx - rx} y1={cy - ry + 2 * ry * lid} x2={cx + rx} y2={cy - ry + 2 * ry * lid} stroke="#fff" strokeWidth={2.5} strokeLinecap="round" />
-		) : null}
-	</>
-);
+/* head styles: the face is drawn in `ink` on a `skin` head; 'dot' eyes are dark ovals with a glint */
+export type HeadStyle = 'black' | 'white' | 'coin' | 'peach';
+export const HEADS: Record<HeadStyle, {skin: string; ink: string; edge?: string; dot: boolean; cheek?: string; mouthIn: string}> = {
+	black: {skin: '#000', ink: '#fff', dot: false, mouthIn: '#fff'},
+	white: {skin: '#f7f3ea', ink: '#1b1a26', edge: '#1b1a26', dot: true, cheek: '#ff9a9a', mouthIn: '#7a2030'},
+	coin: {skin: '#f6c445', ink: '#3a2408', edge: '#8a5a10', dot: true, cheek: '#ff9a6a', mouthIn: '#7a2030'},
+	peach: {skin: '#f2c9a5', ink: '#2a1a14', edge: '#2a1a14', dot: false, cheek: '#ff8f8f', mouthIn: '#7a2030'},
+};
+const Eye: React.FC<{cx: number; cy: number; rx: number; ry: number; pr: number; look: V; lid: number; hs?: HeadStyle}> = ({cx, cy, rx, ry, pr, look, lid, hs = 'black'}) => {
+	const H = HEADS[hs];
+	if (H.dot) {
+		const ex = cx + look[0] * 2.5;
+		const ey = cy + look[1] * 2.5;
+		return (
+			<>
+				<ellipse cx={ex} cy={ey} rx={rx * 0.62} ry={ry * 0.92} fill={H.ink} />
+				<circle cx={ex + 2.5 + look[0] * 1.5} cy={ey - 4 + look[1] * 1.5} r={2.6} fill="#fff" />
+				{lid > 0.01 ? <rect x={cx - rx - 2} y={cy - ry - 3} width={rx * 2 + 4} height={2 * ry * lid + 3} fill={H.skin} /> : null}
+				{lid > 0.25 ? <line x1={cx - rx * 0.7} y1={cy - ry + 2 * ry * lid} x2={cx + rx * 0.7} y2={cy - ry + 2 * ry * lid} stroke={H.ink} strokeWidth={3} strokeLinecap="round" /> : null}
+			</>
+		);
+	}
+	const sclera = hs === 'black' ? '#fff' : '#fff';
+	return (
+		<>
+			<ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={sclera} stroke={hs === 'black' ? 'none' : H.ink} strokeWidth={2} />
+			<circle cx={cx + look[0] * (rx - pr - 1)} cy={cy + look[1] * (ry - pr - 1)} r={hs === 'black' ? pr : pr + 1.5} fill="#000" />
+			{hs !== 'black' ? <circle cx={cx + look[0] * (rx - pr - 1) + 1.5} cy={cy + look[1] * (ry - pr - 1) - 2} r={1.6} fill="#fff" /> : null}
+			{lid > 0.01 ? <rect x={cx - rx - 2} y={cy - ry - 3} width={rx * 2 + 4} height={2 * ry * lid + 3} fill={H.skin} /> : null}
+			{lid > 0.25 && lid < 0.95 ? <line x1={cx - rx} y1={cy - ry + 2 * ry * lid} x2={cx + rx} y2={cy - ry + 2 * ry * lid} stroke={H.ink} strokeWidth={2.5} strokeLinecap="round" /> : null}
+		</>
+	);
+};
 
 const HeadShape: React.FC<{hair: Hair; hairColor: string; front: boolean}> = ({hair, hairColor, front}) => {
 	if (!front) {
@@ -156,6 +176,24 @@ const HeadShape: React.FC<{hair: Hair; hairColor: string; front: boolean}> = ({h
 				<rect x={-R - 6} y={-24} width={2 * R + 12} height={17} rx={8} fill={lighten(hairColor, 0.12)} />
 				<circle cx={2} cy={-R - 22} r={15} fill="#eef1f6" />
 				<circle cx={-3} cy={-R - 27} r={6} fill="#ffffff" />
+			</>
+		);
+	if (hair === 'messy')
+		return (
+			<path
+				d={`M${-R - 4},${-6} L${-R - 18},${-26} L${-R + 2},${-30} L${-R - 6},${-52} L${-24},${-R - 4} L${-20},${-R - 24} L${-4},${-R - 6} L${6},${-R - 28} L${16},${-R - 6} L${34},${-R - 20} L${30},${-R + 2} L${R + 14},${-30} L${R - 2},${-18} L${R + 4},${-6} C${R - 10},${-R + 4} ${-R + 10},${-R + 4} ${-R - 4},${-6} Z`}
+				fill={hairColor}
+				stroke={darken(hairColor, 0.35)}
+				strokeWidth={3}
+				strokeLinejoin="round"
+			/>
+		);
+	if (hair === 'visor')
+		return (
+			<>
+				<path d={`M${-R + 2},${-14} C${-R + 2},${-R - 8} ${R - 2},${-R - 8} ${R - 2},${-14} Z`} fill="#3a2a1a" />
+				<rect x={-R - 2} y={-28} width={2 * R + 4} height={14} rx={7} fill={hairColor} />
+				<path d={`M${R - 10},${-26} Q${R + 34},${-30} ${R + 44},${-12} L${R - 6},${-14} Z`} fill={hairColor} opacity={0.75} />
 			</>
 		);
 	if (hair === 'cap')
@@ -198,6 +236,10 @@ export const Stickman: React.FC<Props> = (p) => {
 		scale = 1,
 		facing = 1,
 	} = p;
+	const hs: HeadStyle = p.head ?? 'black';
+	const HD = p.skin ? {...HEADS[hs], skin: p.skin} : HEADS[hs];
+	const accent = p.accent ?? '#e4473c';
+	const tt = p.t ?? 0;
 	const shoe = p.shoe ?? color;
 	const hi = lighten(color, 0.35);
 	const sh = darken(color, 0.22);
@@ -243,7 +285,7 @@ export const Stickman: React.FC<Props> = (p) => {
 		if (expr === 'normal' || expr === 'wide' || expr === 'sleepy') return null;
 		const inner = side === -1 ? e[0] + 9 : e[0] - 9;
 		const outer = side === -1 ? e[0] - 10 : e[0] + 10;
-		return <line x1={outer} y1={y - a * 0.4} x2={inner} y2={y + a * 0.6} stroke="#fff" strokeWidth={5} strokeLinecap="round" />;
+		return <line x1={outer} y1={y - a * 0.4} x2={inner} y2={y + a * 0.6} stroke={HD.ink} strokeWidth={5} strokeLinecap="round" />;
 	};
 
 	const mx = ex * 0.7;
@@ -251,17 +293,17 @@ export const Stickman: React.FC<Props> = (p) => {
 		const y = 24;
 		switch (mouth) {
 			case 'line':
-				return <line x1={mx - 7} y1={y} x2={mx + 7} y2={y - 1} stroke="#fff" strokeWidth={3.5} strokeLinecap="round" />;
+				return <line x1={mx - 7} y1={y} x2={mx + 7} y2={y - 1} stroke={HD.ink} strokeWidth={3.5} strokeLinecap="round" />;
 			case 'flat':
-				return <line x1={mx - 4} y1={y} x2={mx + 5} y2={y} stroke="#fff" strokeWidth={3} strokeLinecap="round" />;
+				return <line x1={mx - 4} y1={y} x2={mx + 5} y2={y} stroke={HD.ink} strokeWidth={3} strokeLinecap="round" />;
 			case 'frown':
-				return <path d={`M${mx - 8},${y + 3} Q${mx},${y - 5} ${mx + 8},${y + 3}`} stroke="#fff" strokeWidth={3.5} fill="none" strokeLinecap="round" />;
+				return <path d={`M${mx - 8},${y + 3} Q${mx},${y - 5} ${mx + 8},${y + 3}`} stroke={HD.ink} strokeWidth={3.5} fill="none" strokeLinecap="round" />;
 			case 'smile':
-				return <path d={`M${mx - 8},${y - 2} Q${mx},${y + 6} ${mx + 8},${y - 2}`} stroke="#fff" strokeWidth={3.5} fill="none" strokeLinecap="round" />;
+				return <path d={`M${mx - 8},${y - 2} Q${mx},${y + 6} ${mx + 8},${y - 2}`} stroke={HD.ink} strokeWidth={3.5} fill="none" strokeLinecap="round" />;
 			case 'smirk':
-				return <path d={`M${mx - 9},${y + 1} Q${mx + 2},${y + 4} ${mx + 10},${y - 5}`} stroke="#fff" strokeWidth={3.5} fill="none" strokeLinecap="round" />;
+				return <path d={`M${mx - 9},${y + 1} Q${mx + 2},${y + 4} ${mx + 10},${y - 5}`} stroke={HD.ink} strokeWidth={3.5} fill="none" strokeLinecap="round" />;
 			case 'open':
-				return <ellipse cx={mx} cy={y + 1} rx={5} ry={6.5} fill="#fff" />;
+				return <ellipse cx={mx} cy={y + 1} rx={5} ry={6.5} fill={HD.mouthIn} stroke={HD.ink} strokeWidth={hs === 'black' ? 0 : 2} />;
 			default:
 				return null;
 		}
@@ -346,6 +388,66 @@ export const Stickman: React.FC<Props> = (p) => {
 							<circle cx={-12} cy={-90} r={3} fill={darken(color, 0.15)} />
 						</>
 					) : null}
+					{outfit === 'vest' ? (
+						<>
+							<path d={`M${-bw},${torsoTop + 14} L${-6},${torsoTop + 50} L${-6},${10} L${-bw},${10} Z M${bw},${torsoTop + 14} L${14},${torsoTop + 50} L${14},${10} L${bw},${10} Z`} fill={accent} />
+							<circle cx={18} cy={-40} r={2.5} fill={darken(accent, 0.3)} />
+							<circle cx={18} cy={-22} r={2.5} fill={darken(accent, 0.3)} />
+						</>
+					) : null}
+					{outfit === 'bomber' ? (
+						<>
+							<rect x={-bw} y={torsoTop - 2} width={bw * 2} height={14} rx={7} fill={darken(color, 0.25)} />
+							<rect x={-bw} y={-2} width={bw * 2} height={14} rx={6} fill={darken(color, 0.25)} />
+							{[0, 1, 2].map((i) => <line key={i} x1={-bw + 4} y1={2 + i * 4} x2={bw - 4} y2={2 + i * 4} stroke={darken(color, 0.4)} strokeWidth={1.5} />)}
+							<line x1={6} y1={torsoTop + 10} x2={6} y2={-2} stroke={lighten(color, 0.5)} strokeWidth={3} />
+							<circle cx={-14} cy={torsoTop + 40} r={9} fill={accent} stroke={lighten(accent, 0.5)} strokeWidth={2} />
+						</>
+					) : null}
+					{outfit === 'raincoat' || outfit === 'labcoat' ? (
+						<>
+							<path d={`M${-bw - 2},${-20} L${-bw - 14},${70} Q0,${80} ${bw + 16},${70} L${bw + 2},${-20} Z`} fill={color} />
+							<path d={`M${-bw - 14},${70} Q0,${80} ${bw + 16},${70}`} stroke={darken(color, 0.2)} strokeWidth={4} fill="none" />
+							<line x1={6} y1={torsoTop + 10} x2={8} y2={74} stroke={darken(color, 0.22)} strokeWidth={3} />
+							<path d={`M${-4},${torsoTop + 2} L${8},${torsoTop + 26} L${20},${torsoTop + 2}`} stroke={darken(color, 0.25)} strokeWidth={4} fill="none" />
+							{outfit === 'raincoat' ? <rect x={-bw - 4} y={-4} width={bw * 2 + 8} height={10} rx={4} fill={darken(color, 0.3)} /> : null}
+							<rect x={12} y={20} width={20} height={22} rx={4} fill="none" stroke={darken(color, 0.25)} strokeWidth={3} />
+							{outfit === 'labcoat' ? (
+								<>
+									<rect x={-20} y={torsoTop + 34} width={16} height={14} rx={2} fill="none" stroke={darken(color, 0.2)} strokeWidth={2} />
+									<line x1={-16} y1={torsoTop + 30} x2={-16} y2={torsoTop + 42} stroke={accent} strokeWidth={3} />
+									<line x1={-10} y1={torsoTop + 28} x2={-10} y2={torsoTop + 42} stroke="#3d6fd6" strokeWidth={3} />
+								</>
+							) : null}
+						</>
+					) : null}
+					{acc.includes('suspenders') ? (
+						<>
+							<line x1={-16} y1={torsoTop + 2} x2={-12} y2={10} stroke={accent} strokeWidth={5} />
+							<line x1={20} y1={torsoTop + 2} x2={16} y2={10} stroke={accent} strokeWidth={5} />
+						</>
+					) : null}
+					{acc.includes('bowtie') ? (
+						<g transform={`translate(6,${torsoTop + 22})`}>
+							<path d="M0,0 L-14,-8 L-14,8 Z M0,0 L14,-8 L14,8 Z" fill="#d23b3b" />
+							<circle r={4} fill="#9a2020" />
+						</g>
+					) : null}
+					{acc.includes('scarf') ? (
+						<>
+							<path d={`M${-12},${torsoTop + 6} Q${-40},${torsoTop + 14 + Math.sin(tt / 6) * 6} ${-62},${torsoTop + 4 + Math.sin(tt / 6 + 1) * 10} L${-58},${torsoTop + 20 + Math.sin(tt / 6 + 1) * 10} Q${-36},${torsoTop + 28 + Math.sin(tt / 6) * 6} ${-10},${torsoTop + 20} Z`} fill={darken(accent, 0.1)} />
+							<rect x={-26} y={torsoTop - 6} width={52} height={20} rx={10} fill={accent} />
+							<rect x={4} y={torsoTop + 8} width={14} height={40} rx={6} fill={accent} />
+							<line x1={6} y1={torsoTop + 44} x2={16} y2={torsoTop + 44} stroke={lighten(accent, 0.5)} strokeWidth={3} />
+						</>
+					) : null}
+					{acc.includes('neckphones') ? (
+						<>
+							<path d={`M${-24},${torsoTop + 14} Q0,${torsoTop + 40} ${28},${torsoTop + 14}`} stroke="#1b1a26" strokeWidth={6} fill="none" />
+							<rect x={-32} y={torsoTop + 6} width={18} height={26} rx={8} fill={accent} stroke="#1b1a26" strokeWidth={2} />
+							<rect x={20} y={torsoTop + 6} width={18} height={26} rx={8} fill={accent} stroke="#1b1a26" strokeWidth={2} />
+						</>
+					) : null}
 					{p.chestText ? (
 						<g transform={`translate(4,${torsoTop + 40}) rotate(-4)`}>
 							<rect x={-26} y={-10} width={52} height={20} rx={3} fill="#fbfaf4" stroke="#c94a3a" strokeWidth={2} />
@@ -378,8 +480,36 @@ export const Stickman: React.FC<Props> = (p) => {
 					<HeadShape hair={hair} hairColor={hairColor} front={false} />
 					{p.hood ? <ellipse cx={-7} cy={-3} rx={R + 13} ry={R + 12} fill={sh} /> : null}
 					{p.hood ? <path d={`M${-R - 16},${-6} C${-R - 14},${-R - 26} ${R + 6},${-R - 30} ${R + 8},${-14}`} stroke={color} strokeWidth={9} fill="none" strokeLinecap="round" /> : null}
-					<circle r={R} fill="#000" />
+					{p.shape === 'square' ? (
+						<rect x={-R - 2} y={-R + 2} width={2 * R + 4} height={2 * R - 2} rx={24} fill={HD.skin} stroke={HD.edge ?? 'none'} strokeWidth={HD.edge ? 4 : 0} />
+					) : (
+						<circle r={R} fill={HD.skin} stroke={HD.edge ?? 'none'} strokeWidth={HD.edge ? 4 : 0} />
+					)}
+					{hs === 'coin' ? (
+						<g>
+							<circle r={R - 9} fill="none" stroke="#d99a1c" strokeWidth={3} />
+							{Array.from({length: 36}).map((_, i) => {
+								const a = (i / 36) * Math.PI * 2;
+								return <line key={i} x1={Math.cos(a) * (R - 3)} y1={Math.sin(a) * (R - 3)} x2={Math.cos(a) * R} y2={Math.sin(a) * R} stroke="#b9800c" strokeWidth={2} />;
+							})}
+							<ellipse cx={-22} cy={-26} rx={10} ry={6} fill="#fff6c8" opacity={0.7} transform="rotate(-30 -22 -26)" />
+						</g>
+					) : null}
+					{HD.cheek ? (
+						<>
+							<ellipse cx={-26 + faceTurn * 11} cy={14} rx={8} ry={5} fill={HD.cheek} opacity={0.55} />
+							<ellipse cx={26 + faceTurn * 11} cy={14} rx={8} ry={5} fill={HD.cheek} opacity={0.55} />
+						</>
+					) : null}
+					{hs === 'peach' ? [[-18, 8], [-12, 12], [-22, 14], [18, 8], [24, 12], [14, 13]].map(([fx, fy], i) => <circle key={i} cx={fx + faceTurn * 11} cy={fy} r={1.6} fill="#c07a50" />) : null}
 					<HeadShape hair={hair} hairColor={hairColor} front />
+					{acc.includes('antenna') ? (
+						<g>
+							<path d={`M2,${-R + 2} Q${8 + Math.sin(tt / 9) * 6},${-R - 22} ${4 + Math.sin(tt / 9) * 10},${-R - 40}`} stroke={HD.edge ?? '#1b1a26'} strokeWidth={4} fill="none" strokeLinecap="round" />
+							<circle cx={4 + Math.sin(tt / 9) * 10} cy={-R - 44} r={20} fill={accent} opacity={0.25} />
+							<circle cx={4 + Math.sin(tt / 9) * 10} cy={-R - 44} r={10} fill={accent} stroke={HD.edge ?? '#1b1a26'} strokeWidth={3} />
+						</g>
+					) : null}
 					{acc.includes('headphones') ? (
 						<>
 							<path d={`M${-R - 4},${4} C${-R - 8},${-R - 22} ${R + 8},${-R - 22} ${R + 4},${4}`} stroke="#2b2f3a" strokeWidth={8} fill="none" />
@@ -390,8 +520,8 @@ export const Stickman: React.FC<Props> = (p) => {
 			</g>
 			{/* face sits outside the rim filter so the white strokes stay crisp */}
 			<g transform={`translate(${headC[0]},${headC[1]}) rotate(${pose.head + lean * 0.25})`}>
-				<Eye cx={eL[0]} cy={eL[1]} rx={erx} ry={ery} pr={pr} look={look} lid={Math.max(lid, p.lidL ?? 0)} />
-				<Eye cx={eR[0]} cy={eR[1]} rx={erx} ry={ery} pr={pr} look={look} lid={Math.max(lid, p.lidR ?? 0)} />
+				<Eye cx={eL[0]} cy={eL[1]} rx={erx} ry={ery} pr={pr} look={look} lid={Math.max(lid, p.lidL ?? 0)} hs={hs} />
+				<Eye cx={eR[0]} cy={eR[1]} rx={erx} ry={ery} pr={pr} look={look} lid={Math.max(lid, p.lidR ?? 0)} hs={hs} />
 				{age > 0.05 ? (
 					<g>
 						<path d={`M${eL[0] - 8},${eL[1] + 15} q8,5 16,0 M${eR[0] - 8},${eR[1] + 15} q8,5 16,0`} stroke="#8a8f9e" strokeWidth={2.2} fill="none" strokeLinecap="round" opacity={Math.min(1, age * 1.5)} />
@@ -404,7 +534,7 @@ export const Stickman: React.FC<Props> = (p) => {
 					</g>
 				) : null}
 				{acc.includes('glasses') ? (
-					<g stroke="#fff" strokeWidth={2.5} fill="none">
+					<g stroke={hs === 'black' ? '#fff' : HD.ink} strokeWidth={hs === 'black' ? 2.5 : 3.5} fill="none">
 						<circle cx={eL[0]} cy={eL[1]} r={erx + 4} />
 						<circle cx={eR[0]} cy={eR[1]} r={erx + 4} />
 						<line x1={eL[0] + erx + 4} y1={eL[1]} x2={eR[0] - erx - 4} y2={eR[1]} />
@@ -413,7 +543,7 @@ export const Stickman: React.FC<Props> = (p) => {
 				{acc.includes('mustache') ? <path d={`M${mx - 13},${17} q6,-7 13,-2 q7,-5 13,2 q-6,3 -13,1 q-7,2 -13,-1 z`} fill="#c9c9cf" /> : null}
 				{brow(eL, -1)}
 				{brow(eR, 1)}
-				{(p.talk ?? 0) > 0.06 ? <ellipse cx={mx} cy={24} rx={6 + 2 * (p.talk ?? 0)} ry={2.5 + 8 * Math.min(1, p.talk ?? 0)} fill="#fff" /> : mouthEl}
+				{(p.talk ?? 0) > 0.06 ? <ellipse cx={mx} cy={24} rx={6 + 2 * (p.talk ?? 0)} ry={2.5 + 8 * Math.min(1, p.talk ?? 0)} fill={HD.mouthIn} stroke={HD.ink} strokeWidth={hs === 'black' ? 0 : 2} /> : mouthEl}
 			</g>
 			{p.armOver ? (
 				<g>
