@@ -1,0 +1,28 @@
+{
+ "ambience": [
+  {"from": "001", "to": "004", "kind": "crowd", "gain": 0.035},
+  {"from": "001", "to": "004", "kind": "room", "gain": 0.04},
+  {"from": "004", "to": "006", "kind": "street", "gain": 0.06},
+  {"from": "006", "to": "008", "kind": "fridge", "gain": 0.04},
+  {"from": "008", "to": "end", "kind": "night", "gain": 0.05}
+ ],
+ "music": [],
+ "sfx": [
+  {"at": "001", "off": 20, "type": "swoosh"},
+  {"at": "002", "off": 0, "type": "ding"},
+  {"at": "003", "off": 0, "type": "pop"},
+  {"at": "003", "off": 22, "type": "swoosh"},
+  {"at": "003", "off": 32, "type": "pop"},
+  {"at": "004", "off": 44, "type": "whooshUp"},
+  {"at": "005", "off": -6, "type": "steps", "dur": 1.2},
+  {"at": "005", "off": 34, "type": "pop"},
+  {"at": "006", "off": 6, "type": "swoosh"},
+  {"at": "006", "off": 40, "type": "pop"},
+  {"at": "006", "off": 76, "type": "click"},
+  {"at": "007", "off": 26, "type": "pop"},
+  {"at": "008", "off": 0, "type": "swoosh"},
+  {"at": "008", "off": 4, "type": "steps", "dur": 1.0, "pan": -0.4},
+  {"at": "008", "off": 52, "type": "heartbeat"},
+  {"at": "008", "off": 54, "type": "stamp"}
+ ]
+}

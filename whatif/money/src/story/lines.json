@@ -1,0 +1,10 @@
+[
+ {"id": "001_N", "sp": "N", "t": "You tap your card for a coffee. Five dollars.", "action": "hero at the cafe counter taps his card on the terminal", "graphic": "terminal screen $5.00, BEEP"},
+ {"id": "002_N", "sp": "N", "t": "Beep. And the number above your head drops by five.", "action": "hero freezes, looks up at the badge", "graphic": "badge MINUTES LEFT ticks down, −5"},
+ {"id": "003_N", "sp": "N", "t": "Not five dollars. Five minutes. Of your life.", "action": "close-up, hero touches his face, worried", "graphic": "callout: 5 MINUTES OF YOUR LIFE"},
+ {"id": "004_N", "sp": "N", "t": "What if every dollar you spent cost you one minute of your life?", "action": "hero looks at a coin that turns into a clock", "graphic": "title words fly in one by one; $1 coin flips into a clock"},
+ {"id": "005_N", "sp": "N", "t": "Sounds cheap, right? A dollar a minute.", "action": "hero walks down the evening street, shrugs, smirks", "graphic": "scales: $1 = 1 MIN"},
+ {"id": "006_N", "sp": "N", "t": "Then rent day comes. Fifteen hundred dollars.", "action": "hero at the kitchen table, taps PAY on the phone", "graphic": "calendar RENT DAY, phone: Pay rent $1,500"},
+ {"id": "007_N", "sp": "N", "t": "That's twenty-five hours. Gone in one tap.", "action": "hands on head", "graphic": "badge rolls −1,500, callout 25 HOURS"},
+ {"id": "008_N", "sp": "N", "t": "And one day, you'll get a bill that isn't even yours.", "action": "an envelope slides under the door, hero picks it up", "graphic": "red envelope FINAL NOTICE, $ ? ? ?"}
+]
