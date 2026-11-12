@@ -1,6 +1,6 @@
 import React from 'react';
 import {interpolate, spring} from 'remotion';
-import {Pose, Stickman} from '../engine/Stickman';
+import {Pose, Stickman, toLocal} from '../engine/Stickman';
 import {SIT, env, gesture, idle, reach, walkTo} from '../kit/actions';
 import {Actor, useShot} from '../kit/core';
 import type {ShotDef} from '../kit/coverage';
@@ -8,8 +8,9 @@ import {CrowdRow, HeroBadge, Layer, Stage, Svg, camOn, clamp, usePush} from '../
 import {Split} from '../kit/graphics';
 import {Bubble, Cite, FONT, HAND, PhoneChat, RuleCard} from '../kit/ui';
 import {CAST} from './cast';
-import {Bang, FL, HS, SFL, SmallPhone, StreetBG, badgeY} from './common';
-import {Apartment, CoinClock} from './places';
+import {Bang, CallSplit, FL, HS, SFL, SmallPhone, StreetBG, badgeY} from './common';
+import {Kitchen} from '../kit/sets';
+import {Apartment, CoinClock, SEAT, SeatChair, Sofa} from './places';
 import {BurgerBar} from './places2';
 
 /* PART 4 (≈3:00–4:25): the price — people drift away; the science of buying time; subscribe. */
@@ -111,9 +112,11 @@ const R043: React.FC = () => {
 							$84
 						</text>
 					</g>
-					<Actor who="hero" x={700} floor={FL} seat={752} s={HS} facing={1} faceTurn={0.4} look={up > 0.5 ? [0.3, -1] : [0.8, 0]} mouth={up > 0.5 ? 'flat' : 'smile'} pose={hp} uid="h-date" />
-					<HeroBadge x={700} y={752 - 164 - 118} s={0.8} />
-					<Actor who="date" x={1220} floor={FL} seat={752} s={0.97} facing={-1} faceTurn={0.4} look={up > 0.5 ? [-0.8, -0.2] : [-0.8, 0]} expr={up > 0.6 ? 'angry' : 'normal'} mouth={up > 0.5 ? 'flat' : 'smile'} pose={dp} uid="d-date" />
+					<SeatChair x={680} facing={1} />
+					<SeatChair x={1240} facing={-1} />
+					<Actor who="hero" x={700} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={up > 0.5 ? [0.3, -1] : [0.8, 0]} mouth={up > 0.5 ? 'flat' : 'smile'} pose={hp} uid="h-date" />
+					<HeroBadge x={700} y={SEAT - 164 - 118} s={0.8} />
+					<Actor who="date" x={1220} floor={FL} seat={SEAT} s={0.97} facing={-1} faceTurn={0.4} look={up > 0.5 ? [-0.8, -0.2] : [-0.8, 0]} expr={up > 0.6 ? 'angry' : 'normal'} mouth={up > 0.5 ? 'flat' : 'smile'} pose={dp} uid="d-date" />
 					{up > 0.5 ? <Bang f={f} t={w('043', 0.55)} x={760} y={300} text="♪ ♫ ..." c="#9fd8ff" /> : null}
 				</Svg>
 			</Layer>
@@ -125,45 +128,33 @@ const R043: React.FC = () => {
 const R044: React.FC = () => {
 	const {f, gf, at} = useShot();
 	const w = useW();
-	const HX = 700;
-	const ring = pop(f, at('044') - 4);
+	const HX = 960;
+	const k = spring({frame: f - at('044') + 6, fps: 30, config: {damping: 16, stiffness: 140}});
 	const ticket = pop(f, w('044', 0.38));
 	const busy = f > w('044', 0.78);
-	let hp: Pose = reach(idle(gf, 3), 'F', [30, -175], 1);
-	hp = {...hp, head: 6};
-	const cam = usePush(camOn(1000, 540, 1.15), camOn(1000, 520, 1.3));
-	return (
-		<Stage cam={cam} bg="#1b2045" light={{x: 10, y: 30, o: 0.45, c: '255,214,150'}}>
+	const ear = (seed: number): Pose => ({...reach(idle(gf, seed), 'F', [30, -175], 1), head: 4});
+	const momTalk = f < w('044', 0.3) ? 0.3 + 0.3 * Math.abs(Math.sin(f / 3)) : 0;
+	const hero = (
+		<Stage cam={camOn(HX + 40, 500, 1.3)} bg="#1b2045" light={{x: 10, y: 30, o: 0.45, c: '255,214,150'}}>
 			<Layer depth={1.6}>
 				<Apartment f={gf} page={1} />
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<Actor who="hero" x={HX} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.2]} expr={busy ? 'sad' : 'normal'} mouth={busy ? 'flat' : 'line'} pose={hp} handItem={<SmallPhone />} armOver uid="h-mom" />
+					<Actor who="hero" x={HX} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.2]} expr={busy ? 'sad' : 'normal'} mouth={busy ? 'flat' : 'line'} pose={ear(3)} handItem={<SmallPhone />} armOver uid="h-mom" />
 					<HeroBadge x={HX} y={badgeY(FL)} s={0.8} />
-					{/* video call with Mom */}
-					<g transform={`translate(1380,${500}) scale(${0.72 * ring})`} opacity={Math.min(1, ring * 1.5)}>
-						<rect x={-220} y={-330} width={440} height={660} rx={50} fill="#15161d" />
-						<rect x={-204} y={-314} width={408} height={628} rx={38} fill="#3a3352" />
-						<rect x={-204} y={60} width={408} height={254} fill="#2a2440" />
-						<Stickman id="mom-call" x={0} y={170} scale={1.35} pose={{...idle(gf, 6), armF: [30, 90]}} {...CAST.mom} expr={busy ? 'sad' : 'normal'} mouth={busy ? 'frown' : 'smile'} look={[0, 0]} faceTurn={0} talk={f < w('044', 0.3) ? 0.3 + 0.3 * Math.abs(Math.sin(f / 3)) : 0} />
-						<rect x={-204} y={-314} width={408} height={70} rx={38} fill="#11142c" />
-						<text y={-268} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#fff">
-							MOM ♥
-						</text>
-					</g>
-					<g transform={`translate(${HX - 200},${270}) scale(${ticket})`} opacity={Math.min(1, ticket * 1.5)}>
-						<rect x={-150} y={-60} width={300} height={120} rx={12} fill="#f4efe2" stroke="#3d6fd6" strokeWidth={5} strokeDasharray="10 6" />
-						<text y={-10} textAnchor="middle" fontSize={30} fontFamily={FONT} fontWeight={900} fill="#3d6fd6">
+					<g transform={`translate(${HX + 230},${300}) scale(${ticket})`} opacity={Math.min(1, ticket * 1.5)}>
+						<rect x={-130} y={-56} width={260} height={112} rx={12} fill="#f4efe2" stroke="#3d6fd6" strokeWidth={5} strokeDasharray="10 6" />
+						<text y={-8} textAnchor="middle" fontSize={28} fontFamily={FONT} fontWeight={900} fill="#3d6fd6">
 							BUS TICKET
 						</text>
-						<text y={36} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#d23b3b">
+						<text y={34} textAnchor="middle" fontSize={32} fontFamily={FONT} fontWeight={900} fill="#d23b3b">
 							$4 = 4 MIN
 						</text>
 					</g>
 					{busy ? (
-						<Bubble x={HX + 290} y={330} w={340} h={110} t={f - w('044', 0.78)} tail={[-120, 90]}>
-							<text y={14} textAnchor="middle" fontSize={40} fontFamily={FONT} fontWeight={900} fill="#13203a">
+						<Bubble x={HX + 200} y={300} w={300} h={100} t={f - w('044', 0.78)} tail={[-90, 80]}>
+							<text y={14} textAnchor="middle" fontSize={38} fontFamily={FONT} fontWeight={900} fill="#13203a">
 								Sorry, busy!
 							</text>
 						</Bubble>
@@ -172,6 +163,27 @@ const R044: React.FC = () => {
 			</Layer>
 		</Stage>
 	);
+	const MX = 900;
+	const mom = (
+		<Stage cam={camOn(MX - 60, 500, 1.3)} bg="#2a2a48" light={{x: 70, y: 20, o: 0.4, c: '255,214,150'}}>
+			<Layer depth={1.4}>
+				<Kitchen night />
+			</Layer>
+			<Layer depth={1}>
+				<Svg>
+					<Actor who="mom" x={MX} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.7, 0.1]} expr={busy ? 'sad' : 'normal'} mouth={busy ? 'frown' : undefined} pose={ear(6)} handItem={<SmallPhone />} armOver talk={momTalk} uid="mom-call" />
+					{f < w('044', 0.32) ? (
+						<Bubble x={MX - 60} y={300} w={420} h={100} t={f - at('044')} tail={[60, 80]}>
+							<text y={14} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#13203a">
+								Why don't you visit?
+							</text>
+						</Bubble>
+					) : null}
+				</Svg>
+			</Layer>
+		</Stage>
+	);
+	return <CallSplit left={hero} right={mom} k={k} />;
 };
 
 /* 045 «Slowly, people notice. You're the guy who never pays.» */
@@ -242,7 +254,7 @@ const R047: React.FC = () => {
 	return (
 		<Stage cam={cam} bg="#121634" light={{x: 50, y: 50, o: 0.4, c: '255,200,140'}}>
 			<Layer depth={1.6}>
-				<Apartment f={gf} page={1} />
+				<Apartment f={gf} page={1} sofa={false} />
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
@@ -256,8 +268,9 @@ const R047: React.FC = () => {
 						<ellipse cx={0} cy={-68} rx={5} ry={9} fill="#ffd34a" opacity={0.8 + 0.2 * Math.sin(gf / 2)} />
 						<circle cx={0} cy={-68} r={80} fill="#ffcf7a" opacity={0.18} style={{filter: 'blur(16px)'}} />
 					</g>
-					<Actor who="hero" x={HX} floor={FL} seat={752} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.5]} expr="sad" mouth="frown" pose={{...SIT, head: 10}} uid="h-bday" />
-					<HeroBadge x={HX} y={752 - 164 - 118} s={0.8} />
+					<Sofa />
+					<Actor who="hero" x={HX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.5]} expr="sad" mouth="frown" pose={{...SIT, head: 10}} uid="h-bday" />
+					<HeroBadge x={HX} y={SEAT - 164 - 118} s={0.8} />
 					<Tag f={f} t={w('047', 0.1)} x={1300} y={330} text="HAPPY BIRTHDAY... TO ME" c="#11142c" fg="#ffd34a" size={36} rot={3} />
 				</Svg>
 			</Layer>
@@ -385,19 +398,31 @@ const R051: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
 	const meter = interpolate(f, [w('051', 0.6), w('051', 0.95)], [0.35, 0.95], clamp);
-	const mopX = 1250 + Math.sin(gf / 6) * 30;
+	// the cleaner holds the mop handle with both hands and sweeps it back and forth
+	const CX = 1350;
+	const sweep = Math.sin(gf / 6) * 40;
+	const P: [number, number] = [CX - 200 + sweep, 900];
+	const T: [number, number] = [CX - 40 + sweep * 0.5, 640];
+	const at01 = (k: number): [number, number] => [P[0] + (T[0] - P[0]) * k, P[1] + (T[1] - P[1]) * k];
+	const cs = 0.98;
+	const hipY = FL - 157 * cs;
+	let cp: Pose = {...idle(gf, 5), lean: 15};
+	cp = reach(cp, 'F', toLocal(...at01(0.88), CX, hipY, cs, -1), 1);
+	cp = reach(cp, 'B', toLocal(...at01(0.7), CX, hipY, cs, -1), 1);
 	const cam = usePush(camOn(960, 540, 1.1), camOn(980, 530, 1.22));
 	return (
 		<Stage cam={cam} bg="#1b2045" light={{x: 10, y: 30, o: 0.45, c: '255,214,150'}}>
 			<Layer depth={1.6}>
-				<Apartment f={gf} page={1} />
+				<Apartment f={gf} page={1} sofa={false} />
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<Actor who="cleaner" x={mopX} floor={FL} s={0.98} facing={-1} faceTurn={0.3} look={[-0.4, 0.6]} mouth="smile" pose={reach(idle(gf, 5), 'F', [60, -40], 1)} uid="cleaner" />
-					<line x1={mopX - 70} y1={780} x2={mopX - 120} y2={900} stroke="#c98a4a" strokeWidth={8} />
-					<ellipse cx={mopX - 124} cy={900} rx={40} ry={10} fill="#9fd8ff" />
-					<Actor who="hero" x={760} floor={FL} seat={752} s={HS} facing={1} faceTurn={0.2} look={[0.3, -0.2]} mouth="smile" lidL={0.4} lidR={0.4} pose={{...SIT, armF: [150, 30], armB: [-150, 30], head: -6}} uid="h-relax" />
+					<line x1={P[0]} y1={P[1] - 6} x2={T[0]} y2={T[1]} stroke="#c98a4a" strokeWidth={9} strokeLinecap="round" />
+					<ellipse cx={P[0]} cy={898} rx={46} ry={11} fill="#9fd8ff" />
+					<ellipse cx={P[0] - sweep * 0.6} cy={904} rx={70} ry={6} fill="#bfe8ff" opacity={0.35} />
+					<Actor who="cleaner" x={CX} floor={FL} s={cs} facing={-1} faceTurn={0.3} look={[-0.4, 0.6]} mouth="smile" pose={cp} uid="cleaner" />
+					<Sofa />
+					<Actor who="hero" x={760} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.2} look={[0.3, -0.2]} mouth="smile" lidL={0.4} lidR={0.4} pose={{...SIT, armF: [150, 30], armB: [-150, 30], head: -6}} uid="h-relax" />
 					<g transform="translate(960,210)">
 						<rect x={-150} y={-36} width={300} height={72} rx={36} fill="#11142c" stroke="#9ff0b0" strokeWidth={4} />
 						<rect x={-140} y={-26} width={280 * meter} height={52} rx={26} fill="#3fcf7a" />

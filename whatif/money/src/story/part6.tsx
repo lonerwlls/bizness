@@ -8,7 +8,7 @@ import {HeroBadge, Layer, Stage, Svg, camOn, clamp, usePush} from '../kit/kit';
 import {AgeBadge, Cite, FONT} from '../kit/ui';
 import {CAST} from './cast';
 import {Bang, Card, FL, HS, SFL, StreetBG, badgeY} from './common';
-import {Cafe, CafeCounter, Terminal} from './places';
+import {Cafe, CafeCounter, SEAT, SeatChair, Terminal} from './places';
 import {DeskMonitor, Office} from './places5';
 import {BurgerBar} from './places2';
 
@@ -196,7 +196,8 @@ const U078: React.FC = () => {
 				<Svg>
 					{[420, 960, 1500].map((x, i) => (
 						<g key={x}>
-							<Actor who={['friend', 'clerk', 'date'][i]} x={x - 140} floor={FL} seat={752} s={0.95} facing={1} faceTurn={0.3} look={[0.6, 0.2]} expr="sleepy" mouth="flat" pose={{lean: 4, head: 6, armB: [60, 60], armF: [70 + Math.sin(gf / 2 + i) * 6, 50], legB: [88, 85], legF: [92, 90]}} uid={'off' + i} sp="NOBODY" />
+							<SeatChair x={x - 150} c="#2a2f3a" />
+							<Actor who={['friend', 'clerk', 'date'][i]} x={x - 140} floor={FL} seat={SEAT} s={0.95} facing={1} faceTurn={0.3} look={[0.6, 0.2]} expr="sleepy" mouth="flat" pose={{lean: 4, head: 6, armB: [60, 60], armF: [70 + Math.sin(gf / 2 + i) * 6, 50], legB: [88, 85], legF: [92, 90]}} uid={'off' + i} sp="NOBODY" />
 							<DeskMonitor x={x} f={gf} />
 						</g>
 					))}

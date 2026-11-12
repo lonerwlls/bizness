@@ -73,3 +73,17 @@ export const StreetBG: React.FC<{gf: number}> = ({gf}) => (
 		</Layer>
 	</>
 );
+
+/* phone call as a split screen: each half shows its own place, framed on its own person.
+   Children are full Stage scenes (1920×1080); each half shows the middle 960 px of its scene. */
+export const CallSplit: React.FC<{left: React.ReactNode; right: React.ReactNode; k?: number}> = ({left, right, k = 1}) => (
+	<div style={{position: 'absolute', inset: 0, background: '#0b0e22'}}>
+		<div style={{position: 'absolute', left: 0, top: 0, width: 960, height: 1080, overflow: 'hidden', transform: `translateX(${(1 - k) * -960}px)`}}>
+			<div style={{position: 'absolute', left: -480, top: 0, width: 1920, height: 1080}}>{left}</div>
+		</div>
+		<div style={{position: 'absolute', left: 960, top: 0, width: 960, height: 1080, overflow: 'hidden', transform: `translateX(${(1 - k) * 960}px)`}}>
+			<div style={{position: 'absolute', left: -480, top: 0, width: 1920, height: 1080}}>{right}</div>
+		</div>
+		<div style={{position: 'absolute', left: 954, top: 0, width: 12, height: 1080, background: '#f4efe2', opacity: k}} />
+	</div>
+);

@@ -8,8 +8,9 @@ import {HeroBadge, Layer, Stage, Svg, camOn, clamp, ease, mixCam, usePush} from 
 import {Callout} from '../kit/graphics';
 import {Bubble, FONT, HAND} from '../kit/ui';
 import {CAST} from './cast';
-import {Bang, Card, FL, HS, SFL, SmallPhone, StreetBG, badgeY} from './common';
-import {Apartment, Envelope, Hallway} from './places';
+import {Bang, CallSplit, Card, FL, HS, SFL, SmallPhone, StreetBG, badgeY} from './common';
+import {Bedroom} from '../kit/sets';
+import {Apartment, Envelope, Hallway, SEAT} from './places';
 import {Bus, FrontDesk, Hospital, PlasticChair} from './places5';
 
 /* PART 5 (≈4:25–5:40): Mom's bill, the choice, the payment. */
@@ -209,52 +210,56 @@ const T062: React.FC = () => {
 const T063: React.FC<{talk?: boolean}> = ({talk}) => {
 	const {f, gf, at} = useShot();
 	const w = useW();
-	const HX = 680;
-	const picked = talk || f > w('063', 0.75);
-	const call = pop(f, at(talk ? '064' : '063') - (talk ? 30 : 0));
-	let hp: Pose = reach(idle(gf, 3), 'F', [30, -175], 1);
-	hp = {...hp, head: 4};
-	const cam = usePush(camOn(1000, 540, 1.15), camOn(1000, 520, 1.3));
-	return (
-		<Stage cam={cam} bg="#101430" light={{x: 10, y: 30, o: 0.4, c: '255,214,150'}}>
+	const pickAt = talk ? -999 : w('063', 0.75);
+	const picked = talk || f > pickAt;
+	const k = talk ? 1 : spring({frame: f - pickAt, fps: 30, config: {damping: 16, stiffness: 140}});
+	const ear = (seed: number): Pose => ({...reach(idle(gf, seed), 'F', [30, -175], 1), head: 4});
+	const HX = 960;
+	const hero = (
+		<Stage cam={camOn(HX + 60, 520, picked ? 1.3 : 1.2)} bg="#101430" light={{x: 10, y: 30, o: 0.4, c: '255,214,150'}}>
 			<Layer depth={1.6}>
 				<Apartment f={gf} page={1} />
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<Actor who="hero" x={HX} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.2]} expr={picked ? 'wide' : 'worried'} pose={hp} handItem={<SmallPhone />} armOver uid="h-call" />
+					<Actor who="hero" x={HX} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.2]} expr={picked ? 'wide' : 'worried'} pose={ear(3)} handItem={<SmallPhone />} armOver uid="h-call" />
 					<HeroBadge x={HX} y={badgeY(FL)} s={0.8} />
-					<g transform={`translate(1380,${500}) scale(${0.72 * call})`} opacity={Math.min(1, call * 1.5)}>
-						<rect x={-220} y={-330} width={440} height={660} rx={50} fill="#15161d" />
-						<rect x={-204} y={-314} width={408} height={628} rx={38} fill={picked ? '#2a3a5a' : '#1d2236'} />
-						{picked ? (
-							<Stickman id="marco-call" x={0} y={170} scale={1.35} pose={{...idle(gf, 6), armF: [30, 90]}} {...CAST.friend} expr="normal" mouth="line" look={[0, 0]} faceTurn={0} talk={talk && f < w('064', 0.95) && f > w('064', 0.3) ? 0.3 + 0.3 * Math.abs(Math.sin(f / 3)) : 0} />
-						) : (
-							<g>
-								<circle cy={-40} r={70} fill="#4f7dd8" />
-								<text y={80} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={800} fill="#9fd8ff">
-									calling...
-								</text>
-								<circle cy={-40} r={90 + ((f * 3) % 60)} fill="none" stroke="#4f7dd8" strokeWidth={4} opacity={1 - ((f * 3) % 60) / 60} />
-							</g>
-						)}
-						<rect x={-204} y={-314} width={408} height={70} rx={38} fill="#11142c" />
-						<text y={-268} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#fff">
-							MARCO
-						</text>
-					</g>
-					{!talk && picked ? <Bang f={f} t={w('063', 0.75)} x={1380} y={180} text="RING — PICKED UP!" c="#9ff0b0" /> : null}
-					{talk && f > w('064', 0.35) ? (
-						<Bubble x={1100} y={200} w={520} h={120} t={f - w('064', 0.35)} tail={[160, 90]}>
-							<text y={14} textAnchor="middle" fontSize={40} fontFamily={FONT} fontWeight={900} fill="#13203a">
-								Go. I'm coming with you.
+					{!picked ? (
+						<g transform={`translate(${HX + 260},${600})`}>
+							<rect x={-150} y={-36} width={300} height={72} rx={36} fill="#11142c" stroke="#4f7dd8" strokeWidth={4} />
+							<text y={12} textAnchor="middle" fontSize={32} fontFamily={FONT} fontWeight={900} fill="#9fd8ff">
+								CALLING MARCO
 							</text>
-						</Bubble>
+							<circle cx={-170} cy={0} r={20 + ((f * 2) % 30)} fill="none" stroke="#4f7dd8" strokeWidth={4} opacity={1 - ((f * 2) % 30) / 30} />
+						</g>
 					) : null}
 				</Svg>
 			</Layer>
 		</Stage>
 	);
+	if (!picked) return hero;
+	const MX = 820;
+	const marco = (
+		<Stage cam={camOn(MX - 60, 510, 1.3)} bg="#1d2550" light={{x: 70, y: 20, o: 0.4, night: true}}>
+			<Layer depth={1.3}>
+				<Bedroom night f={gf} />
+			</Layer>
+			<Layer depth={1}>
+				<Svg>
+					<Actor who="friend" x={MX} floor={880} s={1.02} facing={-1} faceTurn={0.4} look={[-0.7, 0.1]} expr="normal" mouth={talk ? undefined : 'line'} pose={ear(6)} handItem={<SmallPhone />} armOver talk={talk && f > w('064', 0.3) && f < w('064', 0.95) ? 0.3 + 0.3 * Math.abs(Math.sin(f / 3)) : 0} uid="m-call" />
+					{talk && f > w('064', 0.35) ? (
+						<Bubble x={MX - 60} y={300} w={460} h={110} t={f - w('064', 0.35)} tail={[60, 90]}>
+							<text y={14} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#13203a">
+								Go. I'm coming with you.
+							</text>
+						</Bubble>
+					) : null}
+					{!talk ? <Bang f={f} t={pickAt + 2} x={MX - 60} y={330} text="1st RING!" c="#9ff0b0" /> : null}
+				</Svg>
+			</Layer>
+		</Stage>
+	);
+	return <CallSplit left={hero} right={marco} k={k} />;
 };
 const T063a: React.FC = () => <T063 />;
 const T064: React.FC = () => <T063 talk />;
@@ -294,9 +299,9 @@ const T066: React.FC = () => {
 			<Layer depth={1}>
 				<Svg>
 					{[1060, 1200, 1340, 1480].map((x) => (
-						<PlasticChair key={x} x={x} c={x === 1200 ? '#3d6fd6' : '#e47a3c'} />
+						<PlasticChair key={x} x={x} facing={-1} c={x === 1200 ? '#3d6fd6' : '#e47a3c'} />
 					))}
-					<Actor who="mom" x={1220} floor={FL} seat={752} s={0.98} facing={-1} faceTurn={0.4} look={f > w('066', 0.35) ? [-0.8, -0.2] : [-0.3, 0.6]} expr="sad" mouth={f > w('066', 0.55) ? 'smile' : 'frown'} pose={momP} handItem={<g transform="scale(0.1)"><Envelope x={0} y={0} amount="$90,000" /></g>} uid="mom-h" />
+					<Actor who="mom" x={1205} floor={FL} seat={SEAT} s={0.98} facing={-1} faceTurn={0.4} look={f > w('066', 0.35) ? [-0.8, -0.2] : [-0.3, 0.6]} expr="sad" mouth={f > w('066', 0.55) ? 'smile' : 'frown'} pose={momP} handItem={<g transform="scale(0.1)"><Envelope x={0} y={0} amount="$90,000" /></g>} uid="mom-h" />
 					<Actor who="hero" x={hw.x} floor={FL} s={HS} facing={1} faceTurn={0.5} look={[0.8, 0.2]} expr="worried" pose={hw.pose} vx={hw.vx} bob={hw.bob} uid="h-hos" />
 					<HeroBadge x={hw.x} y={badgeY(FL) - hw.bob} s={0.8} />
 					{f > w('066', 0.62) ? (

@@ -57,12 +57,12 @@ export const Hospital: React.FC<{f: number}> = ({f}) => (
 	</Svg>
 );
 /* one plastic chair (side view), seat at y≈790 */
-export const PlasticChair: React.FC<{x: number; c?: string}> = ({x, c = '#e47a3c'}) => (
-	<g transform={`translate(${x},0)`}>
-		<rect x={-50} y={790} width={100} height={14} rx={6} fill={c} />
-		<rect x={-50} y={690} width={14} height={110} rx={6} fill={c} />
-		<rect x={-40} y={804} width={8} height={96} fill="#2a2f3a" />
-		<rect x={32} y={804} width={8} height={96} fill="#2a2f3a" />
+export const PlasticChair: React.FC<{x: number; c?: string; facing?: 1 | -1}> = ({x, c = '#e47a3c', facing = 1}) => (
+	<g transform={`translate(${x},0) scale(${facing},1)`}>
+		<rect x={-50} y={826} width={100} height={14} rx={6} fill={c} />
+		<rect x={-50} y={716} width={14} height={124} rx={6} fill={c} />
+		<rect x={-40} y={840} width={8} height={62} fill="#2a2f3a" />
+		<rect x={32} y={840} width={8} height={62} fill="#2a2f3a" />
 	</g>
 );
 /* front desk with a big payment screen; `paid` turns it green */

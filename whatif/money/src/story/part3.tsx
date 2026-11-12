@@ -8,7 +8,7 @@ import {CrowdRow, HeroBadge, Layer, Stage, Svg, camOn, clamp, ease, mixCam, useP
 import {Callout} from '../kit/graphics';
 import {Cite, FONT, HAND} from '../kit/ui';
 import {Bang, FL, HS, SFL, SmallPhone, StreetBG, badgeY} from './common';
-import {Apartment, CoinClock} from './places';
+import {Apartment, CoinClock, SEAT, Sofa} from './places';
 import {Banner, Store} from './places2';
 import {CakeSlice, Checkout, Cheese, Coupon, Dealership, GroceryItems, Parchment, PartyBg, PhoneTable, RentMonster, ShowCar, SubPhone, Taxi, TechStore, Tv} from './places3';
 
@@ -73,13 +73,14 @@ const Q026: React.FC = () => {
 	return (
 		<Stage cam={cam} bg="#1b2045" light={{x: 70, y: 40, o: 0.35, night: true}}>
 			<Layer depth={1.5}>
-				<Apartment f={gf} page={1} />
+				<Apartment f={gf} page={1} sofa={false} />
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
 					<Tv x={1250} y={900} f={gf} />
-					<Actor who="hero" x={HX} floor={FL} seat={752} s={HS} facing={1} faceTurn={0.4} look={wake ? [0.6, 0.4] : [0.8, -0.2]} expr={doze > 0.5 && !wake ? 'sleepy' : wake ? 'angry' : 'normal'} blink={doze > 0.9 && !wake ? 1 : undefined} pose={hp} handItem={wake ? <SmallPhone /> : undefined} uid="h-tv" />
-					<HeroBadge x={HX} y={752 - 164 - 118} s={0.8} />
+					<Sofa />
+					<Actor who="hero" x={HX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={wake ? [0.6, 0.4] : [0.8, -0.2]} expr={doze > 0.5 && !wake ? 'sleepy' : wake ? 'angry' : 'normal'} blink={doze > 0.9 && !wake ? 1 : undefined} pose={hp} handItem={wake ? <SmallPhone /> : undefined} uid="h-tv" />
+					<HeroBadge x={HX} y={SEAT - 164 - 118} s={0.8} />
 					{doze > 0.9 && !wake ? <Note f={f} t={w('026', 0.8)} x={HX + 110} y={420} text="z z z" c="#9fd8ff" size={56} /> : null}
 					<g opacity={Math.min(1, phoneK * 1.4)} transform={`translate(0,${(1 - phoneK) * 160})`}>
 						<SubPhone x={1560} y={470} s={0.75} cancel={cancel} title="STREAMBOX" price="$15.99" note="per month · 16 min of life" />
@@ -295,12 +296,13 @@ const Q032: React.FC = () => {
 	return (
 		<Stage cam={cam} bg="#1b2045" light={{x: 10, y: 30, o: 0.45, c: '255,214,150'}}>
 			<Layer depth={1.5}>
-				<Apartment f={gf} page={1} />
+				<Apartment f={gf} page={1} sofa={false} />
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<Actor who="hero" x={HX} floor={FL} seat={752} s={HS} facing={1} faceTurn={0.4} look={[0.6, 0.6]} expr="sad" mouth="frown" pose={hp} handItem={<SmallPhone />} uid="h-gym" />
-					<HeroBadge x={HX} y={752 - 164 - 118} s={0.8} />
+					<Sofa />
+					<Actor who="hero" x={HX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.6, 0.6]} expr="sad" mouth="frown" pose={hp} handItem={<SmallPhone />} uid="h-gym" />
+					<HeroBadge x={HX} y={SEAT - 164 - 118} s={0.8} />
 					<Banner x={1340} y={300} k={ban} title="POWER GYM · monthly" text="−$40.00" c="#e4473c" />
 					<Banner x={1340} y={470} k={ban2} title="Last visit" text="214 days ago" c="#5a6078" />
 				</Svg>

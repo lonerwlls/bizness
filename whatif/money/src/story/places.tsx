@@ -172,7 +172,29 @@ export const Terminal: React.FC<{x: number; y: number; paid: number; amount: str
 
 /* ------------------------------ night apartment ------------------------------ */
 // small living room: window with the city, wall calendar, sofa, floor lamp
-export const Apartment: React.FC<{f: number; page?: number}> = ({f, page = 1}) => (
+/* sitting height: a seated stickman's hip (feet reach the floor at y = 900) */
+export const SEAT = 822;
+/* sofa whose cushion top is at SEAT + 4; draw it on the actors' layer when someone sits on it */
+export const Sofa: React.FC<{x?: number}> = ({x = 560}) => (
+	<g transform={`translate(${x},0)`}>
+		<rect x={0} y={740} width={520} height={165} rx={30} fill="#3f6d8f" />
+		<rect x={-30} y={800} width={70} height={105} rx={20} fill="#355d7c" />
+		<rect x={480} y={800} width={70} height={105} rx={20} fill="#355d7c" />
+		<rect x={20} y={826} width={480} height={56} rx={20} fill="#4a7ea3" />
+		<rect x={10} y={896} width={20} height={8} fill="#1b1a26" />
+		<rect x={490} y={896} width={20} height={8} fill="#1b1a26" />
+	</g>
+);
+/* simple chair (side view), seat top at SEAT + 4 */
+export const SeatChair: React.FC<{x: number; facing?: 1 | -1; c?: string}> = ({x, facing = 1, c = '#7a4e34'}) => (
+	<g transform={`translate(${x},0) scale(${facing},1)`}>
+		<rect x={-44} y={826} width={88} height={14} rx={5} fill={c} />
+		<rect x={-44} y={716} width={12} height={124} rx={5} fill={c} />
+		<rect x={-38} y={840} width={8} height={62} fill="#2a2633" />
+		<rect x={30} y={840} width={8} height={62} fill="#2a2633" />
+	</g>
+);
+export const Apartment: React.FC<{f: number; page?: number; sofa?: boolean}> = ({f, page = 1, sofa = true}) => (
 	<Svg>
 		<Wall id="apt-w" top="#232a52" bot="#33366a" />
 		<rect x={-400} y={640} width={2800} height={12} fill="#2a2f5a" />
@@ -238,13 +260,7 @@ export const Apartment: React.FC<{f: number; page?: number}> = ({f, page = 1}) =
 			<path d="M40,430 L160,430 L130,350 L70,350 Z" fill="#e8c98a" />
 			<circle cx={100} cy={440} r={200} fill="#ffcf7a" opacity={0.14} style={{filter: 'blur(40px)'}} />
 		</g>
-		{/* sofa */}
-		<g transform="translate(560,0)">
-			<rect x={0} y={700} width={520} height={160} rx={30} fill="#3f6d8f" />
-			<rect x={-30} y={760} width={70} height={140} rx={20} fill="#355d7c" />
-			<rect x={480} y={760} width={70} height={140} rx={20} fill="#355d7c" />
-			<rect x={20} y={780} width={480} height={70} rx={20} fill="#4a7ea3" />
-		</g>
+		{sofa ? <Sofa /> : null}
 		<Floor y={900} c="#3a2f4a" planks />
 	</Svg>
 );
