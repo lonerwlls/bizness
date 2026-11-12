@@ -8,7 +8,7 @@ import {PauseTime} from './reference/PauseTime';
 /* open-licence fonts from public/fonts, loaded before the first frame renders */
 // generous timeout: with several render tabs at once a cold font load can take a while;
 // if it still fails the frame renders with the fallback font instead of crashing
-const fontsReady = delayRender('fonts', {timeoutInMilliseconds: 120000});
+const fontsReady = delayRender('fonts', {timeoutInMilliseconds: 280000});
 Promise.all(
 	[
 		['Rubik', 'fonts/Rubik.ttf', '300 900'],
