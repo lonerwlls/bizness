@@ -16,12 +16,12 @@ const mix = (a: number, b2: number, k: number) => a + (b2 - a) * k;
 export const AD1_P1 = wd("шаг").e + 0.4;
 export const TM_P1 = timing(VOICE, AD1_P1, AD_LEN_VX, false);
 const DRIVER: PLook = { hair: "#1e1a18", hairSh: "#0e0c0a", top: "#2d4a7a", topSh: "#203658", skin: "#d8a88a", skinSh: "#a87a64" };
-const SELLER: PLook = { top: "#26262c", topSh: "#18181c", pants: "#1e1e24", pantsSh: "#141418", skin: "#6a5048", skinSh: "#3a2a26" };
+export const SELLER: PLook = { top: "#26262c", topSh: "#18181c", pants: "#1e1e24", pantsSh: "#141418", skin: "#6a5048", skinSh: "#3a2a26" };
 
 // ---------- телефон ----------
-type Msg = { text: string; at: number };
+export type Msg = { text: string; at: number; me?: boolean };
 const wrap = (s: string, n = 18) => { const out: string[] = []; let cur = ""; for (const w of s.split(" ")) { if ((cur + " " + w).trim().length > n) { out.push(cur); cur = w; } else cur = (cur + " " + w).trim(); } if (cur) out.push(cur); return out; };
-const PhoneBody: React.FC<{ x?: number; y?: number; s?: number; children: React.ReactNode; buzz?: number }> = ({ x = 540, y = 600, s = 1, children, buzz = 0 }) => (
+export const PhoneBody: React.FC<{ x?: number; y?: number; s?: number; children: React.ReactNode; buzz?: number }> = ({ x = 540, y = 600, s = 1, children, buzz = 0 }) => (
   <g transform={`translate(${x + buzz * Math.sin(buzz * 90) * 8} ${y}) scale(${s}) rotate(${buzz * 2})`}>
     <rect x={-250} y={-470} width={500} height={940} rx={56} fill="#15161a" stroke={INK} strokeWidth={10} />
     <rect x={-250} y={-470} width={500} height={940} rx={56} fill="none" stroke="#3a3c44" strokeWidth={4} />
@@ -32,7 +32,7 @@ const PhoneBody: React.FC<{ x?: number; y?: number; s?: number; children: React.
     {[0, 1].map((k) => <path key={"r" + k} d={`M ${280 + k * 24} -120 Q ${300 + k * 24} 0 ${280 + k * 24} 120`} stroke={YEL} strokeWidth={6} fill="none" opacity={buzz > 0 ? 0.7 : 0} />)}
   </g>
 );
-const Chat: React.FC<{ msgs: Msg[]; T: number; typing?: number }> = ({ msgs, T, typing = 0 }) => {
+export const Chat: React.FC<{ msgs: Msg[]; T: number; typing?: number }> = ({ msgs, T, typing = 0 }) => {
   const shown = msgs.filter((m) => T >= m.at);
   let y = -250;
   return <g>
@@ -43,8 +43,9 @@ const Chat: React.FC<{ msgs: Msg[]; T: number; typing?: number }> = ({ msgs, T, 
     <text x={-100} y={-320} fontFamily={MONO} fontSize={20} fill="#6a7090">в сети</text>
     {shown.slice(-4).map((m, i) => {
       const L = wrap(m.text), h = L.length * 46 + 34, k = Math.min(1, (T - m.at) / 0.18);
-      const g = <g key={i} transform={`translate(-196 ${y}) scale(${0.9 + 0.1 * k})`} opacity={k}>
-        <rect x={0} y={0} width={380} height={h} rx={26} fill="#2a2f48" stroke="#4a5070" strokeWidth={2} />
+      const bw = m.me ? Math.max(...L.map((l) => l.length)) * 21 + 60 : 380;
+      const g = <g key={i} transform={`translate(${m.me ? 196 - bw : -196} ${y}) scale(${0.9 + 0.1 * k})`} opacity={k}>
+        <rect x={0} y={0} width={bw} height={h} rx={26} fill={m.me ? "#2a5aa8" : "#2a2f48"} stroke={m.me ? "#4a7ad0" : "#4a5070"} strokeWidth={2} />
         {L.map((l, j) => <text key={j} x={24} y={52 + j * 46} fontFamily="FsMont" fontWeight={800} fontSize={36} fill="#fff">{l}</text>)}
       </g>;
       y += h + 22; return g;
