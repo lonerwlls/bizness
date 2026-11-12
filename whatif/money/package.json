@@ -8,13 +8,13 @@
     "check": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "@remotion/bundler": "4.0.290",
-    "@remotion/cli": "4.0.290",
-    "@remotion/renderer": "4.0.290",
+    "@remotion/bundler": "^4.0.538",
+    "@remotion/cli": "^4.0.538",
+    "@remotion/renderer": "^4.0.538",
     "msedge-tts": "2.1.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "remotion": "4.0.290"
+    "remotion": "^4.0.538"
   },
   "devDependencies": {
     "@types/react": "18.3.12",
