@@ -72,29 +72,10 @@ put(FX, at("комнаты"), thump(1.6, 40, 1.5), 1.0, rev=0.7)
 put(FX, END, thump(2.5, 38, 1.8), 1.0, rev=0.8)
 put(FX, END, bp(noise(int(SR * 0.4)), 1000, 8000) * env(int(SR * 0.4), 0.001, 0.08), 0.6)
 
-# музыка
-t = tt(N); NOTE = lambda m: 440 * 2 ** ((m - 69) / 12)
-def saw(f, n, det=0.0): ph = np.cumsum(np.full(n, f * (1 + det))) / SR; return 2 * (ph % 1) - 1
-def pad(notes, a, e, g):
-    n = int((e - a) * SR)
-    if n <= 0: return
-    s = sum(saw(f, n, d) for f in notes for d in (-0.004, 0.0, 0.005))
-    s = lp(s, 650) / (len(notes) * 3) * (0.75 + 0.25 * np.sin(2 * np.pi * 0.17 * tt(n)))
-    put(MUS, a, s * fade(n, 1.5, 1.5), g, rev=0.25)
-drone = np.sin(2 * np.pi * NOTE(26) * t) * 0.6 + np.sin(2 * np.pi * NOTE(26) * 1.003 * t) * 0.5 + lp(noise(N), 90) * 0.8
-grow = np.interp(t, [0, b("Утром"), b("Автобус", 1), b("Водитель"), b("Телефон", 2), END - 0.2, END, DUR], [1.0, 0.6, 0.9, 1.3, 1.1, 1.4, 0.15, 0])
-MUS[:, 0] += drone * 0.11 * grow; MUS[:, 1] += drone * 0.11 * grow
-CH = [[50, 53, 57, 51], [46, 50, 53, 52], [43, 46, 50, 51], [45, 49, 52, 46], [50, 53, 56, 51]]
-secs = [0, b("Утром"), b("Автобус", 1), b("Водитель"), b("Телефон", 2), END]
-for k in range(5): pad([NOTE(m) for m in CH[k]], max(0, secs[k] - 0.8), secs[k + 1] + 0.8, 0.14 + 0.03 * k)
-heart(b("Автобус", 1), b("Двери", 2), 80, 120, 0.4)
-heart(b("Телефон", 2), END - 0.2, 90, 140, 0.5)
-for k, m in enumerate([74, 77, 76, 72, 74]):
-    a = 0.5 + k * 1.2
-    if a > b("Это"): break
-    n = int(SR * 2.0); tb = tt(n); f = NOTE(m) * (1 + 0.004 * np.sin(2 * np.pi * 5 * tb))
-    put(MUS, a, np.sin(2 * np.pi * np.cumsum(f) / SR) * env(n, 0.003, 0.5), 0.07, pan=0.3, rev=0.6)
-for a0, d in [(at("седьмой"), 2.0), (at("улыбается"), 2.4), (at("спит"), 2.4), (END, 2.6)]:
+# музыка: только нарастающий жуткий фон (scripts/creepmus.py) + короткие диссонансные «уколы»
+from creepmus import creep, NOTE
+MUS += creep(N, END, hits=[at("Я"), at("Посмотри"), at("улыбается"), at("спит"), at("комнаты")], heart_from=b("Автобус", 1))
+for a0, d in [(at("седьмой"), 2.0), (at("улыбается"), 2.4), (at("спит"), 2.4)]:
     n = int(SR * d); tb = tt(n)
     s = sum(np.sin(2 * np.pi * np.cumsum(NOTE(m) * (1 + 0.006 * np.sin(2 * np.pi * 6.5 * tb))) / SR) for m in (86, 87))
     put(MUS, a0, s * fade(n, 0.5, 1.0) * 0.05, 1.0, rev=0.5)

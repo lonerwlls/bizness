@@ -58,7 +58,18 @@ const Clock: React.FC<{ T: number; clock: [number, string][]; dur: number }> = (
   </div>;
 };
 
-export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean; endAd?: boolean }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false, endAd = true }) => {
+// «камерные» переходы вместо прямой склейки: конец кадра — быстрый наезд/увод вбок, начало следующего — доезд камеры
+const GIN = 0.28, GOUT = 0.16;
+const sm = (x: number) => { const c = Math.min(1, Math.max(0, x)); return c * c * (3 - 2 * c); };
+const glideTf = (ci: number, t: number, len: number) => {
+  // переход между кадрами ci-1→ci и ci→ci+1 одного типа: чётный переход — наезд «сквозь», нечётный — проезд вбок
+  const kout = sm((t - (len - GOUT)) / GOUT), out = kout > 0, k = out ? kout : 1 - sm(t / GIN), j = out ? ci + 1 : ci;
+  if (j % 2 === 0) { const s = 1 + (out ? 0.3 : 0.35) * k; return `translate(${W / 2} ${PH / 2}) scale(${s}) translate(${-W / 2} ${-PH / 2})`; }
+  const side = j % 4 < 2 ? 1 : -1, dx = side * 260 * k * (out ? -1 : 1);
+  return `translate(${dx} 0) translate(${W / 2} ${PH / 2}) scale(${1 + 0.08 * k}) translate(${-W / 2} ${-PH / 2})`;
+};
+const glideBlur = (t: number, len: number) => 14 * Math.max(1 - sm(t / GIN), sm((t - (len - GOUT)) / GOUT));
+export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean; endAd?: boolean; glide?: boolean }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false, endAd = true, glide = false }) => {
   setLang("ru");
   const tm = timing(voice, ad1, adLen, endAd);
   const G = React.useMemo(() => groupsOf(voice, ask), [voice, ask]);
@@ -71,12 +82,14 @@ export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, num
       <defs><linearGradient id="fadeB3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" /></linearGradient>
         <radialGradient id="vig3" cx="50%" cy="45%" r="70%"><stop offset="0.55" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" stopOpacity={0.75} /></radialGradient></defs>
       <svg width={W} height={PH} viewBox={`0 0 ${W} ${PH}`} overflow="hidden">
-        <g transform={live(T, t / Math.max(0.1, next - a))}><C key={ci} t={t} T={T} /></g>
+        <g transform={glide ? glideTf(ci, t, next - a) : ""} filter={glide && glideBlur(t, next - a) > 0.3 ? "url(#gblur)" : undefined}>
+          {glide ? <defs><filter id="gblur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation={(() => { const j = t > (next - a) / 2 ? ci + 1 : ci, g = glideBlur(t, next - a); return j % 2 ? `${g * 1.6} ${g * 0.2}` : `${g * 0.6} ${g * 0.6}`; })()} /></filter></defs> : null}
+          <g transform={live(T, t / Math.max(0.1, next - a))}><C key={ci} t={t} T={T} /></g></g>
         <Dust sec={T} />
         <rect width={W} height={PH} fill="url(#vig3)" />
       </svg>
       <rect y={PH - 260} width={W} height={262} fill="url(#fadeB3)" />
-      {t >= 0 && t < 4 / FPS ? <rect width={W} height={PH} fill="#000" opacity={1 - t * FPS / 4} /> : null}
+      {!glide && t >= 0 && t < 4 / FPS ? <rect width={W} height={PH} fill="#000" opacity={1 - t * FPS / 4} /> : null}
     </svg>
     <Clock T={T} clock={clock} dur={voice.dur} />
     <Captions T={T} G={G} dur={voice.dur} red={red} yel={yel} top={capTop} />

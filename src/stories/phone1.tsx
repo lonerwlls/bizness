@@ -10,6 +10,9 @@ import { VOICE as V } from "./phone1.voice";
 const VOICE = V as Voice;
 const { wd, at, b } = words(VOICE);
 const INK = "#0b0f22";
+// быстрый плавный наезд камеры на слове w: 0 → 1 за d секунд
+const pk = (T: number, w: string, n = 1, d = 0.45) => ip(T, [at(w, n) - 0.12, at(w, n) - 0.12 + d], [0, 1]);
+const mix = (a: number, b2: number, k: number) => a + (b2 - a) * k;
 export const AD1_P1 = wd("шаг").e + 0.4;
 export const TM_P1 = timing(VOICE, AD1_P1, AD_LEN_VX, false);
 const DRIVER: PLook = { hair: "#1e1a18", hairSh: "#0e0c0a", top: "#2d4a7a", topSh: "#203658", skin: "#d8a88a", skinSh: "#a87a64" };
@@ -135,7 +138,7 @@ const Hook: SShot = ({ t, T }) => (<>
   </g>
 </>);
 const Evening: SShot = ({ t, T }) => (
-  <><Cam s={ip(t, [0, 4.4], [1.15, 1.3])} cx={540} cy={640}>
+  <><Cam s={mix(ip(t, [0, 4.4], [1.15, 1.3]), 2.3, pk(T, "час"))} cx={mix(540, 585, pk(T, "час"))} cy={mix(640, 520, pk(T, "час"))}>
     <rect width={W} height={PH} fill="#141a34" />
     {Array.from({ length: 6 }, (_, i) => <rect key={i} x={i * 190} y={200 + (i % 3) * 60} width={170} height={900} fill="#1c2346" stroke={INK} strokeWidth={4} />)}
     {Array.from({ length: 30 }, (_, i) => <rect key={i} x={30 + (i % 6) * 190 + (Math.floor(i / 6) % 2) * 80} y={280 + Math.floor(i / 6) * 140} width={40} height={56} fill={rnd(i) > 0.5 ? "#ffd88a" : "#2a3260"} />)}
@@ -169,14 +172,14 @@ const Hidden: SShot = ({ t, T }) => (
 );
 const Laugh: SShot = ({ t, T }) => {
   const pk = ip(T, [at("убирает"), at("карман") + 0.2], [0, 1]);
-  return <><Cam s={ip(t, [0, 3], [1.5, 1.6])} cx={540} cy={560}>
+  return <><Cam s={ip(t, [0, 3], [1.5, 1.6])} cx={540} cy={520}>
     <rect width={W} height={PH} fill="#141a34" />
     <Petya x={540} y={1450} s={2} pose={pStand(T * 30, { turn: 0.15, tilt: Math.sin(T * 12) * 3, handR: [70 - 10 * pk, -380 + 150 * pk], expr: { eyes: "squint", brows: -0.4, mouth: "smile", look: [0.2, 0.5] } })} />
     <rect x={540 + (70 - 10 * pk) * 2 - 22} y={1450 + (-380 + 150 * pk) * 2 - 70} width={44} height={74} rx={8} fill="#15161a" stroke="#9fb4ff" strokeWidth={3} opacity={1 - pk} />
   </Cam><g opacity={ip(T, [at("смеётся"), at("смеётся") + 0.3], [0, 1])}><Tag x={540} y={215} title="ШУТКА?" sub="ПЕТЯ НЕ ВЕРИТ" c={YEL} w={260} /></g></>;
 };
 const Stop: SShot = ({ t, T }) => (
-  <><Cam s={ip(t, [0, 5], [1.05, 1.18])} cx={620} cy={620}>
+  <><Cam s={mix(ip(t, [0, 5], [1.05, 1.18]), 2.4, pk(T, "Ждёт"))} cx={mix(620, 740, pk(T, "Ждёт"))} cy={mix(620, 470, pk(T, "Ждёт"))}>
     <Street T={T} />
     <Petya x={740} y={800} s={0.75} pose={pStand(T * 30, { turn: -0.6, handL: [-40, -300], expr: { eyes: "open", mouth: "flat", look: [-1, 0] } })} />
   </Cam><g opacity={ip(T, [at("остановке"), at("остановке") + 0.3], [0, 1])}><Tag x={540} y={215} title="УТРО, 07:40" sub="ОСТАНОВКА · АВТОБУС 47" c={YEL} w={320} /></g></>
@@ -191,7 +194,7 @@ const Buzz: SShot = ({ t, T }) => {
 const Arrive: SShot = ({ t, T }) => {
   const bx = ip(T, [at("Автобус", 1) - 0.1, at("подъезжает") + 0.9], [1200, 120]);
   const door = ip(T, [at("открываются") - 0.1, at("открываются") + 0.5], [0, 1]);
-  return <Cam s={ip(t, [0, 3], [1.05, 1.12])} cx={600} cy={620}>
+  return <Cam s={mix(ip(t, [0, 3], [1.05, 1.12]), 1.75, pk(T, "открываются"))} cx={mix(600, 470, pk(T, "открываются"))} cy={mix(620, 760, pk(T, "открываются"))}>
     <Street T={T} />
     <Petya x={740} y={800} s={0.75} pose={pStand(T * 30, { turn: -0.6, expr: { eyes: "open", mouth: "flat", look: [-1, 0.2] } })} />
     <Bus x={bx} y={1060} door={door} T={T} />
@@ -213,7 +216,7 @@ const Look: SShot = ({ t, T }) => (
   </Cam>
 );
 const Peek: SShot = ({ t, T }) => (
-  <Cam s={ip(t, [0, 2.2], [1.9, 2.1])} cx={300} cy={700}>
+  <Cam s={mix(1.3, 2.7, pk(T, "смотрит", 1, 0.6))} cx={mix(420, 590, pk(T, "смотрит", 1, 0.6))} cy={mix(720, 560, pk(T, "смотрит", 1, 0.6))}>
     <Street T={T} />
     <Bus x={120} y={1060} door={1} T={T} />
     <Petya x={600} y={1000} s={0.9} pose={pStand(T * 30, { turn: -0.8, lean: -6, expr: { eyes: "wide", brows: 0.8, mouth: "tight", look: [-1, -0.2] } })} />
@@ -222,7 +225,7 @@ const Peek: SShot = ({ t, T }) => (
 const Driver: SShot = ({ t, T }) => {
   const sm = T > at("улыбается") - 0.05;
   const s = 2.6, hx = 520, hy = 1850;
-  return <><Cam s={ip(t, [0, 4.6], [1, 1.12])} cx={540} cy={560} shake={sm && T < at("улыбается") + 0.3 ? 0.12 : 0}>
+  return <><Cam s={mix(ip(t, [0, 4.6], [1, 1.12]), 1.75, pk(T, "улыбается", 1, 0.35))} cx={520} cy={mix(560, 480, pk(T, "улыбается", 1, 0.35))} shake={sm && T < at("улыбается") + 0.3 ? 0.12 : 0}>
     <rect width={W} height={PH} fill="#1a2030" />
     <rect x={0} y={760} width={W} height={420} fill="#2a2f3a" />
     <circle cx={720} cy={900} r={240} fill="#15161a" stroke={INK} strokeWidth={14} /><circle cx={720} cy={900} r={60} fill="#3a3c44" />
@@ -239,7 +242,7 @@ const Driver: SShot = ({ t, T }) => {
 const Leave: SShot = ({ t, T }) => {
   const door = ip(T, [at("закрываются") - 0.2, at("закрываются") + 0.3], [1, 0]);
   const bx = ip(T, [at("Автобус", 2), at("Пети") + 0.8], [120, -1400]);
-  return <><Cam s={ip(t, [0, 3.8], [1.05, 1.15])} cx={600} cy={620}>
+  return <><Cam s={mix(ip(t, [0, 3.8], [1.05, 1.15]), 2.6, pk(T, "без"))} cx={mix(600, 740, pk(T, "без"))} cy={mix(620, 545, pk(T, "без"))}>
     <Street T={T} />
     <Bus x={bx} y={1060} door={door} T={T} />
     <Petya x={740} y={1000} s={0.9} pose={pStand(T * 30, { turn: -0.4, expr: { eyes: "wide", mouth: "o", look: [-1, 0] } })} />
@@ -253,7 +256,7 @@ const Good: SShot = ({ t, T }) => {
   </Cam>;
 };
 const Opens: SShot = ({ t, T }) => (
-  <Cam s={ip(t, [0, 2.2], [1.6, 1.75])} cx={540} cy={560}>
+  <Cam s={mix(ip(t, [0, 2.2], [1.6, 1.75]), 2.8, pk(T, "экран"))} cx={mix(540, 615, pk(T, "экран"))} cy={mix(560, 560, pk(T, "экран"))}>
     <Street T={T} /><rect width={W} height={PH} fill="#000" opacity={0.35} />
     <ellipse cx={560} cy={460} rx={220} ry={260} fill="#9fb4ff" opacity={0.15} />
     <Petya x={540} y={1450} s={2} pose={pStand(T * 30, { turn: 0.1, tilt: 6, handR: [40, -400], handL: [-20, -392], expr: { eyes: "open", brows: 0.5, mouth: "tight", look: [0.2, 0.7] } })} />
@@ -297,4 +300,4 @@ const CUTS: [SShot, number][] = [
 const CLOCK: [number, string][] = [[0, "22:14"], [b("Утром"), "07:38"], [b("Петя", 5), "07:41"]];
 const RED_RE = /^(садись|седьмой|скрыт|серьёзно|водителя|закрытыми|глазами|улыбается|заставку|спит|ночью|комнаты)/i;
 const YEL_RE = /^(сорок|телефон|пятьсот|рублей|остановке|автобус|двери|шаг|сообщение|петя|пети|молодец|фото|кровати)/i;
-export const Phone1: React.FC = () => <StoryShell voice={VOICE} ad1={AD1_P1} adLen={AD_LEN_VX} capTop={1480} dimAd endAd={false} cuts={CUTS} clock={CLOCK} red={RED_RE} yel={YEL_RE} dir="stories/phone1" />;
+export const Phone1: React.FC = () => <StoryShell voice={VOICE} ad1={AD1_P1} adLen={AD_LEN_VX} capTop={1480} dimAd endAd={false} cuts={CUTS} clock={CLOCK} red={RED_RE} yel={YEL_RE} dir="stories/phone1" glide />;
