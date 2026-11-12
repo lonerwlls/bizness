@@ -23,7 +23,7 @@ vec3 iconAt(vec2 xz){
   if (abs(xz.y - DOCK_Z) < 0.9) { r = 4; rowz = DOCK_Z; }
   else { float ry = floor((xz.y + 10.0) / 2.0); rowz = -9.0 + ry * 2.0; if (ry >= 0.0 && ry <= 3.0) r = int(ry); }
   if (cx < 0.0 || cx > 3.0 || r < 0) return vec3(-2.0, 0.0, 0.0);
-  vec2 d = abs(xz - vec2(colx, rowz)) - vec2(0.4); float sd = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0) - 0.16;
+  vec2 d = abs(xz - vec2(colx, rowz)) - vec2(0.42); float sd = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0) - 0.26;
   float m = smoothstep(0.02, -0.02, sd);
   return vec3(subIndex(c, r), m, fract(sin(cx * 7.1 + float(r) * 3.3) * 43758.5));
 }
@@ -44,7 +44,7 @@ vec3 albedo(float id, vec3 pos, vec3 n){
 vec3 emission(vec3 pos){   // подключённые иконки светятся оранжевым: туда утекает свет героя
   vec3 ic = iconAt(pos.xz);
   if (ic.x < -0.5 || ic.x >= u_plugged) return vec3(0.0);
-  return vec3(1.0, 0.42, 0.12) * ic.y * 0.55;
+  return vec3(1.0, 0.42, 0.12) * ic.y * 0.8;
 }
 vec3 lighting(vec3 pos, vec3 n, vec3 rd, float id, bool sh){
   vec3 L1 = normalize(vec3(0.3, 1.0, 0.45));

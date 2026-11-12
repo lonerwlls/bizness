@@ -15,7 +15,7 @@ const PLANS = {
   top: (f) => ({ ro: [1.6, 4.6, 3.2], ta: [0, 0.8, -0.6], lens: 0.9 }),
   close: (f) => ({ ro: [1.3, 1.45, 1.7 - 0.004 * (f - 652)], ta: [0, 1.2, 0], lens: 1.2 }),
   darkClose: (f) => ({ ro: [0.9, 1.4, 1.35], ta: [0, 1.25, 0], lens: 1.25 }),
-  reveal: (f) => ({ ro: [0.6, 27, 9.5 - 0.004 * (f - 700)], ta: [0, 0, -2.4], lens: 0.95 }),
+  reveal: (f) => ({ ro: [0.6, 25, 9.0 - 0.004 * (f - 700)], ta: [0, 0, -2.4], lens: 0.95 }),
 };
 SUBS.forEach((_, i) => (PLANS["cab" + i] = cab(i)));
 export function cameraTrack() {

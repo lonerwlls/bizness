@@ -9,9 +9,9 @@ export function glowAt(f) {
   if (f >= T.UNLOCK) return sstep(T.UNLOCK, T.UNLOCK + 10, f);       // экран включился — снова ярок
   if (f >= T.TURN + 6) return 0;
   let g = 1;
-  for (let i = 0; i < T.SUBS.length - 1; i++) { const t0 = T.SUBS[i][0]; if (f >= t0) { g -= 0.09 * sstep(t0, t0 + 14, f); if (f < t0 + 5) g *= 0.45 + 0.11 * (f - t0); } }
+  for (let i = 0; i < T.SUBS.length - 1; i++) { const t0 = T.SUBS[i][0]; if (f >= t0) { g -= 0.17 * sstep(t0, t0 + 14, f); if (f < t0 + 5) g *= 0.45 + 0.11 * (f - t0); } }
   const k = plugged(f);
-  if (k >= 3) { const h = Math.sin(f * 12.9898) * 43758.5453, r = h - Math.floor(h); if (r < 0.025 * k) g *= 0.55; }
+  if (k >= 3) { const h = Math.sin(f * 12.9898) * 43758.5453, r = h - Math.floor(h); if (r < 0.03 * k) g *= 0.55; }
   if (f >= T.TURN) g *= [1.0, 0.2, 0.7, 0.0, 0.4, 0.0][f - T.TURN];          // последняя искра — и погас
   return Math.max(0, g);
 }
@@ -27,7 +27,7 @@ function rig(pel, tu, o) {
 }
 export function heroAt(f) {
   const live = f < T.UNLOCK;
-  const slump = live ? clamp(T.SUBS.reduce((a, s) => a + 0.11 * sstep(s[0], s[0] + 20, f), 0), 0, 1.25) : 0;
+  const slump = live ? clamp(T.SUBS.reduce((a, s) => a + 0.2 * sstep(s[0], s[0] + 20, f), 0), 0, 1.25) : 0;
   let jerk = 0; if (live) for (const s of T.SUBS) if (f >= s[0] && f < s[0] + 10) jerk = Math.sin(((f - s[0]) / 10) * Math.PI);
   // попытка встать: поднимается и подаётся вперёд, провода дёргают обратно
   const [s0, s1] = T.STAND; const rise = live ? sstep(s0, s0 + 34, f) * (1 - sstep(s1 - 8, s1, f)) : 0;
