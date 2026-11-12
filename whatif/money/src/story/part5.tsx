@@ -11,7 +11,7 @@ import {CAST} from './cast';
 import {Bang, CallSplit, Card, FL, HS, SFL, SmallPhone, StreetBG, badgeY} from './common';
 import {Bedroom} from '../kit/sets';
 import {Apartment, Envelope, Hallway, SEAT} from './places';
-import {Bus, FrontDesk, Hospital, PlasticChair} from './places5';
+import {BusInside, FrontDesk, Hospital, PlasticChair, Validator} from './places5';
 
 /* PART 5 (≈4:25–5:40): Mom's bill, the choice, the payment. */
 
@@ -268,16 +268,26 @@ const T064: React.FC = () => <T063 talk />;
 const T065: React.FC = () => {
 	const {f, gf, at} = useShot();
 	const w = useW();
-	const hw = walkTo(f, at('065') - 6, w('065', 0.5), 200, 1030, 3, 0.4);
-	const cam = usePush(camOn(900, 520, 1.1), camOn(1000, 520, 1.25));
+	// inside the bus: taps the card on the validator, holds the pole, eyes stay on the envelope
+	const HX = 860;
+	const VX = 960;
+	const hip = FL - 157 * HS;
+	const tapK = env(f, w('065', 0.32), w('065', 0.55), 8, 10);
+	const sway = Math.sin(gf / 14) * 1.5;
+	let hp: Pose = {...idle(gf, 2), lean: sway, head: 14};
+	hp = reach(hp, 'F', tapK > 0.01 ? toLocal(VX + 30, 600, HX, hip, HS, 1) : [42, -100], tapK > 0.01 ? tapK : 1);
+	hp = reach(hp, 'B', toLocal(VX - 6, 560, HX, hip, HS, 1), 1);
+	const cam = usePush(camOn(900, 540, 1.3), camOn(900, 520, 1.45));
 	return (
-		<Stage cam={cam} bg="#0b1030" light={{x: 60, y: 20, o: 0.35, night: true}}>
-			<StreetBG gf={gf} />
+		<Stage cam={cam} bg="#24305a" light={{x: 50, y: 0, o: 0.35, c: '220,235,255'}}>
+			<Layer depth={1.4}>
+				<BusInside f={gf} />
+			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<Bus x={1250} y={1010} f={gf} />
-					<Actor who="hero" x={hw.x} floor={SFL} s={HS} facing={1} faceTurn={0.5} look={[0.8, 0]} expr="worried" pose={hw.moving ? hw.pose : reach(idle(gf, 2), 'F', [70, -100], 1)} vx={hw.vx} bob={hw.bob} handItem={hw.moving ? undefined : <Card />} uid="h-bus" />
-					<HeroBadge x={hw.x} y={badgeY(SFL) - hw.bob} s={0.8} />
+					<Actor who="hero" x={HX} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.3, 1]} expr="worried" mouth="frown" pose={hp} handItem={tapK > 0.3 ? <Card /> : <g transform="scale(0.1) rotate(-10)"><Envelope x={0} y={0} amount="$90,000" /></g>} uid="h-bus" />
+					<Validator x={VX} ok={f > w('065', 0.45) ? 1 : 0} />
+					<HeroBadge x={HX} y={badgeY(FL)} s={0.8} />
 				</Svg>
 			</Layer>
 		</Stage>
@@ -289,7 +299,7 @@ const T066: React.FC = () => {
 	const {f, gf, at} = useShot();
 	const w = useW();
 	const hw = walkTo(f, at('066') + 10, w('066', 0.35), -200, 760, 5, 0.4);
-	const momP: Pose = reach({...SIT, head: 4}, 'F', [40, -60], 1);
+	const momP: Pose = reach(reach({...SIT, lean: 0, head: 4}, 'F', [52, -28], 1), 'B', [44, -26], 1);
 	const cam = usePush(camOn(1000, 560, 1.15), camOn(1050, 520, 1.35));
 	return (
 		<Stage cam={cam} bg="#1f4a50" light={{x: 40, y: 0, o: 0.45, c: '220,255,250'}}>
@@ -301,7 +311,7 @@ const T066: React.FC = () => {
 					{[1060, 1200, 1340, 1480].map((x) => (
 						<PlasticChair key={x} x={x} facing={-1} c={x === 1200 ? '#3d6fd6' : '#e47a3c'} />
 					))}
-					<Actor who="mom" x={1205} floor={FL} seat={SEAT} s={0.98} facing={-1} faceTurn={0.4} look={f > w('066', 0.35) ? [-0.8, -0.2] : [-0.3, 0.6]} expr="sad" mouth={f > w('066', 0.55) ? 'smile' : 'frown'} pose={momP} handItem={<g transform="scale(0.1)"><Envelope x={0} y={0} amount="$90,000" /></g>} uid="mom-h" />
+					<Actor who="mom" x={1228} floor={FL} seat={SEAT} s={0.98} facing={-1} faceTurn={0.4} look={f > w('066', 0.35) ? [-0.8, -0.2] : [-0.3, 0.6]} expr="sad" mouth={f > w('066', 0.55) ? 'smile' : 'frown'} pose={momP} handItem={<g transform="scale(0.1)"><Envelope x={0} y={0} amount="$90,000" /></g>} uid="mom-h" />
 					<Actor who="hero" x={hw.x} floor={FL} s={HS} facing={1} faceTurn={0.5} look={[0.8, 0.2]} expr="worried" pose={hw.pose} vx={hw.vx} bob={hw.bob} uid="h-hos" />
 					<HeroBadge x={hw.x} y={badgeY(FL) - hw.bob} s={0.8} />
 					{f > w('066', 0.62) ? (

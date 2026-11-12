@@ -56,13 +56,16 @@ export const Hospital: React.FC<{f: number}> = ({f}) => (
 		<Floor y={900} c="#3a5a5e" />
 	</Svg>
 );
-/* one plastic chair (side view), seat at y≈790 */
+/* waiting-room plastic chair (side view): seat top at y = 826, backrest on the side it faces away from */
 export const PlasticChair: React.FC<{x: number; c?: string; facing?: 1 | -1}> = ({x, c = '#e47a3c', facing = 1}) => (
 	<g transform={`translate(${x},0) scale(${facing},1)`}>
-		<rect x={-50} y={826} width={100} height={14} rx={6} fill={c} />
-		<rect x={-50} y={716} width={14} height={124} rx={6} fill={c} />
-		<rect x={-40} y={840} width={8} height={62} fill="#2a2f3a" />
-		<rect x={32} y={840} width={8} height={62} fill="#2a2f3a" />
+		<rect x={-40} y={856} width={100} height={8} fill="#2a2f3a" />
+		<rect x={-34} y={840} width={8} height={62} fill="#2a2f3a" />
+		<rect x={42} y={840} width={8} height={62} fill="#2a2f3a" />
+		<path d={`M-52,700 Q-60,770 -50,836 L-36,836 Q-46,770 -38,700 Z`} fill={c} />
+		<rect x={-56} y={690} width={22} height={70} rx={10} fill={c} />
+		<rect x={-52} y={822} width={112} height={18} rx={8} fill={c} />
+		<rect x={-52} y={822} width={112} height={6} rx={3} fill="#fff" opacity={0.2} />
 	</g>
 );
 /* front desk with a big payment screen; `paid` turns it green */
@@ -88,6 +91,74 @@ export const FrontDesk: React.FC<{x: number; paid: number; amount: string}> = ({
 					</text>
 				</g>
 			)}
+		</g>
+	</g>
+);
+
+/* inside a night bus: windows with the city sliding past, yellow poles, seats, a card validator */
+export const BusInside: React.FC<{f: number}> = ({f}) => (
+	<Svg>
+		<rect x={-400} y={-300} width={2800} height={1300} fill="#24305a" />
+		<rect x={-400} y={120} width={2800} height={360} fill="#141a38" />
+		<clipPath id="bus-win">
+			{[0, 1, 2, 3, 4].map((i) => (
+				<rect key={i} x={-260 + i * 520} y={150} width={460} height={300} rx={24} />
+			))}
+		</clipPath>
+		<g clipPath="url(#bus-win)">
+			<rect x={-400} y={120} width={2800} height={360} fill="#0d1230" />
+			{Array.from({length: 18}).map((_, i) => {
+				const x = ((i * 260 - f * 14) % 4680 + 4680) % 4680 - 600;
+				const h = 120 + ((i * 53) % 160);
+				return (
+					<g key={i}>
+						<rect x={x} y={460 - h} width={200} height={h} fill={i % 2 ? '#1b2350' : '#161d44'} />
+						{Array.from({length: 6}).map((__, r) => (random('bw' + i + r) > 0.45 ? <rect key={r} x={x + 20 + (r % 3) * 60} y={480 - h + Math.floor(r / 3) * 50} width={22} height={24} fill="#ffd27a" opacity={0.6} /> : null))}
+					</g>
+				);
+			})}
+			{Array.from({length: 8}).map((_, i) => {
+				const x = ((i * 600 - f * 30) % 4800 + 4800) % 4800 - 600;
+				return <circle key={'l' + i} cx={x} cy={200} r={10} fill="#fff4cf" opacity={0.8} />;
+			})}
+		</g>
+		{[0, 1, 2, 3, 4].map((i) => (
+			<rect key={i} x={-260 + i * 520} y={150} width={460} height={300} rx={24} fill="none" stroke="#3a4680" strokeWidth={10} />
+		))}
+		{/* handrail and hanging straps */}
+		<rect x={-400} y={70} width={2800} height={12} rx={6} fill="#ffd34a" />
+		{Array.from({length: 12}).map((_, i) => (
+			<g key={i} transform={`translate(${-200 + i * 200},82) rotate(${Math.sin(f / 9 + i) * 4})`}>
+				<line x1={0} y1={0} x2={0} y2={60} stroke="#c9ccd6" strokeWidth={4} />
+				<circle cx={0} cy={72} r={14} fill="none" stroke="#c9ccd6" strokeWidth={5} />
+			</g>
+		))}
+		{/* seats along the wall */}
+		{[0, 1, 2, 3].map((i) => (
+			<g key={i} transform={`translate(${200 + i * 460},0)`}>
+				<rect x={0} y={640} width={130} height={170} rx={20} fill="#3d6fd6" />
+				<rect x={-10} y={800} width={170} height={30} rx={10} fill="#2f5fd0" />
+				<rect x={60} y={830} width={14} height={70} fill="#1b1a26" />
+			</g>
+		))}
+		<rect x={-400} y={900} width={2800} height={300} fill="#2a2f4a" />
+		<rect x={-400} y={900} width={2800} height={10} fill="#1b1a26" />
+		{Array.from({length: 40}).map((_, i) => (
+			<rect key={i} x={-400 + i * 80} y={930} width={40} height={6} fill="#3a4060" />
+		))}
+	</Svg>
+);
+/* yellow pole with a card validator (drawn on the actors' layer) */
+export const Validator: React.FC<{x: number; ok: number}> = ({x, ok}) => (
+	<g>
+		<rect x={x - 7} y={70} width={14} height={830} fill="#ffd34a" />
+		<g transform={`translate(${x + 8},620)`}>
+			<rect x={0} y={-60} width={70} height={110} rx={10} fill="#2a2633" />
+			<rect x={8} y={-50} width={54} height={44} rx={6} fill={ok > 0.5 ? '#3fcf7a' : '#9fd8ff'} />
+			<text x={35} y={-20} textAnchor="middle" fontSize={16} fontFamily={FONT} fontWeight={900} fill="#11142c">
+				{ok > 0.5 ? 'OK ✓' : '$4.00'}
+			</text>
+			<circle cx={35} cy={22} r={14} fill="#4a4f60" />
 		</g>
 	</g>
 );
