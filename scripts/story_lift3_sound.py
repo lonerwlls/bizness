@@ -44,8 +44,10 @@ put(FX, 0, lp(noise(N), 120) * 0.5 * fade(N, 1, 1), 0.5)
 put(FX, 0, hum(b("Внутри"), 50), 0.12)
 for k in range(int(DUR / 1.1)): put(FX, 1.0 + k * 1.1 + rng.random() * 0.4, metal(2200 + rng.random() * 500, 0.3) * 0.2, 0.35, pan=rng.random() - 0.5, rev=0.7)
 # голос за дверью (бубнёж) и вопрос
+put(FX, 0.1, tv_babble(at("Петя", 1) + 0.6), 0.6, rev=0.4)
+put(FX, at("Но") - 0.05, thump(1.4, 42, 1.4), 0.9, rev=0.6)
 put(FX, at("Голос"), tv_babble(at("завтрак") - at("Голос") + 1.2) * 1.2, 0.45, rev=0.4)
-put(FX, at("Петя", 2) - 0.3, breath(1.2) * 2, 0.5)
+put(FX, at("Петя", 3) - 0.3, breath(1.2) * 2, 0.5)
 put(FX, at("Слишком"), thump(1.2, 45, 1.2), 0.7, rev=0.5)
 # телефон: писк батареи
 put(FX, at("три"), ping(440) * 0.6, 0.6); put(FX, at("три") + 0.35, ping(440) * 0.6, 0.5)
@@ -75,7 +77,7 @@ def pad(notes, a, e, g):
     s = lp(s, 650) / (len(notes) * 3) * (0.75 + 0.25 * np.sin(2 * np.pi * 0.17 * tt(n)))
     put(MUS, a, s * fade(n, 1.5, 1.5), g, rev=0.25)
 drone = np.sin(2 * np.pi * NOTE(26) * t) * 0.6 + np.sin(2 * np.pi * NOTE(26) * 1.003 * t) * 0.5 + lp(noise(N), 90) * 0.8
-grow = np.interp(t, [0, b("Петя", 3), b("Внутри"), b("Человек"), END - 0.2, END, DUR], [0.9, 1.0, 0.7, 1.3, 1.4, 0.15, 0])
+grow = np.interp(t, [0, b("Петя", 4), b("Внутри"), b("Человек"), END - 0.2, END, DUR], [0.9, 1.0, 0.7, 1.3, 1.4, 0.15, 0])
 MUS[:, 0] += drone * 0.11 * grow; MUS[:, 1] += drone * 0.11 * grow
 CH = [[50, 53, 57, 51], [46, 50, 53, 52], [43, 46, 50, 51], [45, 49, 52, 46], [50, 53, 56, 51]]
 secs = [0, b("Он", 2), b("Внутри"), b("На", 2), b("Я"), END]

@@ -37,11 +37,13 @@ const Room: React.FC<{ T: number; who?: number; dustT?: number }> = ({ T, who = 
     </g>
     {/* диван */}
     <rect x={300} y={600} width={520} height={190} rx={30} fill="#5a4a3e" stroke={INK} strokeWidth={7} />
-    {who ? <g opacity={who}>{/* седой затылок над спинкой */}
-      <rect x={520} y={548} width={90} height={70} rx={30} fill="#434a5a" stroke={INK} strokeWidth={5} />
-      {[-1, 1].map((k) => <ellipse key={k} cx={565 + k * 40} cy={526} rx={8} ry={13} fill={OLD.skinSh} stroke={INK} strokeWidth={4} />)}
-      <ellipse cx={565} cy={520} rx={40} ry={46} fill={OLD.hair} stroke={INK} strokeWidth={5} />
-      {[-24, -10, 4, 18].map((d, i) => <path key={i} d={`M ${565 + d} 482 Q ${565 + d * 1.3 + 4} 515 ${565 + d * 1.1} 556`} stroke={OLD.hairSh} strokeWidth={3} fill="none" strokeLinecap="round" />)}
+    {who ? <g opacity={who}>{/* седой затылок и плечи взрослого над спинкой (масштаб как у Пети 1,25) */}
+      <path d="M 455 610 Q 452 552 500 540 Q 565 528 630 540 Q 678 552 675 610 Z" fill="#434a5a" stroke={INK} strokeWidth={5} />
+      <path d="M 512 545 Q 565 585 618 545 Q 600 520 565 518 Q 530 520 512 545 Z" fill="#30364a" stroke={INK} strokeWidth={4} />
+      <rect x={550} y={500} width={30} height={40} fill={OLD.skinSh} stroke={INK} strokeWidth={4} />
+      {[-1, 1].map((k) => <ellipse key={k} cx={565 + k * 44} cy={470} rx={9} ry={15} fill={OLD.skinSh} stroke={INK} strokeWidth={4} />)}
+      <ellipse cx={565} cy={460} rx={44} ry={56} fill={OLD.hair} stroke={INK} strokeWidth={5} />
+      {[-28, -12, 4, 20].map((d, i) => <path key={i} d={`M ${565 + d} 412 Q ${565 + d * 1.3 + 4} 455 ${565 + d * 1.1} 508`} stroke={OLD.hairSh} strokeWidth={3} fill="none" strokeLinecap="round" />)}
     </g> : null}
     <rect x={280} y={740} width={560} height={150} rx={26} fill="#6a584a" stroke={INK} strokeWidth={7} />
     <rect x={250} y={700} width={70} height={200} rx={24} fill="#5a4a3e" stroke={INK} strokeWidth={7} />
@@ -83,14 +85,26 @@ const Thought: React.FC<{ x: number; y: number; o: number; empty: number; T: num
 const Hands: React.FC<{ pale: number; T: number }> = ({ pale, T }) => {
   const mix = (a: number[], c: number[]) => `rgb(${a.map((v, i) => Math.round(v + (c[i] - v) * pale)).join(",")})`;
   const skin = mix([227, 180, 150], [226, 230, 234]), sh = mix([185, 134, 112], [170, 182, 196]);
+  // ладонь к зрителю: 4 пальца + большой палец наружу. Сначала все части с контуром, потом те же без контура — общий силуэт без швов
+  const parts = (stroke: boolean) => {
+    const st = stroke ? { stroke: INK, strokeWidth: 12 } : {};
+    return <g fill={skin} {...st} strokeLinejoin="round">
+      {[[-46, 92, -8], [-16, 110, -2], [15, 104, 3], [44, 84, 9]].map(([x, L, r], i) =>
+        <rect key={i} x={x - 13} y={-70 - L} width={26} height={L + 30} rx={13} transform={`rotate(${r} ${x} -70)`} />)}
+      <rect x={36} y={-62} width={30} height={84} rx={15} transform="rotate(40 51 20)" />
+      <rect x={-62} y={-80} width={124} height={140} rx={36} />
+    </g>;
+  };
   const hand = (sd: number) => (
-    <g transform={`translate(${540 + sd * 190} ${880 + Math.sin(T * 3 + sd) * 4}) scale(${sd} 1) rotate(${-12})`}>
-      <rect x={-70} y={40} width={110} height={260} fill="#434a5a" stroke={INK} strokeWidth={6} />
-      <path d="M -80 -90 Q -90 60 -20 70 Q 60 70 60 -40 L 60 -110 Q 40 -130 20 -110 L 20 -200 Q 0 -225 -18 -200 L -18 -230 Q -38 -255 -56 -230 L -56 -205 Q -78 -225 -94 -200 L -96 -120 Q -112 -140 -126 -120 Z"
-        fill={skin} stroke={INK} strokeWidth={6} strokeLinejoin="round" />
-      <path d="M 60 -40 Q 110 -120 130 -90 Q 120 -40 60 20" fill={skin} stroke={INK} strokeWidth={6} strokeLinejoin="round" />
-      <path d="M -60 -20 Q -20 0 30 -30" stroke={sh} strokeWidth={5} fill="none" strokeLinecap="round" />
-      {pale > 0.5 ? [0, 1, 2].map((k) => <path key={k} d={`M ${-60 + k * 30} -60 q 10 30 -4 60`} stroke="#8aa0c8" strokeWidth={3} fill="none" opacity={(pale - 0.5) * 1.4} />) : null}
+    <g transform={`translate(${540 + sd * 190} ${880 + Math.sin(T * 3 + sd) * 4}) scale(${sd * 1.15} 1.15) rotate(${sd * 0 - 6})`}>
+      <rect x={-58} y={50} width={116} height={300} rx={10} fill="#434a5a" stroke={INK} strokeWidth={6} />
+      <rect x={-62} y={40} width={124} height={34} rx={10} fill="#30364a" stroke={INK} strokeWidth={5} />
+      {parts(true)}{parts(false)}
+      {/* линии ладони и сгибы пальцев */}
+      <path d="M -48 -30 Q -10 -10 40 -40" stroke={sh} strokeWidth={5} fill="none" strokeLinecap="round" />
+      <path d="M -40 10 Q 0 0 30 20" stroke={sh} strokeWidth={4} fill="none" strokeLinecap="round" />
+      {[[-46, -8], [-16, -2], [15, 3], [44, 9]].map(([x, r], i) => <path key={i} d={`M ${x - 9} -112 L ${x + 9} -112`} stroke={sh} strokeWidth={3.5} strokeLinecap="round" transform={`rotate(${r} ${x} -70)`} />)}
+      {pale > 0.5 ? [0, 1, 2].map((k) => <path key={k} d={`M ${-30 + k * 22} 20 q 8 26 -3 50`} stroke="#8aa0c8" strokeWidth={3} fill="none" opacity={(pale - 0.5) * 1.4} />) : null}
     </g>
   );
   return <g>{hand(-1)}{hand(1)}</g>;
@@ -104,21 +118,35 @@ const Freeze: SShot = ({ t, T }) => (
     <rect x={0} y={1090} width={230} height={10} fill="#ffd88a" />
     <Petya x={600} y={1650} s={2.2} pose={pStand(T * 30, { turn: -0.35, light: -1, expr: { eyes: "wide", brows: 1.2, mouth: "tight", look: [-0.6, 0], blink: 0 } })} />
     <rect width={W} height={PH} fill="#000" opacity={0.3} />
-    <g transform="translate(540 300)" opacity={ip(t, [0, 0.2, 1.4, 1.8], [0, 1, 1, 0])}>
-      <rect x={-150} y={-52} width={300} height={104} rx={8} fill="#f1e2b8" transform="rotate(-3)" />
-      <text x={0} y={2} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={46} fill="#2a1a10" transform="rotate(-3)">ЛИФТ</text>
-      <text x={0} y={34} textAnchor="middle" fontFamily={MONO} fontSize={18} fill="#6a4a2a" transform="rotate(-3)" letterSpacing={3}>ЧАСТЬ 3</text>
-    </g>
+    <g opacity={ip(T, [at("коридоре") - 0.2, at("коридоре") + 0.1], [0, 1])}><Brackets x={410} y={320} w={240} h={260} c={RED} /></g>
   </Cam>
 );
 const Waves: React.FC<{ T: number; c: string; y: number }> = ({ T, c, y }) => <g>
   {[1, 2, 3, 4].map((k) => <path key={k} d={`M ${540 - 70 * k} ${y - 20 * k} Q 540 ${y - 60 - 40 * k} ${540 + 70 * k} ${y - 20 * k}`} stroke={c} strokeWidth={6} fill="none" opacity={0.25 + 0.5 * Math.abs(Math.sin(T * 9 + k))} />)}
 </g>;
-const HisVoice: SShot = ({ t, T }) => (
-  <Cam s={ip(t, [0, 3.2], [1.2, 1.35])} cx={540} cy={700}>
-    <BigDoor num="36" glow={1} T={T} /><Waves T={T} c={YEL} y={720} />
-    <rect width={W} height={PH} fill="#000" opacity={0.35} />
-    <g opacity={ip(T, [at("его"), at("его") + 0.3], [0, 1])}><Tag x={540} y={480} title="ЕГО ГОЛОС" sub="КАЖДОЕ СЛОВО" c={YEL} w={300} /></g>
+// ХУК: первые 2 секунды — дверь 36, из-под неё свет и голос Пети
+const Hook: SShot = ({ t, T }) => (<>
+  <Cam s={ip(t, [0, 2.3], [1.05, 1.25])} cx={540} cy={640} shake={t < 0.25 ? 0.25 : 0}>
+    <BigDoor num="36" glow={1} feet={1} T={T} /><Waves T={T} c={YEL} y={760} />
+    <rect width={W} height={PH} fill="#000" opacity={0.3} />
+  </Cam>
+  <Tag x={540} y={470} title="ГОЛОС ПЕТИ" sub="ЗА ДВЕРЬЮ КВ. 36" c={YEL} w={320} o={ip(t, [0, 0.15], [0, 1])} />
+  <g transform="translate(900 330) rotate(4)" opacity={ip(t, [0.1, 0.3], [0, 1])}>
+    <rect x={-95} y={-34} width={190} height={68} rx={6} fill="#f1e2b8" />
+    <text x={0} y={2} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={30} fill="#2a1a10">ЛИФТ</text>
+    <text x={0} y={24} textAnchor="middle" fontFamily={MONO} fontSize={14} fill="#6a4a2a" letterSpacing={3}>ЧАСТЬ 3</text>
+  </g>
+</>);
+// ухо к двери: Петя слушает свой голос
+const EarDoor: SShot = ({ t, T }) => (
+  <Cam s={ip(t, [0, 2.8], [1.3, 1.42])} cx={480} cy={560}>
+    <rect width={W} height={PH} fill={CONC} />
+    <rect x={60} y={120} width={430} height={1000} fill="#3a2a22" stroke={INK} strokeWidth={8} />
+    <text x={275} y={330} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={110} fill="#c8b48a">36</text>
+    <rect x={60} y={1110} width={430} height={10} fill="#ffd88a" />
+    {[1, 2, 3].map((k) => <path key={k} d={`M ${500 + k * 26} ${470 - k * 40} Q ${540 + k * 36} 520 ${500 + k * 26} ${570 + k * 40}`} stroke={YEL} strokeWidth={6} fill="none" opacity={0.3 + 0.5 * Math.abs(Math.sin(T * 8 + k))} />)}
+    <Petya x={600} y={1300} s={1.45} pose={pStand(T * 30, { turn: -0.85, lean: -16, tilt: -8, light: -1, handL: [-170, -440], expr: { eyes: T > at("Каждое") ? "wide" : "squint", brows: 1, mouth: "tight", look: [-1, 0] } })} />
+    <rect width={W} height={PH} fill="#000" opacity={0.3} />
   </Cam>
 );
 const Question: SShot = ({ t, T }) => (
@@ -186,14 +214,14 @@ const Calendar: SShot = ({ t, T }) => {
   </Cam>{z > 0.8 ? <g><rect width={W} height={PH} fill="#ff2a2a" opacity={0.05 + 0.04 * Math.sin(T * 8)} /><Tag x={540} y={215} title="+10 ЛЕТ" sub="ПРОШЛО ДЕСЯТЬ ЛЕТ" c={RED} w={300} /></g> : null}</>;
 };
 const Back: SShot = ({ t, T }) => (
-  <Cam s={ip(t, [0, 3.4], [1.5, 1.7])} cx={565} cy={600}>
-    <Flash x={565} y={560} r={330} id="back" dark={0.85}><Room T={T} who={ip(t, [0, 0.4], [0, 1])} /></Flash>
-    {T > at("Седые") ? <Brackets x={510} y={460} w={110} h={110} c={RED} /> : null}
-    {T > at("Тёмно-серая") ? <Brackets x={505} y={540} w={120} h={80} c={YEL} /> : null}
+  <Cam s={ip(t, [0, 3.4], [1.45, 1.6])} cx={565} cy={560}>
+    <Flash x={565} y={500} r={340} id="back" dark={0.85}><Room T={T} who={ip(t, [0, 0.4], [0, 1])} /></Flash>
+    {T > at("Седые") ? <Brackets x={505} y={392} w={120} h={130} c={RED} /> : null}
+    {T > at("Тёмно-серая") ? <Brackets x={445} y={525} w={240} h={90} c={YEL} /> : null}
   </Cam>
 );
 // старый Петя за спинкой дивана поворачивается
-const OldOnSofa: React.FC<{ T: number; turn: number; s?: number; x?: number; mouth?: "flat" | "open" | "smile"; eyes?: "open" | "wide" | "squint" }> = ({ T, turn, s = 1, x = 565, mouth = "flat", eyes = "open" }) => (
+const OldOnSofa: React.FC<{ T: number; turn: number; s?: number; x?: number; mouth?: "flat" | "open" | "smile"; eyes?: "open" | "wide" | "squint" }> = ({ T, turn, s = 1.25, x = 565, mouth = "flat", eyes = "open" }) => (
   <g clipPath="url(#sofaClip)">
     <defs><clipPath id="sofaClip"><rect x={0} y={0} width={W} height={640} /></clipPath></defs>
     <Petya x={x} y={600 + 420 * s} s={s} look={OLD} old pose={pStand(T * 30, { turn, expr: { eyes, mouth, brows: -0.3, look: [turn * -0.4, 0] } })} />
@@ -213,7 +241,7 @@ const Turn: SShot = ({ t, T }) => {
   </Cam>;
 };
 const OldFace: SShot = ({ t, T }) => (<>
-  <Cam s={ip(t, [0, 3.4], [3.6, 3.9])} cx={565} cy={480} shake={T > at("старое") && T < at("старое") + 0.3 ? 0.15 : 0}>
+  <Cam s={ip(t, [0, 3.4], [3.6, 3.9])} cx={565} cy={470} shake={T > at("старое") && T < at("старое") + 0.3 ? 0.15 : 0}>
     <rect x={300} y={200} width={520} height={400} fill="#3b3d38" />{Array.from({ length: 6 }, (_, i) => <rect key={i} x={285 + i * 95} y={200} width={40} height={400} fill="#34362f" />)}
     <OldOnSofa T={T} turn={-0.05} eyes="open" />
     <rect x={300} y={600} width={520} height={190} rx={30} fill="#5a4a3e" stroke={INK} strokeWidth={7} />
@@ -263,11 +291,11 @@ const EndCard: SShot = ({ t, T }) => {
 };
 
 const CUTS: [SShot, number][] = [
-  [Freeze, 0], [HisVoice, b("Голос")], [Question, b("Если")], [Forget, b("Петя", 2)], [PaleHands, b("Он", 2)], [Phone3, b("Заряд")],
-  [Push, b("Петя", 3)], [Inside, b("Внутри")], [Dust, b("Только", 1)], [Calendar, b("На", 1)], [Back, b("На", 2)], [Turn, b("Человек")],
+  [Hook, 0], [Freeze, b("Но")], [EarDoor, b("Голос")], [Question, b("Если")], [Forget, b("Петя", 3)], [PaleHands, b("Он", 2)], [Phone3, b("Заряд")],
+  [Push, b("Петя", 4)], [Inside, b("Внутри")], [Dust, b("Только", 1)], [Calendar, b("На", 1)], [Back, b("На", 2)], [Turn, b("Человек")],
   [OldFace, b("У")], [Talk, b("Я")], [Returns, b("Лифт")], [EndCard, VOICE.dur + 0.15],
 ];
-const CLOCK: [number, string][] = [[0, "02:52"], [b("Петя", 3), "02:53"], [b("Год"), "02:53 · 2036"]];
-const RED_RE = /^(замирает|его|завтрак|помнит|бледные|три|пылью|лет|вперёд|спиной|седые|старое|ждал|возвращается|пети)/i;
-const YEL_RE = /^(голос|слово|руки|телефона|заряд|дверь|квартира|диван|кружка|календарь|год|десять|толстовка|лицо|лифт|петя)/i;
+const CLOCK: [number, string][] = [[0, "02:52"], [b("Петя", 4), "02:53"], [b("Год"), "02:53 · 2036"]];
+const RED_RE = /^(здесь|коридоре|его|завтрак|помнит|бледные|три|пылью|лет|вперёд|спиной|седые|старое|ждал|возвращается|пети)/i;
+const YEL_RE = /^(говорит|голос|слово|руки|телефона|заряд|дверь|квартира|диван|кружка|календарь|год|десять|толстовка|лицо|лифт|петя)/i;
 export const Lift3: React.FC = () => <StoryShell voice={VOICE} ad1={AD1_L3} adLen={AD_LEN_VX} capTop={1480} dimAd endAd={false} cuts={CUTS} clock={CLOCK} red={RED_RE} yel={YEL_RE} dir="stories/lift3" />;
