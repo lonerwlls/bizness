@@ -3,7 +3,7 @@ import {AbsoluteFill, Audio, Sequence, interpolate, staticFile, useCurrentFrame}
 import STL from './story/short-timeline.json';
 import {AngleCtx, L as EL, LINES, Line, ShotCtx, SpeakOverride, TalkOverride, TOTAL} from './kit/core';
 import {SHOT_TIMES, TimedShot} from './kit/coverage';
-import {clamp, ease} from './kit/kit';
+import {BadgeScale, clamp, ease} from './kit/kit';
 import {Caption} from './kit/graphics';
 import {ShotHost, VoiceTrack, whipAt} from './Long';
 import {SHORT, Seg} from './story/short';
@@ -103,6 +103,7 @@ const RecutSeg: React.FC<{seg: (typeof TIMED)[number]}> = ({seg}) => {
 	const C = shot.C;
 	return (
 		<CropBox c={c}>
+			<BadgeScale.Provider value={0.5}>
 			<TalkOverride.Provider value={(sp, g) => talkAt(sp, g - seg.ep0 + seg.start)}>
 				<SpeakOverride.Provider value={(g) => speakerAt(g - seg.ep0 + seg.start)}>
 					<ShotCtx.Provider value={ctx}>
@@ -112,6 +113,7 @@ const RecutSeg: React.FC<{seg: (typeof TIMED)[number]}> = ({seg}) => {
 					</ShotCtx.Provider>
 				</SpeakOverride.Provider>
 			</TalkOverride.Provider>
+			</BadgeScale.Provider>
 		</CropBox>
 	);
 };

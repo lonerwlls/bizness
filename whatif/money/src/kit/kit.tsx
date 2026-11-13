@@ -98,8 +98,11 @@ export const Rays: React.FC<{x: number; y: number; w: number; len?: number; angl
 	);
 };
 
+/* the short shrinks the badge so it fits the narrow 9:16 window */
+export const BadgeScale = React.createContext(1);
 /* badge over the hero, pops and flashes whenever the number clicks */
-export const HeroBadge: React.FC<{x: number; y: number; s?: number; value?: number}> = ({x, y, s = 1, value}) => {
+export const HeroBadge: React.FC<{x: number; y: number; s?: number; value?: number}> = ({x, y, s: s0 = 1, value}) => {
+	const s = s0 * React.useContext(BadgeScale);
 	const {gf} = useShot();
 	const v = value ?? counterAt(gf);
 	const ago = counterChangedAgo(gf);

@@ -1,0 +1,87 @@
+[
+ {
+  "id": "s01_N",
+  "sp": "N",
+  "t": "What if every dollar you spent cost you one minute of your life?",
+  "reuse": "004_N"
+ },
+ {
+  "id": "s02_N",
+  "sp": "N",
+  "t": "You tap your card for a coffee. Five dollars.",
+  "reuse": "001_N"
+ },
+ {
+  "id": "s03_N",
+  "sp": "N",
+  "t": "Beep. And the number above your head drops by five.",
+  "reuse": "002_N"
+ },
+ {
+  "id": "s04_N",
+  "sp": "N",
+  "t": "Not five dollars. Five minutes. Of your life.",
+  "reuse": "003_N"
+ },
+ {
+  "id": "s05_N",
+  "sp": "N",
+  "t": "The average new car in America costs about forty-eight thousand dollars. That's thirty-three days of your life. For a car.",
+  "reuse": "034_N"
+ },
+ {
+  "id": "s06_N",
+  "sp": "N",
+  "t": "It's not your bill. It's Mom's.",
+  "reuse": "057_N"
+ },
+ {
+  "id": "s07_N",
+  "sp": "N",
+  "t": "Her surgery. Ninety thousand dollars the insurance won't cover. Due Friday.",
+  "reuse": "058_N"
+ },
+ {
+  "id": "s08_N",
+  "sp": "N",
+  "t": "Ninety thousand minutes. That's sixty-two days of your life.",
+  "reuse": "059_N"
+ },
+ {
+  "id": "s09_N",
+  "sp": "N",
+  "t": "At the front desk, you open the payment screen. Ninety thousand. Pay.",
+  "reuse": "067_N"
+ },
+ {
+  "id": "s10_N",
+  "sp": "N",
+  "t": "Click.",
+  "reuse": "068_N"
+ },
+ {
+  "id": "s11_N",
+  "sp": "N",
+  "t": "The number rolls down. Two months, gone in a second.",
+  "reuse": "069_N"
+ },
+ {
+  "id": "s12_N",
+  "sp": "N",
+  "t": "That means for millions of people, one dollar already costs about eight minutes of work.",
+  "reuse": "075_N"
+ },
+ {
+  "id": "s13_N",
+  "sp": "N",
+  "t": "Your curse wasn't a curse. It was a discount.",
+  "reuse": "076_N"
+ },
+ {
+  "id": "s14_N",
+  "sp": "N",
+  "t": "So tell me. If you could see the price of everything in minutes of your life, what would you stop buying first?",
+  "reuse": "083_N",
+  "gap": 2.0
+ }
+]

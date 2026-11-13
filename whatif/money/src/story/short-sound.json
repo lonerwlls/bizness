@@ -1,0 +1,25 @@
+{
+ "ambience": [{"from": "s01", "to": "s05", "kind": "crowd", "gain": 0.035}, {"from": "s05", "to": "end", "kind": "street", "gain": 0.045}],
+ "music": [],
+ "sfx": [
+  {"at": "s01", "off": 0, "type": "whooshUp"},
+  {"at": "s02", "off": 30, "type": "swoosh"},
+  {"at": "s03", "off": 0, "type": "ding"},
+  {"at": "s04", "off": 0, "type": "pop"},
+  {"at": "s05", "off": 0, "type": "swoosh"},
+  {"at": "s05", "off": 100, "type": "thud"},
+  {"at": "s06", "off": 0, "type": "heartbeat", "dur": 1.5},
+  {"at": "s07", "off": 12, "type": "pop"},
+  {"at": "s07", "off": 95, "type": "stamp"},
+  {"at": "s08", "off": 50, "type": "thud"},
+  {"at": "s09", "off": 96, "type": "click"},
+  {"at": "s10", "off": 0, "type": "stamp"},
+  {"at": "s11", "off": 4, "type": "whoosh"},
+  {"at": "s12", "off": 10, "type": "pop"},
+  {"at": "s12", "off": 60, "type": "pop"},
+  {"at": "s13", "off": 20, "type": "swoosh"},
+  {"at": "s13", "off": 40, "type": "ding"},
+  {"at": "s14", "off": 4, "type": "pop"},
+  {"at": "s14", "off": 40, "type": "pop"}
+ ]
+}
