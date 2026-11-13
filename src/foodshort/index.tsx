@@ -13,6 +13,7 @@ import { Phone2, TM_P2 } from "../stories/phone2";
 import { Metro1, TM_M1 } from "../stories/metro1";
 import { Metro1S, TM_M1S } from "../stories/metro1s";
 import { Metro2, TM_M2 } from "../stories/metro2";
+import { Home1, TM_H1 } from "../stories/home1";
 import { FS2_FRAMES, FoodShort2 } from "./FoodShort2";
 
 const Root: React.FC = () => <>
@@ -28,6 +29,7 @@ const Root: React.FC = () => <>
   <Composition id="Story-metro1" component={Metro1} durationInFrames={TM_M1.frames} fps={30} width={1080} height={1920} />
   <Composition id="Story-metro1s" component={Metro1S} durationInFrames={TM_M1S.frames} fps={30} width={1080} height={1920} />
   <Composition id="Story-metro2" component={Metro2} durationInFrames={TM_M2.frames} fps={30} width={1080} height={1920} />
+  <Composition id="Story-home1" component={Home1} durationInFrames={TM_H1.frames} fps={30} width={1080} height={1920} />
   <Composition id="Avatar" component={Avatar} durationInFrames={1} fps={30} width={1080} height={1080} />
   <Composition id="PetyaSheet" component={PetyaSheet} durationInFrames={30} fps={30} width={1800} height={900} />
 </>;

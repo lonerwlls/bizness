@@ -19,7 +19,7 @@ const mix = (a: number, c: number, k: number) => a + (c - a) * k;
 const GLOW = "#9fb4ff";
 
 // прихожая: слева входная дверь с глазком, выключатель, справа приоткрытая дверь в комнату
-const Hall: React.FC<{ T: number; gap?: number; shadow?: number; eyes?: number; feet?: number }> = ({ T, gap = 0.25, shadow = 0, eyes = 0, feet = 0 }) => (
+export const Hall: React.FC<{ T: number; gap?: number; shadow?: number; eyes?: number; feet?: number }> = ({ T, gap = 0.25, shadow = 0, eyes = 0, feet = 0 }) => (
   <g>
     <rect width={W} height={PH} fill="#20263a" />
     {Array.from({ length: 11 }, (_, i) => <rect key={i} x={i * 100} y={0} width={46} height={900} fill="#1c2234" />)}

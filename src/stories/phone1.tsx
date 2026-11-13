@@ -32,15 +32,15 @@ export const PhoneBody: React.FC<{ x?: number; y?: number; s?: number; children:
     {[0, 1].map((k) => <path key={"r" + k} d={`M ${280 + k * 24} -120 Q ${300 + k * 24} 0 ${280 + k * 24} 120`} stroke={YEL} strokeWidth={6} fill="none" opacity={buzz > 0 ? 0.7 : 0} />)}
   </g>
 );
-export const Chat: React.FC<{ msgs: Msg[]; T: number; typing?: number }> = ({ msgs, T, typing = 0 }) => {
+export const Chat: React.FC<{ msgs: Msg[]; T: number; typing?: number; title?: string; sub?: string }> = ({ msgs, T, typing = 0, title = "НОМЕР СКРЫТ", sub = "в сети" }) => {
   const shown = msgs.filter((m) => T >= m.at);
   let y = -250;
   return <g>
     <rect x={-222} y={-442} width={444} height={884} fill="#0f1220" />
     <rect x={-222} y={-442} width={444} height={150} fill="#181c2e" />
     <circle cx={-150} cy={-350} r={34} fill="#3a3f55" /><text x={-150} y={-336} textAnchor="middle" fontFamily="FsMont" fontWeight={900} fontSize={40} fill="#8a90a8">?</text>
-    <text x={-100} y={-356} fontFamily="FsMont" fontWeight={900} fontSize={32} fill="#fff">НОМЕР СКРЫТ</text>
-    <text x={-100} y={-320} fontFamily={MONO} fontSize={20} fill="#6a7090">в сети</text>
+    <text x={-100} y={-356} fontFamily="FsMont" fontWeight={900} fontSize={32} fill="#fff">{title}</text>
+    <text x={-100} y={-320} fontFamily={MONO} fontSize={20} fill="#6a7090">{sub}</text>
     {shown.slice(-4).map((m, i) => {
       const L = wrap(m.text), h = L.length * 46 + 34, k = Math.min(1, (T - m.at) / 0.18);
       const bw = m.me ? Math.max(...L.map((l) => l.length)) * 21 + 60 : 380;

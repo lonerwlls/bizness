@@ -69,7 +69,7 @@ const glideTf = (ci: number, t: number, len: number) => {
   return `translate(${dx} 0) translate(${W / 2} ${PH / 2}) scale(${1 + 0.08 * k}) translate(${-W / 2} ${-PH / 2})`;
 };
 const glideBlur = (t: number, len: number) => 14 * Math.max(1 - sm(t / GIN), sm((t - (len - GOUT)) / GOUT));
-export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean; endAd?: boolean; glide?: boolean; hud?: (T: number) => React.ReactNode }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false, endAd = true, glide = false, hud }) => {
+export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean; endAd?: boolean; glide?: boolean; hud?: (T: number) => React.ReactNode; noCaps?: boolean }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false, endAd = true, glide = false, hud, noCaps = false }) => {
   setLang("ru");
   const tm = timing(voice, ad1, adLen, endAd);
   const G = React.useMemo(() => groupsOf(voice, ask), [voice, ask]);
@@ -81,18 +81,18 @@ export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, num
     <svg width={W} height={1920} viewBox={`0 0 ${W} 1920`} style={{ position: "absolute", top: 0 }}>
       <defs><linearGradient id="fadeB3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" /></linearGradient>
         <radialGradient id="vig3" cx="50%" cy="45%" r="70%"><stop offset="0.55" stopColor="#000" stopOpacity={0} /><stop offset="1" stopColor="#000" stopOpacity={0.75} /></radialGradient></defs>
-      <svg width={W} height={PH} viewBox={`0 0 ${W} ${PH}`} overflow="hidden">
+      <svg width={W} height={noCaps ? 1920 : PH} viewBox={noCaps ? `${540 - 540 / 1.3} ${590 - 960 / 1.3} ${W / 1.3} ${1920 / 1.3}` : `0 0 ${W} ${PH}`} overflow="hidden">
         <g transform={glide ? glideTf(ci, t, next - a) : ""} filter={glide && glideBlur(t, next - a) > 0.3 ? "url(#gblur)" : undefined}>
           {glide ? <defs><filter id="gblur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation={(() => { const j = t > (next - a) / 2 ? ci + 1 : ci, g = glideBlur(t, next - a); return j % 2 ? `${g * 1.6} ${g * 0.2}` : `${g * 0.6} ${g * 0.6}`; })()} /></filter></defs> : null}
           <g transform={live(T, t / Math.max(0.1, next - a))}><C key={ci} t={t} T={T} /></g></g>
         <Dust sec={T} />
         <rect width={W} height={PH} fill="url(#vig3)" />
       </svg>
-      <rect y={PH - 260} width={W} height={262} fill="url(#fadeB3)" />
+      {noCaps ? null : <rect y={PH - 260} width={W} height={262} fill="url(#fadeB3)" />}
       {!glide && t >= 0 && t < 4 / FPS ? <rect width={W} height={PH} fill="#000" opacity={1 - t * FPS / 4} /> : null}
     </svg>
     {hud ? hud(T) : <Clock T={T} clock={clock} dur={voice.dur} />}
-    <Captions T={T} G={G} dur={voice.dur} red={red} yel={yel} top={capTop} />
+    {noCaps ? null : <Captions T={T} G={G} dur={voice.dur} red={red} yel={yel} top={capTop} />}
     {dim ? <AbsoluteFill style={{ background: "rgba(0,0,0,0.62)" }} /> : null}
     <Sequence from={0} durationInFrames={ad1F}><Audio src={staticFile(`${dir}/voice.mp3`)} /><Audio src={staticFile(`${dir}/bed.wav`)} volume={0.85} /></Sequence>
     <Sequence from={ad1F + holdF} durationInFrames={S(tm.end) - ad1F}><Audio src={staticFile(`${dir}/voice.mp3`)} startFrom={ad1F} /><Audio src={staticFile(`${dir}/bed.wav`)} volume={0.85} startFrom={ad1F} /></Sequence>
