@@ -1,4 +1,21 @@
 {
- "long": {"name": "Long", "bed": "sfx/bed.wav", "bedVolume": 0.35, "lufs": -14, "concurrency": 3, "gl": "swangle", "timeout": 300000},
- "short": {"name": "Short", "bed": "sfx/bed.wav", "timeline": "src/story/timeline.json"}
+ "long": {
+  "name": "Long",
+  "bed": "sfx/bed.wav",
+  "bedVolume": 0.35,
+  "lufs": -14,
+  "concurrency": 3,
+  "gl": "swangle",
+  "timeout": 300000
+ },
+ "short": {
+  "name": "Short",
+  "bed": "sfx/short_bed.wav",
+  "bedVolume": 0.35,
+  "lufs": -14,
+  "concurrency": 3,
+  "gl": "swangle",
+  "timeout": 300000,
+  "timeline": "src/story/short-timeline.json"
+ }
 }
