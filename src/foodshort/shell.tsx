@@ -69,7 +69,7 @@ const glideTf = (ci: number, t: number, len: number) => {
   return `translate(${dx} 0) translate(${W / 2} ${PH / 2}) scale(${1 + 0.08 * k}) translate(${-W / 2} ${-PH / 2})`;
 };
 const glideBlur = (t: number, len: number) => 14 * Math.max(1 - sm(t / GIN), sm((t - (len - GOUT)) / GOUT));
-export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean; endAd?: boolean; glide?: boolean }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false, endAd = true, glide = false }) => {
+export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, number][]; clock: [number, string][]; red: RegExp; yel: RegExp; dir: string; ask?: Wd[]; adLen?: number; capTop?: number; dimAd?: boolean; endAd?: boolean; glide?: boolean; hud?: (T: number) => React.ReactNode }> = ({ voice, ad1, cuts, clock, red, yel, dir, ask = [], adLen = AD_LEN, capTop = 1230, dimAd = false, endAd = true, glide = false, hud }) => {
   setLang("ru");
   const tm = timing(voice, ad1, adLen, endAd);
   const G = React.useMemo(() => groupsOf(voice, ask), [voice, ask]);
@@ -91,7 +91,7 @@ export const StoryShell: React.FC<{ voice: Voice; ad1: number; cuts: [SShot, num
       <rect y={PH - 260} width={W} height={262} fill="url(#fadeB3)" />
       {!glide && t >= 0 && t < 4 / FPS ? <rect width={W} height={PH} fill="#000" opacity={1 - t * FPS / 4} /> : null}
     </svg>
-    <Clock T={T} clock={clock} dur={voice.dur} />
+    {hud ? hud(T) : <Clock T={T} clock={clock} dur={voice.dur} />}
     <Captions T={T} G={G} dur={voice.dur} red={red} yel={yel} top={capTop} />
     {dim ? <AbsoluteFill style={{ background: "rgba(0,0,0,0.62)" }} /> : null}
     <Sequence from={0} durationInFrames={ad1F}><Audio src={staticFile(`${dir}/voice.mp3`)} /><Audio src={staticFile(`${dir}/bed.wav`)} volume={0.85} /></Sequence>
