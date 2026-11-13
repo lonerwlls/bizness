@@ -20,7 +20,7 @@ ffmpeg -v error -y -i out/_tale.mp4 -i $AD -filter_complex "
  [0:v]drawbox=x=0:y=$PY:w=1080:h=$PHH:color=0x050a1e@0.88:t=fill:enable='between(t,$A1,$A1+$ADLEN)',
   drawbox=x=0:y=$PY:w=1080:h=6:color=0x3a9cff@0.95:t=fill:enable='between(t,$A1,$A1+$ADLEN)',
   drawbox=x=0:y=$((PY+PHH-6)):w=1080:h=6:color=0x3a9cff@0.95:t=fill:enable='between(t,$A1,$A1+$ADLEN)'[bg];
- [bg][a1]overlay=(W-w)/2:$((PY+PHH/2))-h/2:eof_action=pass:enable='between(t,$A1,$A1+$ADLEN)'[v];
+ [bg][a1]overlay=(W-w)/2+5:$((PY+PHH/2+10))-h/2:eof_action=pass:enable='between(t,$A1,$A1+$ADLEN)'[v];
  [1:a]volume=1.6,adelay=$(ms $A1)|$(ms $A1)[x1];
  [0:a][x1]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]" \
  -map "[v]" -map "[a]" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 160k -movflags +faststart $OUT
