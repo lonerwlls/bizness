@@ -214,7 +214,7 @@ const D052: React.FC = () => {
 					{items.map(([t, k, dx, y]) => (
 						<Tag key={t} f={f} t={w('052', k)} x={HX + dx} y={y} text={t} c="#11142c" fg="#ffb547" size={30} rot={dx > 0 ? 4 : -4} />
 					))}
-					<Tag f={f} t={w('052', 0.1)} x={HX + 330} y={200} text="DAYS? WHO CARES" c="#1d3a2a" fg="#9ff0b0" stroke="#3fcf7a" size={28} rot={3} />
+					<Tag f={f} t={w('052', 0.1)} x={HX + 330} y={300} text="DAYS? WHO CARES" c="#1d3a2a" fg="#9ff0b0" stroke="#3fcf7a" size={28} rot={3} />
 				</Svg>
 			</Layer>
 		</Stage>
