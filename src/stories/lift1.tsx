@@ -9,7 +9,7 @@ import { VOICE as V } from "./lift1.voice";
 const VOICE = V as Voice;
 const { wd, at, b } = words(VOICE);
 const INK = "#0b0f22", METAL = "#4a5068", METAL_D = "#353a50";
-export const AD_LEN_VX = 5.2; // ролик VisionEx
+export const AD_LEN_VX = 5.97; // ролик VisionEx (ads/visionex2.mp4, с 13.11.2026)
 export const AD1_L1 = wd("Тишина").e + 0.4;
 export const TM_L1 = timing(VOICE, AD1_L1, AD_LEN_VX);
 
