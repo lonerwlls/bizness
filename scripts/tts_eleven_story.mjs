@@ -2,6 +2,8 @@
 // чтобы интонация шла одним рассказом), между кусками — тишина заданной длины.
 // node scripts/tts_eleven_story.mjs <script.txt> <public_dir> <ts_out> <voice_id>
 // В сценарии: строка "= 0.8" — пауза после предыдущей строки (по умолчанию 0.45 с), "#" — комментарий.
+// Роли: строка "@мама: текст" — читает голос роли из EL_ROLES (JSON {"мама":{"id":"…","model":"eleven_multilingual_v2"}, …});
+// без "@" — голос <voice_id> (рассказчик, модель EL_MODEL). Для eleven_v3 можно теги [whispers], [pause].
 // Ударения: слова-омографы («полки», «варите», «дома») заменяй на однозначные, «ё» пиши всегда.
 import fs from "fs";
 import path from "path";
@@ -11,11 +13,13 @@ const [SCRIPT, OUT, TS, voice] = process.argv.slice(2);
 const K = process.env.ELEVENLABS_API_KEY ?? "x";
 const MODEL = process.env.EL_MODEL ?? "eleven_multilingual_v2";
 const SET = { stability: +(process.env.EL_STAB ?? 0.35), similarity_boost: 0.8, style: +(process.env.EL_STYLE ?? 0.45), use_speaker_boost: true, speed: +(process.env.EL_SPEED ?? 0.97) };
+const ROLES = JSON.parse(process.env.EL_ROLES ?? "{}");
 const lines = fs.readFileSync(SCRIPT, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
 const parts = [];
 for (const l of lines) {
   if (l.startsWith("=")) { if (parts.length) parts[parts.length - 1].gap = +l.slice(1); continue; }
-  parts.push({ text: l, gap: 0.45 });
+  const m = l.match(/^@([^:]+):\s*(.*)$/);
+  parts.push(m ? { text: m[2], role: m[1].trim(), gap: 0.45 } : { text: l, gap: 0.45 });
 }
 const tmp = path.join(OUT, "_parts"); fs.mkdirSync(tmp, { recursive: true });
 const words = []; let off = 0.15; const list = [];
@@ -23,11 +27,15 @@ const sil = (sec, f) => execSync(`ffmpeg -v error -y -f lavfi -i anullsrc=r=4410
 sil(0.15, path.join(tmp, "s_start.wav")); list.push("s_start.wav");
 for (let i = 0; i < parts.length; i++) {
   const p = parts[i];
-  const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}/with-timestamps?output_format=mp3_44100_128`, {
+  const R = p.role ? ROLES[p.role] : null; if (p.role && !R) throw new Error("нет роли " + p.role);
+  const vid = R ? R.id : voice, model = R?.model ?? MODEL, v3 = model === "eleven_v3";
+  const same = (x) => (x.role ?? "") === (p.role ?? "");
+  const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${vid}/with-timestamps?output_format=mp3_44100_128`, {
     method: "POST", headers: { "xi-api-key": K, "Content-Type": "application/json" },
-    body: JSON.stringify({ text: p.text, model_id: MODEL, language_code: process.env.EL_LANG ?? "ru", voice_settings: SET,
-      previous_text: parts.slice(Math.max(0, i - 3), i).map((x) => x.text).join(" ") || undefined,
-      next_text: parts.slice(i + 1, i + 3).map((x) => x.text).join(" ") || undefined }),
+    body: JSON.stringify({ text: p.text, model_id: model, language_code: process.env.EL_LANG ?? "ru",
+      voice_settings: v3 ? { stability: 0.5, similarity_boost: 0.8, use_speaker_boost: true } : SET,
+      previous_text: v3 ? undefined : parts.slice(Math.max(0, i - 3), i).filter(same).map((x) => x.text).join(" ") || undefined,
+      next_text: v3 ? undefined : parts.slice(i + 1, i + 3).filter(same).map((x) => x.text).join(" ") || undefined }),
   });
   const j = await r.json();
   if (!r.ok) throw new Error(JSON.stringify(j.detail ?? j).slice(0, 300));
@@ -43,13 +51,14 @@ for (let i = 0; i < parts.length; i++) {
   const { characters: C, character_start_times_seconds: S, character_end_times_seconds: E } = j.alignment;
   let k = 0;
   while (k < C.length) {
-    while (k < C.length && !/[\p{L}\p{N}]/u.test(C[k])) k++;
+    while (k < C.length && !/[\p{L}\p{N}\[]/u.test(C[k])) k++;
+    if (C[k] === "[") { while (k < C.length && C[k] !== "]") k++; k++; continue; }
     if (k >= C.length) break;
     const s = k;
     while (k < C.length && /[\p{L}\p{N}\-]/u.test(C[k])) k++;
     const after = C.slice(k, k + 4).join("");
     words.push({ t: +(off + Math.max(0, S[s] - lead)).toFixed(3), e: +(off + Math.min(dur, E[k - 1] - lead)).toFixed(3), w: C.slice(s, k).join(""),
-      end: /^[»"]?\s*[.!?…]|^[.!?…]/.test(after) || (/^[»"]?\s*$/.test(after) && k >= C.length), pause: /^\s*[,:—–-]/.test(after) });
+      r: p.role, end: /^[»"]?\s*[.!?…]|^[.!?…]/.test(after) || (/^[»"]?\s*$/.test(after) && k >= C.length), pause: /^\s*[,:—–-]/.test(after) });
   }
   list.push(`p${i}.wav`); off += dur;
   if (i < parts.length - 1) { sil(p.gap, path.join(tmp, `s${i}.wav`)); list.push(`s${i}.wav`); off += p.gap; }
