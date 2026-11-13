@@ -16,7 +16,7 @@ const [ID,W]=process.argv.slice(1);const s=require("fs").readFileSync(`src/stori
 const V=JSON.parse(s.slice(s.indexOf("{"),s.lastIndexOf("}")+1));console.log((V.words.find(w=>w.w===W).e+0.4+0.6).toFixed(3));' "$ID" "$2")
 ms() { python3 -c "print(int($1*1000))"; }
 ffmpeg -v error -y -i out/_tale.mp4 -i $AD -filter_complex "
- [1:v]chromakey=0x0de914:0.17:0.07,scale=$AW:$AH,setsar=1,setpts=PTS-STARTPTS+$A1/TB[a1];
+ [1:v]chromakey=0x0de914:0.17:0.07,despill=type=green:mix=0.6:expand=0.2,scale=$AW:$AH,setsar=1,setpts=PTS-STARTPTS+$A1/TB[a1];
  [0:v][a1]overlay=(W-w)/2+5:(H-h)/2+10:eof_action=pass:enable='between(t,$A1,$A1+$ADLEN)'[v];
  [1:a]volume=1.6,adelay=$(ms $A1)|$(ms $A1)[x1];
  [0:a][x1]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]" \
