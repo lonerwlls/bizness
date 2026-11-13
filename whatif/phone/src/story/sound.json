@@ -1,0 +1,239 @@
+{
+ "ambience": [
+  {
+   "from": "001",
+   "to": "006",
+   "kind": "street",
+   "gain": 0.055
+  },
+  {
+   "from": "006",
+   "to": "007",
+   "kind": "night",
+   "gain": 0.045
+  },
+  {
+   "from": "008",
+   "to": "010",
+   "kind": "street",
+   "gain": 0.055
+  },
+  {
+   "from": "010",
+   "to": "011",
+   "kind": "night",
+   "gain": 0.045
+  },
+  {
+   "from": "011",
+   "to": "012",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "012",
+   "to": "013",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "013",
+   "to": "014",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "014",
+   "to": "015",
+   "kind": "street",
+   "gain": 0.055
+  },
+  {
+   "from": "015",
+   "to": "016",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "019",
+   "to": "020",
+   "kind": "crowd",
+   "gain": 0.045
+  }
+ ],
+ "music": [],
+ "sfx": [
+  {
+   "at": "001",
+   "off": 0,
+   "type": "steps",
+   "dur": 3.0
+  },
+  {
+   "at": "002",
+   "off": 0,
+   "type": "pop"
+  },
+  {
+   "at": "003",
+   "off": 4,
+   "type": "pop"
+  },
+  {
+   "at": "003",
+   "off": 40,
+   "type": "pop"
+  },
+  {
+   "at": "004",
+   "off": 56,
+   "type": "click"
+  },
+  {
+   "at": "004",
+   "off": 75,
+   "type": "click"
+  },
+  {
+   "at": "004",
+   "off": 108,
+   "type": "buzz",
+   "dur": 0.8
+  },
+  {
+   "at": "005",
+   "off": 6,
+   "type": "chat"
+  },
+  {
+   "at": "006",
+   "off": 0,
+   "type": "whooshUp"
+  },
+  {
+   "at": "007",
+   "off": 0,
+   "type": "pop"
+  },
+  {
+   "at": "007",
+   "off": 22,
+   "type": "pop"
+  },
+  {
+   "at": "007",
+   "off": 46,
+   "type": "pop"
+  },
+  {
+   "at": "007",
+   "off": 90,
+   "type": "stamp"
+  },
+  {
+   "at": "008",
+   "off": 20,
+   "type": "pop"
+  },
+  {
+   "at": "008",
+   "off": 80,
+   "type": "pop"
+  },
+  {
+   "at": "009",
+   "off": 0,
+   "type": "whooshUp"
+  },
+  {
+   "at": "010",
+   "off": 92,
+   "type": "pop"
+  },
+  {
+   "at": "010",
+   "off": 120,
+   "type": "pop"
+  },
+  {
+   "at": "010",
+   "off": 150,
+   "type": "pop"
+  },
+  {
+   "at": "012",
+   "off": 80,
+   "type": "pop"
+  },
+  {
+   "at": "013",
+   "off": 30,
+   "type": "pop"
+  },
+  {
+   "at": "014",
+   "off": 33,
+   "type": "pop"
+  },
+  {
+   "at": "014",
+   "off": 66,
+   "type": "pop"
+  },
+  {
+   "at": "015",
+   "off": 46,
+   "type": "chat"
+  },
+  {
+   "at": "015",
+   "off": 116,
+   "type": "pop"
+  },
+  {
+   "at": "016",
+   "off": 6,
+   "type": "swoosh"
+  },
+  {
+   "at": "016",
+   "off": 118,
+   "type": "swoosh"
+  },
+  {
+   "at": "017",
+   "off": 56,
+   "type": "whoosh"
+  },
+  {
+   "at": "018",
+   "off": 0,
+   "type": "swoosh"
+  },
+  {
+   "at": "018",
+   "off": 98,
+   "type": "stamp"
+  },
+  {
+   "at": "019",
+   "off": 4,
+   "type": "pop"
+  },
+  {
+   "at": "019",
+   "off": 20,
+   "type": "pop"
+  },
+  {
+   "at": "019",
+   "off": 84,
+   "type": "swoosh"
+  },
+  {
+   "at": "019",
+   "off": 104,
+   "type": "ding"
+  }
+ ]
+}
