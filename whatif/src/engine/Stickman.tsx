@@ -4,7 +4,7 @@ import {darken, lighten} from './color';
 export type Expr = 'normal' | 'angry' | 'sad' | 'sleepy' | 'wide' | 'worried';
 export type Hair = 'none' | 'spiky' | 'bun' | 'cap' | 'ponytail' | 'grey' | 'bob' | 'short';
 export type Outfit = 'hoodie' | 'suit' | 'gown' | 'coat' | 'apron' | 'tee';
-export type Acc = 'headphones' | 'mustache' | 'glasses' | 'lamp' | 'plaster' | 'scarf' | 'vest';
+export type Acc = 'headphones' | 'mustache' | 'glasses' | 'lamp' | 'lampoff' | 'plaster' | 'scarf' | 'vest';
 export type Mouth = 'line' | 'frown' | 'open' | 'smile' | 'flat' | 'smirk' | 'none';
 export type HandShape = 'fist' | 'point' | 'snap';
 
@@ -381,7 +381,7 @@ export const Stickman: React.FC<Props> = (p) => {
 					{p.hood ? <path d={`M${-R - 16},${-6} C${-R - 14},${-R - 26} ${R + 6},${-R - 30} ${R + 8},${-14}`} stroke={color} strokeWidth={9} fill="none" strokeLinecap="round" /> : null}
 					<circle r={R} fill="#000" />
 					<HeadShape hair={hair} hairColor={hairColor} front />
-					{acc.includes('lamp') ? (
+					{acc.includes('lamp') || acc.includes('lampoff') ? (
 						<>
 							<path d={`M${-R + 1},${-14} C${-R + 10},${-34} ${R - 10},${-34} ${R - 1},${-14}`} stroke="#2a2f3a" strokeWidth={9} fill="none" />
 						</>
@@ -416,11 +416,11 @@ export const Stickman: React.FC<Props> = (p) => {
 						<line x1={eL[0] + erx + 4} y1={eL[1]} x2={eR[0] - erx - 4} y2={eR[1]} />
 					</g>
 				) : null}
-				{acc.includes('lamp') ? (
+				{acc.includes('lamp') || acc.includes('lampoff') ? (
 					<g transform={`translate(${ex * 1.15},${-31})`}>
-						<circle r={30} fill="#ffe7a0" opacity={0.18} />
+						{acc.includes('lamp') ? <circle r={30} fill="#ffe7a0" opacity={0.18} /> : null}
 						<rect x={-13} y={-10} width={26} height={18} rx={5} fill="#3a404c" stroke="#111" strokeWidth={2} />
-						<circle cx={0} cy={-1} r={7} fill="#fff6c8" />
+						<circle cx={0} cy={-1} r={7} fill={acc.includes('lamp') ? '#fff6c8' : '#5a5f6a'} />
 					</g>
 				) : null}
 				{acc.includes('plaster') ? (

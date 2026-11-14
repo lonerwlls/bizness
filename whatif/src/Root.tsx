@@ -1,5 +1,7 @@
 import React from 'react';
 import {Heroes} from './Heroes';
+import {StationShort, ST_FRAMES} from './station/Station';
+import {StationSheet} from './station/Sheet';
 import {Composition, continueRender, delayRender, staticFile} from 'remotion';
 import {Long, LONG_FRAMES} from './Long';
 import {Short, SHORT_FRAMES} from './Short';
@@ -54,6 +56,8 @@ export const Root: React.FC = () => (
 			}}
 		/>
 		{/* the approved style reference: 10 s, built by hand, shows what "our level" means */}
+		<Composition id="Station" component={StationShort} durationInFrames={ST_FRAMES} fps={30} width={1080} height={1920} />
+		<Composition id="StationSheet" component={StationSheet} durationInFrames={ST_FRAMES} fps={30} width={2160} height={3840} />
 		<Composition id="Heroes" component={Heroes} durationInFrames={30} fps={30} width={1920} height={1080} />
 		<Composition id="Reference" component={PauseTime} durationInFrames={300} fps={30} width={1920} height={1080} />
 	</>
