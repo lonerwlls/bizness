@@ -27,7 +27,7 @@ export const STORY: {
 			{line: '003', off: 70, v: COLD + 1, roll: 4},
 			{line: '005', off: 4, v: COLD + 3, roll: 20},
 			// rewind: the night shift, before the first one
-			{line: '009', off: 8, v: 0, roll: 30, quiet: true},
+			{line: '009', off: 8, v: 0, roll: 1, quiet: true},
 			{line: '012', off: 108, v: 1, roll: 2},
 			{line: '017', off: 10, v: 1_960, roll: 40},
 			{line: '019', off: 60, v: 38_400, roll: 40},
