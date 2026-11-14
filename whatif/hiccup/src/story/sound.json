@@ -1,0 +1,31 @@
+{
+ "ambience": [
+  {"from": "001", "to": "006", "kind": "crowd", "gain": 0.03},
+  {"from": "006", "to": "007", "kind": "night", "gain": 0.03},
+  {"from": "007", "to": "008", "kind": "wind", "gain": 0.04, "birds": true},
+  {"from": "009", "to": "014", "kind": "room", "gain": 0.045},
+  {"from": "014", "to": "017", "kind": "night", "gain": 0.03},
+  {"from": "017", "to": "019", "kind": "room", "gain": 0.045},
+  {"from": "019", "to": "020", "kind": "night", "gain": 0.035}
+ ],
+ "music": [],
+ "sfx": [
+  {"at": "001", "off": 0, "type": "applause", "dur": 2.2, "amp": 0.14},
+  {"at": "004", "off": 0, "type": "laugh", "dur": 2.6, "amp": 0.12},
+  {"at": "007", "off": 178, "type": "thud", "amp": 0.45},
+  {"at": "007", "off": 248, "type": "hic", "f0": 185, "amp": 0.26},
+  {"at": "007", "off": 274, "type": "hic", "f0": 185, "amp": 0.26},
+  {"at": "008", "off": 8, "type": "hic", "f0": 180, "amp": 0.2},
+  {"at": "008", "off": 34, "type": "hic", "f0": 175, "amp": 0.2},
+  {"at": "008", "off": 60, "type": "hic", "f0": 165, "amp": 0.2},
+  {"at": "008", "off": 74, "type": "whooshUp", "dur": 0.6, "amp": 0.2},
+  {"at": "009", "off": 0, "type": "steps", "dur": 3.0},
+  {"at": "010", "off": 20, "type": "heartbeat", "dur": 4.5, "amp": 0.14},
+  {"at": "011", "off": 70, "type": "whoosh", "dur": 0.8},
+  {"at": "011", "off": 95, "type": "thud", "amp": 0.4},
+  {"at": "012", "off": 14, "type": "pop", "amp": 0.14},
+  {"at": "014", "off": 70, "type": "swoosh"},
+  {"at": "018", "off": 41, "type": "shot", "amp": 0.3},
+  {"at": "019", "off": 85, "type": "ring", "dur": 1.5, "amp": 0.04}
+ ]
+}
