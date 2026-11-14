@@ -88,9 +88,8 @@ export const Banner: React.FC = () => {
 				<ellipse cx={hx} cy={floor + 4} rx={80 * s} ry={13 * s} fill="#000" opacity={0.5} />
 				<Stickman id="bn" x={hx} y={floor - 157 * s} scale={s} facing={-1} pose={{...POSES.stand, armF: [40, 50]}} {...hero} expr="normal" mouth="smirk" look={[-0.6, -0.1]} faceTurn={0.3} blink={0} />
 				<g style={{filter: 'drop-shadow(0 0 30px rgba(255,236,170,0.6))'}}>
-					<text x={1050} y={760} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={176} fill="#fff6dc" letterSpacing={4}>ФОНАРИК</text>
+					<text x={1050} y={790} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={176} fill="#fff6dc" letterSpacing={4}>ФОНАРИК</text>
 				</g>
-				<text x={1050} y={850} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={50} fill="#9fe8e4">посвечу туда, куда страшно смотреть</text>
 			</svg>
 		</AbsoluteFill>
 	);
