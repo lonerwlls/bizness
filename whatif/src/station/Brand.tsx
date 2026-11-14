@@ -24,48 +24,73 @@ const BeamCone: React.FC<{x: number; y: number; ang: number; len: number; w: num
 	</g>
 );
 
+// нейтральный фон «темнота»: едва видные силуэты разных историй и глаза во тьме
+const Eyes: React.FC<{x: number; y: number; s?: number; o?: number}> = ({x, y, s = 1, o = 0.8}) => (
+	<g transform={`translate(${x},${y}) scale(${s})`} opacity={o}>
+		{[-1, 1].map((k) => <g key={k}><ellipse cx={k * 16} cy={0} rx={9} ry={6} fill="#ffe9a8" /><ellipse cx={k * 16} cy={0} rx={22} ry={14} fill="#ffe9a8" opacity={0.15} /></g>)}
+	</g>
+);
+const Dark: React.FC<{w: number; h: number}> = ({w, h}) => (
+	<g>
+		<defs>
+			<radialGradient id="dk" cx="0.55" cy="0.5" r="0.75"><stop offset="0" stopColor="#141b30" /><stop offset="0.6" stopColor="#0a0e1c" /><stop offset="1" stopColor="#04060c" /></radialGradient>
+			<linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#0f1426" /><stop offset="1" stopColor="#05070e" /></linearGradient>
+		</defs>
+		<rect width={w} height={h} fill="url(#dk)" />
+	</g>
+);
+
 export const Avatar: React.FC = () => {
 	const s = 2.3, x = 380, floor = 380 + 321 * s;
 	return (
-		<AbsoluteFill style={{background: 'radial-gradient(circle at 50% 45%, #1d3b52 0%, #0d1830 55%, #060a18 100%)'}}>
+		<AbsoluteFill style={{background: '#06080f'}}>
 			<svg width={800} height={800} viewBox="0 0 800 800">
-				{/* северное сияние */}
-				{[0, 1].map((k) => <path key={k} d={`M -50 ${170 + k * 70} C 200 ${90 + k * 60}, 500 ${260 + k * 40}, 850 ${140 + k * 50}`} stroke={k ? '#2fb39a' : '#3fe0a8'} strokeWidth={70} fill="none" opacity={0.16} style={{filter: 'blur(22px)'}} />)}
-				<Snow n={70} w={800} h={800} seed="av" />
-				<BeamCone x={x + 14} y={floor - 321 * s - 31 * s} ang={-18} len={560} w={170} id="avb" o={0.55} />
+				<Dark w={800} h={800} />
+				<Eyes x={130} y={190} s={0.9} o={0.55} />
+				<Eyes x={690} y={600} s={0.8} o={0.4} />
+				<BeamCone x={x + 14} y={floor - 321 * s - 31 * s} ang={-18} len={600} w={180} id="avb" o={0.6} />
+				<Snow n={40} w={420} h={300} x0={420} y0={60} seed="dust" />
 				<Stickman id="av" x={x} y={floor - 157 * s} scale={s} facing={1} pose={{...POSES.stand, head: -4}} {...hero} expr="normal" mouth="smirk" look={[0.5, -0.1]} faceTurn={0.3} blink={0} />
-				<circle cx={400} cy={400} r={392} fill="none" stroke="#5ee0da" strokeWidth={6} opacity={0.0} />
 			</svg>
 		</AbsoluteFill>
 	);
 };
 
 export const Banner: React.FC = () => {
-	const s = 1.2, hx = 1280, floor = 905;
+	const s = 1.15, hx = 1720, floor = 980;
 	const [lx, ly] = [hx - 6 * s, floor - 157 * s - 164 * s - 31 * s];
 	return (
-		<AbsoluteFill style={{background: '#060a18'}}>
-			{/* мир 1920×1080 растянут на 2560×1440: x −320…2240, y −180…1260 */}
-			<svg width={2560} height={1440} viewBox="-320 -180 2560 1440">
-				<NightSky T={3} />
-				<Forest y={800} />
-				<Ground />
-				<g transform="translate(800,0)"><Station T={3} /></g>
-				{/* следы от леса к Фонарику */}
-				{Array.from({length: 9}).map((_, i) => <ellipse key={i} cx={-200 + i * 150 + (i % 2) * 20} cy={1010 - i * 10} rx={22} ry={8} fill="#8a98b0" opacity={0.8} />)}
-				<BeamCone x={lx} y={ly} ang={192} len={1100} w={260} id="bnb" o={0.5} />
-				<ellipse cx={hx} cy={floor + 4} rx={80 * s} ry={13 * s} fill="#000" opacity={0.25} />
+		<AbsoluteFill style={{background: '#06080f'}}>
+			<svg width={2560} height={1440} viewBox="0 0 2560 1440">
+				<Dark w={2560} h={1440} />
+				<rect y={floor} width={2560} height={1440 - floor} fill="url(#fl)" />
+				{/* силуэты историй в темноте */}
+				<g opacity={0.5}>
+					{/* приоткрытая дверь со светом */}
+					<rect x={180} y={560} width={190} height={420} fill="#0c1020" stroke="#1c2440" strokeWidth={6} />
+					<polygon points="345,560 370,560 370,980 345,980" fill="#ffd27a" opacity={0.5} />
+					<polygon points="370,980 345,980 300,1180 480,1180" fill="#ffd27a" opacity={0.08} />
+					{/* окно с луной */}
+					<rect x={2250} y={330} width={160} height={200} fill="#0d1428" stroke="#1c2440" strokeWidth={6} />
+					<path d="M 2330 330 L 2330 530 M 2250 430 L 2410 430" stroke="#1c2440" strokeWidth={6} />
+					<circle cx={2380} cy={370} r={18} fill="#c8d4f0" opacity={0.6} />
+					{/* лестница вверх */}
+					{Array.from({length: 7}).map((_, i) => <rect key={i} x={2160 + i * 40} y={980 - (i + 1) * 46} width={60} height={46} fill="#0c1020" stroke="#1c2440" strokeWidth={4} />)}
+					{/* фонарный столб */}
+					<rect x={60} y={300} width={12} height={680} fill="#141a30" /><rect x={40} y={290} width={60} height={18} fill="#141a30" />
+				</g>
+				<Eyes x={560} y={420} o={0.7} />
+				<Eyes x={2080} y={820} s={0.8} o={0.55} />
+				<Eyes x={260} y={1150} s={0.7} o={0.4} />
+				{/* луч фонаря выхватывает имя */}
+				<BeamCone x={lx} y={ly} ang={188} len={1500} w={330} id="bnb" o={0.55} />
+				<Snow n={90} w={1100} h={420} x0={560} y0={430} seed="dust" />
+				<ellipse cx={hx} cy={floor + 4} rx={80 * s} ry={13 * s} fill="#000" opacity={0.5} />
 				<Stickman id="bn" x={hx} y={floor - 157 * s} scale={s} facing={-1} pose={{...POSES.stand, armF: [40, 50]}} {...hero} expr="normal" mouth="smirk" look={[-0.6, -0.1]} faceTurn={0.3} blink={0} />
-				<Snow n={160} w={2560} h={1440} x0={-320} y0={-180} seed="bn" />
-				{/* надпись в луче фонаря — в безопасной зоне */}
-				<g style={{filter: 'drop-shadow(0 0 24px rgba(255,240,180,0.55))'}}>
-					<text x={680} y={500} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={112} fill="#fff6dc">ЧТО ЕСЛИ ТЫ…</text>
+				<g style={{filter: 'drop-shadow(0 0 30px rgba(255,236,170,0.6))'}}>
+					<text x={1050} y={760} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={176} fill="#fff6dc" letterSpacing={4}>ФОНАРИК</text>
 				</g>
-				<text x={650} y={585} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={46} fill="#9fe8e4">страшные истории от первого лица</text>
-				<g transform="translate(650,660)">
-					<rect x={-200} y={-34} width={400} height={64} rx={32} fill="#11142c" stroke="#ffc94a" strokeWidth={4} />
-					<text y={12} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill="#fff">ТЫ — ГЛАВНЫЙ ГЕРОЙ</text>
-				</g>
+				<text x={1050} y={850} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={50} fill="#9fe8e4">посвечу туда, куда страшно смотреть</text>
 			</svg>
 		</AbsoluteFill>
 	);
