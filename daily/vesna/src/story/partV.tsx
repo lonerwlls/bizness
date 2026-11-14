@@ -10,6 +10,7 @@ import {Onoma} from '../reference/PauseTime';
 import {FL, badgeY} from './common';
 import {Lying, Tag, camPath, pop, useW} from './lib';
 import {Heart, beatK} from './placesH';
+import {S001, S002, S003, S004, S004b, S005, S006, S009b, S011} from './scenes3d';
 import {Cabin, Cart, Certificate, Chunk, Gauge, Jet, SkyFall, SnowSlope, Ward, XRay} from './placesV';
 
 /* The Vesna Vulović short. 16:9 scenes built for a 9:16 crop around x = 960:
@@ -366,16 +367,17 @@ const V011: React.FC = () => {
 };
 
 export const SHOTS_V: ShotDef[] = [
-	{at: '001', C: V001},
-	{at: '002', C: V002, whip: true},
-	{at: '003', C: V003, whip: true},
-	{at: '004', C: V004},
-	{at: '005', C: V005, whip: true},
-	{at: '006', C: V006},
+	{at: '001', C: V001, V: S001},
+	{at: '002', C: V002, V: S002, whip: true},
+	{at: '003', C: V003, V: S003, whip: true},
+	{at: '004', C: V004, V: S004},
+	{at: '004', off: 84, C: V004, V: S004b, whip: true},
+	{at: '005', C: V005, V: S005, whip: true},
+	{at: '006', C: V006, V: S006},
 	{at: '007', C: V007, whip: true},
 	{at: '008', C: V008, whip: true},
 	{at: '009', C: V009, whip: true},
-	{at: '009', off: 72, C: V009b, whip: true},
+	{at: '009', off: 72, C: V009b, V: S009b, whip: true},
 	{at: '010', C: V010, whip: true},
-	{at: '011', C: V011, whip: true},
+	{at: '011', C: V011, V: S011, whip: true},
 ];
