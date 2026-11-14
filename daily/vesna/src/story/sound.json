@@ -1,0 +1,32 @@
+{
+ "ambience": [
+  {"from": "001", "to": "002", "kind": "wind", "gain": 0.07},
+  {"from": "002", "to": "003", "kind": "room", "gain": 0.05},
+  {"from": "003", "to": "005", "kind": "wind", "gain": 0.07},
+  {"from": "005", "to": "007", "kind": "wind", "gain": 0.04},
+  {"from": "007", "to": "009", "kind": "room", "gain": 0.04},
+  {"from": "009", "to": "010", "kind": "room", "gain": 0.04},
+  {"from": "011", "to": "end", "kind": "wind", "gain": 0.03}
+ ],
+ "music": [
+  {"from": "001", "to": "007", "style": "pad-tense", "amp": 0.07},
+  {"from": "007", "to": "end", "style": "pad-warm", "amp": 0.06}
+ ],
+ "sfx": [
+  {"at": "001", "off": 0, "type": "whooshUp", "dur": 1.2, "amp": 0.2},
+  {"at": "002", "off": 0, "type": "ding", "amp": 0.1},
+  {"at": "003", "off": 38, "type": "shot", "amp": 0.5},
+  {"at": "004", "off": 0, "type": "crackle", "dur": 2.0, "amp": 0.05},
+  {"at": "004", "off": 40, "type": "whoosh", "dur": 1.5, "amp": 0.16},
+  {"at": "005", "off": 37, "type": "thud", "amp": 0.6},
+  {"at": "005", "off": 37, "type": "splash", "amp": 0.2},
+  {"at": "006", "off": 0, "type": "steps", "dur": 1.2, "amp": 0.1},
+  {"at": "007", "off": 4, "type": "pop", "amp": 0.1},
+  {"at": "007", "off": 34, "type": "pop", "amp": 0.1},
+  {"at": "007", "off": 70, "type": "pop", "amp": 0.1},
+  {"at": "008", "off": 70, "type": "heartbeat", "dur": 2.5, "amp": 0.12},
+  {"at": "009", "off": 0, "type": "steps", "dur": 2.5, "amp": 0.08},
+  {"at": "010", "off": 2, "type": "stamp", "amp": 0.35},
+  {"at": "010", "off": 10, "type": "applause", "dur": 2.5, "amp": 0.1}
+ ]
+}
