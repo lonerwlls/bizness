@@ -7,7 +7,7 @@ TOTAL=$(npx remotion compositions src/index.ts 2>/dev/null | awk '$1=="Station"{
 rm -f out/_parts.txt; i=0
 for a in $(seq 0 300 $((TOTAL-1))); do
   b=$((a+299)); [ $b -ge $TOTAL ] && b=$((TOTAL-1))
-  for try in 1 2 3; do npx remotion render src/index.ts Station out/_p$i.mp4 --frames=$a-$b --muted --crf=16 --log=error --concurrency=2 --timeout=300000 && break; done
+  for try in 1 2 3; do npx remotion render src/index.ts Station out/_p$i.mp4 --frames=$a-$b --muted --crf=16 --log=error --concurrency=1 --timeout=300000 && break; done
   echo "file '_p$i.mp4'" >> out/_parts.txt; i=$((i+1))
 done
 ffmpeg -v error -y -f concat -safe 0 -i out/_parts.txt -c copy out/_v.mp4
