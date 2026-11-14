@@ -47,7 +47,7 @@ const V: React.FC<{fx?: number; h?: number; children: React.ReactNode}> = ({fx =
 type SP = {t: number; T: number; f: number};
 
 // ---------- места ----------
-const NightSky: React.FC<{T: number}> = ({T}) => (
+export const NightSky: React.FC<{T: number}> = ({T}) => (
 	<Svg>
 		<defs>
 			<linearGradient id="st-sky" x1="0" y1="0" x2="0" y2="1">
@@ -66,7 +66,7 @@ const NightSky: React.FC<{T: number}> = ({T}) => (
 		))}
 	</Svg>
 );
-const Forest: React.FC<{y?: number; c?: string}> = ({y = 790, c = '#0b1226'}) => (
+export const Forest: React.FC<{y?: number; c?: string}> = ({y = 790, c = '#0b1226'}) => (
 	<Svg>
 		{Array.from({length: 46}).map((_, i) => {
 			const x = -500 + i * 66 + random('fx' + i) * 30, h = 120 + random('fh' + i) * 140;
@@ -75,7 +75,7 @@ const Forest: React.FC<{y?: number; c?: string}> = ({y = 790, c = '#0b1226'}) =>
 		<rect x={-600} y={y - 2} width={3100} height={40} fill={c} />
 	</Svg>
 );
-const Ground: React.FC = () => (
+export const Ground: React.FC = () => (
 	<Svg>
 		<rect x={-600} y={800} width={3100} height={600} fill="#c9d6e8" />
 		<path d="M -600 800 Q 0 770 600 800 T 1800 795 T 2500 805 L 2500 1400 L -600 1400 Z" fill={SNOW} />
@@ -88,7 +88,7 @@ const Ground: React.FC = () => (
 // труба с дымом, окно с глубиной откоса, дверь с крыльцом, мачта с анемометром и красным огнём.
 // Масштаб: дверь 280 px — человек s≈0.68 (рост ≈250 px) проходит в неё.
 export const HOUSE = {x0: 690, x1: 1240, top: 480, floor: 900, side: 160, door: [1050, 1190] as [number, number], doorTop: 620, win: [760, 940, 560, 720] as [number, number, number, number]};
-const Station: React.FC<{T: number; win?: number}> = ({T, win = 1}) => {
+export const Station: React.FC<{T: number; win?: number}> = ({T, win = 1}) => {
 	const H = HOUSE, sd = H.side;
 	return (
 		<Svg>
@@ -160,7 +160,7 @@ const Prints: React.FC<{k: number; n?: number}> = ({k, n = 18}) => (
 		})}
 	</Svg>
 );
-const Snowfall: React.FC<{T: number; n?: number}> = ({T, n = 90}) => (
+export const Snowfall: React.FC<{T: number; n?: number}> = ({T, n = 90}) => (
 	<Svg>
 		{Array.from({length: n}).map((_, i) => {
 			const x = ((random('nx' + i) * 2600 + T * (20 + random('nv' + i) * 40)) % 2600) - 340;
