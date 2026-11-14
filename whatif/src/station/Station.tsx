@@ -84,39 +84,75 @@ const Ground: React.FC = () => (
 		))}
 	</Svg>
 );
-// станция: домик, мачта с анемометром и красным огнём, окно горит
-const Station: React.FC<{T: number; win?: number}> = ({T, win = 1}) => (
-	<Svg>
-		<rect x={1250} y={420} width={10} height={480} fill="#3a4256" />
-		<g transform={`translate(1255,420) rotate(${T * 400})`}>
-			{[0, 120, 240].map((a) => <g key={a} transform={`rotate(${a})`}><line x1={0} y1={0} x2={0} y2={-34} stroke="#3a4256" strokeWidth={4} /><circle cx={0} cy={-36} r={8} fill="#5a6476" /></g>)}
-		</g>
-		<circle cx={1255} cy={404} r={7} fill="#ff4a4a" opacity={Math.floor(T * 1.5) % 2 ? 1 : 0.2} />
-		<circle cx={1255} cy={404} r={20} fill="#ff4a4a" opacity={Math.floor(T * 1.5) % 2 ? 0.25 : 0} />
-		<rect x={760} y={640} width={420} height={260} fill="#5f6b80" stroke="#1a2032" strokeWidth={6} />
-		<polygon points="740,650 970,540 1200,650" fill="#47526a" stroke="#1a2032" strokeWidth={6} />
-		<polygon points="760,640 970,545 1180,640 1170,652 970,562 770,652" fill="#eef4fb" />
-		<rect x={820} y={700} width={140} height={100} fill={win ? '#ffd27a' : '#1a2032'} stroke="#1a2032" strokeWidth={6} />
-		<path d="M 890 700 L 890 800 M 820 750 L 960 750" stroke="#1a2032" strokeWidth={5} />
-		{win ? <polygon points="820,800 960,800 1010,900 780,900" fill="#ffd27a" opacity={0.12} /> : null}
-		<rect x={1040} y={730} width={90} height={170} fill="#3a4256" stroke="#1a2032" strokeWidth={6} />
-		<circle cx={1118} cy={820} r={6} fill="#c8c0a0" />
-		<rect x={1040} y={712} width={90} height={18} fill="#eef4fb" />
-		<text x={970} y={630} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={22} fill="#1a2032">СЕВЕР-7</text>
-	</Svg>
-);
-// следы босых ног: k — сколько видно (0..1), от леса (x0) к двери
-const footAt = (i: number, n: number) => {
-	const u = i / (n - 1);
-	return {x: 260 + u * 800 + (i % 2 ? 14 : -14), y: 990 - u * 82, s: 1.25 - u * 0.45, rot: -10 + u * 6};
+// станция — объёмный бревенчатый дом: фасад, боковая стена в перспективе, крыша с толщиной и снегом,
+// труба с дымом, окно с глубиной откоса, дверь с крыльцом, мачта с анемометром и красным огнём.
+// Масштаб: дверь 280 px — человек s≈0.68 (рост ≈250 px) проходит в неё.
+export const HOUSE = {x0: 690, x1: 1240, top: 480, floor: 900, side: 160, door: [1050, 1190] as [number, number], doorTop: 620, win: [760, 940, 560, 720] as [number, number, number, number]};
+const Station: React.FC<{T: number; win?: number}> = ({T, win = 1}) => {
+	const H = HOUSE, sd = H.side;
+	return (
+		<Svg>
+			{/* мачта за домом */}
+			<rect x={1500} y={260} width={12} height={640} fill="#2e3548" />
+			<g transform={`translate(1506,260) rotate(${T * 400})`}>
+				{[0, 120, 240].map((a) => <g key={a} transform={`rotate(${a})`}><line x1={0} y1={0} x2={0} y2={-40} stroke="#2e3548" strokeWidth={5} /><circle cx={0} cy={-42} r={10} fill="#5a6476" /></g>)}
+			</g>
+			<circle cx={1506} cy={240} r={8} fill="#ff4a4a" opacity={Math.floor(T * 1.5) % 2 ? 1 : 0.2} />
+			<circle cx={1506} cy={240} r={24} fill="#ff4a4a" opacity={Math.floor(T * 1.5) % 2 ? 0.25 : 0} />
+			{/* боковая стена (перспектива) */}
+			<polygon points={`${H.x1},${H.top} ${H.x1 + sd},${H.top - 50} ${H.x1 + sd},${H.floor - 38} ${H.x1},${H.floor}`} fill="#3c465c" stroke="#141a28" strokeWidth={6} />
+			{Array.from({length: 9}).map((_, i) => <line key={'s' + i} x1={H.x1} y1={H.top + 30 + i * 46} x2={H.x1 + sd} y2={H.top - 20 + i * 44} stroke="#2e3648" strokeWidth={4} />)}
+			{/* фасад из брёвен */}
+			<rect x={H.x0} y={H.top} width={H.x1 - H.x0} height={H.floor - H.top} fill="#5f6b80" stroke="#141a28" strokeWidth={6} />
+			{Array.from({length: 9}).map((_, i) => <g key={'l' + i}><rect x={H.x0} y={H.top + 8 + i * 46} width={H.x1 - H.x0} height={8} fill="#4f5a6e" /><rect x={H.x0} y={H.top + 16 + i * 46} width={H.x1 - H.x0} height={3} fill="#77839a" opacity={0.6} /></g>)}
+			{[H.x0, H.x1].map((x) => <rect key={x} x={x - 10} y={H.top} width={20} height={H.floor - H.top} fill="#4a5468" stroke="#141a28" strokeWidth={4} />)}
+			{/* крыша: скат сбоку + фронтон с толщиной + снег */}
+			<polygon points={`${(H.x0 + H.x1) / 2},${H.top - 210} ${(H.x0 + H.x1) / 2 + sd},${H.top - 260} ${H.x1 + sd + 30},${H.top - 60} ${H.x1 + 30},${H.top - 6}`} fill="#3a4258" stroke="#141a28" strokeWidth={6} />
+			<polygon points={`${(H.x0 + H.x1) / 2},${H.top - 216} ${(H.x0 + H.x1) / 2 + sd},${H.top - 266} ${H.x1 + sd + 34},${H.top - 64} ${H.x1 + 34},${H.top - 12} ${H.x1 + 20},${H.top - 30} ${(H.x0 + H.x1) / 2 + 10},${H.top - 196}`} fill="#eef4fb" />
+			<polygon points={`${H.x0 - 30},${H.top + 4} ${(H.x0 + H.x1) / 2},${H.top - 216} ${H.x1 + 30},${H.top + 4} ${H.x1 + 30},${H.top + 22} ${(H.x0 + H.x1) / 2},${H.top - 196} ${H.x0 - 30},${H.top + 22}`} fill="#2e3548" stroke="#141a28" strokeWidth={5} />
+			<polygon points={`${H.x0 - 20},${H.top} ${(H.x0 + H.x1) / 2},${H.top - 196} ${H.x1 + 20},${H.top} `} fill="#56627a" stroke="#141a28" strokeWidth={5} />
+			<polygon points={`${H.x0 - 36},${H.top + 6} ${(H.x0 + H.x1) / 2},${H.top - 222} ${H.x1 + 36},${H.top + 6} ${H.x1 + 22},${H.top + 14} ${(H.x0 + H.x1) / 2},${H.top - 204} ${H.x0 - 22},${H.top + 14}`} fill="#eef4fb" />
+			<text x={(H.x0 + H.x1) / 2} y={H.top - 40} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill="#141a28">СЕВЕР-7</text>
+			{/* труба и дым */}
+			<rect x={1120} y={H.top - 200} width={50} height={110} fill="#4a3a36" stroke="#141a28" strokeWidth={5} />
+			<rect x={1112} y={H.top - 210} width={66} height={16} fill="#eef4fb" />
+			{[0, 1, 2, 3].map((k) => { const ph = (T * 0.35 + k / 4) % 1; return <circle key={k} cx={1145 + ph * 90 + Math.sin(T + k) * 10} cy={H.top - 220 - ph * 260} r={18 + ph * 40} fill="#9aa6c0" opacity={0.35 * (1 - ph)} />; })}
+			{/* окно с откосом */}
+			<rect x={H.win[0] - 12} y={H.win[2] - 12} width={H.win[1] - H.win[0] + 24} height={H.win[3] - H.win[2] + 24} fill="#2e3548" stroke="#141a28" strokeWidth={5} />
+			<rect x={H.win[0]} y={H.win[2]} width={H.win[1] - H.win[0]} height={H.win[3] - H.win[2]} fill={win ? '#ffcf7a' : '#141a28'} />
+			<polygon points={`${H.win[0]},${H.win[2]} ${H.win[1]},${H.win[2]} ${H.win[1] - 14},${H.win[2] + 14} ${H.win[0] + 14},${H.win[2] + 14}`} fill="#000" opacity={0.25} />
+			<rect x={H.win[0] - 22} y={H.win[3] + 8} width={H.win[1] - H.win[0] + 44} height={18} fill="#eef4fb" stroke="#141a28" strokeWidth={3} />
+			{win ? <polygon points={`${H.win[0]},${H.win[3] + 26} ${H.win[1]},${H.win[3] + 26} ${H.win[1] + 90},${H.floor + 120} ${H.win[0] - 60},${H.floor + 120}`} fill="#ffd27a" opacity={0.1} /> : null}
+			{/* дверь, крыльцо */}
+			<rect x={H.door[0] - 10} y={H.doorTop - 10} width={H.door[1] - H.door[0] + 20} height={H.floor - H.doorTop + 10} fill="#2e3548" />
+			<rect x={H.door[0]} y={H.doorTop} width={H.door[1] - H.door[0]} height={H.floor - H.doorTop} fill="#3a2e28" stroke="#141a28" strokeWidth={5} />
+			{[0, 1, 2].map((k) => <line key={k} x1={H.door[0] + 8} y1={H.doorTop + 60 + k * 70} x2={H.door[1] - 8} y2={H.doorTop + 60 + k * 70} stroke="#2a201c" strokeWidth={4} />)}
+			<circle cx={H.door[1] - 22} cy={H.doorTop + 150} r={8} fill="#c8a040" />
+			<polygon points={`${H.door[0] - 30},${H.floor} ${H.door[1] + 30},${H.floor} ${H.door[1] + 46},${H.floor + 22} ${H.door[0] - 46},${H.floor + 22}`} fill="#4a3a30" stroke="#141a28" strokeWidth={4} />
+			<rect x={H.door[0] - 46} y={H.floor + 20} width={H.door[1] - H.door[0] + 92} height={10} fill="#2a201c" />
+			{/* сугробы у стены */}
+			<path d={`M ${H.x0 - 60} ${H.floor + 10} Q ${H.x0 + 60} ${H.floor - 40} ${H.x0 + 200} ${H.floor + 6} Q ${H.x0 + 290} ${H.floor - 20} ${H.door[0] - 50} ${H.floor + 12} Z`} fill="#eef4fb" />
+			<path d={`M ${H.door[1] + 50} ${H.floor + 12} Q ${H.x1 + 80} ${H.floor - 30} ${H.x1 + sd + 60} ${H.floor - 20} L ${H.x1 + sd + 60} ${H.floor + 14} Z`} fill="#eef4fb" />
+		</Svg>
+	);
 };
-const Foot: React.FC<{x: number; y: number; s: number; rot: number; o?: number}> = ({x, y, s, rot, o = 1}) => (
-	<g transform={`translate(${x},${y}) rotate(${rot - 90}) scale(${s})`} opacity={o}>
-		<ellipse cx={0} cy={0} rx={20} ry={9} fill="#7f8fa8" />
-		{[0, 1, 2, 3, 4].map((k) => <circle key={k} cx={24 + (k === 0 ? 2 : 0)} cy={-9 + k * 4.5} r={k === 0 ? 4 : 3} fill="#7f8fa8" />)}
+// следы босых ног: от леса к крыльцу по снегу; ближе к камере — крупнее; сплющены (лежат на земле)
+const PATH: [number, number][] = [[120, 1060], [420, 1010], [720, 975], [960, 950], [1100, 936]];
+const footAt = (i: number, n: number) => {
+	const u = i / (n - 1), seg = Math.min(PATH.length - 2, Math.floor(u * (PATH.length - 1))), lu = u * (PATH.length - 1) - seg;
+	const [a, b] = [PATH[seg], PATH[seg + 1]];
+	const x = a[0] + (b[0] - a[0]) * lu, y = a[1] + (b[1] - a[1]) * lu, ang = (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI;
+	const side = i % 2 ? 1 : -1, s = 1.15 - u * 0.5;
+	return {x: x + side * 10 * s * Math.sin((ang * Math.PI) / 180), y: y - side * 10 * s * Math.cos((ang * Math.PI) / 180) * 0.5, s, rot: ang};
+};
+const Foot: React.FC<{x: number; y: number; s: number; rot: number; o?: number; flat?: number}> = ({x, y, s, rot, o = 1, flat = 0.5}) => (
+	<g transform={`translate(${x},${y}) scale(1,${flat}) rotate(${rot}) scale(${s})`} opacity={o}>
+		<ellipse cx={0} cy={0} rx={20} ry={9} fill="#8a98b0" />
+		<ellipse cx={0} cy={2} rx={18} ry={6} fill="#a8b6cc" opacity={0.6} />
+		{[0, 1, 2, 3, 4].map((k) => <circle key={k} cx={25 - Math.abs(k - 1) * 1.5} cy={-8 + k * 4} r={k === 0 ? 4 : 3} fill="#8a98b0" />)}
 	</g>
 );
-const Prints: React.FC<{k: number; n?: number}> = ({k, n = 16}) => (
+const Prints: React.FC<{k: number; n?: number}> = ({k, n = 18}) => (
 	<Svg>
 		{Array.from({length: n}).map((_, i) => {
 			const p = footAt(i, n);
@@ -219,29 +255,37 @@ const PovHands: React.FC<{cx?: number; y?: number; spread?: number; lift?: numbe
 );
 
 // ---------- сцены ----------
-const S01: React.FC<SP> = ({t, T}) => {
-	const cam = mixCam(camOn(970, 690, 1.05), camOn(890, 750, 1.6), interpolate(t, [0, 3], [0, 1], {...clamp, easing: ease}));
+const S01: React.FC<SP> = ({t, T, f}) => {
+	const W = HOUSE.win, wx = (W[0] + W[1]) / 2;
+	const cam = mixCam(camOn(980, 640, 0.95), camOn(wx, 640, 1.9), interpolate(t, [0, 3], [0, 1], {...clamp, easing: ease}));
+	const peek = interpolate(t, [0.3, 1.2], [0, 1], {...clamp, easing: ease});
 	return (
 		<Stage cam={cam} bg={NIGHT} light={{night: true, x: 50, y: 20, o: 0.3}}>
 			<Layer depth={2.4}><NightSky T={T} /></Layer>
 			<Layer depth={1.6}><Forest /></Layer>
 			<Layer depth={1}><Ground /><Station T={T} /><Svg>
-				<g transform="translate(890,745)"><circle r={18} fill="#0b0b0d" /><rect x={-18} y={16} width={36} height={40} rx={10} fill={TEAL} /></g>
-				<g opacity={interpolate(t, [0.4, 0.8], [0, 1], clamp)} transform="translate(890,670)"><rect x={-110} y={-30} width={220} height={52} rx={26} fill="#11142c" stroke="#ffc94a" strokeWidth={4} /><text y={8} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={28} fill="#fff">ЛЮДЕЙ: 1</text></g>
+				<defs><clipPath id="winclip"><rect x={W[0]} y={W[2]} width={W[1] - W[0]} height={W[3] - W[2]} /></clipPath></defs>
+				<g clipPath="url(#winclip)">
+					<Actor who="fon" x={W[0] + 20 + 70 * peek} floor={W[2] + 330} s={0.78} facing={1} pose={{...idle(f), lean: -6 + 6 * peek}} expr="worried" look={[0.2, 0.2]} faceTurn={0.15} shadow={false} />
+					<rect x={W[0]} y={W[2]} width={W[1] - W[0]} height={W[3] - W[2]} fill="#ffcf7a" opacity={0.12} />
+					<path d={`M ${wx} ${W[2]} L ${wx} ${W[3]} M ${W[0]} ${(W[2] + W[3]) / 2} L ${W[1]} ${(W[2] + W[3]) / 2}`} stroke="#2e3548" strokeWidth={7} />
+					<path d={`M ${W[0] + 10} ${W[3] - 10} L ${W[0] + 40} ${W[2] + 20}`} stroke="#fff" strokeWidth={6} opacity={0.25} />
+				</g>
+				<g opacity={interpolate(t, [0.6, 1.0], [0, 1], clamp)} transform={`translate(${wx},${W[2] - 50})`}><rect x={-100} y={-28} width={200} height={50} rx={25} fill="#11142c" stroke="#ffc94a" strokeWidth={4} /><text y={8} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={26} fill="#fff">ЛЮДЕЙ: 1</text></g>
 			</Svg></Layer>
 			<Layer depth={0.85}><Snowfall T={T} /></Layer>
 		</Stage>
 	);
 };
 const S02: React.FC<SP> = ({t, T, f}) => {
-	const cam = mixCam(camOn(960, 640, 1.2), camOn(960, 560, 0.62), interpolate(t, [0, 3.2], [0, 1], {...clamp, easing: ease}));
+	const cam = mixCam(camOn(1000, 640, 1.15), camOn(1000, 520, 0.55), interpolate(t, [0, 3.2], [0, 1], {...clamp, easing: ease}));
 	const t0 = Math.round((at('ближайших') - (T - t)) * FPS);
 	return (
 		<Stage cam={cam} bg={NIGHT} light={{night: true, x: 50, y: 20, o: 0.3}}>
 			<Layer depth={2.4}><NightSky T={T} /></Layer>
 			<Layer depth={1}><Ground /><Station T={T} /><Svg>
-				<Callout f={f} t0={t0} t1={t0 + 200} from={[970, 640]} to={[970, 240]} text="400 КМ ДО ЛЮДЕЙ" size={46} align="center" />
-				{[1, 2, 3].map((k) => <circle key={k} cx={970} cy={760} r={200 * k + ((T * 120) % 200)} fill="none" stroke="#9fd8ff" strokeWidth={3} opacity={0.25 - k * 0.06} />)}
+				<Callout f={f} t0={t0} t1={t0 + 200} from={[1000, 300]} to={[1000, 130]} text="400 КМ ДО ЛЮДЕЙ" size={46} align="center" />
+				{[1, 2, 3].map((k) => <circle key={k} cx={1000} cy={760} r={200 * k + ((T * 120) % 200)} fill="none" stroke="#9fd8ff" strokeWidth={3} opacity={0.25 - k * 0.06} />)}
 			</Svg></Layer>
 			<Layer depth={0.85}><Snowfall T={T} /></Layer>
 		</Stage>
@@ -304,14 +348,14 @@ const S05: React.FC<SP> = ({t, T}) => {
 };
 const S06: React.FC<SP> = ({t, T, f}) => {
 	const k = interpolate(t, [0, 2.4], [0, 1], clamp);
-	const cam = mixCam(camOn(420, 820, 1.3), camOn(1000, 800, 1.25), interpolate(t, [0, 2.4], [0, 1], {...clamp, easing: ease}));
+	const cam = mixCam(camOn(300, 900, 1.35), camOn(1080, 820, 1.15), interpolate(t, [0, 2.6], [0, 1], {...clamp, easing: ease}));
 	const tb = Math.round((at('обратно') - (T - t)) * FPS);
 	return (
 		<Stage cam={cam} bg={NIGHT} light={{night: true, x: 50, y: 20, o: 0.3}}>
 			<Layer depth={2.4}><NightSky T={T} /></Layer>
 			<Layer depth={1.5}><Forest y={800} /></Layer>
 			<Layer depth={1}><Ground /><Station T={T} /><Prints k={k} /><Svg>
-				<Callout f={f} t0={tb} t1={tb + 200} from={[1085, 905]} to={[1000, 560]} text="ОБРАТНО — НЕТ" size={42} c="#ff6a5a" align="center" />
+				<Callout f={f} t0={tb} t1={tb + 200} from={[1100, 930]} to={[1080, 560]} text="ОБРАТНО — НЕТ" size={42} c="#ff6a5a" align="center" />
 			</Svg></Layer>
 			<Layer depth={0.85}><Snowfall T={T} /></Layer>
 		</Stage>
@@ -424,12 +468,12 @@ const KNOCKS = () => [at('стучат'), at('стучат') + 0.42, at('три'
 const S13: React.FC<SP> = ({t, T, f}) => {
 	const kn = KNOCKS();
 	const shake = kn.some((k) => T > k && T < k + 0.15) ? 1 : 0;
-	const cam = mixCam(camOn(1595, 640, 1.7), camOn(1595, 620, 1.9), interpolate(t, [0, 2.2], [0, 1], clamp));
+	const punch = kn.reduce((a, k) => a + Math.max(0, 1 - Math.max(0, T - k) / 0.35) * (T >= k ? 1 : 0), 0);
+	const cam = mixCam(camOn(1595, 640, 1.6 + 0.12 * punch), camOn(1595, 610, 2.0 + 0.12 * punch), interpolate(t, [0, 2.2], [0, 1], clamp));
 	return (
 		<Stage cam={{...cam, x: cam.x + (shake ? Math.sin(f * 3) * 10 : 0)}} bg="#1a1410" light={false}>
 			<Layer depth={1}><Room T={T} doorShake={shake} /></Layer>
 			<Beam lx={1000} ly={560} tx={1595} ty={640} on={1} dark={0.88} spread={0.3} />
-			<Layer depth={1}><Svg>{kn.map((k, i) => <Onoma key={i} x={1560 + i * 30} y={560 + i * 70} text="ТУК" t={f - Math.round((k - (T - t)) * FPS)} c="#ff6a5a" size={56} rot={-8 + i * 8} />)}</Svg></Layer>
 		</Stage>
 	);
 };
@@ -441,13 +485,13 @@ const S14: React.FC<SP> = ({t, T, f}) => {
 			<div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: 955, overflow: 'hidden'}}>
 				<V h={955} fx={960}>
 					<ShotWrap f={f} k={0} len={120}>
-						<Stage cam={camOn(1000, 650, 1.9)} bg={NIGHT} light={{night: true, x: 50, y: 20, o: 0.3}}>
+						<Stage cam={camOn(1110, 760, 1.55)} bg={NIGHT} light={{night: true, x: 50, y: 20, o: 0.3}}>
 							<Layer depth={2.2}><NightSky T={T} /></Layer>
 							<Layer depth={1}><Ground /><Station T={T} win={1} /><Svg>
 								<TalkOverride.Provider value={(s) => (s === 'FAKE' ? sp('FAKE') : 0)}>
-									<Actor who="fake" x={980} floor={900} s={1} facing={1} pose={gesture('fist', idle(f, 4), 0.5 + 0.5 * Math.abs(Math.sin(t * 2)), f)} expr="normal" mouth="flat" look={[0.5, 0]} faceTurn={0.3} sp="FAKE" />
+									<Actor who="fake" x={1120} floor={918} s={0.68} facing={-1} pose={gesture('fist', idle(f, 4), 0.5 + 0.5 * Math.abs(Math.sin(t * 2)), f)} expr="normal" mouth="flat" look={[0.5, 0]} faceTurn={0.3} sp="FAKE" />
 								</TalkOverride.Provider>
-								<g transform="translate(980,480)"><rect x={-90} y={-26} width={180} height={46} rx={23} fill="#11142c" stroke="#ff6a5a" strokeWidth={3} /><text y={8} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={24} fill="#fff">СНАРУЖИ</text></g>
+								<g transform="translate(1110,560)"><rect x={-90} y={-26} width={180} height={46} rx={23} fill="#11142c" stroke="#ff6a5a" strokeWidth={3} /><text y={8} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={24} fill="#fff">СНАРУЖИ</text></g>
 							</Svg></Layer>
 							<Layer depth={0.85}><Snowfall T={T} /></Layer>
 						</Stage>
@@ -525,7 +569,7 @@ const ShotWrap: React.FC<{f: number; k: number; len: number; children: React.Rea
 	</ShotCtx.Provider>
 );
 
-type Cut = {C: React.FC<SP>; at: number; fx?: number; full?: boolean; whip?: boolean};
+type Cut = {C: React.FC<SP>; at: number; fx?: number; full?: boolean; whip?: boolean; noTrans?: boolean};
 const CUTS: Cut[] = [
 	{C: S01, at: 0},
 	{C: S02, at: at('до') - 0.1},
@@ -536,7 +580,7 @@ const CUTS: Cut[] = [
 	{C: S07, at: at('рация') - 0.1, whip: true},
 	{C: S08, at: at('вижу') - 0.1},
 	{C: RuleV, at: at('тогда') - 0.1, full: true},
-	{C: S10, at: AD1 + 0.05},
+	{C: S10, at: AD1 + 0.05, noTrans: true},
 	{C: S11, at: at('лучь') - 0.1},
 	{C: S12, at: at('ты', 3) - 0.1},
 	{C: S13, at: at('стучат') - 0.45},
@@ -574,15 +618,20 @@ export const StationShort: React.FC = () => {
 	const nextWhip = ci + 1 < CUTS.length && CUTS[ci + 1].whip;
 	const kin = cut.whip ? interpolate(t, [0, 0.25], [1, 0], {...clamp, easing: ease}) : 0;
 	const kout = nextWhip ? interpolate(T, [next - 0.2, next], [0, 1], {...clamp, easing: ease}) : 0;
+	// обычная склейка — тоже через камеру: быстрый наезд «сквозь» кадр (въезд 0,28 с, уезд 0,16 с)
+	const nextCut = ci + 1 < CUTS.length ? CUTS[ci + 1] : null;
+	const zin = !cut.whip && !cut.noTrans && ci > 0 ? interpolate(t, [0, 0.28], [1, 0], {...clamp, easing: ease}) : 0;
+	const zout = nextCut && !nextCut.whip && !nextCut.noTrans ? interpolate(T, [next - 0.16, next], [0, 1], {...clamp, easing: ease}) : 0;
+	const zs = 1 + 0.3 * zin + 0.25 * zout;
 	const dx = kin * 700 - kout * 700;
-	const blur = (kin + kout) * 28;
+	const blur = (kin + kout) * 28 + (zin + zout) * 10;
 	const ad1F = Math.round(AD1 * FPS), holdF = Math.round(AD_HOLD * FPS);
 	const C = cut.C;
 	const ended = T >= END;
 	return (
 		<AbsoluteFill style={{background: '#000'}}>
 			{!ended ? (
-				<AbsoluteFill style={{transform: `translateX(${dx}px)`, filter: blur > 0.5 ? `blur(${blur}px)` : undefined}}>
+				<AbsoluteFill style={{transform: `translateX(${dx}px) scale(${zs})`, filter: blur > 0.5 ? `blur(${blur}px)` : undefined}}>
 					{cut.full ? (
 						<C t={t} T={T} f={f} />
 					) : (
