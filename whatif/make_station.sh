@@ -5,8 +5,8 @@ python3 -c "import os;os.chdir('..');exec(open('whatif/station_sound.py').read()
 # кусками по 300 кадров (длинный рендер одной вкладкой падает на загрузке шрифтов), каждый кусок — до 3 попыток
 TOTAL=$(npx remotion compositions src/index.ts 2>/dev/null | awk '$1=="Station"{print $4}'); TOTAL=${TOTAL:-1764}
 rm -f out/_parts.txt; i=0
-for a in $(seq 0 300 $((TOTAL-1))); do
-  b=$((a+299)); [ $b -ge $TOTAL ] && b=$((TOTAL-1))
+for a in $(seq 0 150 $((TOTAL-1))); do
+  b=$((a+149)); [ $b -ge $TOTAL ] && b=$((TOTAL-1))
   for try in 1 2 3; do npx remotion render src/index.ts Station out/_p$i.mp4 --frames=$a-$b --muted --crf=16 --log=error --concurrency=1 --timeout=300000 && break; done
   echo "file '_p$i.mp4'" >> out/_parts.txt; i=$((i+1))
 done
