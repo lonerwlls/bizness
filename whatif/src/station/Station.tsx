@@ -536,7 +536,7 @@ const CUTS: Cut[] = [
 	{C: S07, at: at('рация') - 0.1, whip: true},
 	{C: S08, at: at('вижу') - 0.1},
 	{C: RuleV, at: at('тогда') - 0.1, full: true},
-	{C: S10, at: AD1 + 0.05, whip: true},
+	{C: S10, at: AD1 + 0.05},
 	{C: S11, at: at('лучь') - 0.1},
 	{C: S12, at: at('ты', 3) - 0.1},
 	{C: S13, at: at('стучат') - 0.45},
