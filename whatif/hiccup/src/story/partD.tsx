@@ -14,7 +14,7 @@ import {FL, HS, badgeY} from './common';
 import {SEAT, SeatChair} from './places';
 import {Lying, Tag, camPath, pop, useW} from './lib';
 import {Audience, HostDesk, Studio, StudioBeams, StudioCam} from './placesH';
-import {BedBlanket, Corridor2, Dining, DinnerTable, HospBed, WaitChairs, WardNight} from './placesD';
+import {BedBlanket2, Corridor2, Dining, DinnerTable, HospBedRaised, WaitChairs, WardNight} from './placesD';
 
 /* PART D (4:01–4:46): the decades — kids, grey hair, the night at the hospital bed,
    and back to the TV show from the cold open. */
@@ -110,7 +110,7 @@ const D043: React.FC = () => {
 				<Svg>
 					<WaitChairs x={1120} n={4} />
 					{[0, 1, 2, 3].map((i) => (
-						<Extra key={i} i={i + 3} seed="wt" x={1120 + i * 120} floor={826 + 157 * 0.95 - 4} s={0.95} facing={turned ? -1 : 1} pose={{...SIT, armF: [40, 60]}} expr={turned ? 'wide' : 'normal'} />
+						<Extra key={i} i={i + 3} seed="wt" x={1120 + i * 120} floor={826 + 157 * 0.95 - 4} s={0.95} facing={-1} pose={{...SIT, armF: [40, 60]}} expr={turned ? 'wide' : 'normal'} />
 					))}
 					<Actor who="hero" x={wk.x} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.8, 0]} pose={wk.moving ? wk.pose : idle(gf, 2)} vx={wk.vx} bob={wk.bob} uid="h-043" />
 					<HeroBadge x={wk.x} y={badgeY(FL) - wk.bob} s={0.8} />
@@ -123,25 +123,31 @@ const D043: React.FC = () => {
 };
 
 /* ---------- 044–047 the night at her hospital bed ---------- */
-const BX = 1100; // bed centre
-const HX = 660; // hero on the chair by the head of the bed
-const WIFE_OLD = {hairColor: '#d9d9e0', age: 0.9, acc: ['lashes'] as 'lashes'[]};
-const HAND: [number, number] = [868, 724];
+const BX = 1160; // bed centre
+const HX = 760; // hero on the chair by the head of the bed
+const WX = 1010; // wife half-sitting against the raised head of the bed
+const WSEAT = 696;
+// she looks like herself from the park scene: same purple dress, dark bob, lashes — only a touch older
+const WIFE_LATER = {hairColor: '#7a6660', age: 0.45};
+const P: [number, number] = [870, 672]; // where their hands meet
 const WardShot: React.FC<{beat: 'sit' | 'sorry' | 'hand' | 'night'}> = ({beat}) => {
 	const {f, gf, dur} = useShot();
 	const w = useW();
 	const dawn = beat === 'night' ? interpolate(f, [0, dur], [0, 1], clamp) : 0;
-	const holding = beat === 'hand' || beat === 'night';
+	const join = beat === 'hand' ? env(f, w('046', 0.02), 1e9, 14, 1) : beat === 'night' ? 1 : 0;
 	const sorry = beat === 'sorry' ? env(f, w('045', 0.55), 1e9, 8, 1) : 0;
-	let hp: Pose = {...SIT, lean: 10, armF: [50, 60], armB: [40, 60]};
-	if (holding) hp = reach(hp, 'F', [HAND[0] - HX, HAND[1] - SEAT], 1);
+	const squeeze = beat === 'hand' ? Math.max(0, Math.sin((f - w('046', 0.1)) / 5)) * env(f, w('046', 0.1), w('046', 0.35), 4, 8) * 4 : 0;
+	let hp: Pose = {...SIT, lean: 4, armF: [50, 60], armB: [40, 60]};
+	if (join > 0) hp = reach(hp, 'F', [P[0] - HX, P[1] + squeeze - SEAT], join);
 	if (sorry > 0) hp = gesture('touchFace', hp, sorry, f);
 	if (beat === 'night') hp = {...hp, head: hp.head + 10 * Math.max(0, Math.sin(f / 18))};
-	const squeeze = beat === 'hand' ? Math.max(0, Math.sin((f - w('046', 0.05)) / 5)) * env(f, w('046', 0.05), w('046', 0.3), 4, 8) : 0;
+	let wp: Pose = {...SIT, lean: -28, head: -6, armF: [30, 50], armB: [20, 50]};
+	if (join > 0) wp = reach(wp, 'B', [-(WX - P[0]), P[1] + squeeze - WSEAT], join);
+	const wifeAwake = beat === 'hand';
 	let cam;
 	if (beat === 'sit') cam = camPath(f, [[0, camOn(1000, 560, 1.15)], [dur, camOn(980, 560, 1.3)]]);
-	else if (beat === 'sorry') cam = camPath(f, [[0, camOn(820, 520, 1.6, {farBlur: 7})], [dur, camOn(800, 500, 1.8, {farBlur: 8})]]);
-	else if (beat === 'hand') cam = camPath(f, [[0, camOn(860, 640, 1.9, {farBlur: 8})], [w('046', 0.4), camOn(860, 600, 1.7, {farBlur: 7})], [dur, camOn(880, 580, 1.6, {farBlur: 7})]]);
+	else if (beat === 'sorry') cam = camPath(f, [[0, camOn(860, 560, 1.55, {farBlur: 7})], [dur, camOn(850, 540, 1.75, {farBlur: 8})]]);
+	else if (beat === 'hand') cam = camPath(f, [[0, camOn(880, 640, 1.8, {farBlur: 8})], [w('046', 0.4), camOn(890, 600, 1.6, {farBlur: 7})], [dur, camOn(900, 580, 1.5, {farBlur: 7})]]);
 	else cam = camPath(f, [[0, camOn(1060, 520, 1.15)], [dur, camOn(1060, 540, 1.25)]]);
 	return (
 		<Stage cam={cam} bg="#141c34" light={{x: 75, y: 15, o: 0.45 + 0.2 * dawn, c: dawn > 0.5 ? '255,200,150' : '170,190,255'}}>
@@ -150,14 +156,14 @@ const WardShot: React.FC<{beat: 'sit' | 'sorry' | 'hand' | 'night'}> = ({beat}) 
 			</Layer>
 			<Layer depth={1}>
 				<Prop3D
-					x={720}
+					x={440}
 					y={150}
-					w={860}
+					w={1140}
 					h={760}
 					make={() => {
 						const scene = propScene(1.9);
 						const mon = makeMonitor();
-						at(mon, 800, 900, -60);
+						at(mon, 560, 900, -60);
 						mon.rotation.set(0.05, 0.35, 0);
 						const iv = makeIV();
 						at(iv, 1440, 900, -80);
@@ -173,25 +179,22 @@ const WardShot: React.FC<{beat: 'sit' | 'sorry' | 'hand' | 'night'}> = ({beat}) 
 					}}
 				/>
 				<Svg>
-					<HospBed x={BX} />
-					<Lying who="wife" x={1100} y={676} s={0.95} rot={-86} f={gf} id="wife-bed" expr={beat === 'hand' ? 'sleepy' : 'sleepy'} extra={{...WIFE_OLD, mouth: beat === 'hand' && f > w('046', 0.2) ? 'smile' : 'smile', look: [0.3, -0.6]}} />
-					<BedBlanket x={BX} />
-					{/* her arm over the blanket, hand reaching to the edge of the bed */}
-					<path d={`M985,${700} Q930,${716} ${HAND[0] + 10},${HAND[1] - 4 + squeeze * 3}`} stroke={CAST.wife.color} strokeWidth={20} fill="none" strokeLinecap="round" />
-					<circle cx={HAND[0] + 8} cy={HAND[1] - 2 + squeeze * 3} r={10} fill="#0b0b0d" />
+					<HospBedRaised x={BX} />
+					<Actor who="wife" x={WX} floor={FL} seat={WSEAT} s={0.97} facing={1} faceTurn={-0.5} look={[-0.8, 0.1]} expr={wifeAwake ? 'normal' : 'sleepy'} mouth="smile" pose={wp} {...WIFE_LATER} uid="wife-ward" />
+					<BedBlanket2 x={BX} />
 					<SeatChair x={HX - 30} c="#4a5a7a" />
-					<Actor who="hero" x={HX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.3]} expr={beat === 'night' ? 'sleepy' : 'sad'} mouth={beat === 'sorry' && sorry > 0.3 ? 'open' : beat === 'hand' ? 'smile' : undefined} pose={hp} uid="h-ward" />
-					<HeroBadge x={HX} y={SEAT - 164 - 118} s={0.8} />
+					<Actor who="hero" x={HX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.1]} expr={beat === 'night' ? 'sleepy' : 'sad'} mouth={beat === 'sorry' && sorry > 0.3 ? 'open' : beat === 'hand' ? 'smile' : undefined} pose={hp} uid="h-ward" />
+					<HeroBadge x={HX - 30} y={460} s={0.7} />
 					{beat === 'sit' ? <Tag f={f} t={w('044', 0.1)} x={1060} y={240} text="AGE 80" c="#11142c" fg="#9fd8ff" stroke="#9fd8ff" size={36} rot={-3} /> : null}
 					{beat === 'sorry' && sorry > 0.2 ? (
-						<Bubble x={560} y={380} w={220} h={80} t={f - w('045', 0.55)} tail={[60, 70]}>
+						<Bubble x={600} y={420} w={220} h={80} t={f - w('045', 0.55)} tail={[80, 70]}>
 							<text y={12} textAnchor="middle" fontSize={32} fontFamily={FONT} fontWeight={900} fill="#13203a">
 								sorry…
 							</text>
 						</Bubble>
 					) : null}
 					{beat === 'hand' && f > w('046', 0.3) ? (
-						<Bubble x={1080} y={430} w={520} h={130} t={f - w('046', 0.3)} tail={[-120, 120]}>
+						<Bubble x={1200} y={420} w={520} h={130} t={f - w('046', 0.3)} tail={[-200, 100]}>
 							<text y={-10} textAnchor="middle" fontSize={30} fontFamily={FONT} fontWeight={900} fill="#13203a">
 								47 years… and I never once
 							</text>

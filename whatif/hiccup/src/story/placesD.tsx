@@ -126,3 +126,23 @@ export const BedBlanket: React.FC<{x: number; w?: number}> = ({x, w = 560}) => (
 		<path d={`M${-w / 2 + 120},700 L${w / 2},704`} stroke="#5a80b8" strokeWidth={4} />
 	</g>
 );
+
+/* hospital bed with the head section raised (head on the LEFT): she half-sits against it */
+export const HospBedRaised: React.FC<{x: number; w?: number}> = ({x, w = 560}) => (
+	<g transform={`translate(${x},0)`}>
+		<rect x={-w / 2 - 20} y={560} width={24} height={340} rx={8} fill="#c8d0dc" />
+		<rect x={w / 2 - 4} y={660} width={20} height={240} rx={8} fill="#c8d0dc" />
+		<rect x={-w / 2} y={740} width={w} height={36} rx={10} fill="#8a9aa8" />
+		<rect x={-w / 2 + 90} y={700} width={w - 90} height={44} rx={16} fill="#f4f6fa" />
+		<path d={`M${-w / 2 + 120},704 L${-w / 2 + 40},540 L${-w / 2},556 L${-w / 2 + 70},744 Z`} fill="#e8ecf2" />
+		<path d={`M${-w / 2 + 10},540 Q${-w / 2 + 60},520 ${-w / 2 + 90},560 L${-w / 2 + 80},600 Q${-w / 2 + 40},590 ${-w / 2 + 20},600 Z`} fill="#ffffff" />
+		<rect x={-w / 2 + 40} y={776} width={14} height={124} fill="#6a7a88" />
+		<rect x={w / 2 - 54} y={776} width={14} height={124} fill="#6a7a88" />
+	</g>
+);
+export const BedBlanket2: React.FC<{x: number; w?: number}> = ({x, w = 560}) => (
+	<g transform={`translate(${x},0)`}>
+		<path d={`M${-w / 2 + 70},${716} Q${-w / 2 + 120},${690} ${-w / 2 + 200},${694} L${w / 2},${696} L${w / 2},${764} L${-w / 2 + 80},${764} Z`} fill="#7aa0d8" />
+		<path d={`M${-w / 2 + 80},${720} Q${-w / 2 + 130},${700} ${-w / 2 + 200},${702}`} stroke="#5a80b8" strokeWidth={4} fill="none" />
+	</g>
+);
