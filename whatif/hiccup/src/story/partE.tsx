@@ -1,5 +1,6 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, random} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, random} from 'remotion';
+import * as THREE from 'three';
 import {Pose} from '../engine/Stickman';
 import {SIT, env, gesture, idle, reach, walkTo} from '../kit/actions';
 import {Actor, useShot} from '../kit/core';
@@ -8,7 +9,7 @@ import {Extra, HeroBadge, Layer, Stage, Svg, camOn, clamp, usePush} from '../kit
 import {Board, Bubble, FONT} from '../kit/ui';
 import {Onoma} from '../reference/PauseTime';
 import {Prop3D, at, propScene} from '../three/Prop3D';
-import {makeAlarm, makeGlass, makeJar, makeNightstand, makeRings, makeSpoon, makeStethoscope, makeSubButton, makeTeacup, makeTrophy, makeWallClock, makeWaterGlass, openDrawer} from '../three/props';
+import {makeHose, makeAlarm, makeGlass, makeJar, makeNightstand, makeRings, makeSpoon, makeStethoscope, makeSubButton, makeTeacup, makeTrophy, makeWallClock, makeWaterGlass, openDrawer} from '../three/props';
 import {CAST} from './cast';
 import {FL, HS, badgeY} from './common';
 import {SEAT, SeatChair} from './places';
@@ -179,27 +180,46 @@ const HX53 = 840;
 const ChestShot: React.FC<{beat: 'take' | 'listen'}> = ({beat}) => {
 	const {f, gf, dur} = useShot();
 	const w = useW();
-	const open = beat === 'take' ? interpolate(f, [4, 22], [0, 1], clamp) : 1;
-	const into = beat === 'take' ? env(f, 18, w('053', 0.5), 10, 10) : 0;
-	const lift = beat === 'take' ? interpolate(f, [w('053', 0.5), w('053', 0.85)], [0, 1], clamp) : 1;
-	const taken = beat === 'listen' || f > w('053', 0.48);
+	const T = (x: number, y: number, z = 0) => new THREE.Vector3(x, -y, z);
+	const seat = 816;
 	const base: Pose = {...SIT, lean: 4, armB: [30, 60], armF: [30, 60]};
-	const drawerHand: [number, number] = [HX53 - 110, 762];
-	const chest: [number, number] = [HX53 - 16, 816 - 96];
-	const hand: [number, number] = taken ? [drawerHand[0] + (chest[0] - drawerHand[0]) * lift, drawerHand[1] + (chest[1] - drawerHand[1]) * lift] : drawerHand;
-	let hp = reach(base, 'F', [HX53 - hand[0], hand[1] - 816], beat === 'take' ? Math.max(into, taken ? 1 : 0) : 1);
-	const inEars = beat === 'listen' || lift > 0.95;
+	const head = {x: HX53 - Math.sin((4 * Math.PI) / 180) * 164, y: seat - Math.cos((4 * Math.PI) / 180) * 164};
+	const knob: [number, number] = [NS[0] + 6, NS[1] - 135];
+	const ear: [number, number] = [head.x - 40, head.y + 30];
+	const heart: [number, number] = [HX53 + 10, seat - 84];
+	// timeline of the hand: knob (pull) → into the drawer (grab) → up to the ears → down to the heart
+	const k = (a: number, b: number) => interpolate(f, [a, b], [0, 1], {...clamp, easing: Easing.inOut(Easing.cubic)});
+	const open = beat === 'take' ? k(8, 24) : 1;
+	let hand: [number, number];
+	let stage: 'drawer' | 'hand' | 'ears';
+	if (beat === 'listen') {
+		hand = heart;
+		stage = 'ears';
+	} else {
+		const p1 = k(0, 8); // to the knob
+		const p2 = k(26, 36); // into the drawer
+		const p3 = k(42, 62); // up to the ears
+		const p4 = k(66, 88); // down to the heart
+		const rest: [number, number] = [HX53 - 40, seat - 20];
+		const inD: [number, number] = [knob[0] + 4, knob[1] + 6];
+		const mix = (a: [number, number], b: [number, number], t: number): [number, number] => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+		hand = mix(rest, knob, p1);
+		if (f > 24) hand = mix(knob, inD, p2);
+		if (f > 40) hand = mix(inD, ear, p3);
+		if (f > 64) hand = mix(ear, heart, p4);
+		stage = f < 38 ? 'drawer' : f < 62 ? 'hand' : 'ears';
+	}
+	const hp = reach(base, 'F', [HX53 - hand[0], hand[1] - seat], 1);
 	const beatK = beat === 'listen' ? Math.max(0, Math.sin(((f - 6) / 26) * Math.PI * 2)) ** 6 : 0;
 	const warm = beat === 'listen' ? interpolate(f, [0, dur], [0, 1], clamp) : 0;
 	const cam =
 		beat === 'take'
 			? camPath(f, [
-					[0, camOn(800, 640, 1.5, {farBlur: 7})],
-					[w('053', 0.5), camOn(810, 620, 1.55, {farBlur: 7})],
-					[dur, camOn(830, 560, 1.75, {farBlur: 8})],
+					[0, camOn(790, 650, 1.5, {farBlur: 7})],
+					[40, camOn(800, 620, 1.55, {farBlur: 7})],
+					[dur, camOn(830, 560, 1.8, {farBlur: 8})],
 				])
 			: usePush(camOn(830, 560, 1.85, {farBlur: 8}), camOn(830, 540, 2.15, {farBlur: 9}));
-	const head = {x: HX53 + Math.sin((4 * Math.PI) / 180) * 164 * -1, y: 816 - 164};
 	return (
 		<Stage cam={cam} bg="#dccab0" light={{x: 85, y: 10, o: 0.5 + 0.25 * warm, c: '255,220,160'}}>
 			<Layer depth={1.4}>
@@ -226,36 +246,52 @@ const ChestShot: React.FC<{beat: 'take' | 'listen'}> = ({beat}) => {
 				/>
 				<Svg>
 					<OldBed x={BEDX} />
-					<Actor who="hero" x={HX53} floor={FL} seat={816} s={HS} facing={-1} faceTurn={0.3} look={beat === 'listen' ? [0, 0] : [-0.5, 0.5]} expr={beat === 'listen' ? 'sleepy' : 'normal'} mouth={beat === 'listen' && f > 20 ? 'smile' : undefined} pose={hp} acc={OLD5} uid="h-053" />
-					{inEars ? (
-						<g stroke="#2a2f4a" strokeWidth={5} fill="none" strokeLinecap="round">
-							<path d={`M${chest[0]},${chest[1]} Q${chest[0] + 30},${chest[1] - 60} ${head.x - 44},${head.y + 4}`} />
-							<path d={`M${chest[0]},${chest[1]} Q${chest[0] + 10},${chest[1] - 80} ${head.x + 46},${head.y + 4}`} />
-						</g>
-					) : null}
-					{beat === 'listen' ? <circle cx={chest[0] + 6} cy={chest[1] - 4} r={30 + 26 * beatK} fill="#ff6a7a" opacity={0.15 + 0.35 * beatK} /> : null}
+					<Actor who="hero" x={HX53} floor={FL} seat={seat} s={HS} facing={-1} faceTurn={0.3} look={beat === 'listen' ? [0, 0] : [-0.5, 0.5]} expr={beat === 'listen' ? 'sleepy' : 'normal'} mouth={beat === 'listen' && f > 20 ? 'smile' : undefined} pose={hp} acc={OLD5} uid="h-053" />
+					{beat === 'listen' ? <circle cx={heart[0]} cy={heart[1]} r={30 + 26 * beatK} fill="#ff6a7a" opacity={0.15 + 0.35 * beatK} /> : null}
 				</Svg>
 				<Prop3D
-					x={600}
-					y={560}
-					w={400}
-					h={320}
+					x={560}
+					y={460}
+					w={460}
+					h={460}
 					make={() => {
 						const scene = propScene();
-						const s = makeStethoscope();
-						scene.add(s);
-						return {scene, s};
+						const piece = new THREE.Group();
+						piece.add(new THREE.Mesh(new THREE.CylinderGeometry(13, 13, 8, 20), new THREE.MeshToonMaterial({color: '#c9d0dc'})));
+						piece.children[0].rotation.x = Math.PI / 2;
+						scene.add(piece);
+						return {scene, piece, tubes: [] as THREE.Object3D[]};
 					}}
 					update={(wd) => {
-						const inDrawer = !taken;
-						wd.s.visible = !inDrawer || open > 0.6;
-						at(wd.s, inDrawer ? NS[0] : hand[0], inDrawer ? NS[1] - 138 : hand[1], inDrawer ? 60 : 80);
-						wd.s.rotation.set(inDrawer ? 1.2 : 0, 0, inDrawer ? 0.4 : 0.2);
-						wd.s.scale.setScalar(inEars ? 0.6 : 0.8);
+						for (const t of wd.tubes) wd.scene.remove(t);
+						wd.tubes = [];
+						const add = (pts: THREE.Vector3[]) => {
+							const h = makeHose(pts);
+							wd.scene.add(h);
+							wd.tubes.push(h);
+						};
+						if (stage === 'drawer') {
+							wd.piece.visible = open > 0.5;
+							const d: [number, number] = f > 24 ? [hand[0], hand[1]] : [knob[0] - 10, knob[1] + 4];
+							at(wd.piece, d[0] - 14, d[1] + 2, 70);
+							if (open > 0.5) add([T(d[0] - 14, d[1] + 2, 70), T(d[0] + 10, d[1] - 6, 70), T(d[0] + 30, d[1] + 4, 70), T(d[0] + 6, d[1] + 10, 70)]);
+						} else if (stage === 'hand') {
+							wd.piece.visible = true;
+							at(wd.piece, hand[0], hand[1] + 70, 70);
+							add([T(hand[0], hand[1] + 62, 70), T(hand[0] + 8, hand[1] + 30, 70), T(hand[0], hand[1], 70)]);
+							add([T(hand[0], hand[1], 70), T(hand[0] - 16, hand[1] - 10, 70), T(hand[0] - 26, hand[1] + 6, 70)]);
+						} else {
+							wd.piece.visible = true;
+							at(wd.piece, hand[0], hand[1], 70);
+							const J: [number, number] = [head.x + 2, head.y + 74];
+							add([T(hand[0], hand[1] - 6, 70), T(hand[0] - 8, hand[1] - 40, 70), T(J[0], J[1], 70)]);
+							add([T(J[0], J[1], 70), T(head.x - 40, head.y + 52, 70), T(head.x - 48, head.y + 8, 70)]);
+							add([T(J[0], J[1], 70), T(head.x + 40, head.y + 52, 70), T(head.x + 48, head.y + 8, 70)]);
+						}
 					}}
 				/>
 				<Svg>
-					{beat === 'listen' && f > 30 ? <Onoma x={HX53 - 200} y={560} text="ba-dum" t={(f - 30) % 26} c="#ff8a9a" size={44} rot={-6} /> : null}
+					{beat === 'listen' && f > 30 ? <Onoma x={HX53 - 220} y={560} text="ba-dum" t={(f - 30) % 26} c="#ff8a9a" size={44} rot={-6} /> : null}
 					{beat === 'listen' ? <Tag f={f} t={w('054', 0.55)} x={560} y={380} text="JUST A HEARTBEAT" c="#11142c" fg="#ff9ab0" stroke="#ff6a8a" size={36} rot={-3} /> : null}
 					{beat === 'take' ? <Tag f={f} t={8} x={1060} y={330} text="THE OLD STETHOSCOPE" c="#11142c" fg="#ffd34a" size={32} rot={3} /> : null}
 				</Svg>
@@ -263,6 +299,7 @@ const ChestShot: React.FC<{beat: 'take' | 'listen'}> = ({beat}) => {
 		</Stage>
 	);
 };
+
 const E053: React.FC = () => <ChestShot beat="take" />;
 const E054: React.FC = () => <ChestShot beat="listen" />;
 
@@ -484,10 +521,12 @@ const E059: React.FC = () => {
 
 /* ---------- 060 subscribe — next: the teenager who stayed awake for eleven days ---------- */
 const E060: React.FC = () => {
-	const {f, gf} = useShot();
+	const {f, gf, dur} = useShot();
+	const out = interpolate(f, [dur - 24, dur - 2], [0, 1], clamp);
 	const press = env(f, 14, 30, 6, 8);
 	const cam = usePush(camOn(960, 560, 1.15), camOn(960, 540, 1.3));
 	return (
+		<>
 		<Stage cam={cam} bg="#3a1a5a" light={{x: 50, y: 30, o: 0.4}}>
 			<Layer depth={1.3}>
 				<Svg>
@@ -521,50 +560,10 @@ const E060: React.FC = () => {
 				</Svg>
 			</Layer>
 		</Stage>
-	);
-};
-const E060b: React.FC = () => {
-	const {f, gf, dur} = useShot();
-	const out = interpolate(f, [dur - 24, dur - 2], [0, 1], clamp);
-	const cam = usePush(camOn(1100, 560, 1.3), camOn(1120, 520, 1.6, {farBlur: 7}));
-	return (
-		<>
-			<Stage cam={cam} bg="#141a3a" light={{x: 75, y: 50, o: 0.5, c: '160,200,255'}}>
-				<Layer depth={1.4}>
-					<TeenRoom f={gf} />
-				</Layer>
-				<Layer depth={1}>
-					<Prop3D
-						x={1240}
-						y={400}
-						w={300}
-						h={220}
-						make={() => {
-							const scene = propScene();
-							const a = makeAlarm();
-							a.scale.setScalar(1.3);
-							at(a, 1360, 600, 20);
-							a.rotation.y = -0.3;
-							scene.add(a);
-							return {scene, a};
-						}}
-						update={(wd, ff) => (wd.a.rotation.z = Math.sin(ff * 2.5) * 0.08)}
-					/>
-					<Svg>
-						<Actor who="teen" x={1060} floor={FL} s={0.95} facing={1} faceTurn={0.2} look={[0.1, 0]} expr="wide" mouth="flat" pose={idle(gf, 4)} uid="teen-60" />
-						{[0, 1].map((i) => (
-							<path key={i} d={`M${1040 + i * 34},${FL - 157 * 0.95 - 164 * 0.95 + 8} q8,6 16,0`} stroke="#d23b3b" strokeWidth={2} fill="none" opacity={0.8} />
-						))}
-						<Tag f={f} t={8} x={1100} y={230} text="NEXT TIME" c="#11142c" fg="#9fd8ff" stroke="#9fd8ff" size={34} rot={-3} />
-						<Tag f={f} t={20} x={1100} y={320} text="11 DAYS AWAKE" c="#3a1d2a" fg="#ff9a8a" stroke="#ff6a5a" size={44} rot={3} />
-					</Svg>
-				</Layer>
-			</Stage>
-			<AbsoluteFill style={{background: '#000', opacity: out}} />
+		<AbsoluteFill style={{background: '#000', opacity: out}} />
 		</>
 	);
 };
-
 export const SHOTS_E: ShotDef[] = [
 	{at: '049', C: E049, whip: true},
 	{at: '050', C: E050, whip: true},
@@ -579,6 +578,5 @@ export const SHOTS_E: ShotDef[] = [
 	{at: '058', C: E058, whip: true},
 	{at: '059', C: E059, whip: true},
 	{at: '060', C: E060, whip: true},
-	{at: '060', off: 60, C: E060b, whip: true},
 ];
 export {HeroBadge, badgeY, random, makeGlass};

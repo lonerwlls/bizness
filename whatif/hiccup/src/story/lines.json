@@ -332,6 +332,8 @@
  {
   "id": "060_N",
   "sp": "N",
-  "t": "And subscribe, because next time, the patient is a teenager who stayed awake for eleven days straight."
+  "t": "And subscribe.",
+  "cut": 0.8,
+  "gap": 2.6
  }
 ]
