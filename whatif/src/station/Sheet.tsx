@@ -2,10 +2,11 @@ import React from 'react';
 import {AbsoluteFill, Freeze, getInputProps} from 'remotion';
 import {StationShort} from './Station';
 import {Station2Short} from '../station2/Station2';
+import {Station3Short} from '../station3/Station3';
 // лист кадров для проверки: --props='{"frames":[...]}'
 export const StationSheet: React.FC = () => {
 	const {frames = [0], comp = 'Station'} = getInputProps() as {frames?: number[]; comp?: string};
-	const C = comp === 'Station2' ? Station2Short : StationShort;
+	const C = comp === 'Station3' ? Station3Short : comp === 'Station2' ? Station2Short : StationShort;
 	const cols = 4, w = 1080 / cols * 2, h = w * 16 / 9;
 	return (
 		<AbsoluteFill style={{background: '#111'}}>
