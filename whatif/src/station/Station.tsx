@@ -36,7 +36,7 @@ const talkAt = (sp: string, T: number) => ((RANGES[sp] ?? []).some(([a, b]) => T
 const TEAL = '#1f9a96', SNOW = '#dfe8f4', NIGHT = '#0a1024';
 const K = 1920 / 1080; // мир 1080 по высоте → экран 1920
 // окно 9:16 из сцены 16:9: fx — центр окна по экрану сцены
-const V: React.FC<{fx?: number; h?: number; children: React.ReactNode}> = ({fx = 960, h = 1920, children}) => {
+export const V: React.FC<{fx?: number; h?: number; children: React.ReactNode}> = ({fx = 960, h = 1920, children}) => {
 	const k = h / 1080;
 	return (
 		<div style={{position: 'absolute', left: 0, top: 0, width: 1080, height: h, overflow: 'hidden'}}>
@@ -44,7 +44,7 @@ const V: React.FC<{fx?: number; h?: number; children: React.ReactNode}> = ({fx =
 		</div>
 	);
 };
-type SP = {t: number; T: number; f: number};
+export type SP = {t: number; T: number; f: number};
 
 // ---------- места ----------
 export const NightSky: React.FC<{T: number}> = ({T}) => (
@@ -145,7 +145,7 @@ const footAt = (i: number, n: number) => {
 	const side = i % 2 ? 1 : -1, s = 1.15 - u * 0.5;
 	return {x: x + side * 10 * s * Math.sin((ang * Math.PI) / 180), y: y - side * 10 * s * Math.cos((ang * Math.PI) / 180) * 0.5, s, rot: ang};
 };
-const Foot: React.FC<{x: number; y: number; s: number; rot: number; o?: number; flat?: number}> = ({x, y, s, rot, o = 1, flat = 0.5}) => (
+export const Foot: React.FC<{x: number; y: number; s: number; rot: number; o?: number; flat?: number}> = ({x, y, s, rot, o = 1, flat = 0.5}) => (
 	<g transform={`translate(${x},${y}) scale(1,${flat}) rotate(${rot}) scale(${s})`} opacity={o}>
 		<ellipse cx={0} cy={0} rx={20} ry={9} fill="#8a98b0" />
 		<ellipse cx={0} cy={2} rx={18} ry={6} fill="#a8b6cc" opacity={0.6} />
@@ -170,7 +170,7 @@ export const Snowfall: React.FC<{T: number; n?: number}> = ({T, n = 90}) => (
 	</Svg>
 );
 // комната станции: окно, стол с рацией, часы, вешалка с курткой, дверь
-const Room: React.FC<{T: number; coat?: number; doorShake?: number}> = ({T, coat = 1, doorShake = 0}) => (
+export const Room: React.FC<{T: number; coat?: number; doorShake?: number}> = ({T, coat = 1, doorShake = 0}) => (
 	<Svg>
 		<rect x={-600} y={-300} width={3100} height={1700} fill="#3a2e28" />
 		{Array.from({length: 34}).map((_, i) => <rect key={i} x={-600 + i * 92} y={-300} width={4} height={1200} fill="#2e2420" />)}
@@ -218,7 +218,7 @@ const Room: React.FC<{T: number; coat?: number; doorShake?: number}> = ({T, coat
 	</Svg>
 );
 // темнота с лучом фонаря (мировые координаты): из (lx,ly) на цель (tx,ty)
-const Beam: React.FC<{lx: number; ly: number; tx: number; ty: number; on?: number; dark?: number; spread?: number}> = ({lx, ly, tx, ty, on = 1, dark = 0.9, spread = 0.32}) => {
+export const Beam: React.FC<{lx: number; ly: number; tx: number; ty: number; on?: number; dark?: number; spread?: number; c?: string}> = ({lx, ly, tx, ty, on = 1, dark = 0.9, spread = 0.32, c = '#fff3c0'}) => {
 	const dx = tx - lx, dy = ty - ly, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, w = L * spread;
 	const id = 'bm' + Math.round(lx) + Math.round(ty);
 	return (
@@ -235,14 +235,14 @@ const Beam: React.FC<{lx: number; ly: number; tx: number; ty: number; on?: numbe
 				</mask>
 			</defs>
 			<rect x={-800} y={-600} width={3600} height={2400} fill="#03050c" opacity={dark} mask={`url(#${id})`} />
-			{on > 0 ? <polygon points={`${lx},${ly} ${tx + nx * w},${ty + ny * w} ${tx - nx * w},${ty - ny * w}`} fill="#fff3c0" opacity={0.07 * on} /> : null}
+			{on > 0 ? <polygon points={`${lx},${ly} ${tx + nx * w},${ty + ny * w} ${tx - nx * w},${ty - ny * w}`} fill={c} opacity={0.07 * on} /> : null}
 		</Svg></Layer>
 	);
 };
 // точка фонаря у стоящего героя масштаба s на полу floor
-const lampXY = (x: number, floor: number, s: number, facing = 1): [number, number] => [x + facing * 6 * s, floor - 157 * s - 164 * s - 31 * s];
+export const lampXY = (x: number, floor: number, s: number, facing = 1): [number, number] => [x + facing * 6 * s, floor - 157 * s - 164 * s - 31 * s];
 // руки героя «от первого лица» (бирюзовые рукава снизу кадра)
-const PovHands: React.FC<{cx?: number; y?: number; spread?: number; lift?: number}> = ({cx = 960, y = 1000, spread = 230, lift = 0}) => (
+export const PovHands: React.FC<{cx?: number; y?: number; spread?: number; lift?: number}> = ({cx = 960, y = 1000, spread = 230, lift = 0}) => (
 	<Svg>
 		{[-1, 1].map((k) => (
 			<g key={k} transform={`translate(${cx + k * spread},${y - lift}) rotate(${k * -14})`}>
@@ -361,7 +361,7 @@ const S06: React.FC<SP> = ({t, T, f}) => {
 		</Stage>
 	);
 };
-const Waves: React.FC<{x: number; y: number; T: number; on: number; c?: string}> = ({x, y, T, on, c = '#9fe8a0'}) => on <= 0 ? null : (
+export const Waves: React.FC<{x: number; y: number; T: number; on: number; c?: string}> = ({x, y, T, on, c = '#9fe8a0'}) => on <= 0 ? null : (
 	<g opacity={on}>{[1, 2, 3].map((r) => <path key={r} d={`M ${x + 30 * r} ${y - 40 * r} Q ${x + 50 * r} ${y} ${x + 30 * r} ${y + 40 * r}`} stroke={c} strokeWidth={6} fill="none" opacity={0.3 + 0.6 * Math.abs(Math.sin(T * 9 + r))} />)}</g>
 );
 const S07: React.FC<SP> = ({t, T}) => {
@@ -398,14 +398,14 @@ const S08: React.FC<SP> = ({t, T, f}) => {
 	);
 };
 // правило мелом на доске — вертикальный экран целиком
-const RuleV: React.FC<SP> = ({t}) => {
-	const lines = ['ночью', 'дверь', 'не открывать.', 'НИКОМУ.'];
-	const starts = [at('ночью'), at('дверь', 1), at('открывать'), at('никому')].map((a) => a - at('тогда'));
+export const RuleV: React.FC<SP & {lines?: string[]; starts?: number[]; title?: string}> = ({t, lines: L0, starts: S0, title = 'Правило станции'}) => {
+	const lines = L0 ?? ['ночью', 'дверь', 'не открывать.', 'НИКОМУ.'];
+	const starts = S0 ?? [at('ночью'), at('дверь', 1), at('открывать'), at('никому')].map((a) => a - at('тогда'));
 	return (
 		<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 40%, #2f4a3d 0%, #1b2b24 70%, #101a15 100%)'}}>
 			<svg width={1080} height={1920} style={{transform: `perspective(2000px) rotateY(${Math.sin(t * 0.8) * 5}deg) scale(${1 + t * 0.01})`}}>
 				<rect x={60} y={380} width={960} height={1160} rx={18} fill="none" stroke="#6b4a2a" strokeWidth={26} />
-				<text x={540} y={560} textAnchor="middle" fontFamily={HAND} fontWeight={700} fontSize={92} fill="#f6e7a1" opacity={interpolate(t, [0, 0.3], [0, 1], clamp)}>Правило станции</text>
+				<text x={540} y={560} textAnchor="middle" fontFamily={HAND} fontWeight={700} fontSize={92} fill="#f6e7a1" opacity={interpolate(t, [0, 0.3], [0, 1], clamp)}>{title}</text>
 				<line x1={260} y1={600} x2={820} y2={600} stroke="#f6e7a1" strokeWidth={4} opacity={0.6} />
 				{lines.map((l, i) => {
 					const k = interpolate(t, [starts[i], starts[i] + 0.45], [0, 1], clamp);
@@ -563,7 +563,7 @@ const EndCard: React.FC<{t: number}> = ({t}) => (
 );
 
 // контекст сцены для Stage (покачивание камеры, авторакурс)
-const ShotWrap: React.FC<{f: number; k: number; len: number; children: React.ReactNode}> = ({f, k, len, children}) => (
+export const ShotWrap: React.FC<{f: number; k: number; len: number; children: React.ReactNode}> = ({f, k, len, children}) => (
 	<ShotCtx.Provider value={{f, gf: f, dur: len, start: 0, at: () => 0, end: () => 0}}>
 		<AngleCtx.Provider value={{k: 0, t: f, len}}>{children}</AngleCtx.Provider>
 	</ShotCtx.Provider>
