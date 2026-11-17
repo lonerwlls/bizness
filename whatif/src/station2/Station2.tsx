@@ -52,7 +52,8 @@ const WetPrints: React.FC<{k: number; n?: number}> = ({k, n = 12}) => (
 	</Svg>
 );
 // лунный луч из окна
-const Moon: React.FC<{o?: number}> = ({o = 0.9}) => <Beam lx={630} ly={520} tx={900} ty={950} on={1} dark={o} spread={0.55} c={MOON} />;
+// лунный свет из окна направлен на героя (лицо и тело видны), темнота мягче
+const Moon: React.FC<{o?: number; tx?: number; ty?: number}> = ({o = 0.8, tx = 960, ty = 640}) => <Beam lx={630} ly={430} tx={tx} ty={ty} on={1} dark={o} spread={0.75} c={MOON} />;
 
 // ---------- сцены ----------
 const P01: React.FC<SP> = ({t, T, f}) => {
@@ -60,7 +61,7 @@ const P01: React.FC<SP> = ({t, T, f}) => {
 	return (
 		<Stage cam={cam} bg="#000" light={false}>
 			<Layer depth={1}><Room T={T} /><Svg><Actor who="fon" x={960} floor={900} s={1} facing={1} pose={idle(f)} expr="wide" look={[0.3, 0]} acc={['lampoff']} /></Svg></Layer>
-			<Moon o={0.93} />
+			<Moon tx={960} ty={640} />
 		</Stage>
 	);
 };
@@ -71,7 +72,7 @@ const P02: React.FC<SP> = ({t, T, f}) => {
 	return (
 		<Stage cam={cam} bg="#000" light={false}>
 			<Layer depth={1}><Room T={T} /><Svg><Actor who="fon" x={960} floor={900} s={1} facing={1} pose={idle(f)} expr="wide" mouth="flat" look={[0.8, 0]} acc={['lampoff']} /></Svg></Layer>
-			<Moon o={0.92} />
+			<Moon tx={990} ty={630} />
 			<Layer depth={1}><Svg>{T > at('дыхание') - 0.2 ? <ellipse cx={1120 + puff * 40} cy={560 - puff * 25} rx={14 + puff * 30} ry={8 + puff * 14} fill="#dfe8f4" opacity={0.4 * (1 - puff / 1.3)} /> : null}</Svg></Layer>
 		</Stage>
 	);
@@ -83,7 +84,7 @@ const P03: React.FC<SP> = ({t, T, f}) => {
 	return (
 		<Stage cam={cam} bg="#000" light={false}>
 			<Layer depth={1}><Room T={T} /><Svg><Actor who="fon" x={960} floor={900} s={1} facing={1} pose={idle(f)} expr="wide" look={[1, 0]} acc={['lampoff']} /></Svg></Layer>
-			<Moon o={0.95} />
+			<Moon tx={1000} ty={640} o={0.84} />
 			<Layer depth={1}><Svg><g opacity={k}>{[-1, 1].map((q) => <ellipse key={q} cx={1130 + q * 14} cy={552} rx={7} ry={5 * blink} fill="#f2f6ff" />)}</g></Svg></Layer>
 		</Stage>
 	);
@@ -122,7 +123,7 @@ const P05: React.FC<SP> = ({t, T, f}) => (
 				<ShotWrap f={f} k={1} len={120}>
 					<Stage cam={camOn(1100, 600, 1.9)} bg="#000" light={false}>
 						<Layer depth={1}><Room T={T} /><Svg><Actor who="fon" x={1100} floor={900} s={1} facing={1} pose={gesture('handsOnHead', idle(f), 0.6, f)} expr="wide" look={[1, 0]} acc={['lampoff']} /></Svg></Layer>
-						<Moon o={0.88} />
+						<Moon tx={1100} ty={650} />
 					</Stage>
 				</ShotWrap>
 			</V>
@@ -152,7 +153,7 @@ const P08: React.FC<SP> = ({t, T, f}) => {
 	return (
 		<Stage cam={cam} bg="#000" light={false}>
 			<Layer depth={1}><Room T={T} /><Svg><Actor who="fon" x={980} seat={743 + 85 * k} s={1} facing={-1} pose={blend(idle(f), crouch, k)} expr="worried" look={[-0.6, 0.6]} acc={['lampoff']} /></Svg></Layer>
-			<Moon o={0.9} />
+			<Moon tx={980} ty={770} />
 		</Stage>
 	);
 };
@@ -189,7 +190,7 @@ const P11: React.FC<SP> = ({t, T}) => {
 				<ellipse cx={600 + (T % 1.2) * 30} cy={872} rx={20 + (T % 1.2) * 20} ry={8} fill="#dfe8f4" opacity={0.35 * fade} />
 				{[-1, 1].map((q) => <ellipse key={q} cx={680 + q * 12} cy={876} rx={5} ry={3.5} fill="#f2f6ff" opacity={0.9 * fade} />)}
 			</Svg></Layer>
-			<Moon o={0.92} />
+			<Moon tx={640} ty={880} o={0.88} />
 		</Stage>
 	);
 };
@@ -232,7 +233,7 @@ const P15: React.FC<SP> = ({t, T, f}) => {
 	return (
 		<Stage cam={cam} bg="#000" light={false}>
 			<Layer depth={1}><Room T={T} /><Svg><Actor who="fon" x={960} floor={900} s={1} facing={1} pose={idle(f)} expr="worried" look={[0, 0]} faceTurn={0} acc={['lampoff']} /></Svg></Layer>
-			<Moon o={0.9} />
+			<Moon tx={960} ty={610} />
 		</Stage>
 	);
 };
@@ -292,7 +293,8 @@ export const Station2Short: React.FC = () => {
 	const blur = (kin + kout) * 28 + (zin + zout) * 10;
 	const ad1F = Math.round(AD1_2 * FPS), holdF = Math.round(AD_HOLD * FPS);
 	const C = cut.C;
-	const ended = T >= END;
+	const CARD = at('ты', 3) - 0.1; // карточка «ТЫ БЫ ОТКРЫЛ?» — ровно на этой фразе
+	const ended = T >= CARD;
 	return (
 		<AbsoluteFill style={{background: '#000'}}>
 			{!ended ? (
@@ -301,7 +303,7 @@ export const Station2Short: React.FC = () => {
 						<V fx={960}><ShotWrap f={f} k={ci} len={len}><C t={t} T={T} f={f} /></ShotWrap></V>
 					)}
 				</AbsoluteFill>
-			) : <EndCard t={T - END} />}
+			) : <EndCard t={T - CARD + 0.2} />}
 			{!ended ? <Hud T={T} /> : null}
 			{inAd(s) ? <AbsoluteFill style={{background: 'rgba(0,0,0,0.62)'}} /> : null}
 			<Sequence from={0} durationInFrames={ad1F}>
