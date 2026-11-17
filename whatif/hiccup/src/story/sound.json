@@ -103,6 +103,61 @@
    "kind": "wind",
    "gain": 0.03,
    "birds": true
+  },
+  {
+   "from": "032",
+   "to": "033",
+   "kind": "rain",
+   "gain": 0.04
+  },
+  {
+   "from": "033",
+   "to": "034",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "034",
+   "to": "035",
+   "kind": "hall",
+   "gain": 0.035
+  },
+  {
+   "from": "035",
+   "to": "036",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "036",
+   "to": "037",
+   "kind": "room",
+   "gain": 0.035
+  },
+  {
+   "from": "037",
+   "to": "039",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "039",
+   "to": "040",
+   "kind": "wind",
+   "gain": 0.04,
+   "birds": true
+  },
+  {
+   "from": "040",
+   "to": "041",
+   "kind": "fridge",
+   "gain": 0.04
+  },
+  {
+   "from": "041",
+   "to": "042",
+   "kind": "night",
+   "gain": 0.03
   }
  ],
  "music": [],
@@ -269,6 +324,64 @@
    "type": "applause",
    "dur": 2.5,
    "amp": 0.12
+  },
+  {
+   "at": "035",
+   "off": 20,
+   "type": "steps",
+   "dur": 1.6,
+   "amp": 0.12
+  },
+  {
+   "at": "035",
+   "off": 92,
+   "type": "whoosh",
+   "dur": 1.6,
+   "amp": 0.1
+  },
+  {
+   "at": "036",
+   "off": 4,
+   "type": "ding",
+   "amp": 0.08
+  },
+  {
+   "at": "037",
+   "off": 4,
+   "type": "swoosh",
+   "amp": 0.14
+  },
+  {
+   "at": "037",
+   "off": 64,
+   "type": "crackle",
+   "dur": 2.6,
+   "amp": 0.06
+  },
+  {
+   "at": "039",
+   "off": 41,
+   "type": "shot",
+   "amp": 0.45
+  },
+  {
+   "at": "039",
+   "off": 71,
+   "type": "hic",
+   "f0": 175,
+   "amp": 0.26
+  },
+  {
+   "at": "040",
+   "off": 6,
+   "type": "pop",
+   "amp": 0.1
+  },
+  {
+   "at": "041",
+   "off": 28,
+   "type": "click",
+   "amp": 0.3
   }
  ]
 }

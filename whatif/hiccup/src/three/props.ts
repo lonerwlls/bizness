@@ -251,3 +251,210 @@ export const tick = (m: THREE.Group, f: number) => {
 	(m.userData.arm as THREE.Group).rotation.z = Math.sin(f / 7) * 0.5;
 };
 export {noInk};
+
+/* ======================= part C props ======================= */
+export const makeDumbbell = (c = '#2a2a34') => {
+	const g = new THREE.Group();
+	const bar = new THREE.CylinderGeometry(5, 5, 90, 12);
+	bar.rotateZ(Math.PI / 2);
+	g.add(mesh(bar, toon('#9aa0ae')));
+	for (const x of [-38, 38]) {
+		const p = new THREE.CylinderGeometry(22, 22, 18, 20);
+		p.rotateZ(Math.PI / 2);
+		g.add(mesh(p, toon(c), [x, 0, 0]));
+	}
+	return inkPx(g, 2.2);
+};
+/* green gas cylinder standing on y = 0 with a hose to a mask (mask at local (mx,my)) */
+export const makeGasTank = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(34, 34, 240, 24), toon('#3a8a5a'), [0, 120, 0]));
+	g.add(mesh(new THREE.SphereGeometry(34, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), toon('#3a8a5a'), [0, 240, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(10, 12, 26, 14), toon('#9aa0ae'), [0, 282, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(16, 16, 10, 16), toon('#d23b3b'), [0, 300, 0]));
+	const tex = paint(128, 64, (c) => {
+		c.fillStyle = '#f4f1e6';
+		c.fillRect(0, 0, 128, 64);
+		c.fillStyle = '#2a2f4a';
+		c.font = '900 30px Rubik, sans-serif';
+		c.textAlign = 'center';
+		c.fillText('GAS', 64, 44);
+	});
+	const lab = mesh(new THREE.PlaneGeometry(52, 26), new THREE.MeshBasicMaterial({map: tex}), [0, 150, 35]);
+	lab.userData.noInk = true;
+	g.add(lab);
+	return inkPx(g, 2.4);
+};
+export const makeMask = () => {
+	const g = new THREE.Group();
+	const cup = mesh(new THREE.SphereGeometry(1, 20, 14, 0, Math.PI * 2, 0, Math.PI / 2), toon('#dff2fa', {transparent: true, opacity: 0.8}), [0, 0, 0], [-Math.PI / 2, 0, 0], [26, 22, 30]);
+	g.add(cup);
+	g.add(mesh(new THREE.TorusGeometry(26, 3, 8, 24), toon('#9aa0ae'), [0, 0, 0], undefined, [1, 22 / 26, 1]));
+	return inkPx(g, 2);
+};
+/* a flexible hose as a tube along points (world px, y down handled by caller) */
+export const makeHose = (pts: THREE.Vector3[]) => {
+	const curve = new THREE.CatmullRomCurve3(pts);
+	return inkPx(mesh(new THREE.TubeGeometry(curve, 40, 5, 8), toon('#2a2f4a')), 1.6);
+};
+export const makeSuitcase = () => {
+	const g = new THREE.Group();
+	g.add(mesh(rbox(110, 150, 50, 10), toon('#c0503a'), [0, 75, 0]));
+	g.add(mesh(new THREE.TorusGeometry(18, 5, 8, 16, Math.PI), toon('#2a2a34'), [0, 152, 0]));
+	g.add(mesh(new THREE.BoxGeometry(60, 30, 4), toon('#f4f1e6'), [-10, 100, 27], [0, 0, 0.12]));
+	for (const x of [-40, 40]) g.add(mesh(new THREE.CylinderGeometry(7, 7, 10, 12), toon('#1b1a26'), [x, 4, 0], [Math.PI / 2, 0, 0]));
+	return inkPx(g, 2.4);
+};
+/* wall timer with a digital screen; set(text) redraws */
+export type Timer = THREE.Group & {userData: {set: (t: string, c?: string) => void}};
+export const makeTimer = (): Timer => {
+	const g = new THREE.Group() as Timer;
+	g.add(mesh(rbox(300, 110, 30, 10), toon('#2a2f3a'), [0, 0, 0]));
+	const cv = document.createElement('canvas');
+	cv.width = 512;
+	cv.height = 160;
+	const ctx = cv.getContext('2d')!;
+	const tex = new THREE.CanvasTexture(cv);
+	tex.colorSpace = THREE.SRGBColorSpace;
+	const scr = mesh(new THREE.PlaneGeometry(270, 84), new THREE.MeshBasicMaterial({map: tex}), [0, 0, 16]);
+	scr.userData.noInk = true;
+	g.add(scr);
+	let last = '';
+	const set = (t: string, c = '#ff4a4a') => {
+		if (t + c === last) return;
+		last = t + c;
+		ctx.fillStyle = '#0b0d14';
+		ctx.fillRect(0, 0, 512, 160);
+		ctx.fillStyle = c;
+		ctx.font = '900 118px Rubik, sans-serif';
+		ctx.textAlign = 'center';
+		ctx.fillText(t, 256, 122);
+		tex.needsUpdate = true;
+	};
+	set('00:00');
+	inkPx(g, 2.6);
+	g.userData = {set};
+	return g;
+};
+/* newspaper (front page) */
+export const makeNewspaper = (headline: string[], sub: string) => {
+	const tex = paint(512, 680, (c) => {
+		c.fillStyle = '#f2ecdc';
+		c.fillRect(0, 0, 512, 680);
+		c.fillStyle = '#1b1a26';
+		c.font = '900 44px Georgia, serif';
+		c.textAlign = 'center';
+		c.fillText('THE DAILY NEWS', 256, 60);
+		c.fillRect(20, 76, 472, 6);
+		c.font = '900 64px Rubik, sans-serif';
+		headline.forEach((h, i) => c.fillText(h, 256, 160 + i * 70));
+		c.font = '700 30px Rubik, sans-serif';
+		c.fillText(sub, 256, 160 + headline.length * 70 + 10);
+		c.fillStyle = '#c8c0ac';
+		c.fillRect(30, 420, 200, 220);
+		for (let i = 0; i < 9; i++) c.fillRect(260, 430 + i * 24, 220, 10);
+	});
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.BoxGeometry(300, 400, 3), [toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), new THREE.MeshBasicMaterial({map: tex}), toon('#e8e0cc')]));
+	return inkPx(g, 2.4);
+};
+const envTex = paint(128, 80, (c) => {
+	c.fillStyle = '#fbf8ee';
+	c.fillRect(0, 0, 128, 80);
+	c.strokeStyle = '#b8b0a0';
+	c.lineWidth = 4;
+	c.beginPath();
+	c.moveTo(0, 0);
+	c.lineTo(64, 44);
+	c.lineTo(128, 0);
+	c.stroke();
+	c.fillStyle = '#d23b3b';
+	c.fillRect(100, 8, 18, 22);
+});
+export const makeEnvelope = () => {
+	const m = mesh(new THREE.BoxGeometry(64, 40, 2), [toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), new THREE.MeshBasicMaterial({map: envTex}), toon('#fbf8ee')]);
+	return inkPx(m, 1.6);
+};
+/* jar on y = 0: pickles or peanut butter */
+export const makeJar = (kind: 'pickle' | 'pb') => {
+	const g = new THREE.Group();
+	if (kind === 'pickle') {
+		g.add(mesh(new THREE.CylinderGeometry(40, 40, 120, 24), toon('#d8f0c8', {transparent: true, opacity: 0.55, depthWrite: false}), [0, 60, 0]));
+		g.add(mesh(new THREE.CylinderGeometry(36, 36, 92, 24), toon('#c8d86a', {transparent: true, opacity: 0.7}), [0, 48, 0]));
+		for (let i = 0; i < 5; i++) {
+			const p = mesh(new THREE.CapsuleGeometry(9, 50, 6, 10), toon('#4a8a3a'), [-20 + i * 10, 52, (i % 2) * 10 - 5], [0, 0, (i - 2) * 0.15]);
+			p.userData.noInk = true;
+			g.add(p);
+		}
+		g.add(mesh(new THREE.CylinderGeometry(42, 42, 18, 24), toon('#d23b3b'), [0, 128, 0]));
+	} else {
+		g.add(mesh(new THREE.CylinderGeometry(42, 42, 110, 24), toon('#a8642e'), [0, 55, 0]));
+		const tex = paint(256, 96, (c) => {
+			c.fillStyle = '#f2c84a';
+			c.fillRect(0, 0, 256, 96);
+			c.fillStyle = '#7a3a1a';
+			c.font = '900 40px Rubik, sans-serif';
+			c.textAlign = 'center';
+			c.fillText('PEANUT', 128, 46);
+			c.fillText('BUTTER', 128, 88);
+		});
+		const lab = mesh(new THREE.CylinderGeometry(43, 43, 56, 24, 1, true, -0.9, 1.8), new THREE.MeshBasicMaterial({map: tex}), [0, 56, 0]);
+		lab.userData.noInk = true;
+		g.add(lab);
+		g.add(mesh(new THREE.CylinderGeometry(44, 44, 20, 24), toon('#d23b3b'), [0, 120, 0]));
+	}
+	return inkPx(g, 2.4);
+};
+export const makeSpoon = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.BoxGeometry(6, 60, 3), toon('#c9d0dc'), [0, -30, 0]));
+	g.add(mesh(new THREE.SphereGeometry(1, 14, 10), toon('#c9d0dc'), [0, 6, 0], undefined, [12, 16, 5]));
+	g.add(mesh(new THREE.SphereGeometry(1, 12, 8), toon('#a8642e'), [0, 8, 3], undefined, [9, 11, 4]));
+	return inkPx(g, 1.8);
+};
+/* double-barrel shotgun along +x, origin at the grip */
+export const makeShotgun = () => {
+	const g = new THREE.Group();
+	for (const z of [-4, 4]) {
+		const b = new THREE.CylinderGeometry(5, 5, 170, 12);
+		b.rotateZ(Math.PI / 2);
+		g.add(mesh(b, toon('#3a3a44'), [110, 6, z]));
+	}
+	g.add(mesh(new THREE.BoxGeometry(70, 16, 12), toon('#6a4a2a'), [40, 0, 0]));
+	const stock = mesh(new THREE.BoxGeometry(90, 26, 12), toon('#7a5230'), [-30, -10, 0], [0, 0, 0.25]);
+	g.add(stock);
+	return inkPx(g, 2.2);
+};
+/* the hiccup straw: a stiff L-shaped tube with a valve cap, on its own */
+export const makeStraw = () => {
+	const g = new THREE.Group();
+	const tube = new THREE.CylinderGeometry(7, 7, 170, 14);
+	g.add(mesh(tube, toon('#f4f6fa'), [0, 85, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(16, 16, 22, 18), toon('#3d6fd6'), [0, 10, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(10, 10, 6, 14), toon('#d23b3b'), [0, -4, 0]));
+	g.add(mesh(new THREE.TorusGeometry(14, 3, 8, 20, Math.PI), toon('#f4f6fa'), [14, 170, 0]));
+	return inkPx(g, 2);
+};
+export const makeWaterGlass = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(34, 28, 110, 22, 1, true), toon('#e4f4fb', {transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false}), [0, 55, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(31, 28, 70, 22), toon('#7ac6f0', {transparent: true, opacity: 0.75}), [0, 36, 0]));
+	return inkPx(g, 2);
+};
+/* a big red subscribe button (no logo) */
+export const makeSubButton = () => {
+	const g = new THREE.Group();
+	g.add(mesh(rbox(520, 150, 60, 40), toon('#e42b2b'), [0, 0, 0]));
+	const tex = paint(512, 140, (c) => {
+		c.fillStyle = '#e42b2b';
+		c.fillRect(0, 0, 512, 140);
+		c.fillStyle = '#ffffff';
+		c.font = '900 80px Rubik, sans-serif';
+		c.textAlign = 'center';
+		c.fillText('SUBSCRIBE', 256, 100);
+	});
+	const face = mesh(new THREE.PlaneGeometry(480, 130), new THREE.MeshBasicMaterial({map: tex}), [0, 0, 31]);
+	face.userData.noInk = true;
+	g.add(face);
+	return inkPx(g, 3);
+};
