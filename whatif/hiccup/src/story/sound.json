@@ -176,9 +176,59 @@
    "to": "049",
    "kind": "crowd",
    "gain": 0.03
+  },
+  {
+   "from": "049",
+   "to": "050",
+   "kind": "room",
+   "gain": 0.03,
+   "birds": true
+  },
+  {
+   "from": "050",
+   "to": "051",
+   "kind": "fridge",
+   "gain": 0.025
+  },
+  {
+   "from": "051",
+   "to": "052",
+   "kind": "room",
+   "gain": 0.03
+  },
+  {
+   "from": "053",
+   "to": "055",
+   "kind": "room",
+   "gain": 0.025
+  },
+  {
+   "from": "055",
+   "to": "058",
+   "kind": "wind",
+   "gain": 0.03
+  },
+  {
+   "from": "058",
+   "to": "059",
+   "kind": "night",
+   "gain": 0.025
+  },
+  {
+   "from": "059",
+   "to": "end",
+   "kind": "room",
+   "gain": 0.03
   }
  ],
- "music": [],
+ "music": [
+  {
+   "from": "053",
+   "to": "055",
+   "style": "pad-warm",
+   "amp": 0.05
+  }
+ ],
  "sfx": [
   {
    "at": "001",
@@ -534,6 +584,66 @@
    "type": "applause",
    "dur": 4.0,
    "amp": 0.14
+  },
+  {
+   "at": "050",
+   "off": 10,
+   "type": "ring",
+   "dur": 0.2,
+   "amp": 0.02
+  },
+  {
+   "at": "053",
+   "off": 6,
+   "type": "swoosh",
+   "amp": 0.08
+  },
+  {
+   "at": "054",
+   "off": 6,
+   "type": "heartbeat",
+   "dur": 7.5,
+   "amp": 0.16
+  },
+  {
+   "at": "055",
+   "off": 0,
+   "type": "crackle",
+   "dur": 12,
+   "amp": 0.03
+  },
+  {
+   "at": "056",
+   "off": 92,
+   "type": "ding",
+   "amp": 0.1
+  },
+  {
+   "at": "057",
+   "off": 38,
+   "type": "hic",
+   "f0": 160,
+   "amp": 0.24
+  },
+  {
+   "at": "057",
+   "off": 96,
+   "type": "hic",
+   "f0": 160,
+   "amp": 0.24
+  },
+  {
+   "at": "060",
+   "off": 20,
+   "type": "click",
+   "amp": 0.3
+  },
+  {
+   "at": "060",
+   "off": 70,
+   "type": "ring",
+   "dur": 1.2,
+   "amp": 0.035
   }
  ]
 }

@@ -126,7 +126,7 @@ const C034: React.FC = () => {
 		</Stage>
 	);
 };
-const QuoteCard: React.FC<{lines: string[]; who: string; t0: number}> = ({lines, who, t0}) => {
+export const QuoteCard: React.FC<{lines: string[]; who: string; t0: number}> = ({lines, who, t0}) => {
 	const {f, gf} = useShot();
 	return (
 		<AbsoluteFill style={{filter: 'sepia(0.8) contrast(1.05)'}}>

@@ -19,6 +19,8 @@ export const CAST: Record<string, CastMember> = {
 	oldman: {color: '#8fc1e3', outfit: 'gown', head: 'peach', skin: '#e8c0a0', hair: 'grey', hairColor: '#d9d9e0', acc: ['mustache'], rim: '#e0f2ff', rimW: 2.4, shoe: '#e8e8f0', legColor: '#e8c0a0'},
 	researcher: {color: '#4a6ad8', outfit: 'dress', accent: '#9fd8ff', head: 'peach', skin: '#c98a5a', hair: 'ponytail', hairColor: '#1d1d24', acc: ['lashes'], rim: '#e0ecff', rimW: 2.4, shoe: '#2a2a34', legColor: '#c98a5a'},
 	friend40: {color: '#6a7a8a', outfit: 'vest', accent: '#3a4a5a', head: 'peach', skin: '#e8c0a0', hair: 'cap', hairColor: '#4a3a2a', rim: '#f6e6c8', rimW: 2.4, shoe: '#2a1a12', legColor: '#4a4a58'},
+	youngdoc: {color: '#5a6ad8', outfit: 'tee', head: 'peach', skin: '#a86b45', hair: 'short', hairColor: '#1d1d24', rim: '#e0ecff', rimW: 2.4, shoe: '#f4f6fb', legColor: '#5a6ad8'},
+	teen: {color: '#6a6a7a', outfit: 'hoodie', head: 'peach', skin: '#f2d0b5', hair: 'spiky', hairColor: '#2a1a12', rim: '#e0ecff', rimW: 2.4, shoe: '#f4f6fb', legColor: '#2a2f4a'},
 	kid1: {color: '#3aa37a', head: 'peach', skin: '#f2d0b5', hair: 'short', hairColor: '#3a2418', rim: '#e8fff2', rimW: 2.4, shoe: '#f4f6fb'},
 	kid2: {color: '#e47a3c', head: 'peach', skin: '#f2d0b5', hair: 'ponytail', hairColor: '#3a2418', rim: '#fff0e0', rimW: 2.4, shoe: '#f4f6fb'},
 };

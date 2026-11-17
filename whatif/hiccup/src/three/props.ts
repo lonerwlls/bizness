@@ -561,3 +561,62 @@ export const makeWallClock = () => {
 	};
 	return g;
 };
+
+/* ======================= part E props ======================= */
+/* bedside table on y = 0 with a drawer that slides out (open 0..1) */
+export const makeNightstand = () => {
+	const g = new THREE.Group();
+	g.add(mesh(rbox(150, 170, 110, 6), toon('#7a5a3a'), [0, 85, 0]));
+	const drawer = new THREE.Group();
+	drawer.add(mesh(new THREE.BoxGeometry(130, 50, 100), toon('#8a6a44'), [0, 0, 0]));
+	drawer.add(mesh(new THREE.BoxGeometry(110, 6, 90), toon('#5a3a22'), [0, 22, 0]));
+	drawer.add(mesh(new THREE.CylinderGeometry(6, 6, 10, 12), toon('#c9a04a'), [0, 0, 55], [Math.PI / 2, 0, 0]));
+	drawer.position.set(0, 135, 8);
+	g.add(drawer);
+	g.add(mesh(new THREE.BoxGeometry(130, 50, 4), toon('#6a4a2e'), [0, 60, 56]));
+	g.userData.drawer = drawer;
+	return inkPx(g, 2.4);
+};
+export const openDrawer = (n: THREE.Group, k: number) => {
+	(n.userData.drawer as THREE.Group).position.z = 8 + 70 * k;
+};
+export const makeAlarm = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(34, 34, 22, 28), toon('#d23b3b'), [0, 36, 0], [Math.PI / 2, 0, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(28, 28, 4, 28), toon('#fbfaf4'), [0, 36, 12], [Math.PI / 2, 0, 0]));
+	for (const x of [-22, 22]) g.add(mesh(new THREE.SphereGeometry(12, 14, 10), toon('#c9ced8'), [x, 70, 0]));
+	for (const x of [-20, 20]) g.add(mesh(new THREE.CylinderGeometry(3, 3, 12, 8), toon('#2a2a34'), [x, 6, 0]));
+	g.add(mesh(new THREE.BoxGeometry(3, 18, 2), toon('#1b1a26'), [0, 44, 15]));
+	g.add(mesh(new THREE.BoxGeometry(14, 3, 2), toon('#1b1a26'), [6, 36, 15]));
+	return inkPx(g, 2);
+};
+export const makeTeacup = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(22, 16, 30, 20), toon('#f4f1e6'), [0, 17, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(19, 19, 2, 20), toon('#a8642e'), [0, 31, 0]));
+	g.add(mesh(new THREE.TorusGeometry(9, 3, 8, 16), toon('#f4f1e6'), [24, 18, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(32, 30, 4, 22), toon('#f4f1e6'), [0, 2, 0]));
+	return inkPx(g, 2);
+};
+/* an old stethoscope; in ears (k=1) the tubes go up to the head (handled by the scene) */
+export const makeStethoscope = () => {
+	const g = new THREE.Group();
+	const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, 0), new THREE.Vector3(-10, 40, 0), new THREE.Vector3(0, 80, 0), new THREE.Vector3(20, 100, 0)]);
+	g.add(mesh(new THREE.TubeGeometry(curve, 24, 4, 8), toon('#2a2f4a')));
+	g.add(mesh(new THREE.CylinderGeometry(14, 14, 8, 20), toon('#c9d0dc'), [0, -4, 0], [Math.PI / 2, 0, 0]));
+	return inkPx(g, 2);
+};
+export const makeRings = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.TorusGeometry(40, 9, 12, 32), toon('#f2c84a'), [-24, 0, 0], [0.3, 0.4, 0]));
+	g.add(mesh(new THREE.TorusGeometry(40, 9, 12, 32), toon('#f2c84a'), [24, 0, 0], [-0.3, 0.6, 0]));
+	return inkPx(g, 2.4);
+};
+export const makeTrophy = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(50, 50, 30, 24), toon('#5a3a22'), [0, 15, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(10, 16, 60, 16), toon('#e4b84a'), [0, 60, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(56, 22, 90, 24), toon('#f2c84a'), [0, 135, 0]));
+	for (const x of [-60, 60]) g.add(mesh(new THREE.TorusGeometry(20, 6, 8, 16, Math.PI), toon('#f2c84a'), [x, 140, 0], [0, 0, x > 0 ? -Math.PI / 2 : Math.PI / 2]));
+	return inkPx(g, 2.6);
+};
