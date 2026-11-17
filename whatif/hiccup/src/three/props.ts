@@ -479,3 +479,85 @@ export const makeSubButton = () => {
 	g.add(face);
 	return inkPx(g, 3);
 };
+
+/* ======================= part D props ======================= */
+export const makePlate = (food: 'pasta' | 'peas' | 'soup' = 'pasta') => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(46, 38, 8, 28), toon('#fbfaf4'), [0, 4, 0]));
+	if (food === 'pasta') g.add(mesh(new THREE.SphereGeometry(1, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), toon('#f2c84a'), [0, 8, 0], undefined, [28, 14, 22]));
+	if (food === 'peas') for (let i = 0; i < 6; i++) g.add(mesh(new THREE.SphereGeometry(7, 10, 8), toon('#5ab04a'), [-16 + i * 7, 12, (i % 2) * 8 - 4]));
+	if (food === 'soup') g.add(mesh(new THREE.CylinderGeometry(30, 24, 22, 24), toon('#d86a3a'), [0, 16, 0]));
+	return inkPx(g, 2);
+};
+/* IV pole on y = 0 with a bag and a line hanging down */
+export const makeIV = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(4, 4, 420, 10), toon('#c8d0dc'), [0, 210, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(40, 46, 10, 5), toon('#8a9aa8'), [0, 5, 0]));
+	g.add(mesh(new THREE.BoxGeometry(70, 4, 4), toon('#c8d0dc'), [0, 414, 0]));
+	g.add(mesh(rbox(48, 70, 16, 8), toon('#dff2fa', {transparent: true, opacity: 0.8}), [-24, 370, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(2, 2, 160, 6), toon('#e4f4fb'), [-24, 255, 0]));
+	return inkPx(g, 2);
+};
+/* bedside heart monitor on a short stand; beat(f) scrolls the trace */
+export type Monitor = THREE.Group & {userData: {beat: (f: number) => void}};
+export const makeMonitor = (): Monitor => {
+	const g = new THREE.Group() as Monitor;
+	g.add(mesh(rbox(170, 120, 40, 10), toon('#2a2f3a'), [0, 340, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(5, 5, 280, 10), toon('#8a9aa8'), [0, 140, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(36, 40, 10, 5), toon('#6a7a88'), [0, 5, 0]));
+	const cv = document.createElement('canvas');
+	cv.width = 300;
+	cv.height = 200;
+	const ctx = cv.getContext('2d')!;
+	const tex = new THREE.CanvasTexture(cv);
+	tex.colorSpace = THREE.SRGBColorSpace;
+	const scr = mesh(new THREE.PlaneGeometry(146, 96), new THREE.MeshBasicMaterial({map: tex}), [0, 340, 21]);
+	scr.userData.noInk = true;
+	g.add(scr);
+	const beat = (f: number) => {
+		ctx.fillStyle = '#06130e';
+		ctx.fillRect(0, 0, 300, 200);
+		ctx.strokeStyle = '#4cff9a';
+		ctx.lineWidth = 5;
+		ctx.beginPath();
+		for (let i = 0; i <= 60; i++) {
+			const p = (i + Math.floor(f / 1.5)) % 30;
+			const y = 110 + (p === 0 ? -70 : p === 1 ? 40 : p === 2 ? -10 : 0);
+			if (i === 0) ctx.moveTo(i * 5, y);
+			else ctx.lineTo(i * 5, y);
+		}
+		ctx.stroke();
+		ctx.fillStyle = '#4cff9a';
+		ctx.font = '900 40px Rubik, sans-serif';
+		ctx.fillText('72', 220, 50);
+		tex.needsUpdate = true;
+	};
+	beat(0);
+	inkPx(g, 2.4);
+	g.userData = {beat};
+	return g;
+};
+/* round wall clock; set(hours) moves the hands */
+export const makeWallClock = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(70, 70, 16, 40), toon('#e8e4d8'), [0, 0, 0], [Math.PI / 2, 0, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(62, 62, 18, 40), toon('#fbfaf4'), [0, 0, 1], [Math.PI / 2, 0, 0]));
+	const hh = new THREE.Group();
+	hh.add(mesh(new THREE.BoxGeometry(8, 36, 4), toon('#1b1a26'), [0, 18, 0]));
+	const mh = new THREE.Group();
+	mh.add(mesh(new THREE.BoxGeometry(5, 52, 4), toon('#1b1a26'), [0, 26, 0]));
+	hh.position.z = 12;
+	mh.position.z = 14;
+	g.add(hh, mh);
+	for (let i = 0; i < 12; i++) {
+		const a = (i / 12) * Math.PI * 2;
+		g.add(mesh(new THREE.BoxGeometry(4, 10, 2), toon('#3a3a44'), [Math.sin(a) * 52, Math.cos(a) * 52, 11], [0, 0, -a]));
+	}
+	inkPx(g, 2.4);
+	g.userData.set = (h: number) => {
+		hh.rotation.z = -(h / 12) * Math.PI * 2;
+		mh.rotation.z = -(h % 1) * Math.PI * 2;
+	};
+	return g;
+};
