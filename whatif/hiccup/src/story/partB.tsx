@@ -1,8 +1,11 @@
 import React from 'react';
-import {AbsoluteFill, interpolate} from 'remotion';
+import {AbsoluteFill, Easing, interpolate} from 'remotion';
+import * as THREE from 'three';
+import {Prop3D, PropWorld, at, propScene} from '../three/Prop3D';
+import {flicker, makeBlender, makeCalendar, makeCandle, makeClipboard, makeGlass, makeMetronome, makePage, makeSandwich, makeScalpel, makeTray, spinBlender, tick} from '../three/props';
 import {Pose, Stickman} from '../engine/Stickman';
 import {SIT, env, gesture, idle, reach, walkTo} from '../kit/actions';
-import {Actor, useShot} from '../kit/core';
+import {Actor, hicK, useShot} from '../kit/core';
 import type {ShotDef} from '../kit/coverage';
 import {CrowdRow, HeroBadge, Layer, Stage, Svg, camOn, clamp, usePush} from '../kit/kit';
 import {Board, Bubble, FONT} from '../kit/ui';
@@ -44,12 +47,49 @@ import {
 /* PART B (1:47–3:00): the diagnosis, the scan, life as a doctor who hiccups, the blender,
    the first dates, the woman who doesn't mind, the wedding. Every scene has its own place. */
 
+/* ---------- 3D calendar on the office wall, pages torn off fall to the floor and stay ---------- */
+const CAL = {x: 1220, y: 320};
+type CalW = PropWorld & {cal: THREE.Group; pages: THREE.Mesh[]};
+const makeCalWorld = (month: string, last: number, n: number) => (): CalW => {
+	const scene = propScene();
+	const cal = makeCalendar(month, last);
+	at(cal, CAL.x, CAL.y, 0);
+	cal.scale.setScalar(0.95);
+	cal.rotation.z = -0.03;
+	scene.add(cal);
+	const pages: THREE.Mesh[] = [];
+	for (let i = 0; i < n; i++) {
+		const p = makePage(last - n + i) as THREE.Mesh;
+		p.scale.setScalar(0.8);
+		scene.add(p);
+		pages.push(p);
+	}
+	return {scene, cal, pages};
+};
+/* a page released at frame t0 flutters down and lies on the floor */
+const fallPage = (p: THREE.Mesh, f: number, t0: number, i: number) => {
+	const t = f - t0;
+	if (t < 0) {
+		at(p, CAL.x, CAL.y - 16, 8 + i);
+		p.rotation.set(0, 0, -0.03);
+		return;
+	}
+	const vt = 7;
+	const tau = 9;
+	const fall = vt * t - vt * tau * (1 - Math.exp(-t / tau));
+	const floorY = 890 - (i % 3) * 6;
+	const y = Math.min(floorY, CAL.y - 16 + fall);
+	const landed = y >= floorY;
+	const drift = (i % 2 ? 1 : -1) * (40 + i * 12) * (1 - Math.exp(-t / 20)) + Math.sin(t / 6 + i) * 18 * (landed ? 0 : 1);
+	at(p, CAL.x + drift, y, 20 + i);
+	p.rotation.set(landed ? -1.35 : Math.sin(t / 5 + i) * 0.6, Math.sin(t / 7) * 0.4 * (landed ? 0 : 1), landed ? (i % 2 ? 0.3 : -0.25) : Math.sin(t / 4 + i) * 0.8);
+};
+
 /* ---------- 020 two days: persistent hiccups; your own chart ---------- */
 const HX = 900;
 const B020: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
-	const day = f < 26 ? 1 : f < 44 ? 2 : 3;
 	const hp: Pose = gesture('rubChin', {...SIT, armF: [60, 60], armB: [50, 70]}, env(f, w('020', 0.15), 1e9, 10, 1), f);
 	const cam = usePush(camOn(1000, 560, 1.2), camOn(1040, 520, 1.45));
 	return (
@@ -58,23 +98,23 @@ const B020: React.FC = () => {
 				<Office f={gf} />
 			</Layer>
 			<Layer depth={1}>
+				<Prop3D x={1060} y={180} w={360} h={740} make={makeCalWorld('MARCH', 3, 2)} update={(wd, ff) => wd.pages.forEach((p, i) => fallPage(p, ff, 8 + i * 12, i))} />
 				<Svg>
-					<Calendar x={620} y={340} day={day} month="MARCH" />
 					<SeatChair x={HX - 30} c="#3a2a22" />
 					<Actor who="hero" x={HX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.6, 0.3]} expr="worried" pose={hp} uid="h-020" />
 					<DeskFront x={HX + 300} />
 					<HeroBadge x={HX} y={SEAT - 164 - 118} s={0.8} />
-					<Tag f={f} t={w('020', 0.08)} x={1300} y={330} text="2 DAYS LATER" c="#11142c" fg="#ffd34a" size={34} rot={4} />
+					<Tag f={f} t={w('020', 0.08)} x={760} y={300} text="2 DAYS LATER" c="#11142c" fg="#ffd34a" size={34} rot={-4} />
 				</Svg>
 			</Layer>
 		</Stage>
 	);
 };
 const B020b: React.FC = () => {
-	const {f, at} = useShot();
+	const {f} = useShot();
 	const w = useW();
 	const write = interpolate(f, [w('020', 0.36), w('020', 0.55)], [0, 1], clamp);
-	const cam = usePush(camOn(960, 560, 1.0), camOn(960, 540, 1.15));
+	const cam = usePush(camOn(960, 560, 1.0), camOn(960, 540, 1.12));
 	return (
 		<Stage cam={cam} bg="#6a4a2e" light={{x: 40, y: 10, o: 0.4}}>
 			<Layer depth={1.2}>
@@ -86,11 +126,25 @@ const B020b: React.FC = () => {
 				</Svg>
 			</Layer>
 			<Layer depth={1}>
+				<Prop3D
+					x={700}
+					y={250}
+					w={520}
+					h={620}
+					make={() => {
+						const scene = propScene();
+						const clip = makeClipboard('Dr. YOU', 'Persistent hiccups');
+						at(clip, 960, 560, 0);
+						clip.rotation.set(-0.18, 0.12, -0.05);
+						clip.scale.setScalar(1.15);
+						scene.add(clip);
+						return {scene, clip};
+					}}
+					update={(wd) => wd.clip.userData.redraw(write, 0)}
+				/>
 				<Svg>
-					<Chart x={960} y={560} s={1.4} name="Dr. YOU" dx="Persistent hiccups" write={write} />
-					<Tag f={f} t={w('020', 0.4)} x={1460} y={260} text="> 48 HOURS" c="#11142c" fg="#ff9a8a" stroke="#ff6a5a" size={38} rot={6} />
-					<Tag f={f} t={w('020', 0.78)} x={480} y={820} text="NOW IT'S YOURS" c="#11142c" fg="#ffd34a" size={36} rot={-5} />
-					{at('020') ? null : null}
+					<Tag f={f} t={w('020', 0.4)} x={1400} y={330} text="> 48 HOURS" c="#11142c" fg="#ff9a8a" stroke="#ff6a5a" size={38} rot={6} />
+					<Tag f={f} t={w('020', 0.78)} x={520} y={800} text="NOW IT'S YOURS" c="#11142c" fg="#ffd34a" size={36} rot={-5} />
 				</Svg>
 			</Layer>
 		</Stage>
@@ -102,8 +156,9 @@ const B021: React.FC = () => {
 	const w = useW();
 	const stamp = interpolate(f, [w('021', 0.45), w('021', 0.52)], [0, 1], clamp);
 	const cam = camPath(f, [
-		[0, camOn(900, 560, 1.2)],
-		[w('021', 0.4), camOn(1000, 540, 1.3)],
+		[0, camOn(1060, 560, 1.15)],
+		[w('021', 0.4), camOn(1180, 590, 1.5, {farBlur: 7})],
+		[w('021', 1.1), camOn(1190, 590, 1.6, {farBlur: 8})],
 	]);
 	const hp: Pose = {...SIT, lean: 18, head: 14, armF: [70, 80], armB: [60, 80]};
 	return (
@@ -112,24 +167,32 @@ const B021: React.FC = () => {
 				<Office f={gf} night />
 			</Layer>
 			<Layer depth={1}>
+				<Prop3D x={1020} y={180} w={460} h={740} make={makeCalWorld('APRIL', 2, 7)} update={(wd, ff) => wd.pages.forEach((p, i) => fallPage(p, ff, 2 + i * 6, i))} />
 				<Svg>
-					<Calendar x={620} y={340} day={2} month="APRIL" />
-					{f < w('021', 0.3)
-						? [0, 1, 2].map((i) => (
-								<g key={i} transform={`translate(${620 + (f - i * 6) * 9},${340 + (f - i * 6) * 4}) rotate(${(f - i * 6) * 8})`} opacity={f > i * 6 ? 1 : 0}>
-									<rect x={-80} y={-60} width={160} height={150} fill="#fbfaf4" stroke="#2a2f4a" strokeWidth={3} />
-								</g>
-							))
-						: null}
 					<SeatChair x={HX - 30} c="#2a1a22" />
 					<Actor who="hero" x={HX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.5, 0.6]} expr="sad" pose={hp} uid="h-021" />
 					<DeskFront x={HX + 300} night />
 					<HeroBadge x={HX} y={SEAT - 164 - 118} s={0.8} />
-					<g transform="translate(1250,500) scale(0.7)">
-						<Chart x={0} y={0} name="Dr. YOU" dx="Persistent hiccups" write={1} stamp={stamp} stampText="INTRACTABLE" />
-					</g>
-					<Tag f={f} t={w('021', 0.1)} x={1000} y={240} text="1 MONTH" c="#11142c" fg="#ffd34a" size={34} rot={4} />
-					<Tag f={f} t={w('021', 0.7)} x={1300} y={810} text="NOTHING STOPS IT" c="#3a1d2a" fg="#ff9a8a" stroke="#ff6a5a" size={32} rot={-3} />
+				</Svg>
+				<Prop3D
+					x={1120}
+					y={470}
+					w={260}
+					h={260}
+					make={() => {
+						const scene = propScene();
+						const clip = makeClipboard('Dr. YOU', 'Persistent hiccups', 'INTRACTABLE');
+						at(clip, 1250, 600, 0);
+						clip.rotation.set(-0.12, 0.2, 0.08);
+						clip.scale.setScalar(0.5);
+						scene.add(clip);
+						return {scene, clip};
+					}}
+					update={(wd) => wd.clip.userData.redraw(1, stamp)}
+				/>
+				<Svg>
+					<Tag f={f} t={w('021', 0.1)} x={760} y={300} text="1 MONTH" c="#11142c" fg="#ffd34a" size={34} rot={-4} />
+					<Tag f={f} t={w('021', 0.7)} x={1250} y={420} text="NOTHING STOPS IT" c="#3a1d2a" fg="#ff9a8a" stroke="#ff6a5a" size={28} rot={-3} />
 				</Svg>
 			</Layer>
 		</Stage>
@@ -289,14 +352,16 @@ const B026: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
 	const lis = env(f, 10, 1e9, 14, 1);
-	const hx = 990;
-	const hp = reach({...idle(gf, 2), lean: 10 * lis, head: 10 * lis}, 'F', [112, -84], lis);
+	const hx = PX - 132;
 	const pj = jolt(f, [w('026', 0.8) + 1]);
-	const hand: [number, number] = [hx + 112, FL - 157 - 84];
+	const seat = 736 - pj * 18;
+	// the chest piece goes on the patient's chest (he sits facing left)
+	const chest: [number, number] = [PX - 16, seat - 96];
+	const hp = reach({...idle(gf, 2), lean: 10 * lis, head: 8 * lis}, 'F', [chest[0] - hx, chest[1] - (FL - 157)], lis);
 	const cam = camPath(f, [
-		[0, camOn(1060, 580, 1.3)],
-		[w('026', 0.5), camOn(1080, 540, 1.6, {farBlur: 7})],
-		[w('026', 1.1), camOn(1080, 560, 1.5, {farBlur: 7})],
+		[0, camOn(1100, 580, 1.3)],
+		[w('026', 0.5), camOn(1110, 540, 1.6, {farBlur: 7})],
+		[w('026', 1.1), camOn(1110, 560, 1.5, {farBlur: 7})],
 	]);
 	return (
 		<Stage cam={cam} bg="#b8dcc8" light={{x: 30, y: 0, o: 0.45, c: '255,245,220'}}>
@@ -306,29 +371,36 @@ const B026: React.FC = () => {
 			<Layer depth={1}>
 				<Svg>
 					<ExamTable x={PX + 100} />
-					<Actor who="oldman" x={PX} floor={FL} seat={736 - pj * 18} s={1} facing={-1} faceTurn={0.4} look={[-0.6, 0.2]} expr={pj > 0.3 ? 'wide' : 'normal'} mouth={pj > 0.3 ? 'open' : undefined} pose={{...SIT, head: SIT.head - 12 * pj}} uid="old-26" />
+					<Actor who="oldman" x={PX} floor={FL} seat={seat} s={1} facing={-1} faceTurn={0.4} look={[-0.6, 0.2]} expr={pj > 0.3 ? 'wide' : 'normal'} mouth={pj > 0.3 ? 'open' : undefined} pose={{...SIT, head: SIT.head - 12 * pj, armF: [30, 40], armB: [20, 40]}} uid="old-26" />
 					<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.6, 0.6]} expr="sleepy" pose={hp} uid="h-026" />
-					{lis > 0.5 ? <path d={`M${hx + 6},${FL - 157 - 120} Q${hx + 50},${FL - 157 - 20} ${hand[0]},${hand[1]}`} stroke="#2a2f4a" strokeWidth={5} fill="none" /> : null}
-					{lis > 0.5 ? <circle cx={hand[0] + 4} cy={hand[1]} r={9} fill="#c9d0dc" stroke="#5a6278" strokeWidth={2.5} /> : null}
+					{lis > 0.5 ? <path d={`M${hx + 6},${FL - 157 - 120} Q${hx + 40},${FL - 157 - 30} ${chest[0]},${chest[1]}`} stroke="#2a2f4a" strokeWidth={5} fill="none" /> : null}
+					{lis > 0.5 ? <circle cx={chest[0] + 2} cy={chest[1]} r={9} fill="#c9d0dc" stroke="#5a6278" strokeWidth={2.5} /> : null}
 					<HeroBadge x={hx} y={badgeY(FL)} s={0.8} />
 					{pj > 0.05 ? <Onoma x={PX + 120} y={420} text="!" t={f - w('026', 0.8)} c="#ff6a5a" size={80} /> : null}
-					<Tag f={f} t={w('026', 0.85)} x={1080} y={250} text="BOTH JUMP" c="#11142c" fg="#ffd34a" size={34} rot={3} />
+					<Tag f={f} t={w('026', 0.85)} x={1110} y={250} text="BOTH JUMP" c="#11142c" fg="#ffd34a" size={34} rot={3} />
 				</Svg>
 			</Layer>
 		</Stage>
 	);
 };
 
-/* ---------- 027 no more surgery ---------- */
+/* ---------- 027 no more surgery: the scalpel shakes, he puts it down on the tray himself ---------- */
+const TRAY: [number, number] = [930, 640];
 const B027: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
-	const hold = env(f, 4, w('027', 0.62), 10, 12);
-	const hx = 760;
-	const hp = reach(idle(gf, 2), 'F', [140, -70 + 30 * (1 - hold)], 1);
-	const back = env(f, w('027', 0.42), 1e9, 8, 1);
-	const np = gesture('stop', idle(gf, 5), back, f);
-	const cam = usePush(camOn(960, 560, 1.25), camOn(930, 520, 1.45));
+	const hx = 790;
+	const sh = hicK(gf);
+	const hold: [number, number] = [hx + 140, FL - 157 - 70 - 14 * sh];
+	const put = interpolate(f, [w('027', 0.6), w('027', 0.76)], [0, 1], {...clamp, easing: Easing.inOut(Easing.cubic)});
+	const released = f >= w('027', 0.76);
+	const back = released ? interpolate(f, [w('027', 0.76), w('027', 0.86)], [0, 1], clamp) : 0;
+	const tgt: [number, number] = [hold[0] + (TRAY[0] - hold[0]) * put, hold[1] + (TRAY[1] - 10 - hold[1]) * put];
+	const hp = reach(idle(gf, 2), 'F', [tgt[0] - hx, tgt[1] - (FL - 157)], 1 - back);
+	const away = env(f, w('027', 0.42), 1e9, 8, 1);
+	const np = gesture('stop', idle(gf, 5), away, f);
+	const sc = released ? [TRAY[0], TRAY[1] - 8] : [tgt[0] + 10, tgt[1] - 4];
+	const cam = usePush(camOn(990, 560, 1.25), camOn(960, 540, 1.45));
 	return (
 		<Stage cam={cam} bg="#1d3a36" light={{x: 50, y: 0, o: 0.55, c: '255,250,220'}}>
 			<Layer depth={1.4}>
@@ -336,35 +408,69 @@ const B027: React.FC = () => {
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<SurgLamp x={980} />
-					<ORTable x={980} />
-					<Actor who="nurse" x={1300 + 60 * back} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.6, 0]} expr={back > 0.3 ? 'wide' : 'normal'} mouth={back > 0.3 ? 'open' : undefined} pose={np} uid="nurse-27" />
-					<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.6, 0.6]} expr={f > w('027', 0.62) ? 'sad' : 'worried'} pose={hp} handItem={hold > 0.3 ? <Scalpel /> : undefined} uid="h-027" />
-					{hold <= 0.3 && f > w('027', 0.62) ? <g transform="translate(560,700)"><rect x={-60} y={-8} width={120} height={16} fill="#9aa0ae" /><g transform="translate(20,-10)"><Scalpel /></g></g> : null}
+					<SurgLamp x={1060} />
+					<ORTable x={1100} />
+					<Actor who="nurse" x={1380 + 60 * away} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.6, 0]} expr={away > 0.3 ? 'wide' : 'normal'} mouth={away > 0.3 ? 'open' : undefined} pose={np} uid="nurse-27" />
+				</Svg>
+				<Prop3D
+					x={780}
+					y={440}
+					w={300}
+					h={480}
+					make={() => {
+						const scene = propScene();
+						const tray = makeTray();
+						at(tray, TRAY[0], TRAY[1], 0);
+						tray.rotation.x = 0.25;
+						const scalpel = makeScalpel();
+						scene.add(tray, scalpel);
+						return {scene, scalpel};
+					}}
+					update={(wd) => {
+						at(wd.scalpel, sc[0], sc[1], 40);
+						wd.scalpel.rotation.set(released ? 1.1 : 0.2, 0, released ? 0.05 : -0.5 + 0.3 * sh);
+					}}
+				/>
+				<Svg>
+					<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.6, 0.6]} expr={released ? 'sad' : 'worried'} pose={hp} uid="h-027" />
 					<HeroBadge x={hx} y={badgeY(FL)} s={0.8} />
-					<Tag f={f} t={w('027', 0.65)} x={980} y={300} text="NO MORE SURGERY" c="#3a1d2a" fg="#ff9a8a" stroke="#ff6a5a" size={36} rot={-3} />
+					<Tag f={f} t={w('027', 0.65)} x={1060} y={300} text="NO MORE SURGERY" c="#3a1d2a" fg="#ff9a8a" stroke="#ff6a5a" size={36} rot={-3} />
 				</Svg>
 			</Layer>
 		</Stage>
 	);
 };
 
-/* ---------- 028 the sandwich jumps; the blender ---------- */
+/* ---------- 028 each hiccup throws the sandwich out of his hand; then the blender ---------- */
 const B028: React.FC = () => {
-	const {f, gf} = useShot();
+	const {f, gf, at: atL} = useShot();
 	const w = useW();
-	const blend = f > w('028', 0.45);
-	const bounce = Math.abs(Math.sin(f / 6)) * 60 * (blend ? 0 : 1);
-	const hx = 820;
-	const hp = blend ? reach(idle(gf, 2), 'F', [150, -40], 1) : reach(idle(gf, 2), 'F', [70, -150], 1);
+	const blendAt = w('028', 0.45);
+	const blend = f > blendAt;
+	const hx = 880;
+	// hiccup moments in this line (they also make the hero jerk)
+	const hics = [w('028', 0.1), w('028', 0.28)];
+	let jump = 0;
+	let spin = 0;
+	for (const h of hics) {
+		const t = f - h;
+		if (t >= 0 && t < 19) {
+			jump = 13 * t - 0.7 * t * t;
+			spin = (t / 19) * Math.PI * 2;
+		}
+	}
+	const mouth: [number, number] = [hx + 70, FL - 157 - 168];
+	const hand = blend ? [hx + 136, FL - 157 - 96] : mouth;
+	const hp = reach(idle(gf, 2), 'F', [hand[0] - hx, hand[1] - (FL - 157)], 1);
 	const stage = f < w('028', 0.65) ? 0 : f < w('028', 0.82) ? 1 : 2;
 	const cols = ['#f2c84a', '#7ab05a', '#8a4a3a'];
 	const labels = ['BREAKFAST', 'LUNCH', 'STEAK'];
 	const cam = camPath(f, [
-		[0, camOn(860, 520, 1.5, {farBlur: 7})],
-		[w('028', 0.45), camOn(980, 560, 1.3)],
-		[w('028', 1), camOn(1010, 560, 1.45)],
+		[0, camOn(920, 470, 1.6, {farBlur: 7})],
+		[blendAt, camOn(1000, 560, 1.3)],
+		[w('028', 1), camOn(1020, 560, 1.45)],
 	]);
+	void atL;
 	return (
 		<Stage cam={cam} bg="#e8d0a0" light={{x: 30, y: 0, o: 0.45, c: '255,240,200'}}>
 			<Layer depth={1.3}>
@@ -372,55 +478,101 @@ const B028: React.FC = () => {
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.6, blend ? 0.5 : -0.4]} expr={blend ? 'normal' : 'wide'} mouth={blend ? 'smirk' : 'open'} pose={hp} uid="h-028" />
-					{!blend ? (
-						<g transform={`translate(${hx + 70},${FL - 157 - 150 - bounce})`}>
-							<Sandwich />
-						</g>
-					) : null}
-					<Blender x={1150} y={680} spin={blend ? 1 : 0} f={f} c={cols[stage]} />
-					{blend ? <Tag f={f} t={w('028', [0.47, 0.65, 0.82][stage])} x={1150} y={330} text={labels[stage]} c="#11142c" fg="#ffd34a" size={36} rot={stage % 2 ? 4 : -4} /> : null}
-					{!blend ? <Tag f={f} t={8} x={1150} y={330} text="JUMP ROPE…" c="#11142c" fg="#9fd8ff" stroke="#9fd8ff" size={34} rot={4} /> : null}
+					<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.6, blend ? 0.5 : -0.3]} expr={blend ? 'normal' : jump > 4 ? 'wide' : 'normal'} mouth={blend ? 'smirk' : 'open'} pose={hp} uid="h-028" />
+				</Svg>
+				<Prop3D
+					x={700}
+					y={160}
+					w={620}
+					h={540}
+					make={() => {
+						const scene = propScene();
+						const sand = makeSandwich();
+						sand.scale.setScalar(0.8);
+						const blender = makeBlender();
+						at(blender, 1080, 680, -60);
+						scene.add(sand, blender);
+						return {scene, sand, blender};
+					}}
+					update={(wd, ff) => {
+						wd.sand.visible = !blend;
+						at(wd.sand, mouth[0] + 14, mouth[1] - 6 - jump, 60);
+						wd.sand.rotation.set(0.45, -0.5, spin);
+						at(wd.blender, 1080, 671, -60);
+						wd.blender.rotation.set(0.18, -0.35, 0);
+						spinBlender(wd.blender, ff, blend ? 1 : 0, cols[stage]);
+					}}
+				/>
+				<Svg>
+					{blend ? <Tag f={f} t={w('028', [0.47, 0.65, 0.82][stage])} x={1080} y={300} text={labels[stage]} c="#11142c" fg="#ffd34a" size={36} rot={stage % 2 ? 4 : -4} /> : null}
+					{blend ? <Onoma x={1190} y={380} text="VRRR" t={(f - blendAt) % 26} c="#ffffff" size={44} /> : null}
 					<HeroBadge x={hx} y={badgeY(FL)} s={0.8} />
-					{blend ? <Onoma x={1260} y={420} text="VRRR" t={(f - w('028', 0.45)) % 26} c="#ffffff" size={44} /> : null}
 				</Svg>
 			</Layer>
 		</Stage>
 	);
 };
 
-/* ---------- 029 two blenders vs three ---------- */
+/* ---------- 029 two burnt-out blenders vs three: garage shelves ---------- */
 const B029: React.FC = () => {
-	const {f} = useShot();
+	const {f, gf} = useShot();
 	const w = useW();
+	const cam = usePush(camOn(960, 540, 1.05), camOn(960, 520, 1.18));
 	return (
-		<Board tint="#3a2a1a">
-			<g transform="translate(560,560)" opacity={pop(f, 2)}>
-				<g style={{filter: 'sepia(0.9)'}}>
-					<rect x={-300} y={-330} width={600} height={620} rx={10} fill="#e8d8b0" stroke="#7a5a3a" strokeWidth={12} />
-					<Blender x={-110} y={170} spin={0} f={f} broken s={1.05} />
-					<Blender x={110} y={170} spin={0} f={f + 30} broken s={1.05} />
-				</g>
-				<text y={-250} textAnchor="middle" fontSize={50} fontFamily={FONT} fontWeight={900} fill="#5a3a1a">
-					OSBORNE
-				</text>
-				<text y={260} textAnchor="middle" fontSize={80} fontFamily={FONT} fontWeight={900} fill="#5a3a1a">
-					2
-				</text>
-			</g>
-			<g transform="translate(1360,560)" opacity={pop(f, w('029', 0.5))}>
-				<rect x={-360} y={-330} width={720} height={620} rx={10} fill="#1d2552" stroke="#ffd34a" strokeWidth={10} />
-				{[-200, 0, 200].map((x, i) => (
-					<Blender key={i} x={x} y={170} spin={0} f={f + i * 20} broken s={0.95} />
-				))}
-				<text y={-250} textAnchor="middle" fontSize={50} fontFamily={FONT} fontWeight={900} fill="#ffd34a">
-					YOU
-				</text>
-				<text y={260} textAnchor="middle" fontSize={80} fontFamily={FONT} fontWeight={900} fill="#ffd34a">
-					3
-				</text>
-			</g>
-		</Board>
+		<Stage cam={cam} bg="#5a4a3a" light={{x: 50, y: 0, o: 0.45, c: '255,230,190'}}>
+			<Layer depth={1.2}>
+				<Svg>
+					<rect x={-400} y={-300} width={2800} height={1600} fill="#a8865a" />
+					{Array.from({length: 40}).map((_, i) =>
+						Array.from({length: 14}).map((_, j) => <circle key={i + '-' + j} cx={-300 + i * 70} cy={-20 + j * 70} r={6} fill="#7a5a3a" />),
+					)}
+					{[[180, 760], [1000, 1760]].map(([a, b], i) => (
+						<g key={i}>
+							<rect x={a} y={700} width={b - a} height={24} fill="#5a3a1e" />
+							<rect x={a + 20} y={724} width={14} height={60} fill="#3a2a1a" />
+							<rect x={b - 34} y={724} width={14} height={60} fill="#3a2a1a" />
+						</g>
+					))}
+					<g transform="translate(470,260)" style={{filter: 'sepia(0.9)'}}>
+						<rect x={-150} y={-60} width={300} height={120} fill="#e8d8b0" stroke="#5a3a1a" strokeWidth={10} />
+						<text y={18} textAnchor="middle" fontSize={50} fontFamily={FONT} fontWeight={900} fill="#5a3a1a">
+							OSBORNE
+						</text>
+					</g>
+					<g transform="translate(1380,260)">
+						<rect x={-130} y={-60} width={260} height={120} fill="#1d2552" stroke="#ffd34a" strokeWidth={8} />
+						<text y={18} textAnchor="middle" fontSize={56} fontFamily={FONT} fontWeight={900} fill="#ffd34a">
+							YOU
+						</text>
+					</g>
+				</Svg>
+			</Layer>
+			<Layer depth={1}>
+				<Prop3D
+					x={150}
+					y={240}
+					w={1650}
+					h={480}
+					make={() => {
+						const scene = propScene();
+						const bl = [340, 600, 1160, 1380, 1600].map((x) => {
+							const b = makeBlender(true);
+							b.scale.setScalar(0.9);
+							at(b, x, 700, 0);
+							b.rotation.set(0.15, -0.4, 0);
+							scene.add(b);
+							return b;
+						});
+						return {scene, bl};
+					}}
+					update={(wd, ff) => wd.bl.forEach((b, i) => (i < 2 || ff > w('029', 0.45) - i * 4 ? spinBlender(b, ff + i * 20, 0) : null))}
+				/>
+				<Svg>
+					<Tag f={f} t={6} x={470} y={860} text="2" c="#11142c" fg="#fff4d8" size={60} rot={-4} />
+					<Tag f={f} t={w('029', 0.5)} x={1380} y={860} text="3" c="#11142c" fg="#ffd34a" size={60} rot={4} />
+				</Svg>
+			</Layer>
+		</Stage>
 	);
 };
 
@@ -449,7 +601,28 @@ const B030: React.FC = () => {
 					<BistroChair x={1140} facing={-1} />
 					<Actor who="hero" x={800} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0]} expr={f > hit ? 'wide' : 'normal'} mouth={lean > 0.5 && f < hit ? 'smirk' : undefined} pose={hp} uid="h-030" />
 					<Actor who="date" x={1120} floor={FL} seat={SEAT} s={0.97} facing={-1} faceTurn={0.4} look={[-0.7, 0]} expr={recoil > 0.2 ? 'angry' : 'normal'} mouth={recoil > 0.2 ? 'open' : 'smile'} pose={dp} uid="date-30" />
-					<CandleTable x={960} f={gf} />
+					<CandleTable x={960} />
+				</Svg>
+				<Prop3D
+					x={820}
+					y={640}
+					w={280}
+					h={140}
+					make={() => {
+						const scene = propScene();
+						const candle = makeCandle();
+						at(candle, 960, 770, 0);
+						const g1 = makeGlass();
+						at(g1, 868, 772, 20);
+						const g2 = makeGlass();
+						at(g2, 1052, 772, 20);
+						for (const o of [candle, g1, g2]) o.rotation.x = 0.2;
+						scene.add(candle, g1, g2);
+						return {scene, candle};
+					}}
+					update={(wd, ff) => flicker(wd.candle, ff)}
+				/>
+				<Svg>
 					<HeroBadge x={800} y={SEAT - 164 - 118} s={0.8} />
 					{f > hit && f < hit + 30 ? <Onoma x={960} y={420} text="BONK!" t={f - hit} c="#ffd34a" size={80} /> : null}
 					{f > hit
@@ -470,8 +643,9 @@ const B030: React.FC = () => {
 const B031: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
-	const cam = usePush(camOn(960, 600, 1.25), camOn(960, 560, 1.45));
+	const cam = usePush(camOn(1000, 600, 1.25), camOn(1000, 560, 1.4));
 	const wp = gesture('touchFace', {...SIT, armF: [40, 60]}, env(f, w('031', 0.3), 1e9, 12, 1), f);
+	const shown = pop(f, w('031', 0.25));
 	return (
 		<Stage cam={cam} bg="#f2c88a" light={{x: 30, y: 0, o: 0.45, c: '255,220,170'}}>
 			<Layer depth={1.4}>
@@ -483,21 +657,41 @@ const B031: React.FC = () => {
 					<Actor who="hero" x={840} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0]} mouth="smile" pose={{...SIT, armF: [40, 60]}} uid="h-031" />
 					<Actor who="wife" x={1080} floor={FL} seat={SEAT} s={0.97} facing={-1} faceTurn={0.4} look={[-0.7, 0]} mouth="smile" pose={wp} uid="wife-31" />
 					<HeroBadge x={840} y={SEAT - 164 - 118} s={0.8} />
-					<g opacity={pop(f, w('031', 0.25))}>
-						<Metronome x={1300} y={300} f={f} s={1.1} />
-					</g>
 					{f > w('031', 0.25) ? (
-						<Bubble x={1300} y={500} w={420} h={100} t={f - w('031', 0.25)} tail={[-140, 80]}>
-							<text y={14} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#13203a">
+						<Bubble x={1330} y={380} w={340} h={330} t={f - w('031', 0.25)} tail={[-150, 160]}>
+							<text y={140} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#13203a">
 								like a metronome ♥
 							</text>
 						</Bubble>
 					) : null}
 				</Svg>
+				{shown > 0.05 ? (
+					<Prop3D
+						x={1230}
+						y={220}
+						w={200}
+						h={260}
+						make={() => {
+							const scene = propScene();
+							const m = makeMetronome();
+							m.scale.setScalar(0.85);
+							at(m, 1330, 460, 0);
+							m.rotation.set(0.15, -0.4, 0);
+							scene.add(m);
+							return {scene, m};
+						}}
+						update={(wd, ff) => {
+							wd.m.scale.setScalar(0.85 * shown);
+							tick(wd.m, ff);
+						}}
+					/>
+				) : null}
 			</Layer>
 		</Stage>
 	);
 };
+const BRIDE = {color: '#fbf8f4', accent: '#f4c8d8', acc: ['veil', 'lashes'] as ('veil' | 'lashes')[]};
+const GROOM = {color: '#1d1d24', outfit: 'suit' as const, acc: ['glasses'] as 'glasses'[]};
 const B031b: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
@@ -507,6 +701,7 @@ const B031b: React.FC = () => {
 		[hicT - 20, camOn(960, 520, 1.45)],
 		[hicT + 40, camOn(960, 520, 1.55)],
 	]);
+	const hold = reach(reach(idle(gf, 6), 'F', [46, -88], 1), 'B', [40, -84], 1);
 	return (
 		<Stage cam={cam} bg="#9fd0f0" light={{x: 40, y: 0, o: 0.4}}>
 			<Layer depth={1.3}>
@@ -520,8 +715,8 @@ const B031b: React.FC = () => {
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<Actor who="hero" x={870} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0]} mouth={f > hicT + 14 ? 'open' : 'smile'} pose={idle(gf, 2)} uid="h-031b" />
-					<Actor who="wife" x={1060} floor={FL} s={0.97} facing={-1} faceTurn={0.4} look={[-0.7, 0]} mouth="smile" pose={idle(gf, 6)} acc={[]} color="#f4f1f8" outfit="coat" uid="wife-wed" />
+					<Actor who="hero" x={870} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0]} mouth={f > hicT + 14 ? 'open' : 'smile'} pose={idle(gf, 2)} {...GROOM} uid="h-031b" />
+					<Actor who="wife" x={1060} floor={FL} s={0.97} facing={-1} faceTurn={0.4} look={[-0.7, 0]} mouth="smile" pose={hold} {...BRIDE} handItem={<g><circle cx={0} cy={-8} r={14} fill="#ff8ab0" /><circle cx={-12} cy={2} r={11} fill="#fff4c8" /><circle cx={12} cy={2} r={11} fill="#ffb0c8" /><path d="M-8,10 L0,40 L8,10 Z" fill="#5ab04a" /></g>} uid="wife-wed" />
 					<HeroBadge x={870} y={badgeY(FL)} s={0.8} />
 					<Tag f={f} t={4} x={960} y={200} text="5 YEARS LATER" c="#11142c" fg="#ffd34a" size={34} rot={-3} />
 					{f > hicT - 26 ? (

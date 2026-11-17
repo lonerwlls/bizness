@@ -3,8 +3,8 @@ import {darken, lighten} from './color';
 
 export type Expr = 'normal' | 'angry' | 'sad' | 'sleepy' | 'wide' | 'worried';
 export type Hair = 'none' | 'spiky' | 'bun' | 'cap' | 'ponytail' | 'grey' | 'bob' | 'short' | 'beanie' | 'messy' | 'visor';
-export type Outfit = 'hoodie' | 'suit' | 'gown' | 'coat' | 'apron' | 'tee' | 'vest' | 'bomber' | 'raincoat' | 'labcoat';
-export type Acc = 'headphones' | 'mustache' | 'glasses' | 'bowtie' | 'suspenders' | 'scarf' | 'antenna' | 'neckphones' | 'stethoscope';
+export type Outfit = 'hoodie' | 'suit' | 'gown' | 'coat' | 'apron' | 'tee' | 'vest' | 'bomber' | 'raincoat' | 'labcoat' | 'dress';
+export type Acc = 'headphones' | 'mustache' | 'glasses' | 'bowtie' | 'suspenders' | 'scarf' | 'antenna' | 'neckphones' | 'stethoscope' | 'veil' | 'lashes';
 export type Mouth = 'line' | 'frown' | 'open' | 'smile' | 'flat' | 'smirk' | 'none';
 export type HandShape = 'fist' | 'point' | 'snap';
 
@@ -271,6 +271,9 @@ export const Stickman: React.FC<Props> = (p) => {
 	const aF = arm(shoulder, pose.armF);
 	const lB = leg(add(hip, fwd, -6), pose.legB);
 	const lF = leg(add(hip, fwd, 6), pose.legF);
+	// seated: long coats and skirts fold over the thighs instead of hanging to the floor
+	const sitting = pose.legF[0] > 50;
+	const longWear = outfit === 'raincoat' || outfit === 'labcoat' || outfit === 'dress';
 
 	const ex = faceTurn * 11;
 	const wide = expr === 'wide';
@@ -411,12 +414,18 @@ export const Stickman: React.FC<Props> = (p) => {
 					) : null}
 					{outfit === 'raincoat' || outfit === 'labcoat' ? (
 						<>
-							<path d={`M${-bw - 2},${-20} L${-bw - 14},${70} Q0,${80} ${bw + 16},${70} L${bw + 2},${-20} Z`} fill={color} />
-							<path d={`M${-bw - 14},${70} Q0,${80} ${bw + 16},${70}`} stroke={darken(color, 0.2)} strokeWidth={4} fill="none" />
+							{sitting ? (
+								<path d={`M${-bw - 2},${-20} L${-bw - 6},${14} Q0,${20} ${bw + 6},${14} L${bw + 2},${-20} Z`} fill={color} />
+							) : (
+								<>
+									<path d={`M${-bw - 2},${-20} L${-bw - 14},${70} Q0,${80} ${bw + 16},${70} L${bw + 2},${-20} Z`} fill={color} />
+									<path d={`M${-bw - 14},${70} Q0,${80} ${bw + 16},${70}`} stroke={darken(color, 0.2)} strokeWidth={4} fill="none" />
+								</>
+							)}
 							<line x1={6} y1={torsoTop + 10} x2={8} y2={74} stroke={darken(color, 0.22)} strokeWidth={3} />
 							<path d={`M${-4},${torsoTop + 2} L${8},${torsoTop + 26} L${20},${torsoTop + 2}`} stroke={darken(color, 0.25)} strokeWidth={4} fill="none" />
 							{outfit === 'raincoat' ? <rect x={-bw - 4} y={-4} width={bw * 2 + 8} height={10} rx={4} fill={darken(color, 0.3)} /> : null}
-							<rect x={12} y={20} width={20} height={22} rx={4} fill="none" stroke={darken(color, 0.25)} strokeWidth={3} />
+							{sitting ? null : <rect x={12} y={20} width={20} height={22} rx={4} fill="none" stroke={darken(color, 0.25)} strokeWidth={3} />}
 							{outfit === 'labcoat' ? (
 								<>
 									<rect x={-20} y={torsoTop + 34} width={16} height={14} rx={2} fill="none" stroke={darken(color, 0.2)} strokeWidth={2} />
@@ -424,6 +433,20 @@ export const Stickman: React.FC<Props> = (p) => {
 									<line x1={-10} y1={torsoTop + 28} x2={-10} y2={torsoTop + 42} stroke="#3d6fd6" strokeWidth={3} />
 								</>
 							) : null}
+						</>
+					) : null}
+					{outfit === 'dress' ? (
+						<>
+							{sitting ? (
+								<path d={`M${-bw - 2},${-16} L${-bw - 8},${16} Q0,${22} ${bw + 8},${16} L${bw + 2},${-16} Z`} fill={color} />
+							) : (
+								<>
+									<path d={`M${-bw},${-16} L${-bw - 34},${96} Q0,${110} ${bw + 34},${96} L${bw},${-16} Z`} fill={color} />
+									<path d={`M${-bw - 34},${96} Q0,${110} ${bw + 34},${96}`} stroke={darken(color, 0.15)} strokeWidth={4} fill="none" />
+									<path d={`M${-10},${-10} L${-22},${92} M${14},${-10} L${24},${94}`} stroke={darken(color, 0.1)} strokeWidth={3} fill="none" />
+								</>
+							)}
+							<rect x={-bw} y={-22} width={bw * 2} height={12} rx={5} fill={accent} />
 						</>
 					) : null}
 					{acc.includes('suspenders') ? (
@@ -468,6 +491,26 @@ export const Stickman: React.FC<Props> = (p) => {
 						</g>
 					) : null}
 				</g>
+				{sitting && longWear
+					? (() => {
+							const a = lF[0];
+							const k = lF[1];
+							const dx = k[0] - a[0];
+							const dy = k[1] - a[1];
+							const L = Math.hypot(dx, dy) || 1;
+							const n: V = [-dy / L, dx / L];
+							const ext = outfit === 'dress' ? 1.25 : 1.08;
+							const e: V = [a[0] + dx * ext, a[1] + dy * ext];
+							const w0 = bw * 0.95;
+							const w1 = outfit === 'dress' ? bw * 0.9 : bw * 0.62;
+							return (
+								<>
+									<path d={`M${a[0] + n[0] * w0 - dx * 0.25},${a[1] + n[1] * w0 - dy * 0.25} L${e[0] + n[0] * w1},${e[1] + n[1] * w1} L${e[0] - n[0] * w1 * 0.7},${e[1] - n[1] * w1 * 0.7} L${a[0] - n[0] * w0 - dx * 0.25},${a[1] - n[1] * w0 - dy * 0.25} Z`} fill={color} />
+									<line x1={e[0] + n[0] * w1} y1={e[1] + n[1] * w1} x2={e[0] - n[0] * w1 * 0.7} y2={e[1] - n[1] * w1 * 0.7} stroke={darken(color, 0.2)} strokeWidth={4} />
+								</>
+							);
+						})()
+					: null}
 				{/* front arm */}
 				<Limb pts={aF} w={24} c={color} hi={hi} hiSide={-1} />
 				{p.handItem ? <g transform={`translate(${aF[2][0]},${aF[2][1]})`}>{p.handItem}</g> : null}
@@ -490,6 +533,7 @@ export const Stickman: React.FC<Props> = (p) => {
 				{/* head */}
 				<line x1={add(hip, up, T - 10)[0]} y1={add(hip, up, T - 10)[1]} x2={headC[0]} y2={headC[1]} stroke="#000" strokeWidth={12} />
 				<g transform={`translate(${headC[0]},${headC[1]}) rotate(${pose.head + lean * 0.25})`}>
+					{acc.includes('veil') ? <path d={`M${-10},${-R - 4} C${-R - 60},${-R} ${-R - 70},${60} ${-R - 40},${170} L${-R + 6},${150} C${-R - 6},${60} ${-R + 10},${0} ${20},${-R + 2} Z`} fill="#ffffff" opacity={0.78} /> : null}
 					<HeadShape hair={hair} hairColor={hairColor} front={false} />
 					{p.hood ? <ellipse cx={-7} cy={-3} rx={R + 13} ry={R + 12} fill={sh} /> : null}
 					{p.hood ? <path d={`M${-R - 16},${-6} C${-R - 14},${-R - 26} ${R + 6},${-R - 30} ${R + 8},${-14}`} stroke={color} strokeWidth={9} fill="none" strokeLinecap="round" /> : null}
@@ -546,6 +590,16 @@ export const Stickman: React.FC<Props> = (p) => {
 						})}
 					</g>
 				) : null}
+				{acc.includes('lashes')
+					? [eL, eR].map((e, i) => (
+							<g key={i} stroke={HD.ink} strokeWidth={3} strokeLinecap="round">
+								<line x1={e[0] - erx * 0.8} y1={e[1] - ery * 0.6} x2={e[0] - erx * 0.8 - 6} y2={e[1] - ery * 0.6 - 6} />
+								<line x1={e[0] - erx * 0.2} y1={e[1] - ery * 0.95} x2={e[0] - erx * 0.2 - 3} y2={e[1] - ery * 0.95 - 8} />
+								<line x1={e[0] + erx * 0.5} y1={e[1] - ery * 0.85} x2={e[0] + erx * 0.5 + 2} y2={e[1] - ery * 0.85 - 8} />
+							</g>
+						))
+					: null}
+				{acc.includes('veil') ? [-24, -6, 12].map((x, i) => <circle key={i} cx={x} cy={-R + 4 - Math.abs(x) * 0.1} r={7} fill={['#ffb0c8', '#fff4c8', '#ffb0c8'][i]} stroke={HD.ink} strokeWidth={2} />) : null}
 				{acc.includes('glasses') ? (
 					<g stroke={hs === 'black' ? '#fff' : HD.ink} strokeWidth={hs === 'black' ? 2.5 : 3.5} fill="none">
 						<circle cx={eL[0]} cy={eL[1]} r={erx + 4} />

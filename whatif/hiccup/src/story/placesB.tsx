@@ -45,12 +45,6 @@ export const Office: React.FC<{f: number; night?: boolean}> = ({f, night}) => (
 				<line x1={-50} y1={0} x2={10} y2={0} stroke="#8a7a5a" strokeWidth={4} />
 			</g>
 		))}
-		{/* anatomy poster */}
-		<g transform="translate(1220,260)">
-			<rect x={-70} y={-120} width={140} height={240} fill="#f4f1e6" />
-			<circle cy={-80} r={20} fill="none" stroke="#c0503a" strokeWidth={4} />
-			<path d="M0,-60 V40 M-40,-30 H40 M0,40 L-24,100 M0,40 L24,100 M-40,-30 L-50,30 M40,-30 L50,30" stroke="#c0503a" strokeWidth={4} fill="none" />
-		</g>
 		<Floor y={900} c={night ? '#2a2030' : '#7a5a3a'} />
 	</Svg>
 );
@@ -412,17 +406,12 @@ export const Bistro: React.FC<{f: number}> = ({f}) => (
 	</Svg>
 );
 /* small round table with a candle (front piece) */
-export const CandleTable: React.FC<{x: number; f: number}> = ({x, f}) => (
+export const CandleTable: React.FC<{x: number}> = ({x}) => (
 	<g transform={`translate(${x},0)`}>
 		<ellipse cx={0} cy={770} rx={150} ry={20} fill="#fbf4e0" />
 		<rect x={-150} y={770} width={300} height={34} fill="#f4ead0" />
 		<rect x={-12} y={804} width={24} height={96} fill="#2a1a12" />
 		<rect x={-60} y={892} width={120} height={10} rx={4} fill="#2a1a12" />
-		<rect x={-10} y={716} width={20} height={54} fill="#f4f1e6" />
-		<path d={`M0,${696 + Math.sin(f / 3) * 3} Q9,708 0,716 Q-9,708 0,${696 + Math.sin(f / 3) * 3} Z`} fill="#ffb33a" />
-		<circle cx={0} cy={706} r={36} fill="#ffd27a" opacity={0.25} />
-		<path d="M-110,716 L-94,750 L-78,716 Z M-94,750 V766" stroke="#c8d8e8" strokeWidth={4} fill="#7a1f2b" />
-		<path d="M78,716 L94,750 L110,716 Z M94,750 V766" stroke="#c8d8e8" strokeWidth={4} fill="#7a1f2b" />
 	</g>
 );
 export const BistroChair: React.FC<{x: number; facing: 1 | -1}> = ({x, facing}) => (
