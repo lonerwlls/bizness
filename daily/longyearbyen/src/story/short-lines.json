@@ -1,0 +1,69 @@
+[
+ {
+  "id": "s01_N",
+  "sp": "N",
+  "t": "So what if every hour on your phone aged you one day?",
+  "reuse": "006_N"
+ },
+ {
+  "id": "s02_N",
+  "sp": "N",
+  "t": "You walk up to the school gate, and the new guard holds up a hand.",
+  "reuse": "001_N"
+ },
+ {
+  "id": "s03_N",
+  "sp": "N",
+  "t": "Teachers use the back entrance, sir.",
+  "reuse": "002_N"
+ },
+ {
+  "id": "s04_N",
+  "sp": "N",
+  "t": "You're seventeen. Your body is thirty-one.",
+  "reuse": "003_N"
+ },
+ {
+  "id": "s05_N",
+  "sp": "N",
+  "t": "Not your battery. Not your eyes. Your whole body. One hour on a screen, one day older.",
+  "reuse": "007_N"
+ },
+ {
+  "id": "s06_N",
+  "sp": "N",
+  "t": "Now the math. American teenagers average about eight and a half hours of screen entertainment a day.",
+  "reuse": "017_N"
+ },
+ {
+  "id": "s07_N",
+  "sp": "N",
+  "t": "That's eight and a half days of aging, every single day. Almost nine years for every year you live.",
+  "reuse": "018_N"
+ },
+ {
+  "id": "s08_N",
+  "sp": "N",
+  "t": "At your pace, you graduate at thirty-six. By twenty-one, you'd get the senior discount.",
+  "reuse": "019_N"
+ },
+ {
+  "id": "s09_N",
+  "sp": "N",
+  "t": "But the average American spends around four and a half hours a day on their phone.",
+  "reuse": "062_N"
+ },
+ {
+  "id": "s10_N",
+  "sp": "N",
+  "t": "From age ten to eighty, that's about thirteen years of your life. Awake. Looking down.",
+  "reuse": "063_N"
+ },
+ {
+  "id": "s11_N",
+  "sp": "N",
+  "t": "So tell me. What did your screen time say yesterday? Be honest. And yes, you're watching this on a phone.",
+  "reuse": "069_N",
+  "gap": 2.0
+ }
+]

@@ -1,0 +1,21 @@
+{
+ "ambience": [{"from": "s01", "to": "end", "kind": "street", "gain": 0.045}],
+ "music": [],
+ "sfx": [
+  {"at": "s01", "off": 0, "type": "whooshUp"},
+  {"at": "s02", "off": 0, "type": "steps", "dur": 2.5},
+  {"at": "s03", "off": 0, "type": "pop"},
+  {"at": "s04", "off": 4, "type": "pop"},
+  {"at": "s05", "off": 0, "type": "swoosh"},
+  {"at": "s05", "off": 90, "type": "stamp"},
+  {"at": "s06", "off": 0, "type": "swoosh"},
+  {"at": "s07", "off": 0, "type": "swoosh"},
+  {"at": "s07", "off": 98, "type": "stamp"},
+  {"at": "s08", "off": 4, "type": "pop"},
+  {"at": "s08", "off": 84, "type": "ding"},
+  {"at": "s09", "off": 0, "type": "chat"},
+  {"at": "s10", "off": 94, "type": "pop"},
+  {"at": "s11", "off": 4, "type": "pop"},
+  {"at": "s11", "off": 40, "type": "pop"}
+ ]
+}

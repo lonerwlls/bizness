@@ -1,0 +1,65 @@
+{
+ "ambience": [
+  {
+   "from": "001",
+   "to": "008",
+   "kind": "wind",
+   "gain": 0.05
+  },
+  {
+   "from": "008",
+   "to": "end",
+   "kind": "night",
+   "gain": 0.035
+  }
+ ],
+ "music": [
+  {
+   "from": "001",
+   "to": "008",
+   "style": "pad-tense",
+   "amp": 0.05
+  },
+  {
+   "from": "008",
+   "to": "end",
+   "style": "pad-warm",
+   "amp": 0.06
+  }
+ ],
+ "sfx": [
+  {
+   "at": "002",
+   "off": 0,
+   "type": "steps",
+   "dur": 5,
+   "amp": 0.08
+  },
+  {
+   "at": "006",
+   "off": 10,
+   "type": "whooshUp",
+   "dur": 2.5,
+   "amp": 0.18
+  },
+  {
+   "at": "007",
+   "off": 0,
+   "type": "steps",
+   "dur": 3,
+   "amp": 0.08
+  },
+  {
+   "at": "003",
+   "off": 27,
+   "type": "stamp",
+   "amp": 0.25
+  },
+  {
+   "at": "003",
+   "off": 64,
+   "type": "stamp",
+   "amp": 0.25
+  }
+ ]
+}
