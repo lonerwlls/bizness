@@ -214,6 +214,11 @@ const HeadShape: React.FC<{hair: Hair; hairColor: string; front: boolean}> = ({h
 		);
 	if (hair === 'short')
 		return <path d={`M${-R},${-2} C${-R - 6},${-R - 6} ${R + 6},${-R - 10} ${R},${-12} C${R - 20},${-R + 10} ${-R + 22},${-R + 4} ${-R + 8},${0} Z`} fill="#000" />;
+	// women's hair seen from the front (in their own colour)
+	if (hair === 'bob')
+		return <path d={`M${-R - 6},${18} C${-R - 12},${-R - 14} ${R + 12},${-R - 14} ${R + 6},${18} L${R - 8},${18} C${R - 4},${-R + 22} ${-R + 14},${-R + 16} ${-R + 8},${18} Z`} fill={hairColor} />;
+	if (hair === 'ponytail')
+		return <path d={`M${-R},${0} C${-R - 6},${-R - 8} ${R + 6},${-R - 12} ${R},${-10} C${R - 18},${-R + 14} ${-R + 22},${-R + 6} ${-R + 8},${2} Z`} fill={hairColor} />;
 	return null;
 };
 

@@ -1,31 +1,274 @@
 {
  "ambience": [
-  {"from": "001", "to": "006", "kind": "crowd", "gain": 0.03},
-  {"from": "006", "to": "007", "kind": "night", "gain": 0.03},
-  {"from": "007", "to": "008", "kind": "wind", "gain": 0.04, "birds": true},
-  {"from": "009", "to": "014", "kind": "room", "gain": 0.045},
-  {"from": "014", "to": "017", "kind": "night", "gain": 0.03},
-  {"from": "017", "to": "019", "kind": "room", "gain": 0.045},
-  {"from": "019", "to": "020", "kind": "night", "gain": 0.035}
+  {
+   "from": "001",
+   "to": "006",
+   "kind": "crowd",
+   "gain": 0.03
+  },
+  {
+   "from": "006",
+   "to": "007",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "007",
+   "to": "008",
+   "kind": "wind",
+   "gain": 0.04,
+   "birds": true
+  },
+  {
+   "from": "009",
+   "to": "014",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "014",
+   "to": "017",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "017",
+   "to": "019",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "019",
+   "to": "020",
+   "kind": "night",
+   "gain": 0.035
+  },
+  {
+   "from": "020",
+   "to": "022",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "022",
+   "to": "023",
+   "kind": "fridge",
+   "gain": 0.05
+  },
+  {
+   "from": "023",
+   "to": "024",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "024",
+   "to": "025",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "025",
+   "to": "026",
+   "kind": "wind",
+   "gain": 0.05
+  },
+  {
+   "from": "026",
+   "to": "028",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "028",
+   "to": "029",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "029",
+   "to": "030",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "030",
+   "to": "031",
+   "kind": "crowd",
+   "gain": 0.04
+  },
+  {
+   "from": "031",
+   "to": "032",
+   "kind": "wind",
+   "gain": 0.03,
+   "birds": true
+  }
  ],
  "music": [],
  "sfx": [
-  {"at": "001", "off": 0, "type": "applause", "dur": 2.2, "amp": 0.14},
-  {"at": "004", "off": 0, "type": "laugh", "dur": 2.6, "amp": 0.12},
-  {"at": "007", "off": 178, "type": "thud", "amp": 0.45},
-  {"at": "007", "off": 248, "type": "hic", "f0": 185, "amp": 0.26},
-  {"at": "007", "off": 274, "type": "hic", "f0": 185, "amp": 0.26},
-  {"at": "008", "off": 8, "type": "hic", "f0": 180, "amp": 0.2},
-  {"at": "008", "off": 34, "type": "hic", "f0": 175, "amp": 0.2},
-  {"at": "008", "off": 60, "type": "hic", "f0": 165, "amp": 0.2},
-  {"at": "008", "off": 74, "type": "whooshUp", "dur": 0.6, "amp": 0.2},
-  {"at": "009", "off": 0, "type": "steps", "dur": 3.0},
-  {"at": "010", "off": 20, "type": "heartbeat", "dur": 4.5, "amp": 0.14},
-  {"at": "011", "off": 70, "type": "whoosh", "dur": 0.8},
-  {"at": "011", "off": 95, "type": "thud", "amp": 0.4},
-  {"at": "012", "off": 14, "type": "pop", "amp": 0.14},
-  {"at": "014", "off": 70, "type": "swoosh"},
-  {"at": "018", "off": 41, "type": "shot", "amp": 0.3},
-  {"at": "019", "off": 85, "type": "ring", "dur": 1.5, "amp": 0.04}
+  {
+   "at": "001",
+   "off": 0,
+   "type": "applause",
+   "dur": 2.2,
+   "amp": 0.14
+  },
+  {
+   "at": "004",
+   "off": 0,
+   "type": "laugh",
+   "dur": 2.6,
+   "amp": 0.12
+  },
+  {
+   "at": "007",
+   "off": 178,
+   "type": "thud",
+   "amp": 0.45
+  },
+  {
+   "at": "007",
+   "off": 248,
+   "type": "hic",
+   "f0": 185,
+   "amp": 0.26
+  },
+  {
+   "at": "007",
+   "off": 274,
+   "type": "hic",
+   "f0": 185,
+   "amp": 0.26
+  },
+  {
+   "at": "008",
+   "off": 8,
+   "type": "hic",
+   "f0": 180,
+   "amp": 0.2
+  },
+  {
+   "at": "008",
+   "off": 34,
+   "type": "hic",
+   "f0": 175,
+   "amp": 0.2
+  },
+  {
+   "at": "008",
+   "off": 60,
+   "type": "hic",
+   "f0": 165,
+   "amp": 0.2
+  },
+  {
+   "at": "008",
+   "off": 74,
+   "type": "whooshUp",
+   "dur": 0.6,
+   "amp": 0.2
+  },
+  {
+   "at": "009",
+   "off": 0,
+   "type": "steps",
+   "dur": 3.0
+  },
+  {
+   "at": "010",
+   "off": 20,
+   "type": "heartbeat",
+   "dur": 4.5,
+   "amp": 0.14
+  },
+  {
+   "at": "011",
+   "off": 70,
+   "type": "whoosh",
+   "dur": 0.8
+  },
+  {
+   "at": "011",
+   "off": 95,
+   "type": "thud",
+   "amp": 0.4
+  },
+  {
+   "at": "012",
+   "off": 14,
+   "type": "pop",
+   "amp": 0.14
+  },
+  {
+   "at": "014",
+   "off": 70,
+   "type": "swoosh"
+  },
+  {
+   "at": "018",
+   "off": 41,
+   "type": "shot",
+   "amp": 0.3
+  },
+  {
+   "at": "019",
+   "off": 85,
+   "type": "ring",
+   "dur": 1.5,
+   "amp": 0.04
+  },
+  {
+   "at": "021",
+   "off": 62,
+   "type": "stamp",
+   "amp": 0.4
+  },
+  {
+   "at": "022",
+   "off": 10,
+   "type": "buzz",
+   "dur": 1.8,
+   "amp": 0.012
+  },
+  {
+   "at": "023",
+   "off": 61,
+   "type": "pop",
+   "amp": 0.14
+  },
+  {
+   "at": "023",
+   "off": 126,
+   "type": "switch",
+   "amp": 0.3
+  },
+  {
+   "at": "026",
+   "off": 17,
+   "type": "heartbeat",
+   "dur": 3.5,
+   "amp": 0.12
+  },
+  {
+   "at": "028",
+   "off": 81,
+   "type": "buzz",
+   "dur": 3.0,
+   "amp": 0.02
+  },
+  {
+   "at": "030",
+   "off": 91,
+   "type": "thud",
+   "amp": 0.45
+  },
+  {
+   "at": "031",
+   "off": 200,
+   "type": "applause",
+   "dur": 2.5,
+   "amp": 0.12
+  }
  ]
 }

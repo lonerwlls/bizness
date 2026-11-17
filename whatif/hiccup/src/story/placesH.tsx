@@ -36,29 +36,55 @@ export const STUDIO_SEAT = 806;
 export const Studio: React.FC<{f: number}> = ({f}) => (
 	<Svg>
 		<Wall id="st-w" top="#141a44" bot="#2a2466" />
-		{/* painted city backdrop */}
-		<rect x={-200} y={120} width={2320} height={560} fill="#1d2a6a" />
-		<rect x={-200} y={120} width={2320} height={560} fill="url(#st-sky)" />
+		{/* velvet curtain backdrop with deep folds */}
 		<defs>
-			<linearGradient id="st-sky" x1="0" y1="0" x2="0" y2="1">
-				<stop offset="0" stopColor="#2a2f7a" />
-				<stop offset="1" stopColor="#c45a8a" />
+			<linearGradient id="st-fold" x1="0" y1="0" x2="1" y2="0">
+				<stop offset="0" stopColor="#4a0f24" />
+				<stop offset="0.45" stopColor="#8a1f3a" />
+				<stop offset="0.7" stopColor="#6a1630" />
+				<stop offset="1" stopColor="#3a0a1c" />
 			</linearGradient>
+			<radialGradient id="st-bulb">
+				<stop offset="0" stopColor="#fff8d8" />
+				<stop offset="0.5" stopColor="#ffd27a" />
+				<stop offset="1" stopColor="#ffd27a" stopOpacity={0} />
+			</radialGradient>
 		</defs>
-		<circle cx={1500} cy={300} r={60} fill="#ffe9c0" opacity={0.85} />
-		{Array.from({length: 22}).map((_, i) => {
-			const w = 70 + random('stb' + i) * 90;
-			const h = 140 + random('sth' + i) * 300;
-			const x = -200 + i * 110;
+		{Array.from({length: 26}).map((_, i) => (
+			<rect key={i} x={-300 + i * 100} y={-40} width={102} height={760} fill="url(#st-fold)" />
+		))}
+		<path d="M-300,-40 H2300 V90 Q2200,140 2100,90 Q2000,140 1900,90 Q1800,140 1700,90 Q1600,140 1500,90 Q1400,140 1300,90 Q1200,140 1100,90 Q1000,140 900,90 Q800,140 700,90 Q600,140 500,90 Q400,140 300,90 Q200,140 100,90 Q0,140 -100,90 Q-200,140 -300,90 Z" fill="#5a1228" />
+		{/* marquee arch of bulbs behind the stage */}
+		<path d="M380,700 V380 A580,300 0 0 1 1540,380 V700" fill="none" stroke="#2a0a18" strokeWidth={56} />
+		{Array.from({length: 34}).map((_, i) => {
+			const u = i / 33;
+			const L = 320 + 911 + 320;
+			const d = u * L;
+			let x, y;
+			if (d < 320) [x, y] = [380, 700 - d];
+			else if (d < 320 + 911) {
+				const a = Math.PI - ((d - 320) / 911) * Math.PI;
+				[x, y] = [960 + Math.cos(a) * 580, 380 - Math.sin(a) * 300];
+			} else [x, y] = [1540, 380 + (d - 320 - 911)];
+			const on = (i + Math.floor(f / 4)) % 3 !== 0;
 			return (
 				<g key={i}>
-					<rect x={x} y={680 - h} width={w} height={h} fill={i % 2 ? '#141a44' : '#1b2154'} />
-					{Array.from({length: Math.floor(h / 40)}).map((_, j) => (random('stw' + i + j) > 0.45 ? <rect key={j} x={x + 12 + (j % 2) * (w / 2 - 10)} y={680 - h + 20 + j * 36} width={14} height={16} fill="#ffd27a" opacity={0.75} /> : null))}
+					<circle cx={x} cy={y} r={30} fill="url(#st-bulb)" opacity={on ? 0.7 : 0.15} />
+					<circle cx={x} cy={y} r={11} fill={on ? '#fff4c8' : '#8a6a4a'} />
 				</g>
 			);
 		})}
-		{/* frame of the backdrop */}
-		<rect x={-200} y={672} width={2320} height={24} fill="#0d1030" />
+		{/* two tall screens with a hiccup trace */}
+		{[150, 1770].map((x, k) => (
+			<g key={k} transform={`translate(${x},200)`}>
+				<rect x={-110} y={0} width={220} height={430} rx={14} fill="#0b0d26" stroke="#2a2d44" strokeWidth={10} />
+				<path d={Array.from({length: 30}).map((_, i) => `${i ? 'L' : 'M'}${-96 + i * 6.6},${215 + ((i + Math.floor(f / 3) + k * 7) % 11 === 0 ? -90 : (i + Math.floor(f / 3) + k * 7) % 11 === 1 ? 50 : 0)}`).join(' ')} stroke="#ffd34a" strokeWidth={5} fill="none" />
+				<text y={400} textAnchor="middle" fontSize={34} fontFamily={FONT} fontWeight={900} fill="#ffd34a" opacity={0.8}>
+					HIC
+				</text>
+			</g>
+		))}
+		<rect x={-200} y={700} width={2320} height={20} fill="#2a0a18" />
 		{/* neon title */}
 		<g transform="translate(960,70)">
 			<rect x={-330} y={-50} width={660} height={100} rx={50} fill="#0b0d26" stroke="#ff5aa8" strokeWidth={6} opacity={0.95} />

@@ -15,6 +15,8 @@ export const CAST: Record<string, CastMember> = {
 	date: {color: '#e0607a', head: 'peach', skin: '#e8b48a', hair: 'ponytail', hairColor: '#3a2418', rim: '#ffe0ea', rimW: 2.4, shoe: '#f4f6fb'},
 	clinic: {color: '#3d6fd6', outfit: 'tee', head: 'peach', skin: '#c98a5a', hair: 'grey', hairColor: '#d9d9e0', acc: ['mustache'], rim: '#e0ecff', rimW: 2.4, shoe: '#111', legColor: '#3d6fd6'},
 	farmer: {color: '#8a6a4a', outfit: 'vest', accent: '#5a3a22', head: 'peach', skin: '#e8c8a0', hair: 'cap', hairColor: '#5a4a3a', acc: ['mustache'], rim: '#f6e6c8', rimW: 2.4, shoe: '#3a2a1a', legColor: '#4a3a2a'},
+	olddoc: {color: '#2a2a34', outfit: 'suit', head: 'peach', skin: '#f2d0b5', hair: 'grey', hairColor: '#e0e0e8', acc: ['mustache'], rim: '#f6e6c8', rimW: 2.4, shoe: '#1b1208', legColor: '#2a2a34'},
+	oldman: {color: '#8fc1e3', outfit: 'gown', head: 'peach', skin: '#e8c0a0', hair: 'grey', hairColor: '#d9d9e0', acc: ['mustache'], rim: '#e0f2ff', rimW: 2.4, shoe: '#e8e8f0', legColor: '#e8c0a0'},
 	kid1: {color: '#3aa37a', head: 'peach', skin: '#f2d0b5', hair: 'short', hairColor: '#3a2418', rim: '#e8fff2', rimW: 2.4, shoe: '#f4f6fb'},
 	kid2: {color: '#e47a3c', head: 'peach', skin: '#f2d0b5', hair: 'ponytail', hairColor: '#3a2418', rim: '#fff0e0', rimW: 2.4, shoe: '#f4f6fb'},
 };

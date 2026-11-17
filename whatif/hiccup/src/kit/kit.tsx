@@ -101,7 +101,7 @@ export const Rays: React.FC<{x: number; y: number; w: number; len?: number; angl
 /* badge over the hero, pops and flashes whenever the number clicks */
 export const HeroBadge: React.FC<{x: number; y: number; s?: number; value?: number}> = ({x, y, s = 1, value}) => {
 	const {gf} = useShot();
-	const v = value ?? counterAt(gf);
+	const v = Math.round(value ?? counterAt(gf)); // whole numbers: no odometer smear on big rolls
 	const ago = counterChangedAgo(gf);
 	const pop = 1 + 0.28 * Math.exp(-Math.max(0, ago) / 4) * (ago >= 0 ? 1 : 0);
 	const ring = interpolate(ago, [0, 14], [0, 1], clamp);
