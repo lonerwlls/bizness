@@ -9,10 +9,10 @@ import {HeroBadge, Layer, Stage, Svg, camOn, clamp, flash, usePush} from '../kit
 import {Board, Cite, FONT, HAND} from '../kit/ui';
 import {Onoma} from '../reference/PauseTime';
 import {Prop3D, at, propScene} from '../three/Prop3D';
-import {makeDumbbell, makeEnvelope, makeGasTank, makeHose, makeJar, makeMask, makeNewspaper, makeShotgun, makeSpoon, makeStraw, makeSubButton, makeSuitcase, makeTimer, makeWaterGlass} from '../three/props';
+import {makeDumbbell, makeEnvelope, makeGasTank, makeHose, makeJar, makeMask, makeNewspaper, makeShotgun, makeSpoon, makeStraw, makeSuitcase, makeThinStraw, makeTimer, makeWaterGlass, setStraw} from '../three/props';
 import {FL, HS, badgeY} from './common';
 import {SEAT, Sofa} from './places';
-import {Tag, camPath, jolt, pop, useW} from './lib';
+import {Tag, camPath, jolt, mouthAt, pop, useW} from './lib';
 import {OldFilm} from './placesH';
 import {Clinic, Gym, Hallway2, Hotel, Lab, LivingDay, LivingNight, Porch, Recliner} from './placesC';
 
@@ -158,19 +158,44 @@ const C034b: React.FC = () => <QuoteCard lines={['"I get so sore,', 'jerking all
 
 /* ---------- 035 the best clinic: a mix of gases, and the hiccups stop ---------- */
 const RX = 980; // recliner
+/* he rolls a suitcase in by its telescopic handle, stands it upright and lets go */
 const C035: React.FC = () => {
 	const {f, gf} = useShot();
-	const wk = walkTo(f, 0, 56, 380, 760, 2, 0.3);
-	const drop = env(f, 58, 1e9, 6, 1);
-	const hp = reach(wk.moving ? wk.pose : idle(gf, 2), 'F', [70, 40 - 30 * drop], 1);
+	const wk = walkTo(f, 0, 56, 380, 740, 2, 0.3);
+	const up = interpolate(f, [56, 70], [0, 1], {...clamp, easing: ease});
+	const letGo = env(f, 74, 1e9, 8, 1);
+	// hand target: trailing behind while rolling, beside him when he stands it up
+	const tgt: [number, number] = [-45 + 85 * up, 0 - 12 * up];
+	const hp = reach(wk.moving ? wk.pose : idle(gf, 2), 'F', tgt, 1 - letGo);
+	const hand: [number, number] = [wk.x + tgt[0], FL - 157 + tgt[1]];
+	const S = 0.65;
+	const grip = 262 * S;
+	const theta = (1 - up) * Math.acos(Math.min(1, (900 - hand[1]) / grip));
+	const base = f > 74 ? [740 + 40, 900] : [hand[0] - Math.sin(theta) * grip, 900];
 	const cam = usePush(camOn(820, 580, 1.2), camOn(900, 560, 1.35));
-	const hand: [number, number] = [wk.x + 70, FL - 157 + 40 - 30 * drop];
 	return (
 		<Stage cam={cam} bg="#cfe4ea" light={{x: 30, y: 0, o: 0.45, c: '255,250,235'}}>
 			<Layer depth={1.4}>
 				<Clinic />
 			</Layer>
 			<Layer depth={1}>
+				<Prop3D
+					x={240}
+					y={600}
+					w={760}
+					h={320}
+					make={() => {
+						const scene = propScene();
+						const s = makeSuitcase();
+						s.scale.setScalar(S);
+						scene.add(s);
+						return {scene, s};
+					}}
+					update={(wd) => {
+						at(wd.s, base[0], base[1], -20);
+						wd.s.rotation.set(0, -0.35, -theta);
+					}}
+				/>
 				<Svg>
 					<Recliner x={RX} />
 					<Actor who="clinic" x={RX + 260} floor={FL} s={1} facing={-1} faceTurn={0.4} look={[-0.6, 0]} mouth="smile" pose={gesture('presentF', idle(gf, 9), env(f, 20, 1e9, 10, 1), f)} uid="clinic-35" />
@@ -178,39 +203,25 @@ const C035: React.FC = () => {
 					<HeroBadge x={wk.x} y={badgeY(FL) - wk.bob} s={0.8} />
 					<Tag f={f} t={6} x={820} y={300} text="THE BEST CLINIC" c="#11142c" fg="#9fd8ff" stroke="#9fd8ff" size={34} rot={-3} />
 				</Svg>
-				<Prop3D
-					x={300}
-					y={560}
-					w={700}
-					h={360}
-					make={() => {
-						const scene = propScene();
-						const s = makeSuitcase();
-						scene.add(s);
-						return {scene, s};
-					}}
-					update={(wd) => {
-						const placed = f > 64;
-						at(wd.s, placed ? 845 : hand[0], placed ? 900 : hand[1] + 150, 30);
-						wd.s.rotation.set(0.15, -0.5, placed ? 0 : -0.1);
-					}}
-				/>
 			</Layer>
 		</Stage>
 	);
 };
+/* the doctor puts the mask over his mouth and nose; the hose runs unbroken to the tank valve */
 const C035b: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
-	const put = interpolate(f, [8, 26], [0, 1], {...clamp, easing: ease});
+	const put = interpolate(f, [8, 28], [0, 1], {...clamp, easing: ease});
 	const hx = RX + 20;
 	const seat = 808;
-	const mouth: [number, number] = [hx + 34, seat - 164 + 22];
-	// the doctor brings the mask from the tank to his face
-	const mask: [number, number] = [mouth[0] + 160 * (1 - put), mouth[1] - 60 * (1 - put)];
-	const dx = RX + 230;
-	const dpose = reach(idle(gf, 9), 'F', [dx - mask[0] - 20, mask[1] - (FL - 157)], put < 1 ? 1 : 0.6);
+	const hpose: Pose = {...SIT, lean: -10, armF: [30, 50], armB: [20, 50]};
+	const m = mouthAt(hx, seat, hpose, 1, 1, 0.4);
+	const on: [number, number] = [m.x + 2, m.y - 6];
+	const mask: [number, number] = [on[0] + 150 * (1 - put), on[1] - 40 * (1 - put)];
+	const dx = RX + 210;
+	const dpose = reach(idle(gf, 9), 'F', [dx - (mask[0] + 22), mask[1] - (FL - 157)], put < 1 ? 1 : env(f, 28, 40, 1, 12) * 0 + (f < 40 ? 1 : 0.0));
 	const calm = f > w('035', 0.9);
+	const VALVE: [number, number] = [1330, 600];
 	const cam = camPath(f, [
 		[0, camOn(1080, 560, 1.3)],
 		[30, camOn(1060, 520, 1.6, {farBlur: 7})],
@@ -224,30 +235,30 @@ const C035b: React.FC = () => {
 			<Layer depth={1}>
 				<Svg>
 					<Recliner x={RX} />
-					<Actor who="hero" x={hx} floor={FL} seat={seat} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0]} expr={calm ? 'sleepy' : 'normal'} pose={{...SIT, lean: -10, armF: [30, 50], armB: [20, 50]}} uid="h-035b" />
+					<Actor who="hero" x={hx} floor={FL} seat={seat} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0]} expr={calm ? 'sleepy' : 'normal'} pose={hpose} uid="h-035b" />
 					<Actor who="clinic" x={dx} floor={FL} s={1} facing={-1} faceTurn={0.4} look={[-0.7, 0.2]} mouth="smile" pose={dpose} uid="clinic-35b" />
 					<HeroBadge x={hx} y={seat - 164 - 118} s={0.8} />
 					{calm ? <Tag f={f} t={w('035', 0.9)} x={1060} y={300} text="SILENCE" c="#1d3a2a" fg="#9ff0b0" stroke="#3fcf7a" size={44} rot={-3} /> : null}
 				</Svg>
 				<Prop3D
-					x={980}
+					x={900}
 					y={420}
-					w={480}
+					w={560}
 					h={500}
 					make={() => {
 						const scene = propScene();
 						const tank = makeGasTank();
-						at(tank, 1330, 900, -40);
-						tank.rotation.x = 0.1;
-						const m = makeMask();
-						scene.add(tank, m);
-						return {scene, m, hose: null as THREE.Object3D | null};
+						at(tank, VALVE[0], 900, -40);
+						const mk = makeMask();
+						mk.scale.setScalar(0.85);
+						scene.add(tank, mk);
+						return {scene, mk, hose: null as THREE.Object3D | null};
 					}}
 					update={(wd) => {
-						at(wd.m, mask[0], mask[1], 40);
-						wd.m.rotation.set(0, Math.PI / 2, 0);
+						at(wd.mk, mask[0], mask[1], 60);
+						wd.mk.rotation.set(0, 0.25, 0);
 						if (wd.hose) wd.scene.remove(wd.hose);
-						wd.hose = makeHose([T(mask[0] + 22, mask[1] + 10, 40), T(mask[0] + 90, mask[1] + 140, 30), T(1290, 700, 0), T(1330, 610, -10)]);
+						wd.hose = makeHose([T(mask[0], mask[1] + 14, 60), T(mask[0] + 10, mask[1] + 110, 50), T((mask[0] + VALVE[0]) / 2, 800, 20), T(VALVE[0] - 30, 660, -20), T(VALVE[0], VALVE[1] - 4, -40)]);
 						wd.scene.add(wd.hose);
 					}}
 				/>
@@ -312,7 +323,9 @@ const C037: React.FC = () => {
 	const pour = w('037', 0.42);
 	const hx = 930;
 	const read = f < pour + 10;
-	const hp = read ? reach(reach(idle(gf, 2), 'F', [70, -120], 1), 'B', [60, -116], 1) : gesture('handsOnHead', idle(gf, 2), env(f, pour + 14, 1e9, 10, 1), f);
+	// a newspaper held open in both hands in front of the chest
+	const P: [number, number] = [hx + 60, FL - 157 - 104];
+	const hp = read ? reach(reach(idle(gf, 2), 'F', [P[0] - hx + 40, P[1] - (FL - 157) + 4], 1), 'B', [P[0] - hx - 30, P[1] - (FL - 157) + 6], 1) : gesture('handsOnHead', idle(gf, 2), env(f, pour + 14, 1e9, 10, 1), f);
 	const cam = camPath(f, [
 		[0, camOn(980, 500, 1.5, {farBlur: 7})],
 		[pour - 6, camOn(1000, 520, 1.45)],
@@ -349,12 +362,11 @@ const C037: React.FC = () => {
 					}}
 					update={(wd, ff) => {
 						wd.paper.visible = read;
-						at(wd.paper, hx + 64, FL - 157 - 130, 50);
-						wd.paper.rotation.set(0.05, -0.55, 0.05);
-						wd.paper.scale.setScalar(0.5);
+						at(wd.paper, P[0], P[1], 50);
+						wd.paper.rotation.set(0.05, -0.35, 0.03);
+						wd.paper.scale.setScalar(0.32);
 						wd.env.forEach((e, i) => {
-							const t0 = pour + i * 0.9;
-							const t = ff - t0;
+							const t = ff - (pour + i * 0.9);
 							e.visible = t >= 0;
 							if (t < 0) return;
 							const vx = -(5 + random('ev' + i) * 9);
@@ -365,10 +377,9 @@ const C037: React.FC = () => {
 							let y = SLOT[1] + vy * t + 0.5 * g * t * t;
 							const landed = y >= floorY;
 							if (landed) {
-								const tl = (floorY - SLOT[1]) / 1;
-								void tl;
 								y = floorY;
-								x = Math.max(hx - 160, SLOT[0] + vx * Math.sqrt((2 * (floorY - SLOT[1])) / g));
+								const tl = (-vy + Math.sqrt(vy * vy + 2 * g * (floorY - SLOT[1]))) / g;
+								x = Math.max(hx - 160, SLOT[0] + vx * tl);
 							}
 							at(e, x, y, 20 + (i % 7) * 6);
 							e.rotation.set(landed ? -1.3 : t * 0.3 * (i % 2 ? 1 : -1), 0, landed ? random('er' + i) * 2 : t * 0.2);
@@ -388,8 +399,38 @@ const C038: React.FC = () => {
 	const b2 = w('038', 0.56);
 	const beat = f < b1 ? 0 : f < b2 ? 1 : 2;
 	const hx = beat < 2 ? 980 : 640;
-	const mouth: [number, number] = [hx + 40, FL - 157 - 150];
-	const hp = beat === 0 ? reach(idle(gf, 2), 'F', [mouth[0] - hx + 10, mouth[1] - (FL - 157) + 10], 1) : beat === 1 ? reach(reach(idle(gf, 2), 'F', [mouth[0] - hx - 4, mouth[1] - (FL - 157) - 4], 1), 'B', [40, -40], 1) : idle(gf, 2);
+	const base = idle(gf, 2);
+	const m = mouthAt(hx, FL - 157, base, 1, 1, 0.4);
+	const o = FL - 157;
+	let hp: Pose = base;
+	let jar: [number, number] = [0, 0];
+	let jarRot = 0;
+	let spoonB: [number, number] = [0, 0];
+	let spoonH: [number, number] = [0, 0];
+	let chew = false;
+	if (beat === 0) {
+		// both hands bring the pickle jar up and tilt it to the lips
+		const lift = interpolate(f, [4, 16], [0, 1], {...clamp, easing: ease});
+		const tilt = interpolate(f, [16, 24, b1 - 8, b1 - 2], [0, 1, 1, 0], clamp);
+		const L = 128 * 0.55;
+		jarRot = tilt * 1.85;
+		const chest: [number, number] = [hx + 58, o - 60];
+		const drink: [number, number] = [m.x + Math.sin(jarRot) * L, m.y + Math.cos(jarRot) * L - 4];
+		jar = [chest[0] + (drink[0] - chest[0]) * Math.max(lift * 0.6, tilt), chest[1] + (drink[1] - chest[1]) * Math.max(lift * 0.6, tilt)];
+		const mid: [number, number] = [jar[0] - Math.sin(jarRot) * L * 0.5, jar[1] - Math.cos(jarRot) * L * 0.5];
+		hp = reach(reach(base, 'F', [mid[0] - hx + 18, mid[1] - o + 6], 1), 'B', [mid[0] - hx - 18, mid[1] - o + 10], 1);
+	} else if (beat === 1) {
+		// jar in the back hand at the chest; the front hand dips the spoon and brings it to the mouth
+		jar = [hx + 40, o - 30];
+		const t = f - b1;
+		const dip: [number, number] = [jar[0] + 4, jar[1] - 64];
+		const k = interpolate(t, [2, 10, 18, 26], [0, 1, 1, 0], clamp);
+		const toMouth = interpolate(t, [12, 22, 30, 36], [0, 1, 1, 0.3], clamp);
+		spoonB = [dip[0] + (m.x + 2 - dip[0]) * toMouth, dip[1] + (m.y - dip[1]) * toMouth + 12 * k * (1 - toMouth)];
+		spoonH = [spoonB[0] + 46, spoonB[1] + 26];
+		chew = t > 26;
+		hp = reach(reach(base, 'B', [jar[0] - hx - 6, jar[1] - o + 24], 1), 'F', [spoonH[0] - hx, spoonH[1] - o], 1);
+	}
 	const pivot = (900 + FL - 371) / 2;
 	const cam = camPath(f, [
 		[0, camOn(1000, 500, 1.6, {farBlur: 7})],
@@ -406,13 +447,12 @@ const C038: React.FC = () => {
 			<Layer depth={1}>
 				<Svg>
 					{beat < 2 ? (
-						<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.4, -0.3]} expr="sleepy" mouth={beat === 1 ? 'flat' : 'open'} pose={hp} uid="h-038" />
+						<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.4, -0.2]} expr="sleepy" mouth={beat === 1 ? (chew ? (Math.floor(f / 4) % 2 ? 'flat' : 'smile') : 'open') : 'open'} pose={hp} uid="h-038" />
 					) : (
 						<g transform={`rotate(180 ${hx} ${pivot})`}>
 							<Actor who="hero" x={hx} floor={FL} s={HS} facing={-1} faceTurn={0.4} look={[0.4, 0]} expr="worried" pose={{lean: 0, head: 0, armB: [-150, 20], armF: [150, -20], legB: [-4, 0], legF: [6, 0]}} shadow={false} uid="h-038b" />
 						</g>
 					)}
-					{beat === 2 ? <rect x={hx - 140} y={pivot * 2 - 900 - 40} width={10} height={420} fill="#d8c09a" opacity={0} /> : null}
 					<HeroBadge x={beat < 2 ? hx : hx + 170} y={beat < 2 ? badgeY(FL) : 380} s={0.8} />
 					<Tag f={f} t={4} x={1300} y={320} text="PICKLE JUICE" c="#11142c" fg="#9ff0b0" stroke="#9ff0b0" size={34} rot={4} until={b1 - 2} />
 					<Tag f={f} t={b1 + 2} x={1300} y={320} text="PEANUT BUTTER" c="#11142c" fg="#ffd34a" size={34} rot={-4} until={b2 - 2} />
@@ -436,14 +476,17 @@ const C038: React.FC = () => {
 							wd.pickle.visible = beat === 0;
 							wd.pb.visible = beat === 1;
 							wd.spoon.visible = beat === 1;
-							at(wd.pickle, mouth[0] + 26, mouth[1] + 30, 40);
-							wd.pickle.rotation.set(0.1, 0, 1.15);
-							wd.pickle.scale.setScalar(0.7);
-							at(wd.pb, hx + 60, FL - 157 - 10, 40);
-							wd.pb.scale.setScalar(0.6);
+							at(wd.pickle, jar[0], jar[1], 40);
+							wd.pickle.rotation.set(0.1, 0, jarRot);
+							wd.pickle.scale.setScalar(0.55);
+							at(wd.pb, jar[0], jar[1], 40);
+							wd.pb.scale.setScalar(0.5);
 							wd.pb.rotation.set(0.25, -0.4, 0);
-							at(wd.spoon, mouth[0] - 2, mouth[1] + 10, 50);
-							wd.spoon.rotation.set(0, 0, -1.2);
+							const dx = spoonB[0] - spoonH[0];
+							const dy = -(spoonB[1] - spoonH[1]);
+							at(wd.spoon, spoonB[0], spoonB[1], 60);
+							wd.spoon.rotation.set(0, 0, Math.atan2(-dx, dy));
+							wd.spoon.scale.setScalar(0.85);
 						}}
 					/>
 				) : null}
@@ -577,8 +620,11 @@ const C040c: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
 	const hx = 900;
-	const mouth: [number, number] = [hx + 46, FL - 157 - 150];
-	const hp = reach(idle(gf, 2), 'F', [mouth[0] - hx + 20, mouth[1] - (FL - 157) + 70], 1);
+	const base = idle(gf, 2);
+	const m = mouthAt(hx, FL - 157, base, 1, 1, 0.4);
+	// he holds the glass at chest height; the straw runs from the glass to his lips
+	const G: [number, number] = [hx + 62, FL - 157 - 40];
+	const hp = reach(base, 'F', [G[0] - hx - 4, G[1] - (FL - 157) - 20], 1);
 	const cam = usePush(camOn(960, 500, 1.5, {farBlur: 7}), camOn(960, 480, 1.7, {farBlur: 8}));
 	return (
 		<Stage cam={cam} bg="#d4dee8" light={{x: 30, y: 0, o: 0.4, c: '235,245,255'}}>
@@ -599,68 +645,17 @@ const C040c: React.FC = () => {
 					make={() => {
 						const scene = propScene();
 						const g = makeWaterGlass();
-						const s = makeStraw();
+						g.scale.setScalar(0.55);
+						const s = makeThinStraw();
 						scene.add(g, s);
 						return {scene, g, s};
 					}}
 					update={(wd) => {
-						const gx = mouth[0] + 40;
-						const gy = mouth[1] + 190;
-						at(wd.g, gx, gy, 20);
+						at(wd.g, G[0], G[1] + 30, 20);
 						wd.g.rotation.x = 0.15;
-						at(wd.s, gx, gy - 20, 30);
-						wd.s.rotation.set(0, 0, 0.35);
-						wd.s.scale.setScalar(0.95);
+						setStraw(wd.s, [G[0] + 4, G[1] + 6], [m.x + 2, m.y + 2], 40);
 					}}
 				/>
-			</Layer>
-		</Stage>
-	);
-};
-
-/* ---------- 041 the subscribe ask ---------- */
-const C041: React.FC = () => {
-	const {f, gf} = useShot();
-	const w = useW();
-	const press = env(f, w('041', 0.2), w('041', 0.38), 6, 8);
-	const hx = 700;
-	const hp = reach(idle(gf, 2), 'F', [150, -120 + 20 * press], env(f, w('041', 0.1), w('041', 0.45), 8, 10));
-	const cam = usePush(camOn(960, 560, 1.15), camOn(960, 540, 1.3));
-	return (
-		<Stage cam={cam} bg="#3a1a5a" light={{x: 50, y: 30, o: 0.4}}>
-			<Layer depth={1.3}>
-				<Svg>
-					<rect x={-400} y={-300} width={2800} height={1600} fill="#4a1f6a" />
-					{Array.from({length: 22}).map((_, i) => (
-						<polygon key={i} points={`960,540 ${960 + Math.cos((i / 22) * Math.PI * 2 + f / 200) * 2000},${540 + Math.sin((i / 22) * Math.PI * 2 + f / 200) * 2000} ${960 + Math.cos(((i + 0.5) / 22) * Math.PI * 2 + f / 200) * 2000},${540 + Math.sin(((i + 0.5) / 22) * Math.PI * 2 + f / 200) * 2000}`} fill="#6a2f8a" />
-					))}
-					<rect x={-400} y={900} width={2800} height={400} fill="#2a103a" />
-				</Svg>
-			</Layer>
-			<Layer depth={1}>
-				<Prop3D
-					x={820}
-					y={420}
-					w={620}
-					h={260}
-					make={() => {
-						const scene = propScene();
-						const b = makeSubButton();
-						at(b, 1120, 560, 0);
-						scene.add(b);
-						return {scene, b};
-					}}
-					update={(wd) => {
-						at(wd.b, 1120, 560, -18 * press);
-						wd.b.rotation.set(0.12, -0.3, 0);
-						wd.b.scale.set(1, 1, 1 - 0.3 * press);
-					}}
-				/>
-				<Svg>
-					<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.6, -0.1]} mouth="smile" pose={hp} uid="h-041" />
-					<HeroBadge x={hx} y={badgeY(FL)} s={0.8} />
-					<Tag f={f} t={w('041', 0.6)} x={1120} y={780} text="YOU'RE WAY BEHIND" c="#11142c" fg="#ffd34a" size={36} rot={-3} />
-				</Svg>
 			</Layer>
 		</Stage>
 	);
@@ -681,6 +676,5 @@ export const SHOTS_C: ShotDef[] = [
 	{at: '040', C: C040, whip: true},
 	{at: '040', off: 80, C: C040b, whip: true},
 	{at: '040', off: 166, C: C040c, whip: true},
-	{at: '041', C: C041, whip: true},
 ];
 export {hicAgo};

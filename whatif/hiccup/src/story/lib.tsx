@@ -74,3 +74,15 @@ export const jolt = (f: number, ts: number[]) => {
 	}
 	return k;
 };
+/* where a stickman's head centre / mouth are in the world (oy = body origin y: floor - 157·s, or the seat) */
+export const headAt = (x: number, oy: number, pose: Pose, s = 1, facing: 1 | -1 = 1) => {
+	const a = (pose.lean * Math.PI) / 180;
+	return {x: x + Math.sin(a) * 164 * s * facing, y: oy - Math.cos(a) * 164 * s};
+};
+export const mouthAt = (x: number, oy: number, pose: Pose, s = 1, facing: 1 | -1 = 1, faceTurn = 0.4) => {
+	const h = headAt(x, oy, pose, s, facing);
+	const a = ((pose.head + pose.lean * 0.25) * Math.PI) / 180;
+	const lx = faceTurn * 11 * 0.7 + 2;
+	const ly = 24;
+	return {x: h.x + (lx * Math.cos(a) - ly * Math.sin(a)) * s * facing, y: h.y + (lx * Math.sin(a) + ly * Math.cos(a)) * s};
+};

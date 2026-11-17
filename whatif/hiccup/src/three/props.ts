@@ -287,8 +287,10 @@ export const makeGasTank = () => {
 };
 export const makeMask = () => {
 	const g = new THREE.Group();
-	const cup = mesh(new THREE.SphereGeometry(1, 20, 14, 0, Math.PI * 2, 0, Math.PI / 2), toon('#dff2fa', {transparent: true, opacity: 0.8}), [0, 0, 0], [-Math.PI / 2, 0, 0], [26, 22, 30]);
+	const cup = mesh(new THREE.SphereGeometry(1, 20, 14, 0, Math.PI * 2, 0, Math.PI / 2), toon('#dff2fa', {transparent: true, opacity: 0.75, depthWrite: false}), [0, 0, 0], [-Math.PI / 2, 0, 0], [26, 22, 22]);
+	cup.userData.noInk = true;
 	g.add(cup);
+	g.add(mesh(new THREE.CylinderGeometry(6, 6, 10, 12), toon('#9aa0ae'), [0, -24, 8]));
 	g.add(mesh(new THREE.TorusGeometry(26, 3, 8, 24), toon('#9aa0ae'), [0, 0, 0], undefined, [1, 22 / 26, 1]));
 	return inkPx(g, 2);
 };
@@ -299,11 +301,29 @@ export const makeHose = (pts: THREE.Vector3[]) => {
 };
 export const makeSuitcase = () => {
 	const g = new THREE.Group();
-	g.add(mesh(rbox(110, 150, 50, 10), toon('#c0503a'), [0, 75, 0]));
-	g.add(mesh(new THREE.TorusGeometry(18, 5, 8, 16, Math.PI), toon('#2a2a34'), [0, 152, 0]));
-	g.add(mesh(new THREE.BoxGeometry(60, 30, 4), toon('#f4f1e6'), [-10, 100, 27], [0, 0, 0.12]));
-	for (const x of [-40, 40]) g.add(mesh(new THREE.CylinderGeometry(7, 7, 10, 12), toon('#1b1a26'), [x, 4, 0], [Math.PI / 2, 0, 0]));
+	g.add(mesh(rbox(110, 150, 56, 10), toon('#c0503a'), [0, 85, 0]));
+	g.add(mesh(new THREE.BoxGeometry(60, 30, 4), toon('#f4f1e6'), [-10, 100, 30], [0, 0, 0.12]));
+	for (const x of [-34, 34]) g.add(mesh(new THREE.CylinderGeometry(4, 4, 104, 10), toon('#6a6a78'), [x * 0.5, 210, -20]));
+	g.add(mesh(rbox(50, 12, 12, 4), toon('#2a2a34'), [0, 262, -20]));
+	for (const x of [-40, 40]) g.add(mesh(new THREE.CylinderGeometry(9, 9, 12, 14), toon('#1b1a26'), [x, 9, 0], [Math.PI / 2, 0, 0]));
 	return inkPx(g, 2.4);
+};
+/* a thin drinking straw between two world points (call setStraw each frame) */
+export const makeThinStraw = () => {
+	const g = new THREE.Group();
+	const t = mesh(new THREE.CylinderGeometry(3.2, 3.2, 1, 10), toon('#f4f6fa'));
+	const ring = mesh(new THREE.CylinderGeometry(6, 6, 8, 12), toon('#3d6fd6'), [0, -0.3, 0]);
+	g.add(t, ring);
+	g.userData = {t, ring};
+	return inkPx(g, 1.6);
+};
+export const setStraw = (g: THREE.Group, a: [number, number], b: [number, number], z = 30) => {
+	const ax = a[0], ay = -a[1], bx = b[0], by = -b[1];
+	const L = Math.hypot(bx - ax, by - ay);
+	g.position.set((ax + bx) / 2, (ay + by) / 2, z);
+	g.rotation.set(0, 0, Math.atan2(-(bx - ax), by - ay));
+	(g.userData.t as THREE.Mesh).scale.set(1, L, 1);
+	(g.userData.ring as THREE.Mesh).position.set(0, -L * 0.3, 0);
 };
 /* wall timer with a digital screen; set(text) redraws */
 export type Timer = THREE.Group & {userData: {set: (t: string, c?: string) => void}};
