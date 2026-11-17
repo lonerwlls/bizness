@@ -348,7 +348,7 @@ export const Stickman: React.FC<Props> = (p) => {
 						</>
 					) : null}
 					{p.chestText ? (
-						<g transform={`translate(4,${torsoTop + 40}) rotate(-4)`}>
+						<g transform={`translate(4,${torsoTop + 40}) rotate(-4) scale(${facing},1)`}>
 							<rect x={-26} y={-10} width={52} height={20} rx={3} fill="#fbfaf4" stroke="#c94a3a" strokeWidth={2} />
 							<text x={0} y={5} textAnchor="middle" fontSize={10} fontFamily="'Rubik', sans-serif" fontWeight={900} fill="#c94a3a">{p.chestText}</text>
 						</g>

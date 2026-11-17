@@ -3,10 +3,13 @@ import {AbsoluteFill, Freeze, getInputProps} from 'remotion';
 import {StationShort} from './Station';
 import {Station2Short} from '../station2/Station2';
 import {Station3Short} from '../station3/Station3';
+import {Turn1} from '../turnstile/Part1';
+import {Turn2} from '../turnstile/Part2';
+import {Turn3} from '../turnstile/Part3';
 // лист кадров для проверки: --props='{"frames":[...]}'
 export const StationSheet: React.FC = () => {
 	const {frames = [0], comp = 'Station'} = getInputProps() as {frames?: number[]; comp?: string};
-	const C = comp === 'Station3' ? Station3Short : comp === 'Station2' ? Station2Short : StationShort;
+	const C = comp === 'Turn3' ? Turn3 : comp === 'Turn2' ? Turn2 : comp === 'Turn1' ? Turn1 : comp === 'Station3' ? Station3Short : comp === 'Station2' ? Station2Short : StationShort;
 	const cols = 4, w = 1080 / cols * 2, h = w * 16 / 9;
 	return (
 		<AbsoluteFill style={{background: '#111'}}>
