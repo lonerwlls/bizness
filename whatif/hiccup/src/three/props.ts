@@ -358,7 +358,8 @@ export const makeNewspaper = (headline: string[], sub: string) => {
 	g.add(mesh(new THREE.BoxGeometry(300, 400, 3), [toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), new THREE.MeshBasicMaterial({map: tex}), toon('#e8e0cc')]));
 	return inkPx(g, 2.4);
 };
-const envTex = paint(128, 80, (c) => {
+let envTexC: THREE.Texture | null = null;
+const envTex = () => (envTexC ??= paint(128, 80, (c) => {
 	c.fillStyle = '#fbf8ee';
 	c.fillRect(0, 0, 128, 80);
 	c.strokeStyle = '#b8b0a0';
@@ -370,9 +371,9 @@ const envTex = paint(128, 80, (c) => {
 	c.stroke();
 	c.fillStyle = '#d23b3b';
 	c.fillRect(100, 8, 18, 22);
-});
+}));
 export const makeEnvelope = () => {
-	const m = mesh(new THREE.BoxGeometry(64, 40, 2), [toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), new THREE.MeshBasicMaterial({map: envTex}), toon('#fbf8ee')]);
+	const m = mesh(new THREE.BoxGeometry(64, 40, 2), [toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), toon('#e8e0cc'), new THREE.MeshBasicMaterial({map: envTex()}), toon('#fbf8ee')]);
 	return inkPx(m, 1.6);
 };
 /* jar on y = 0: pickles or peanut butter */
