@@ -24,3 +24,4 @@
 | kaicenat/05_stopped_scooter_robbery.mp4 | A Lady on a Mobility Scooter Robbed Someone at Gunpoint… Kai Stepped In 🦸 |
 | kaicenat/06_jason_lucia_sunset_date.mp4 | Jason & Lucia's First Date in GTA 6… Chat Thinks She's Cheating 👀🌅 |
 | kaicenat/07_morning_after_cutscene.mp4 | Jason Asked for "5 Minutes"… Lucia Said NO 😭 |
+| kaicenat/08_wrong_way_highway_crash.mp4 | Kai Drove the WRONG WAY on the GTA 6 Highway 💥 |
