@@ -1,7 +1,9 @@
 // Лист котика: npx remotion still src/crypto/index.tsx Kitty-sheet out/kitty.png
+// Ролик: npx remotion render src/crypto/index.tsx Fin-pizza out/pizza.mp4
 import React from "react";
 import { Composition, registerRoot, AbsoluteFill, staticFile, delayRender, continueRender } from "remotion";
 import { Kitty, Hat, Mood } from "./Kitty";
+import { PizzaShort, PIZZA_DUR, FPS } from "./pizza";
 
 if (typeof document !== "undefined") {
   const h = delayRender("fonts");
@@ -34,5 +36,10 @@ const Sheet: React.FC = () => (
   </AbsoluteFill>
 );
 
-const Root: React.FC = () => <Composition id="Kitty-sheet" component={Sheet} width={1080} height={1350} fps={30} durationInFrames={1} />;
+const Root: React.FC = () => (
+  <>
+    <Composition id="Kitty-sheet" component={Sheet} width={1080} height={1350} fps={30} durationInFrames={1} />
+    <Composition id="Fin-pizza" component={PizzaShort} width={1080} height={1920} fps={FPS} durationInFrames={PIZZA_DUR * FPS} />
+  </>
+);
 registerRoot(Root);

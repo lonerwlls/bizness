@@ -5,9 +5,14 @@ import React from "react";
 export type Hat = "top" | "beanie" | "cap" | "none";
 export type Mood = "calm" | "happy" | "sad" | "shock";
 
-const FUR = "#f0a35a", FUR_D = "#d9803a", FUR_L = "#f8c58c", CREAM = "#fff3e2", INK = "#4a2a14", PINK = "#f59aa6";
+const COATS = {
+  ginger: ["#f0a35a", "#d9803a", "#f8c58c"],
+  gray: ["#a9b0bd", "#7d8596", "#d3d8e0"],
+} as const;
+const CREAM = "#fff3e2", INK = "#4a2a14", PINK = "#f59aa6";
 
-export const Kitty: React.FC<{ hat?: Hat; mood?: Mood; t?: number; id?: string }> = ({ hat = "top", mood = "calm", t = 0, id = "k" }) => {
+export const Kitty: React.FC<{ hat?: Hat; mood?: Mood; t?: number; id?: string; coat?: keyof typeof COATS; noShadow?: boolean }> = ({ hat = "top", mood = "calm", t = 0, id = "k", coat = "ginger" }) => {
+  const [FUR, FUR_D, FUR_L] = COATS[coat];
   // моргание раз в ~3,3 с и лёгкое дыхание
   const bl = t % 100;
   const blink = bl > 94 ? Math.abs(97 - bl) / 3 : 1;
