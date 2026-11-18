@@ -5,7 +5,7 @@ STATE = W + "/state.json"
 st = json.load(open(STATE)) if os.path.exists(STATE) else {"done": []}
 now = time.time()
 msgs = [m for m in (json.loads(l) for l in open(W + "/chat.jsonl")) if m["t"] > now - 3600] if os.path.exists(W + "/chat.jsonl") else []
-HYPE = re.compile(r"(LUL|KEKW|OMEGALUL|LMAO|LOL|ICANT|💀|😂|🤣|POG|W+\b|CLIP|NO WAY|WTF|HOLY|\?\?\?|Aware|monkaS|Sadge|o7|GG|RIP)", re.I)
+HYPE = re.compile(r"(LUL|KEKW|OMEGALUL|LMAO|LOL|ICANT|💀|😂|🤣|POG|CLIP|NO WAY|WTF|HOLY|\?\?\?|Aware|monkaS|Sadge|o7|GG|RIP)", re.I)
 BIN = 10
 bins = {}
 for m in msgs:
