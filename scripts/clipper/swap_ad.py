@@ -21,7 +21,7 @@ fc = ("[0:v]split[v1][v2];[v1]trim=end_frame=%d,setpts=PTS-STARTPTS,tpad=stop_mo
       "[1:a]aresample=48000,aformat=channel_layouts=stereo,apad=whole_dur=%.4f[ab];"
       "[x2]atrim=%.4f,asetpts=PTS-STARTPTS[ac];[aa][ab]concat=n=2:v=0:a=1[aab];"
       "[pa2][aab][pb][ac]concat=n=2:v=1:a=1[vx][ax]" % (nA, ad_d, FPS, tA, nA + oldf, tA, ad_d, tB))
-subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-i", ad, "-filter_complex", fc, "-map", "[vx]", "-map", "[ax]",
+subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-i", src, "-i", ad, "-filter_complex", fc, "-map", "[vx]", "-map", "[ax]",
                 "-c:v", "libx264", "-preset", "fast", "-crf", "19", "-r", str(FPS), "-pix_fmt", "yuv420p",
                 "-c:a", "aac", "-b:a", "160k", "-ar", "48000", "-movflags", "+faststart", out], check=True)
 print("OK", out, "%.1fs" % dur(out))
