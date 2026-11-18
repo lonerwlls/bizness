@@ -26,3 +26,4 @@
 | kaicenat/07_morning_after_cutscene.mp4 | Jason Asked for "5 Minutes"… Lucia Said NO 😭 |
 | kaicenat/08_wrong_way_highway_crash.mp4 | Kai Drove the WRONG WAY on the GTA 6 Highway 💥 |
 | kaicenat/09_swamp_monster_easter_egg.mp4 | Kai Found a MONSTER Hiding in the GTA 6 Swamp 😱 |
+| kaicenat/10_filming_angry_npc_selfie.mp4 | Kai Pulled Out His Phone and Filmed an Angry NPC… Then Took a SELFIE 🤳 |
