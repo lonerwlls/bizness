@@ -93,7 +93,22 @@ const speakerAt = (f: number) => {
 const RecutSeg: React.FC<{seg: (typeof TIMED)[number]}> = ({seg}) => {
 	const f = useCurrentFrame();
 	const dur = seg.end - seg.start;
-	if (seg.C) return <seg.C f={f} dur={dur} />;
+	const O = seg.O ? <seg.O f={f} dur={dur} /> : null;
+	if (seg.C) {
+		// native cards still live on the long's clock (ep0 + f): the hero hiccups with it
+		const gf = seg.ep0 + f;
+		const cctx = {f, gf, dur, start: seg.ep0, at: (n: string) => EL(n).from - seg.ep0, end: (n: string) => EL(n).from + EL(n).dur - seg.ep0};
+		return (
+			<TalkOverride.Provider value={() => 0}>
+				<ShotCtx.Provider value={cctx}>
+					<AngleCtx.Provider value={{k: 0, t: f, len: dur}}>
+						<seg.C f={f} dur={dur} />
+						{O}
+					</AngleCtx.Provider>
+				</ShotCtx.Provider>
+			</TalkOverride.Provider>
+		);
+	}
 	const at = (g: number) => SHOT_TIMES.find((s) => g >= s.start && g < s.end) ?? SHOT_TIMES[SHOT_TIMES.length - 1];
 	// hold: stay inside the shot the segment opened on (its last frame freezes, the crop keeps moving)
 	const gf = seg.hold ? Math.min(seg.ep0 + f, at(seg.ep0).end - 1) : seg.ep0 + f;
@@ -101,7 +116,7 @@ const RecutSeg: React.FC<{seg: (typeof TIMED)[number]}> = ({seg}) => {
 	const ctx = {f: gf - shot.start, gf, dur: shot.end - shot.start, start: shot.start, at: (n: string) => EL(n).from - shot.start, end: (n: string) => EL(n).from + EL(n).dur - shot.start};
 	const c = lerpCrop(seg.a, seg.b, interpolate(f, [0, dur], [0, 1], {...clamp, easing: ease}));
 	const C = shot.C;
-	return (
+	const crop = (
 		<CropBox c={c}>
 			<TalkOverride.Provider value={(sp, g) => talkAt(sp, g - seg.ep0 + seg.start)}>
 				<SpeakOverride.Provider value={(g) => speakerAt(g - seg.ep0 + seg.start)}>
@@ -113,6 +128,14 @@ const RecutSeg: React.FC<{seg: (typeof TIMED)[number]}> = ({seg}) => {
 				</SpeakOverride.Provider>
 			</TalkOverride.Provider>
 		</CropBox>
+	);
+	return O ? (
+		<>
+			{crop}
+			{O}
+		</>
+	) : (
+		crop
 	);
 };
 

@@ -18,7 +18,7 @@ const every = Number(args[args.indexOf('--every') + 1]) || 0;
 const list = args.includes('--frames') ? args[args.indexOf('--frames') + 1].split(',').map(Number) : null;
 
 const serveUrl = await bundle({entryPoint: path.join(ROOT, 'src', 'index.ts')});
-const target = await selectComposition({serveUrl, id: comp, chromiumOptions: {gl: 'angle'}});
+const target = await selectComposition({serveUrl, id: comp, chromiumOptions: {gl: (process.env.GL ?? 'angle')}});
 let frames = list;
 if (!frames && every) frames = Array.from({length: Math.floor(target.durationInFrames / (every * 30))}, (_, i) => Math.round((i + 0.5) * every * 30));
 if (!frames) {
@@ -35,8 +35,8 @@ if (!frames) {
 frames = frames.filter((f) => f < target.durationInFrames);
 const cols = comp === 'Long' ? (frames.length > 12 ? 5 : 4) : frames.length > 14 ? 8 : 6;
 const props = {comp, frames, cols, title: `${comp} · ${frames.length} кадров`};
-const sheet = await selectComposition({serveUrl, id: 'Sheet', inputProps: props, chromiumOptions: {gl: 'angle'}});
+const sheet = await selectComposition({serveUrl, id: 'Sheet', inputProps: props, chromiumOptions: {gl: (process.env.GL ?? 'angle')}});
 fs.mkdirSync(path.join(ROOT, 'out'), {recursive: true});
 const output = path.join(ROOT, 'out', `storyboard_${comp}.jpg`);
-await renderStill({composition: sheet, serveUrl, output, inputProps: props, imageFormat: 'jpeg', jpegQuality: 80, chromiumOptions: {gl: 'angle'}, timeoutInMilliseconds: 240000});
+await renderStill({composition: sheet, serveUrl, output, inputProps: props, imageFormat: 'jpeg', jpegQuality: 80, chromiumOptions: {gl: (process.env.GL ?? 'angle')}, timeoutInMilliseconds: 240000});
 say(`storyboard: ${path.relative(ROOT, output)} (${frames.length} frames)`);

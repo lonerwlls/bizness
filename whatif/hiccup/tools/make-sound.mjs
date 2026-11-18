@@ -430,6 +430,44 @@ for (const s of SPEC.sfx ?? []) {
 	}
 }
 
+// a recut short (spec "fromLong": true): carry the long's foley and the hero's hiccups over
+// for every stretch of the long the short shows (src/story/short-segs.json, same math as Short.tsx)
+if (SPEC.fromLong) {
+	const LT = JSON.parse(fs.readFileSync('src/story/timeline.json', 'utf8'));
+	const LS = JSON.parse(fs.readFileSync('src/story/sound.json', 'utf8'));
+	const HICS = fs.existsSync('src/story/hics.json') ? JSON.parse(fs.readFileSync('src/story/hics.json', 'utf8')) : [];
+	const SEGS = JSON.parse(fs.readFileSync('src/story/short-segs.json', 'utf8'));
+	const EL = (id) => LT.lines.find((l) => l.id.startsWith(id));
+	const LEAD = 6;
+	const segs = [];
+	SEGS.forEach((s, i) => {
+		const sl = line(s.line);
+		const start = i === 0 ? 0 : s.at !== undefined ? sl.from + s.at : sl.from - LEAD;
+		const prev = segs[i - 1];
+		const ep0 = s.cont && prev ? prev.ep0 + (start - prev.start) : s.ep ? (s.at !== undefined ? EL(s.ep).from + (s.off ?? 0) : EL(s.ep).from + (s.off ?? 0) - (i === 0 ? sl.from : LEAD)) : 0;
+		segs.push({...s, start, ep0});
+	});
+	segs.forEach((s, i) => (s.end = i + 1 < segs.length ? segs[i + 1].start : TL.total));
+	const map = (lf, want) => {
+		for (const s of segs) if (s[want] && lf >= s.ep0 && lf < s.ep0 + (s.end - s.start)) return (s.start + lf - s.ep0) / FPS;
+		return null;
+	};
+	for (const e of LS.sfx ?? []) {
+		if (e.at === 'start' || e.at === 'end') continue;
+		const t = map(EL(String(e.at).slice(0, 3)).from + (e.off ?? 0), 'sfx');
+		if (t === null) continue;
+		const a = e.amp;
+		if (e.type === 'hic') hic(t, a ?? 0.3, e.f0 ?? 210, e.pan ?? 0);
+		else if (e.type === 'thud') kick(t, a ?? 0.4);
+		else if (e.type === 'shot') shot(t, a ?? 0.4);
+		else if (e.type === 'buzz') buzz(t, t + (e.dur ?? 1), a ?? 0.012);
+		else if (e.type === 'whooshUp') whoosh(t, e.dur ?? 1, 300, 3000, a ?? 0.25);
+	}
+	for (const h of HICS) {
+		const t = map(h.f, 'hic');
+		if (t !== null) hic(t - 0.03, h.amp, h.f0, 0);
+	}
+}
 // the hero's hiccups (tools/hics.mjs), only on the long's own timeline
 if (TL_FILE.endsWith('/timeline.json') && fs.existsSync('src/story/hics.json'))
 	for (const h of JSON.parse(fs.readFileSync('src/story/hics.json', 'utf8'))) hic(h.f / FPS - 0.03, h.amp, h.f0, 0);
