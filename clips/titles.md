@@ -21,3 +21,4 @@
 | kaicenat/02_impound_fail_busted.mp4 | Kai's First Mission Went HORRIBLY Wrong 😭 |
 | kaicenat/03_came_out_car_wrecked.mp4 | Kai Got Dressed Up… Then Saw What Happened to His Car 😳 |
 | kaicenat/04_stole_granny_scooter.mp4 | Kai Stole Grandma's Scooter… and She CHASED Him 👵💨 |
+| kaicenat/05_stopped_scooter_robbery.mp4 | A Lady on a Mobility Scooter Robbed Someone at Gunpoint… Kai Stepped In 🦸 |
