@@ -31,3 +31,4 @@
 | kaicenat/12_creature_in_woods_at_night.mp4 | Something Is Living in the GTA 6 Woods at Night… 👹 |
 | kaicenat/13_bike_crash_flies_into_bushes.mp4 | Vibing on a Bike in GTA 6… Until THIS Happened 💀 |
 | kaicenat/14_plane_landing_fail.mp4 | Kai Tried to Land a Plane in GTA 6… "Perfect Landing" ✈️💥 |
+| kaicenat/15_furniture_race_with_lucia.mp4 | GTA 6 Has an IKEA Minigame… and Lucia DESTROYED Kai 🪑 |
