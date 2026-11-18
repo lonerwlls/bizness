@@ -62,7 +62,14 @@ vf = ("[0:v]split[a][b];[a]crop=%s,scale=-2:1920,crop=1080:1920,boxblur=28:2,eq=
       "%sdrawtext=fontfile=%s:textfile=%s:fontsize=78:fontcolor=white:borderw=8:bordercolor=black:line_spacing=14:x=(w-tw)/2:y=%d-th-60:text_align=C,"
       "drawtext=fontfile=%s:text='twitch.tv/skywhywalker':fontsize=40:fontcolor=white@0.85:borderw=4:bordercolor=black:x=(w-tw)/2:y=1760"
       % (crop, crop, fh, fy, fy - 6, fy + fh, "" , FONT, tmp + "/title.txt", fy, FONT))
-if CLEAN:
+CAM = os.environ.get("CAM")  # "w:h:x:y" вебки в исходнике: вебка сверху, игра снизу
+if CLEAN and CAM:
+    cw_, ch_ = [int(v) for v in CAM.split(":")[:2]]
+    camh = round(1080 * ch_ / cw_ / 2) * 2; gh = 1920 - camh
+    vf = ("[0:v]split[a][b];[a]crop=%s,scale=1080:%d,setsar=1[cam];"
+          "[b]crop=trunc(ih*1080/%d/2)*2:ih:(iw-ow)/2:0,scale=1080:%d,setsar=1[game];"
+          "[cam][game]vstack,drawbox=x=0:y=%d:w=1080:h=6:color=black@0.9:t=fill" % (CAM, camh, gh, gh, camh - 3))
+elif CLEAN:
     fy = (1920 - fh) // 2
     vf = ("[0:v]split[a][b];[a]crop=%s,scale=-2:1920,crop=1080:1920,boxblur=28:2,eq=brightness=-0.22:saturation=1.2[bg];"
           "[b]crop=%s,scale=1080:%d,setsar=1[fg];[bg][fg]overlay=0:%d" % (crop, crop, fh, fy))

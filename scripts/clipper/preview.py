@@ -1,7 +1,7 @@
 # Раскадровка эфира: кадр каждые STEP секунд в диапазоне [a, b] (unix-время) -> jpg (подписи — секунды от a)
 import sys, glob, os, subprocess, tempfile
 a, b, out = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3]; step = int(sys.argv[4]) if len(sys.argv) > 4 else 3
-segs = sorted((int(os.path.basename(p)[:-3]), p) for p in glob.glob("/tmp/clipper/buf/*.ts"))
+segs = sorted((int(os.path.basename(p)[:-3]), p) for p in glob.glob(os.environ.get("CLIPDIR", "/tmp/clipper") + "/buf/*.ts"))
 use = [x for x in segs if a - 12 <= x[0] <= b]
 lst = tempfile.mktemp(suffix=".txt")
 open(lst, "w").write("".join("file '%s'\n" % p for _, p in use))
