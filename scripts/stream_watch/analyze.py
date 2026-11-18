@@ -22,7 +22,7 @@ for b in range(lo + 3, hi + 1):
     win = [bins.get(x, [0, 0, []]) for x in range(b - 2, b + 1)]
     n = sum(w[0] for w in win); h = sum(w[1] for w in win)
     score = n / (3 * base) + 2 * h / (3 * base)
-    if n >= 3 * base * 2.0 and h >= max(3, 0.25 * n):
+    if (n >= 3 * base * 1.6 and h >= max(3, 0.3 * n)) or (n >= 3 * base * 1.1 and h >= max(3, 0.6 * n)):
         cands.append((score, b * BIN, n, h, [m for w in win for m in w[2]]))
 cands.sort(reverse=True)
 picked = []
