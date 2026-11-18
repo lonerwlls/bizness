@@ -19,3 +19,4 @@
 |---|---|
 | kaicenat/01_cant_steal_car_busted.mp4 | GTA 6 Cars Have Anti-Theft Now… Kai Found Out the Hard Way 🚔 |
 | kaicenat/02_impound_fail_busted.mp4 | Kai's First Mission Went HORRIBLY Wrong 😭 |
+| kaicenat/03_came_out_car_wrecked.mp4 | Kai Got Dressed Up… Then Saw What Happened to His Car 😳 |
