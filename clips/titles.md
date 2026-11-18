@@ -29,3 +29,4 @@
 | kaicenat/10_filming_angry_npc_selfie.mp4 | Kai Pulled Out His Phone and Filmed an Angry NPC… Then Took a SELFIE 🤳 |
 | kaicenat/11_parole_officer_threatens_lucia.mp4 | The Most HATED Character in GTA 6 Just Showed Up 😡 |
 | kaicenat/12_creature_in_woods_at_night.mp4 | Something Is Living in the GTA 6 Woods at Night… 👹 |
+| kaicenat/13_bike_crash_flies_into_bushes.mp4 | Vibing on a Bike in GTA 6… Until THIS Happened 💀 |
