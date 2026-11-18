@@ -66,8 +66,7 @@ const Doctor: React.FC<{f: number; dur: number}> = ({f}) => (
 );
 const Rate: React.FC<{f: number; dur: number}> = ({f}) => (
 	<AbsoluteFill>
-		<Chip f={f} t={30} top={250} side="r" text="20–40 PER MINUTE" bg="#ffd34a" fg="#11142c" rot={3} />
-		<Chip f={f} t={66} top={370} side="l" text="DAY & NIGHT" rot={-3} />
+		{f < 66 ? <Chip f={f} t={30} top={100} side="c" text="20–40 PER MINUTE" bg="#ffd34a" fg="#11142c" rot={-2} /> : <Chip f={f} t={66} top={100} side="c" text="DAY & NIGHT" rot={2} />}
 	</AbsoluteFill>
 );
 
