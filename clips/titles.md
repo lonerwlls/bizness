@@ -22,3 +22,4 @@
 | kaicenat/03_came_out_car_wrecked.mp4 | Kai Got Dressed Up… Then Saw What Happened to His Car 😳 |
 | kaicenat/04_stole_granny_scooter.mp4 | Kai Stole Grandma's Scooter… and She CHASED Him 👵💨 |
 | kaicenat/05_stopped_scooter_robbery.mp4 | A Lady on a Mobility Scooter Robbed Someone at Gunpoint… Kai Stepped In 🦸 |
+| kaicenat/06_jason_lucia_sunset_date.mp4 | Jason & Lucia's First Date in GTA 6… Chat Thinks She's Cheating 👀🌅 |
