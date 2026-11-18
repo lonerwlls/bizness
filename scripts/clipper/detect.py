@@ -23,7 +23,7 @@ while True:
     score = sum(users.values()); total = len(win)
     base = statistics.median(hist) if len(hist) >= 12 else 6
     hist.append(score)
-    thr = max(24, base * 2.0 + 8)
+    thr = max(40, base * 2.0 + 8)
     if score >= thr and now - last > COOLDOWN:
         last = now
         laughs = sum(1 for v in users.values() if v == 2)
