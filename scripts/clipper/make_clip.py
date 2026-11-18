@@ -8,7 +8,7 @@ start, end, out, title = float(sys.argv[1]), float(sys.argv[2]), sys.argv[3], sy
 DIR = sys.argv[5] if len(sys.argv) > 5 and not sys.argv[5].startswith("--") else "/tmp/clipper"
 CLEAN = "--titled" not in sys.argv          # по умолчанию: чистое видео без заголовка и субтитров
 NOSUBS = CLEAN or "--nosubs" in sys.argv
-AD = os.environ.get("AD", "/tmp/clipper/ad/ad.mp4")  # баннер на зелёном фоне; "" — без баннера
+AD = os.environ.get("AD", "/tmp/clipper/ad2/ad.mp4")  # баннер на зелёном фоне; "" — без баннера
 FONT = "/usr/share/fonts/opentype/inter/Inter-Black.otf"
 segs = sorted((int(os.path.basename(p)[:-3]), p) for p in glob.glob(DIR + "/buf/*.ts"))
 use = [(t, p) for t, p in segs if start - 12 <= t <= end]
@@ -83,7 +83,7 @@ if AD and os.path.exists(AD):
     mid = float(os.environ.get("AD_AT", dur / 2))
     # concat: (видео А+стоп-кадр, звук А) затем (видео B, ...) — звук баннера вставляем отдельно
     fc = ("[0:v]split[v1][v2];[v1]trim=0:%.3f,setpts=PTS-STARTPTS,tpad=stop_mode=clone:stop_duration=%.3f[pa];"
-          "[1:v]colorkey=0x00FE00:0.22:0.08,scale=1080:-2,fps=60,setpts=PTS-STARTPTS+%.3f/TB[ad];"
+          "[1:v]format=rgba,colorkey=0x00FC00:0.35:0.12,despill=type=green,scale=1080:-2,fps=60,setpts=PTS-STARTPTS+%.3f/TB[ad];"
           "[pa][ad]overlay=0:(H-h)/2:eof_action=pass,format=yuv420p[pa2];"
           "[v2]trim=%.3f,setpts=PTS-STARTPTS,format=yuv420p[pb];"
           "[0:a]asplit[x1][x2];[x1]atrim=0:%.3f,asetpts=PTS-STARTPTS[aa];"
