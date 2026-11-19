@@ -60,5 +60,5 @@ for score, t, n, h, texts in picked[:5]:
 json.dump(st, open(STATE, "w"))
 # чистим старые куски (> 40 мин)
 for p in segs:
-    if now - seg_t(p) > 2400: os.remove(p)
+    if now - seg_t(p) > 7200: os.remove(p)
 print("chat msgs:", len(msgs), "base/10s:", base, "segments:", len(segs))
