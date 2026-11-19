@@ -315,7 +315,7 @@ export const Stool: React.FC<{x: number}> = ({x}) => (
 /* ================================ CLOSE-UPS ================================ */
 /* the hero's hand, big (fingers up). tip = 0..1 how much of the index fingertip exists
    (0 → missing, white dressing-free cartoon stump, no blood); nail appears after 0.85 */
-export const BigHand: React.FC<{tip: number; glow?: number}> = ({tip, glow = 0}) => {
+export const BigHand: React.FC<{tip: number; glow?: number; sleeve?: string; cuff?: string}> = ({tip, glow = 0, sleeve = '#eef2f8', cuff = '#d8dce6'}) => {
 	const skin = '#f2c9a5';
 	const ink = '#2a1a14';
 	const fingers = [
@@ -328,8 +328,8 @@ export const BigHand: React.FC<{tip: number; glow?: number}> = ({tip, glow = 0})
 	return (
 		<g>
 			{/* sleeve */}
-			<rect x={-150} y={170} width={300} height={140} rx={20} fill="#eef2f8" stroke={ink} strokeWidth={8} />
-			<rect x={-150} y={170} width={300} height={34} fill="#d8dce6" stroke={ink} strokeWidth={8} />
+			<rect x={-150} y={170} width={300} height={140} rx={20} fill={sleeve} stroke={ink} strokeWidth={8} />
+			<rect x={-150} y={170} width={300} height={34} fill={cuff} stroke={ink} strokeWidth={8} />
 			{/* palm */}
 			<rect x={-120} y={-30} width={240} height={220} rx={70} fill={skin} stroke={ink} strokeWidth={8} />
 			{/* thumb */}

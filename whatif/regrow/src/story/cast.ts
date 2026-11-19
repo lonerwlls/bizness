@@ -24,6 +24,10 @@ export const CAST: Record<string, CastMember> = {
 	teen: {color: '#6a6a7a', outfit: 'hoodie', head: 'peach', skin: '#f2d0b5', hair: 'spiky', hairColor: '#2a1a12', rim: '#e0ecff', rimW: 2.4, shoe: '#f4f6fb', legColor: '#2a2f4a'},
 	reyes: {color: '#3d5fb0', outfit: 'tee', head: 'peach', skin: '#b97a52', hair: 'ponytail', hairColor: '#1d1d24', acc: ['lashes'], rim: '#e0ecff', rimW: 2.4, shoe: '#f4f6fb', legColor: '#3d5fb0'},
 	morgan: {color: '#5a4030', outfit: 'suit', head: 'peach', skin: '#f2d0b5', hair: 'short', hairColor: '#3a2418', acc: ['mustache'], rim: '#f6e6c8', rimW: 2.4, shoe: '#1b1208', legColor: '#4a3428'},
+	illingworth: {color: '#4a7a5a', outfit: 'dress', accent: '#e8d8b0', head: 'peach', skin: '#f2d0b5', hair: 'bob', hairColor: '#c8c8d0', acc: ['glasses', 'lashes'], rim: '#f6e6c8', rimW: 2.4, shoe: '#3a2a22', legColor: '#f2d0b5'},
+	boy74: {color: '#d86a2a', outfit: 'tee', head: 'peach', skin: '#f2d0b5', hair: 'short', hairColor: '#8a5a2a', rim: '#fff0e0', rimW: 2.4, shoe: '#3a2a22', legColor: '#3a5a8a'},
+	kyodoc: {color: '#2d3a6a', outfit: 'vest', accent: '#e8ecf2', head: 'peach', skin: '#f0d4b4', hair: 'short', hairColor: '#15151c', acc: ['glasses'], rim: '#e0ecff', rimW: 2.4, shoe: '#1d1d24', legColor: '#2d3a6a'},
+	kyopat: {color: '#7a8aa8', outfit: 'tee', head: 'peach', skin: '#e8c4a0', hair: 'grey', hairColor: '#d0d0d8', rim: '#e0ecff', rimW: 2.4, shoe: '#3a2a22', legColor: '#3a3a4a'},
 	kid1: {color: '#3aa37a', head: 'peach', skin: '#f2d0b5', hair: 'short', hairColor: '#3a2418', rim: '#e8fff2', rimW: 2.4, shoe: '#f4f6fb'},
 	kid2: {color: '#e47a3c', head: 'peach', skin: '#f2d0b5', hair: 'ponytail', hairColor: '#3a2418', rim: '#fff0e0', rimW: 2.4, shoe: '#f4f6fb'},
 };

@@ -42,8 +42,8 @@ import {SEAT} from './places';
 /* PART 1 (0:00–1:21): the bagel at 3 a.m., the finger grows back, the question, the axolotl,
    Morgan's flatworm (1898), "that's you", and the first rule: stitched wounds scar, open ones regrow. */
 
-const HIP = FL - 157; // standing body origin
-const Tag: React.FC<{f: number; t: number; x: number; y: number; text: string; c?: string; fg?: string; size?: number; rot?: number; stroke?: string; until?: number}> = ({f, t, x, y, text, c = '#11142c', fg = '#fff', size = 40, rot = -4, stroke = '#ffd34a', until}) => {
+export const HIP = FL - 157; // standing body origin
+export const Tag: React.FC<{f: number; t: number; x: number; y: number; text: string; c?: string; fg?: string; size?: number; rot?: number; stroke?: string; until?: number}> = ({f, t, x, y, text, c = '#11142c', fg = '#fff', size = 40, rot = -4, stroke = '#ffd34a', until}) => {
 	const k = pop(f, t);
 	if (f < t) return null;
 	const out = until !== undefined ? interpolate(f, [until, until + 8], [1, 0], clamp) : 1;
@@ -59,7 +59,7 @@ const Tag: React.FC<{f: number; t: number; x: number; y: number; text: string; c
 	);
 };
 /* screen-space overlay (1920×1080) drawn over a Stage */
-const Over: React.FC<{children: React.ReactNode}> = ({children}) => (
+export const Over: React.FC<{children: React.ReactNode}> = ({children}) => (
 	<AbsoluteFill style={{pointerEvents: 'none'}}>
 		<svg viewBox="0 0 1920 1080" width={1920} height={1080}>
 			{children}
@@ -622,11 +622,11 @@ const seatedHero = (gf: number, lean = 8): Pose => ({...SIT, lean, head: 4, armB
 
 /* a hand-held tool whose TIP sits exactly on point P (screen px, y down), pointing at screen angle th (deg).
    Returns where the fingers hold it (grip). Tools are modelled along +x with the tip at +tipX. */
-const gripOf = (tipX: number, gripX: number, P: [number, number], th: number, s: number): [number, number] => {
+export const gripOf = (tipX: number, gripX: number, P: [number, number], th: number, s: number): [number, number] => {
 	const r = (th * Math.PI) / 180;
 	return [P[0] + (gripX - tipX) * s * Math.cos(r), P[1] + (gripX - tipX) * s * Math.sin(r)];
 };
-const placeTool = (o: THREE.Object3D, tipX: number, gripX: number, P: [number, number], th: number, s: number, z = 80): [number, number] => {
+export const placeTool = (o: THREE.Object3D, tipX: number, gripX: number, P: [number, number], th: number, s: number, z = 80): [number, number] => {
 	const r = (th * Math.PI) / 180;
 	const c: [number, number] = [P[0] - tipX * s * Math.cos(r), P[1] - tipX * s * Math.sin(r)];
 	o.scale.setScalar(s);
@@ -635,7 +635,7 @@ const placeTool = (o: THREE.Object3D, tipX: number, gripX: number, P: [number, n
 	return gripOf(tipX, gripX, P, th, s);
 };
 /* Reyes's gloved hand at the grip; her navy sleeve runs off the frame toward `from` */
-const Glove: React.FC<{g: [number, number]; from: [number, number]; s?: number}> = ({g, from, s = 1}) => {
+export const Glove: React.FC<{g: [number, number]; from: [number, number]; s?: number}> = ({g, from, s = 1}) => {
 	const a = Math.atan2(from[1] - g[1], from[0] - g[0]);
 	const wx = g[0] + Math.cos(a) * 70 * s;
 	const wy = g[1] + Math.sin(a) * 70 * s;
@@ -655,7 +655,7 @@ const Glove: React.FC<{g: [number, number]; from: [number, number]; s?: number}>
 	);
 };
 /* the hero's own hand (peach) holding a pen, white sleeve running off the frame */
-const PenHand: React.FC<{g: [number, number]; from: [number, number]}> = ({g, from}) => {
+export const PenHand: React.FC<{g: [number, number]; from: [number, number]}> = ({g, from}) => {
 	const a = Math.atan2(from[1] - g[1], from[0] - g[0]);
 	const wx = g[0] + Math.cos(a) * 80;
 	const wy = g[1] + Math.sin(a) * 80;

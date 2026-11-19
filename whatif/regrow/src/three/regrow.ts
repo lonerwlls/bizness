@@ -318,3 +318,104 @@ export const makeBottle = (c: string, text: string) => {
 	g.add(lab);
 	return inkPx(g, 2);
 };
+
+/* ------------------------------ part 2 ------------------------------ */
+/* burger, bottom on y = 0; bite(k) takes a bite out of the front (scales it down) */
+export const makeBurger = () => {
+	const g = new THREE.Group();
+	const bun = toon('#e0a050');
+	g.add(mesh(new THREE.CylinderGeometry(40, 38, 14, 24), bun, [0, 7, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(42, 42, 12, 24), toon('#6a3a22'), [0, 19, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(45, 45, 3, 24), toon('#f2c84a'), [0, 26, 0], [0, 0, 0.05]));
+	g.add(mesh(new THREE.CylinderGeometry(46, 46, 4, 24), toon('#5ab04a'), [0, 29, 0], [0.05, 0, 0]));
+	const dome = new THREE.SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+	g.add(mesh(dome, bun, [0, 31, 0], undefined, [41, 26, 41]));
+	for (let i = 0; i < 9; i++) {
+		const a = (i / 9) * Math.PI * 2;
+		const sd = mesh(new THREE.SphereGeometry(2, 6, 4), toon('#fbf0d0'), [Math.cos(a) * 24, 50, Math.sin(a) * 24], undefined, [1.4, 0.6, 0.8]);
+		sd.userData.noInk = true;
+		g.add(sd);
+	}
+	return inkPx(g, 2.2);
+};
+/* open pizza box with a pizza (n slices left), bottom on y = 0 */
+export const makePizzaBox = () => {
+	const g = new THREE.Group();
+	g.add(mesh(rbox(180, 10, 180, 3), toon('#e8d4a8'), [0, 5, 0]));
+	const lid = new THREE.Group();
+	lid.position.set(0, 10, -90);
+	lid.rotation.x = -1.9;
+	lid.add(mesh(rbox(180, 6, 180, 3), toon('#e8d4a8'), [0, 0, 90]));
+	lid.visible = false;
+	g.add(lid);
+	const slices: THREE.Mesh[] = [];
+	for (let i = 0; i < 8; i++) {
+		const sl = mesh(new THREE.CylinderGeometry(76, 76, 8, 12, 1, false, (i / 8) * Math.PI * 2, Math.PI / 4), toon('#f2b84a'), [0, 14, 0]);
+		const top = mesh(new THREE.CylinderGeometry(68, 68, 2, 12, 1, false, (i / 8) * Math.PI * 2 + 0.03, Math.PI / 4 - 0.06), toon('#e4503c'), [0, 4.5, 0]);
+		top.userData.noInk = true;
+		sl.add(top);
+		const pep = mesh(new THREE.CylinderGeometry(8, 8, 2, 10), toon('#b8302a'), [Math.sin((i / 8) * Math.PI * 2 + 0.4) * 42, 5.6, Math.cos((i / 8) * Math.PI * 2 + 0.4) * 42]);
+		pep.userData.noInk = true;
+		sl.add(pep);
+		g.add(sl);
+		slices.push(sl);
+	}
+	g.userData.slices = slices;
+	return inkPx(g, 2.2);
+};
+/* a crumpled wrapper (paper ball), centred */
+export const makeWrapper = (c = '#f4efe2') => {
+	const geo = new THREE.IcosahedronGeometry(14, 0);
+	return inkPx(mesh(geo, toon(c), [0, 0, 0], [0.4, 0.7, 0.2], [1, 0.8, 1]), 1.8);
+};
+/* softball, centred */
+export const makeSoftball = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.SphereGeometry(24, 24, 16), toon('#e8f060')));
+	const seam = mesh(new THREE.TorusGeometry(24.3, 1.4, 6, 40), toon('#d23b3b'), [0, 0, 0], [0.6, 0.3, 0]);
+	seam.userData.noInk = true;
+	g.add(seam);
+	return inkPx(g, 2.2);
+};
+/* a front tooth (incisor), centred, crown up */
+export const makeTooth = () => {
+	const g = new THREE.Group();
+	g.add(mesh(rbox(14, 18, 8, 4), toon('#fbfaf2'), [0, 4, 0]));
+	g.add(mesh(new THREE.ConeGeometry(5, 14, 10), toon('#f0e8d8'), [0, -11, 0], [Math.PI, 0, 0]));
+	return inkPx(g, 1.6);
+};
+/* medicine vial with a label, bottom on y = 0 */
+export const makeVial = (text: string) => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(16, 16, 46, 20), toon('#dff0fa', {transparent: true, opacity: 0.85}), [0, 23, 0]));
+	const liq = mesh(new THREE.CylinderGeometry(14, 14, 30, 20), toon('#7ad8f0'), [0, 16, 0]);
+	liq.userData.noInk = true;
+	g.add(liq);
+	g.add(mesh(new THREE.CylinderGeometry(9, 9, 8, 14), toon('#c8ccd8'), [0, 50, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(11, 11, 8, 14), toon('#d23b3b'), [0, 57, 0]));
+	const lab = mesh(new THREE.CylinderGeometry(16.6, 16.6, 22, 20, 1, true, -0.9, 1.8), new THREE.MeshBasicMaterial({map: labelTex(text, '#fbfaf2')}), [0, 24, 0]);
+	lab.userData.noInk = true;
+	g.add(lab);
+	return inkPx(g, 2);
+};
+/* syringe along +x, needle tip at +x */
+export const makeSyringe = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(9, 9, 70, 16), toon('#e8f4fa', {transparent: true, opacity: 0.8}), [0, 0, 0], [0, 0, Math.PI / 2]));
+	const liq = mesh(new THREE.CylinderGeometry(7, 7, 40, 14), toon('#7ad8f0'), [12, 0, 0], [0, 0, Math.PI / 2]);
+	liq.userData.noInk = true;
+	g.add(liq);
+	g.add(mesh(new THREE.CylinderGeometry(3, 3, 30, 8), toon('#c8ccd8'), [-48, 0, 0], [0, 0, Math.PI / 2]));
+	g.add(mesh(new THREE.CylinderGeometry(12, 12, 4, 14), toon('#c8ccd8'), [-64, 0, 0], [0, 0, Math.PI / 2]));
+	g.add(mesh(new THREE.CylinderGeometry(1.2, 1.2, 30, 6), toon('#9aa0ae'), [50, 0, 0], [0, 0, Math.PI / 2]));
+	return inkPx(g, 1.8);
+};
+/* clinic chair-side tray table with legs is 2D; plate for the dinner table */
+export const makeDinnerPlate = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(60, 48, 8, 28), toon('#f4f6fa'), [0, 4, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(26, 26, 10, 18), toon('#e8b46a'), [-14, 12, 0], undefined, [1, 0.6, 0.7]));
+	g.add(mesh(new THREE.SphereGeometry(12, 12, 8), toon('#5ab04a'), [20, 12, 6]));
+	g.add(mesh(new THREE.SphereGeometry(10, 12, 8), toon('#5ab04a'), [28, 12, -8]));
+	return inkPx(g, 2);
+};
