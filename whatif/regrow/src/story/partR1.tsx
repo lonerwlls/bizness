@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, interpolate} from 'remotion';
+import {AbsoluteFill, continueRender, delayRender, interpolate} from 'remotion';
 import * as THREE from 'three';
 import {Pose} from '../engine/Stickman';
 import {SIT, env, gesture, idle, reach, walkTo} from '../kit/actions';
@@ -11,7 +11,7 @@ import {Board, FONT} from '../kit/ui';
 import {Onoma} from '../reference/PauseTime';
 import {Prop3D, PropWorld, at, propScene} from '../three/Prop3D';
 import {makeCalendar, makePage, makeScalpel, makeTimer, Timer} from '../three/props';
-import {Axo, Notebook, makeAxolotl, makeBagel, makeBoard, makeDish, makeFirstAid, makeGauze, makeKnife, makeMicroscope, makeMug, makeNeedleHolder, makeNotebook, makePen, makePuddle, makeTape, swimAxo} from '../three/regrow';
+import {Axo, Notebook, makeBandage, noteTipAt, makeAxolotl, makeBagel, makeBoard, makeDish, makeFirstAid, makeGauze, makeKnife, makeMicroscope, makeMug, makeNeedleHolder, makeNotebook, makePen, makePuddle, makeTape, swimAxo} from '../three/regrow';
 import {FL, HS, badgeY} from './common';
 import {TitleWords, camPath, pop, useW} from './lib';
 import {OldFilm} from './placesH';
@@ -619,15 +619,99 @@ const LabBG: React.FC<{f: number}> = ({f}) => (
 	</Layer>
 );
 const seatedHero = (gf: number, lean = 8): Pose => ({...SIT, lean, head: 4, armB: [30, 60], armF: [40, 60]});
-/* 010 he writes "TEST SUBJECT: ME" in a notebook */
+
+/* a hand-held tool whose TIP sits exactly on point P (screen px, y down), pointing at screen angle th (deg).
+   Returns where the fingers hold it (grip). Tools are modelled along +x with the tip at +tipX. */
+const gripOf = (tipX: number, gripX: number, P: [number, number], th: number, s: number): [number, number] => {
+	const r = (th * Math.PI) / 180;
+	return [P[0] + (gripX - tipX) * s * Math.cos(r), P[1] + (gripX - tipX) * s * Math.sin(r)];
+};
+const placeTool = (o: THREE.Object3D, tipX: number, gripX: number, P: [number, number], th: number, s: number, z = 80): [number, number] => {
+	const r = (th * Math.PI) / 180;
+	const c: [number, number] = [P[0] - tipX * s * Math.cos(r), P[1] - tipX * s * Math.sin(r)];
+	o.scale.setScalar(s);
+	at(o, c[0], c[1], z);
+	o.rotation.set(0.25, 0, -r);
+	return gripOf(tipX, gripX, P, th, s);
+};
+/* Reyes's gloved hand at the grip; her navy sleeve runs off the frame toward `from` */
+const Glove: React.FC<{g: [number, number]; from: [number, number]; s?: number}> = ({g, from, s = 1}) => {
+	const a = Math.atan2(from[1] - g[1], from[0] - g[0]);
+	const wx = g[0] + Math.cos(a) * 70 * s;
+	const wy = g[1] + Math.sin(a) * 70 * s;
+	return (
+		<g>
+			<line x1={wx} y1={wy} x2={from[0]} y2={from[1]} stroke="#2a1a14" strokeWidth={84 * s} strokeLinecap="round" />
+			<line x1={wx} y1={wy} x2={from[0]} y2={from[1]} stroke="#3d5fb0" strokeWidth={70 * s} strokeLinecap="round" />
+			<line x1={g[0] + Math.cos(a) * 30 * s} y1={g[1] + Math.sin(a) * 30 * s} x2={wx} y2={wy} stroke="#2a1a14" strokeWidth={66 * s} strokeLinecap="round" />
+			<line x1={g[0] + Math.cos(a) * 30 * s} y1={g[1] + Math.sin(a) * 30 * s} x2={wx} y2={wy} stroke="#7ab0e8" strokeWidth={54 * s} strokeLinecap="round" />
+			<circle cx={g[0]} cy={g[1]} r={38 * s} fill="#7ab0e8" stroke="#2a1a14" strokeWidth={7 * s} />
+			{/* curled fingers over the tool + thumb */}
+			{[-1, 0, 1].map((k) => (
+				<ellipse key={k} cx={g[0] - Math.cos(a) * 22 * s + Math.cos(a + Math.PI / 2) * k * 18 * s} cy={g[1] - Math.sin(a) * 22 * s + Math.sin(a + Math.PI / 2) * k * 18 * s} rx={14 * s} ry={11 * s} fill="#8abcf0" stroke="#2a1a14" strokeWidth={5 * s} />
+			))}
+			<ellipse cx={g[0] + Math.cos(a - 1.2) * 34 * s} cy={g[1] + Math.sin(a - 1.2) * 34 * s} rx={20 * s} ry={13 * s} fill="#8abcf0" stroke="#2a1a14" strokeWidth={5 * s} transform={`rotate(${(a * 180) / Math.PI} ${g[0] + Math.cos(a - 1.2) * 34 * s} ${g[1] + Math.sin(a - 1.2) * 34 * s})`} />
+		</g>
+	);
+};
+/* the hero's own hand (peach) holding a pen, white sleeve running off the frame */
+const PenHand: React.FC<{g: [number, number]; from: [number, number]}> = ({g, from}) => {
+	const a = Math.atan2(from[1] - g[1], from[0] - g[0]);
+	const wx = g[0] + Math.cos(a) * 80;
+	const wy = g[1] + Math.sin(a) * 80;
+	return (
+		<g>
+			<line x1={wx} y1={wy} x2={from[0]} y2={from[1]} stroke="#2a1a14" strokeWidth={104} strokeLinecap="round" />
+			<line x1={wx} y1={wy} x2={from[0]} y2={from[1]} stroke="#eef2f8" strokeWidth={90} strokeLinecap="round" />
+			<line x1={g[0]} y1={g[1]} x2={wx} y2={wy} stroke="#2a1a14" strokeWidth={72} strokeLinecap="round" />
+			<line x1={g[0]} y1={g[1]} x2={wx} y2={wy} stroke="#f2c9a5" strokeWidth={60} strokeLinecap="round" />
+			<circle cx={g[0]} cy={g[1]} r={40} fill="#f2c9a5" stroke="#2a1a14" strokeWidth={7} />
+			{[-1, 0, 1].map((k) => (
+				<ellipse key={k} cx={g[0] - Math.cos(a) * 26 + Math.cos(a + Math.PI / 2) * k * 19} cy={g[1] - Math.sin(a) * 26 + Math.sin(a + Math.PI / 2) * k * 19} rx={15} ry={12} fill="#f6d2b2" stroke="#2a1a14" strokeWidth={5} />
+			))}
+			{[[-14, 6], [10, -10]].map(([x, y], i) => (
+				<circle key={i} cx={g[0] + x} cy={g[1] + y} r={3} fill="#c07a50" />
+			))}
+		</g>
+	);
+};
+
+/* the handwriting font must be in before the notebook page is painted */
+const useCaveat = () => {
+	const q = "700 40px 'Caveat'";
+	const [ok, setOk] = React.useState(() => document.fonts.check(q));
+	const [h] = React.useState(() => (ok ? null : delayRender('caveat', {timeoutInMilliseconds: 30000})));
+	React.useEffect(() => {
+		if (ok || h === null) return;
+		document.fonts.load(q).then(
+			() => {
+				setOk(true);
+				continueRender(h);
+			},
+			() => continueRender(h),
+		);
+	}, [ok, h]);
+	return ok;
+};
+/* 010 he takes the pen and writes — in the wide the tip is on the page */
+const PEN_TIP = 47; // pen model: tip at +47
 const R010: React.FC = () => {
+	useCaveat();
 	const {f, gf} = useShot();
 	const w = useW();
-	const write = interpolate(f, [w('010', 0.3), w('010', 0.95)], [0, 1], clamp);
-	const pen: [number, number] = [NOTE[0] - 30 + 90 * ((write * 9) % 1), NOTE[1] - 16 + 6 * Math.sin(f / 2)];
-	const hp = reach(seatedHero(gf, 12), 'F', [pen[0] - SX, pen[1] - SEAT], 1);
+	const take = interpolate(f, [w('010', 0.12), w('010', 0.3)], [0, 1], clamp);
+	const writing = f >= w('010', 0.3);
+	const k = interpolate(f, [w('010', 0.32), w('010', 0.6)], [0, 0.35], clamp);
+	// tip on the page: moves along a line while writing, small up-down strokes
+	const tip: [number, number] = writing ? [NOTE[0] - 40 + 70 * ((k * 3) % 1), BENCH_TOP - 4 - Math.abs(Math.sin(f / 2.2)) * 3] : [NOTE[0] + 40, BENCH_TOP - 4];
+	const th = 62; // pen leaning, tip down-right
+	const r = (th * Math.PI) / 180;
+	const grip: [number, number] = [tip[0] - (PEN_TIP + 18) * Math.cos(r), tip[1] - (PEN_TIP + 18) * Math.sin(r)];
+	const restHand: [number, number] = [SX + 60, SEAT - 40];
+	const hand: [number, number] = take < 1 && !writing ? [restHand[0] + (grip[0] - restHand[0]) * take, restHand[1] + (grip[1] - restHand[1]) * take] : grip;
+	const hp = reach({...seatedHero(gf, 14), head: 14}, 'F', [hand[0] - SX, hand[1] - SEAT], 1);
 	const rp = gesture('armsCrossed', idle(gf, 6), 1, f);
-	const cam = usePush(camOn(1000, 600, 1.25), camOn(950, 620, 1.5));
+	const cam = usePush(camOn(960, 620, 1.35), camOn(900, 640, 1.6, {farBlur: 7}));
 	return (
 		<Stage cam={cam} bg="#cfe8de" light={{x: 75, y: 10, o: 0.45, c: '255,250,230'}}>
 			<LabBG f={gf} />
@@ -635,7 +719,7 @@ const R010: React.FC = () => {
 				<Svg>
 					<Stool x={SX - 6} />
 					<Actor who="reyes" x={RX} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.6, 0.3]} pose={rp} uid="reyes-010" />
-					<Actor who="hero" x={SX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.5} look={[0.6, 0.8]} mouth="smile" pose={hp} uid="h-010" />
+					<Actor who="hero" x={SX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.5} look={[0.5, 0.9]} mouth="smile" pose={hp} uid="h-010" />
 					<Bench x={1060} />
 				</Svg>
 				<Prop3D
@@ -645,8 +729,8 @@ const R010: React.FC = () => {
 					h={240}
 					make={() => {
 						const scene = propScene();
-						const nb = makeNotebook('TEST SUBJECT: ME');
-						at(nb, NOTE[0] + 30, NOTE[1], 0);
+						const nb = makeNotebook();
+						at(nb, NOTE[0], NOTE[1], 0);
 						nb.scale.setScalar(0.62);
 						nb.rotation.x = 0.4;
 						const pen = makePen();
@@ -659,103 +743,219 @@ const R010: React.FC = () => {
 						return {scene, nb, pen};
 					}}
 					update={(wd) => {
-						(wd.nb as Notebook).userData.write(write);
-						at(wd.pen, pen[0] + 10, pen[1] - 18, 60);
-						wd.pen.rotation.set(0, 0, -1.0);
+						(wd.nb as Notebook).userData.write(k);
+						if (take <= 0) {
+							at(wd.pen, NOTE[0] + 40, BENCH_TOP - 3, 60);
+							wd.pen.rotation.set(0.25, 0, 0);
+						} else if (!writing) {
+							// carried in the fist, tip down
+							placeTool(wd.pen, PEN_TIP, -18, [hand[0] + (PEN_TIP + 18) * Math.cos(r), hand[1] + (PEN_TIP + 18) * Math.sin(r)], th, 1, 60);
+						} else placeTool(wd.pen, PEN_TIP, -18, tip, th, 1, 60);
 					}}
 				/>
 				<Svg>
 					<HeroBadge x={SX} y={SEAT - 164 - 118} s={0.8} />
-					<Tag f={f} t={w('010', 0.6)} x={600} y={330} text="TEST SUBJECT: ME" c="#11142c" fg="#ffd34a" size={34} rot={-4} />
 				</Svg>
 			</Layer>
 		</Stage>
 	);
 };
-/* 011–013: Reyes works on his forearm resting on the bench; inserts show the skin */
-const ArmScene: React.FC<{line: string; tool: 'scalpel' | 'needle' | 'tape' | 'none'; work: number; insert?: ArmState; insertK?: number; timer?: string; tag?: React.ReactNode; badge?: boolean}> = ({tool, work, insert, insertK = 0, timer, tag, badge = true}) => {
+/* 010b the page from above: his hand writes Day 1 / Test subject: ME / Skin sample, arm */
+const NB_C: [number, number] = [930, 560];
+const NB_S = 3.2;
+const R010b: React.FC = () => {
+	useCaveat();
 	const {f, gf} = useShot();
-	const hp = reach(seatedHero(gf, 10), 'F', [ARM[0] - SX, ARM[1] - SEAT], 1);
-	const toolP: [number, number] = [ARM[0] + 40, ARM[1] - 30 - 18 * work];
-	const RXa = 1015;
-	const rp = reach({...idle(gf, 6), lean: 8, head: 8}, 'F', [RXa - toolP[0], toolP[1] - HIP], tool === 'none' ? 0 : 1);
-	const cam = usePush(camOn(900, 600, 1.45), camOn(900, 620, 1.62, {farBlur: 7}));
+	const w = useW();
+	const k = interpolate(f, [0, w('010', 1)], [0.35, 1], clamp);
+	const [u, v] = noteTipAt(k);
+	const tip: [number, number] = [NB_C[0] + (u / 512 - 0.5) * 232 * NB_S, NB_C[1] + (v / 320 - 0.5) * 150 * NB_S - 4 + Math.sin(f / 1.7) * 3];
+	const grip = gripOf(PEN_TIP, -18, tip, -52, NB_S * 0.9);
+	const cam = usePush(camOn(960, 560, 1.0), camOn(980, 560, 1.06));
 	return (
-		<>
-			<Stage cam={cam} bg="#cfe8de" light={{x: 75, y: 10, o: 0.45, c: '255,250,230'}}>
-				<LabBG f={gf} />
-				<Layer depth={1}>
-					<Svg>
-						<Stool x={SX - 6} />
-						<Actor who="reyes" x={RXa} floor={FL} s={0.98} facing={-1} faceTurn={0.5} look={[-0.7, 0.8]} pose={rp} uid="reyes-arm" />
-						<Actor who="hero" x={SX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.45} look={[0.6, 0.6]} expr={tool === 'scalpel' || tool === 'needle' ? 'worried' : 'normal'} pose={hp} uid="h-arm" />
-						<Bench x={1060} />
-					</Svg>
-					<Prop3D
-						x={760}
-						y={460}
-						w={620}
-						h={340}
-						make={() => {
-							const scene = propScene();
-							const scalpel = makeScalpel();
-							const needle = makeNeedleHolder();
-							const tape = makeTape();
-							const timerObj = makeTimer();
-							timerObj.scale.setScalar(0.5);
-							at(timerObj, 1200, BENCH_TOP - 30, 0);
-							timerObj.rotation.y = -0.2;
-							scene.add(scalpel, needle, tape, timerObj);
-							return {scene, scalpel, needle, tape, timerObj};
-						}}
-						update={(wd) => {
-							wd.scalpel.visible = tool === 'scalpel';
-							wd.needle.visible = tool === 'needle';
-							at(wd.scalpel, toolP[0] - 14, toolP[1] + 4, 60);
-							wd.scalpel.rotation.set(0.2, 0, Math.PI - 0.5);
-							at(wd.needle, toolP[0] - 20, toolP[1] + 2, 60);
-							wd.needle.rotation.set(0.2, 0, Math.PI - 0.7 + 0.3 * Math.sin(f / 4) * (tool === 'needle' ? 1 : 0));
-							at(wd.tape, tool === 'tape' ? toolP[0] - 10 : 1100, tool === 'tape' ? toolP[1] + 10 : BENCH_TOP, 40);
-							(wd.timerObj as Timer).visible = !!timer;
-							if (timer) (wd.timerObj as Timer).userData.set(timer, '#7af0a8');
-						}}
-					/>
-					<Svg>{badge ? <HeroBadge x={SX} y={SEAT - 164 - 118} s={0.8} /> : null}</Svg>
-				</Layer>
-			</Stage>
+		<Stage cam={cam} bg="#33475a" light={{x: 70, y: 0, o: 0.4, c: '255,250,230'}}>
+			<Layer depth={1}>
+				<Svg>
+					<rect x={-400} y={-300} width={2800} height={1600} fill="#3a4e62" />
+					{Array.from({length: 9}).map((_, i) => (
+						<line key={i} x1={-400} y1={-100 + i * 150} x2={2400} y2={-60 + i * 150} stroke="#33475a" strokeWidth={4} />
+					))}
+				</Svg>
+				<Prop3D
+					x={0}
+					y={0}
+					w={1920}
+					h={1080}
+					make={() => {
+						const scene = propScene(2.0);
+						const nb = makeNotebook();
+						nb.scale.setScalar(NB_S);
+						nb.rotation.set(Math.PI / 2 - 0.05, 0, -0.06);
+						at(nb, NB_C[0], NB_C[1], 0);
+						const pen = makePen();
+						scene.add(nb, pen);
+						return {scene, nb, pen};
+					}}
+					update={(wd) => {
+						(wd.nb as Notebook).userData.write(k);
+						placeTool(wd.pen, PEN_TIP, -18, tip, -52, NB_S * 0.9, 200);
+					}}
+				/>
+				<Svg>
+					<PenHand g={grip} from={[-200, 1400]} />
+				</Svg>
+			</Layer>
 			<Over>
-				{insert ? (
-					<Insert x={1660} y={290} r={220} k={insertK} id="ins-arm" bg="#e8f4ee" ring="#3d5fb0">
-						<g transform="scale(0.54)">
-							<ArmInset state={insert} />
-						</g>
-					</Insert>
-				) : null}
-				{tag}
+				<Tag f={f} t={w('010', 0.62)} x={420} y={140} text="EXPERIMENT #1" c="#11142c" fg="#ffd34a" size={40} rot={-4} />
 			</Over>
-		</>
+		</Stage>
 	);
+	void gf;
 };
+
+/* ---------- the arm on the bench, close: Reyes's gloved hand works on it ---------- */
+const AC: [number, number] = [880, 640]; // arm centre in the close-up
+const AS = 1.25;
+const WND: [number, number] = [AC[0] + 60 * AS, AC[1]]; // the wound spot
+type Wound = {cut: number; stitches: number; thread?: [number, number] | null; scar?: boolean; clean?: number};
+const ArmClose: React.FC<{wnd: Wound; children?: React.ReactNode; over?: React.ReactNode; props3d?: React.ReactNode}> = ({wnd, children, props3d}) => {
+	const {gf} = useShot();
+	const cam = usePush(camOn(980, 560, 1.0), camOn(990, 570, 1.08));
+	const L = 70 * AS;
+	return (
+		<Stage cam={cam} bg="#33475a" light={{x: 70, y: 0, o: 0.4, c: '255,250,230'}}>
+			<Layer depth={1.6}>
+				<Svg>
+					<rect x={-400} y={-300} width={2800} height={620} fill="#cfe8de" />
+					<rect x={300} y={60} width={420} height={200} fill="#f4f6fa" opacity={0.7} />
+					<rect x={1300} y={40} width={500} height={240} fill="#9fd8ff" opacity={0.7} />
+					<circle cx={1450} cy={300} r={120} fill="#5ab06a" opacity={0.6} />
+				</Svg>
+			</Layer>
+			<Layer depth={1}>
+				<Svg>
+					<rect x={-400} y={320} width={2800} height={1000} fill="#2a3a4a" />
+					<rect x={-400} y={320} width={2800} height={16} fill="#3e5468" />
+					<ellipse cx={AC[0] + 40} cy={AC[1] + 70} rx={560} ry={40} fill="#000" opacity={0.25} />
+					<g transform={`translate(${AC[0]},${AC[1]}) scale(${AS})`}>
+						<ArmInset state="clean" />
+					</g>
+					{/* the wound: a cut drawn from left to right, stitches, or a pale scar */}
+					{wnd.cut > 0 && !wnd.scar ? <line x1={WND[0] - L} y1={WND[1]} x2={WND[0] - L + 2 * L * wnd.cut} y2={WND[1]} stroke="#e0607a" strokeWidth={14} strokeLinecap="round" opacity={1 - (wnd.clean ?? 0)} /> : null}
+					{Array.from({length: wnd.stitches}).map((_, i) => {
+						const x = WND[0] - L + 18 + i * ((2 * L - 36) / 3);
+						return <line key={i} x1={x - 8} y1={WND[1] - 22} x2={x + 8} y2={WND[1] + 22} stroke="#1d2236" strokeWidth={6} strokeLinecap="round" />;
+					})}
+					{wnd.thread && wnd.stitches > 0 ? <path d={`M${WND[0] - L + 18 + (wnd.stitches - 1) * ((2 * L - 36) / 3) + 8},${WND[1] + 22} Q${(wnd.thread[0] + WND[0]) / 2 + 40},${WND[1] + 60} ${wnd.thread[0]},${wnd.thread[1]}`} stroke="#1d2236" strokeWidth={4} fill="none" /> : null}
+				</Svg>
+				{props3d}
+				<Svg>{children}</Svg>
+			</Layer>
+		</Stage>
+	);
+	void gf;
+};
+const SLEEVE_FROM: [number, number] = [1900, -260];
+/* 011 wide: he lays his forearm on the bench, Reyes comes over with a scalpel */
 const R011: React.FC = () => {
+	const {f, gf} = useShot();
+	const w = useW();
+	const lay = interpolate(f, [2, 26], [0, 1], clamp);
+	const hp = reach(seatedHero(gf, 10), 'F', [ARM[0] - SX, ARM[1] - SEAT], lay);
+	const wk = walkTo(f, 4, 40, RX, 1030, 5, 0.3);
+	const rh: [number, number] = [wk.x - 60, HIP - 40];
+	const rp = reach(wk.moving ? wk.pose : idle(gf, 6), 'F', [wk.x - rh[0], rh[1] - HIP], 1);
+	const cam = usePush(camOn(960, 600, 1.35), camOn(940, 610, 1.5));
+	return (
+		<Stage cam={cam} bg="#cfe8de" light={{x: 75, y: 10, o: 0.45, c: '255,250,230'}}>
+			<LabBG f={gf} />
+			<Layer depth={1}>
+				<Svg>
+					<Stool x={SX - 6} />
+					<Actor who="reyes" x={wk.x} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.7, 0.4]} pose={rp} vx={wk.vx} bob={wk.bob} uid="reyes-011" />
+					<Actor who="hero" x={SX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.45} look={[0.6, 0.3]} expr="worried" pose={hp} uid="h-011" />
+					<Bench x={1060} />
+				</Svg>
+				<Prop3D
+					x={700}
+					y={460}
+					w={760}
+					h={340}
+					make={() => {
+						const scene = propScene();
+						const scalpel = makeScalpel();
+						scene.add(scalpel);
+						return {scene, scalpel};
+					}}
+					update={(wd) => {
+						placeTool(wd.scalpel, 45, -20, [rh[0] - 50, rh[1] + 14], 165, 1.1, 60);
+					}}
+				/>
+				<Svg>
+					<HeroBadge x={SX} y={SEAT - 164 - 118} s={0.8} />
+					<Tag f={f} t={8} x={1280} y={380} text="DR. REYES" c="#11142c" fg="#9fd8ff" stroke="#3d5fb0" size={40} rot={3} />
+				</Svg>
+			</Layer>
+		</Stage>
+	);
+	void w;
+};
+/* 011b close: the scalpel cuts along the skin, then four stitches with needle and thread */
+const R011b: React.FC = () => {
 	const {f} = useShot();
 	const w = useW();
-	const slicing = f < w('011', 0.55);
-	const work = slicing ? env(f, w('011', 0.2), w('011', 0.45), 8, 8) : Math.abs(Math.sin(f / 5));
-	const insert: ArmState = f < w('011', 0.3) ? 'clean' : f < w('011', 0.62) ? 'cut' : 'stitched';
+	const L = 70 * AS;
+	const inK = interpolate(f, [w('011', 0.26), w('011', 0.31)], [0, 1], {...clamp, easing: (k) => 1 - (1 - k) * (1 - k)});
+	const cut = interpolate(f, [w('011', 0.31), w('011', 0.47)], [0, 1], clamp);
+	const swapOut = interpolate(f, [w('011', 0.48), w('011', 0.52)], [0, 1], clamp);
+	const swapIn = interpolate(f, [w('011', 0.52), w('011', 0.57)], [0, 1], clamp);
+	const stitchPhase = interpolate(f, [w('011', 0.57), w('011', 0.95)], [0, 4], clamp);
+	const useNeedle = f >= w('011', 0.52);
+	const si = Math.min(3, Math.floor(stitchPhase));
+	const sp = stitchPhase - si;
+	const stitches = Math.min(4, Math.floor(stitchPhase + 0.5));
+	const sx = WND[0] - L + 18 + si * ((2 * L - 36) / 3);
+	// tip positions: scalpel slides along the cut; needle dips down into the skin and pulls up
+	let tip: [number, number];
+	if (!useNeedle) {
+		const x = WND[0] - L + 2 * L * cut;
+		tip = [x, WND[1] - 2];
+		const away = Math.max(1 - inK, swapOut);
+		tip = [tip[0] + away * 500, tip[1] - away * 420];
+	} else {
+		const dip = Math.sin(Math.min(1, sp) * Math.PI);
+		tip = [sx + 10 - 4 * dip, WND[1] - 40 + 40 * dip];
+		tip = [tip[0] + (1 - swapIn) * 500, tip[1] - (1 - swapIn) * 420];
+	}
+	const grip = useNeedle ? gripOf(48, -40, tip, 125, 2.6) : gripOf(45, -20, tip, 130, 3.0);
 	return (
-		<ArmScene
-			line="011"
-			tool={slicing ? 'scalpel' : 'needle'}
-			work={work}
-			insert={insert}
-			insertK={pop(f, w('011', 0.22))}
-			tag={
-				<>
-					<Tag f={f} t={w('011', 0.04)} x={1500} y={700} text="DR. REYES" c="#11142c" fg="#9fd8ff" stroke="#3d5fb0" size={40} rot={3} until={w('011', 0.6)} />
-					<Tag f={f} t={w('011', 0.66)} x={1660} y={580} text="STITCHED" c="#11142c" fg="#fff" stroke="#ffd34a" size={36} rot={-3} />
-				</>
+		<ArmClose
+			wnd={{cut, stitches: useNeedle ? stitches : 0, thread: useNeedle ? tip : null}}
+			props3d={
+				<Prop3D
+					x={0}
+					y={0}
+					w={1920}
+					h={1080}
+					make={() => {
+						const scene = propScene(2.0);
+						const scalpel = makeScalpel();
+						const needle = makeNeedleHolder();
+						scene.add(scalpel, needle);
+						return {scene, scalpel, needle};
+					}}
+					update={(wd) => {
+						wd.scalpel.visible = !useNeedle;
+						wd.needle.visible = useNeedle;
+						if (useNeedle) placeTool(wd.needle, 48, -40, tip, 125, 2.6, 120);
+						else placeTool(wd.scalpel, 45, -20, tip, 130, 3.0, 120);
+					}}
+				/>
 			}
-		/>
+		>
+			<Glove g={grip} from={SLEEVE_FROM} />
+			<Tag f={f} t={w('011', 0.9)} x={1420} y={260} text="STITCHED" c="#11142c" fg="#fff" stroke="#ffd34a" size={44} rot={-3} />
+		</ArmClose>
 	);
 };
 /* 012 a week later: calendar pages fall and stay on the floor; the insert shows a scar */
@@ -825,39 +1025,111 @@ const R012: React.FC = () => {
 		</>
 	);
 };
-/* 013 open wound under a bandage: twenty seconds, the skin is back (+1) */
+/* 013 close: another cut, a bandage pressed on by her hand, 20 s on the timer, she peels it — skin is back */
+const BAND_S = 2.2;
 const R013: React.FC = () => {
 	const {f} = useShot();
 	const w = useW();
-	const tapeOn = f >= w('013', 0.28) && f < w('013', 0.8);
-	const cutting = f < w('013', 0.22);
-	const insert: ArmState = f < w('013', 0.12) ? 'clean' : f < w('013', 0.32) ? 'cut' : f < w('013', 0.8) ? 'bandage' : 'clean';
-	const secs = Math.round(interpolate(f, [w('013', 0.42), w('013', 0.74)], [0, 20], clamp));
-	const glow = env(f, w('013', 0.8), w('013', 0.98), 4, 10);
+	const L = 70 * AS;
+	const inK = interpolate(f, [w('013', 0.02), w('013', 0.07)], [0, 1], clamp);
+	const cut = interpolate(f, [w('013', 0.07), w('013', 0.19)], [0, 1], clamp);
+	const outK = interpolate(f, [w('013', 0.2), w('013', 0.25)], [0, 1], clamp);
+	const bringK = interpolate(f, [w('013', 0.26), w('013', 0.35)], [0, 1], {...clamp, easing: (k) => 1 - (1 - k) * (1 - k)});
+	const leaveK = interpolate(f, [w('013', 0.37), w('013', 0.43)], [0, 1], clamp);
+	const backK = interpolate(f, [w('013', 0.74), w('013', 0.79)], [0, 1], clamp);
+	const peelK = interpolate(f, [w('013', 0.8), w('013', 0.88)], [0, 1], {...clamp, easing: (k) => k * k});
+	const secs = Math.round(interpolate(f, [w('013', 0.43), w('013', 0.73)], [0, 20], clamp));
+	const healed = f >= w('013', 0.8);
+	const glow = env(f, w('013', 0.84), w('013', 0.99), 4, 10);
+	const scalpelOn = f < w('013', 0.25);
+	// scalpel tip
+	const away = Math.max(1 - inK, outK);
+	const sTip: [number, number] = [WND[0] - L + 2 * L * cut + away * 500, WND[1] - 2 - away * 420];
+	// bandage: carried in from top-right, pressed on the wound, later peeled off by its right end
+	const onArm: [number, number] = [WND[0], WND[1] - 4];
+	const offP: [number, number] = [onArm[0] + 520, onArm[1] - 440];
+	let band: [number, number] = onArm;
+	let bandRot = 0;
+	let bandVis = f >= w('013', 0.26);
+	if (f < w('013', 0.35)) band = [offP[0] + (onArm[0] - offP[0]) * bringK, offP[1] + (onArm[1] - offP[1]) * bringK];
+	else if (f >= w('013', 0.8)) {
+		band = [onArm[0] + 40 * peelK + (offP[0] - onArm[0]) * peelK * peelK, onArm[1] - 30 * peelK + (offP[1] - onArm[1]) * peelK * peelK];
+		bandRot = -0.6 * peelK;
+		bandVis = peelK < 0.98;
+	}
+	const bandEnd: [number, number] = [band[0] + 62 * BAND_S * Math.cos(bandRot), band[1] + 62 * BAND_S * Math.sin(bandRot)];
+	// where the glove is
+	let glove: [number, number] | null = null;
+	if (scalpelOn) glove = gripOf(45, -20, sTip, 130, 3.0);
+	else if (f < w('013', 0.37)) glove = bandEnd;
+	else if (f < w('013', 0.43)) glove = [bandEnd[0] + leaveK * 500, bandEnd[1] - leaveK * 420];
+	else if (f >= w('013', 0.74) && f < w('013', 0.8)) glove = [bandEnd[0] + (1 - backK) * 500, bandEnd[1] - (1 - backK) * 420];
+	else if (f >= w('013', 0.8)) glove = bandEnd;
 	return (
-		<ArmScene
-			line="013"
-			tool={cutting ? 'scalpel' : f < w('013', 0.36) ? 'tape' : 'none'}
-			work={cutting ? env(f, w('013', 0.05), w('013', 0.2), 6, 6) : 0}
-			insert={insert}
-			insertK={pop(f, w('013', 0.02))}
-			timer={f > w('013', 0.4) ? `00:${String(secs).padStart(2, '0')}` : undefined}
-			tag={
-				<>
-					<Tag f={f} t={w('013', 0.3)} x={1660} y={580} text="OPEN + BANDAGE" c="#11142c" fg="#fff" stroke="#9fd8ff" size={34} rot={-3} until={w('013', 0.78)} />
-					{glow > 0
-						? Array.from({length: 8}).map((_, i) => {
-								const a = (i / 8) * Math.PI * 2;
-								const d = 150 + 60 * glow;
-								return <circle key={i} cx={1660 + Math.cos(a) * d} cy={290 + Math.sin(a) * d} r={7} fill="#fff4b0" opacity={glow} />;
-							})
-						: null}
-					<Tag f={f} t={w('013', 0.84)} x={1660} y={580} text="SKIN IS BACK" c="#0e3a22" fg="#7af0a8" stroke="#7af0a8" size={38} rot={3} />
-				</>
+		<ArmClose
+			wnd={{cut: healed ? 0 : cut, stitches: 0}}
+			props3d={
+				<Prop3D
+					x={0}
+					y={0}
+					w={1920}
+					h={1080}
+					make={() => {
+						const scene = propScene(2.0);
+						const scalpel = makeScalpel();
+						const band = makeBandage();
+						band.scale.setScalar(BAND_S);
+						const timer = makeTimer();
+						timer.scale.setScalar(1.3);
+						at(timer, 1540, 820, 0);
+						timer.rotation.set(-0.35, -0.25, 0);
+						scene.add(scalpel, band, timer);
+						return {scene, scalpel, band, timer};
+					}}
+					update={(wd) => {
+						wd.scalpel.visible = scalpelOn;
+						placeTool(wd.scalpel, 45, -20, sTip, 130, 3.0, 120);
+						wd.band.visible = bandVis;
+						at(wd.band, band[0], band[1], 60);
+						wd.band.rotation.set(Math.PI / 2 - 0.15, 0, -bandRot);
+						(wd.timer as Timer).userData.set(`00:${String(secs).padStart(2, '0')}`, '#7af0a8');
+					}}
+				/>
 			}
-		/>
+		>
+			{glove ? <Glove g={glove} from={SLEEVE_FROM} /> : null}
+			{glow > 0
+				? Array.from({length: 10}).map((_, i) => {
+						const a = (i / 10) * Math.PI * 2;
+						const d = 90 + 50 * glow;
+						return <path key={i} d={`M${WND[0] + Math.cos(a) * d},${WND[1] + Math.sin(a) * d * 0.6} l0,-14 l4,10 l10,4 l-10,4 l-4,10 l-4,-10 l-10,-4 l10,-4 z`} fill="#fff4b0" opacity={glow} />;
+					})
+				: null}
+			<Tag f={f} t={w('013', 0.36)} x={1420} y={260} text="LEFT OPEN" c="#11142c" fg="#fff" stroke="#9fd8ff" size={40} rot={-3} until={w('013', 0.78)} />
+			<Tag f={f} t={w('013', 0.86)} x={1420} y={260} text="SKIN IS BACK" c="#0e3a22" fg="#7af0a8" stroke="#7af0a8" size={44} rot={3} />
+		</ArmClose>
 	);
-	void tapeOn;
+};
+/* 013b wide: he looks at his arm and grins; the counter goes +1 */
+const R013b: React.FC = () => {
+	const {f, gf} = useShot();
+	const hp = reach(seatedHero(gf, 8), 'F', [ARM[0] - 20 - SX, ARM[1] - 60 - SEAT], 1);
+	const rp = gesture('armsCrossed', idle(gf, 6), 1, f);
+	const cam = usePush(camOn(900, 600, 1.45), camOn(880, 590, 1.6));
+	return (
+		<Stage cam={cam} bg="#cfe8de" light={{x: 75, y: 10, o: 0.45, c: '255,250,230'}}>
+			<LabBG f={gf} />
+			<Layer depth={1}>
+				<Svg>
+					<Stool x={SX - 6} />
+					<Actor who="reyes" x={1030} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.7, 0.3]} expr="wide" mouth="open" pose={rp} uid="reyes-013b" />
+					<Actor who="hero" x={SX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.45} look={[0.5, 0.4]} mouth="smile" pose={hp} uid="h-013b" />
+					<Bench x={1060} />
+					<HeroBadge x={SX} y={SEAT - 164 - 118} s={0.8} />
+				</Svg>
+			</Layer>
+		</Stage>
+	);
 };
 /* 014 RULE #1: stitched → scar, open → regrows (the hero presents the card) */
 const R014: React.FC = () => {
@@ -918,8 +1190,11 @@ export const SHOTS_R1: ShotDef[] = [
 	{at: '008', off: 132, C: R008b},
 	{at: '009', C: R009, whip: true},
 	{at: '010', C: R010, whip: true},
+	{at: '010', off: 76, C: R010b},
 	{at: '011', C: R011},
+	{at: '011', off: 58, C: R011b},
 	{at: '012', C: R012},
 	{at: '013', C: R013},
+	{at: '013', off: 166, C: R013b},
 	{at: '014', C: R014, whip: true},
 ];

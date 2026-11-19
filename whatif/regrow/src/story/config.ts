@@ -23,7 +23,7 @@ export const STORY: {
 		keys: [
 			{line: '001', v: 0},
 			{line: '004', off: 96, v: 1, roll: 1},
-			{line: '013', off: 150, v: 2, roll: 1},
+			{line: '013', off: 172, v: 2, roll: 1},
 		],
 	},
 	bed: 'sfx/bed.wav',

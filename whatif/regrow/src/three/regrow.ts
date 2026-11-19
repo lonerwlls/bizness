@@ -192,9 +192,11 @@ export const makeDish = () => {
 };
 
 /* ------------------------------ experiments ------------------------------ */
-/* open notebook lying on a desk (top on y = 0); write(k) fills the right page with lines */
-export type Notebook = THREE.Group & {userData: {write: (k: number) => void}};
-export const makeNotebook = (title: string): Notebook => {
+/* open notebook lying on a desk (top on y = 0). write(k) writes the lines letter by letter
+   and returns where the pen tip is, in canvas px (512×320; the page plane is 232×150 units) */
+export type Notebook = THREE.Group & {userData: {write: (k: number) => [number, number]}};
+export const NOTE_LINES = ['Day 1', 'Test subject: ME', 'Skin sample, arm'];
+export const makeNotebook = (lines: string[] = NOTE_LINES): Notebook => {
 	const g = new THREE.Group() as Notebook;
 	g.add(mesh(rbox(240, 6, 160, 2), toon('#2a4a7a'), [0, -3, 0]));
 	const cv = document.createElement('canvas');
@@ -202,31 +204,43 @@ export const makeNotebook = (title: string): Notebook => {
 	cv.height = 320;
 	const tex = new THREE.CanvasTexture(cv);
 	tex.colorSpace = THREE.SRGBColorSpace;
-	const draw = (k: number) => {
+	const total = lines.reduce((a, l) => a + l.length, 0);
+	let last = -1;
+	let tip: [number, number] = [24, 70];
+	const draw = (k: number): [number, number] => {
+		const n = Math.floor(k * total + 1e-6);
+		const key = n * 2 + (document.fonts.check("700 40px 'Caveat'") ? 1 : 0);
+		if (key === last) return tip;
+		last = key;
 		const c = cv.getContext('2d')!;
 		c.fillStyle = '#fbfaf2';
 		c.fillRect(0, 0, 512, 320);
 		c.strokeStyle = '#c9d6ea';
 		c.lineWidth = 2;
-		for (let y = 40; y < 320; y += 26) {
+		for (let y = 70; y < 320; y += 50) {
 			c.beginPath();
-			c.moveTo(0, y);
-			c.lineTo(512, y);
+			c.moveTo(0, y + 6);
+			c.lineTo(512, y + 6);
 			c.stroke();
 		}
-		c.strokeStyle = '#8a90a0';
+		c.strokeStyle = '#d8a0a8';
 		c.beginPath();
-		c.moveTo(256, 0);
-		c.lineTo(256, 320);
+		c.moveTo(16, 0);
+		c.lineTo(16, 320);
 		c.stroke();
-		c.fillStyle = '#2a2f4a';
-		c.font = '700 30px Caveat, cursive';
-		c.fillText(title, 20, 32);
-		const n = Math.floor(k * 9);
-		for (let i = 0; i < n; i++) {
-			c.fillRect(276, 52 + i * 26, 150 + ((i * 53) % 70), 3);
-		}
+		c.fillStyle = '#1d2a5a';
+		c.font = "700 40px 'Caveat', cursive";
+		let left = n;
+		tip = [24, 70];
+		lines.forEach((l, i) => {
+			if (left <= 0) return;
+			const part = l.slice(0, left);
+			left -= l.length;
+			c.fillText(part, 24, 70 + i * 50);
+			tip = [24 + c.measureText(part).width, 70 + i * 50];
+		});
 		tex.needsUpdate = true;
+		return tip;
 	};
 	draw(0);
 	const page = mesh(new THREE.PlaneGeometry(232, 150), new THREE.MeshBasicMaterial({map: tex}), [0, 0.6, 0], [-Math.PI / 2, 0, 0]);
@@ -235,6 +249,30 @@ export const makeNotebook = (title: string): Notebook => {
 	inkPx(g, 2.2);
 	g.userData = {write: draw};
 	return g;
+};
+/* where the pen tip is after k of the notebook text (same layout as makeNotebook), canvas px */
+let measureCtx: CanvasRenderingContext2D | null = null;
+export const noteTipAt = (k: number, lines: string[] = NOTE_LINES): [number, number] => {
+	if (!measureCtx) measureCtx = document.createElement('canvas').getContext('2d');
+	const c = measureCtx!;
+	c.font = "700 40px 'Caveat', cursive";
+	const total = lines.reduce((a, l) => a + l.length, 0);
+	let left = Math.floor(k * total + 1e-6);
+	let tip: [number, number] = [24, 70];
+	lines.forEach((l, i) => {
+		if (left <= 0) return;
+		const part = l.slice(0, left);
+		left -= l.length;
+		tip = [24 + c.measureText(part).width, 70 + i * 50];
+	});
+	return tip;
+};
+/* adhesive bandage, lying flat (top on y = 0), long side along x */
+export const makeBandage = () => {
+	const g = new THREE.Group();
+	g.add(mesh(rbox(130, 4, 56, 2), toon('#e8c8a0'), [0, -2, 0]));
+	g.add(mesh(rbox(54, 5, 40, 2), toon('#fbfaf2'), [0, -1, 0]));
+	return inkPx(g, 2);
 };
 /* pen along +x, tip at +x */
 export const makePen = () => {
