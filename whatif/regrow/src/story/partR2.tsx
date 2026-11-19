@@ -9,7 +9,7 @@ import {HeroBadge, Layer, Stage, Svg, camOn, clamp, usePush} from '../kit/kit';
 import {Board, Bubble, FONT} from '../kit/ui';
 import {Onoma} from '../reference/PauseTime';
 import {Prop3D, PropWorld, at, propScene} from '../three/Prop3D';
-import {makeBurger, makeDinnerPlate, makePizzaBox, makeSoftball, makeSyringe, makeTooth, makeVial, makeWrapper} from '../three/regrow';
+import {makeBurger, makeDinnerPlate, makePizzaBox, makePizzaSlice, makeSoftball, makeSyringe, makeTooth, makeVial, makeWrapper} from '../three/regrow';
 import {FL, HS, badgeY} from './common';
 import {pop, useW} from './lib';
 import {SEAT, SeatChair} from './places';
@@ -150,27 +150,63 @@ const R016: React.FC = () => {
 };
 
 /* ================================ 017–018 rule two: food ================================ */
-const EX = 800; // hero at the cafeteria table
-type CafeW = PropWorld & {b1: THREE.Group; b2: THREE.Group; box: THREE.Group; slice: THREE.Mesh; wraps: THREE.Object3D[]};
+const EX = 830; // hero at the cafeteria table (knees under it)
+const BURG = [886, 944]; // two burgers within reach
+const BOX0 = 1060; // pizza box (centre) before he pulls it closer
+const BOXPULL = 72;
+const lerp2 = (a: [number, number], b: [number, number], k: number): [number, number] => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+const kk = (x: number, a: number, b: number) => Math.max(0, Math.min(1, (x - a) / (b - a)));
+type CafeW = PropWorld & {b: THREE.Group[]; box: THREE.Group; slice: THREE.Group; wraps: THREE.Object3D[]};
+/* he eats with his hands: reach the food on the table, lift it to his mouth, bite, put the wrapper down;
+   for the pizza he first pulls the box closer, then takes a slice out of it */
 const R017: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
-	const mouth: [number, number] = [EX + 44, SEAT - 150];
-	// three courses: burger, burger, pizza slices; each = bring to mouth, two bites
-	const ph = interpolate(f, [w('017', 0.12), w('017', 0.92)], [0, 3], clamp);
+	const lean = 20;
+	const mouth: [number, number] = [EX + Math.sin((lean * Math.PI) / 180) * 164 + 28, SEAT - Math.cos((lean * Math.PI) / 180) * 164 + 26];
+	const rest: [number, number] = [EX + 60, SEAT - 46];
+	const ph = interpolate(f, [w('017', 0.1), w('017', 0.95)], [0, 3], clamp);
 	const course = Math.min(2, Math.floor(ph));
-	const p = ph - course;
-	const lift = p < 0.2 ? p / 0.2 : p > 0.85 ? 1 - (p - 0.85) / 0.15 : 1;
-	const bite = Math.max(0, Math.min(1, (p - 0.25) / 0.55));
-	const grab: [number, number][] = [
-		[EX + 150, CAFE_TOP - 30],
-		[EX + 230, CAFE_TOP - 30],
-		[EX + 360, CAFE_TOP - 30],
-	];
-	const hand: [number, number] = [grab[course][0] + (mouth[0] - grab[course][0]) * lift, grab[course][1] + (mouth[1] + 20 - grab[course][1]) * lift];
-	const hp = reach(seated(gf, 8), 'F', [hand[0] - EX, hand[1] - SEAT], ph > 0 && ph < 3 ? 1 : 0);
-	const chew = bite > 0 && bite < 1 && lift > 0.9 ? Math.abs(Math.sin(f / 3)) : 0;
-	const cam = usePush(camOn(1000, 600, 1.25), camOn(980, 600, 1.45));
+	const p = ph >= 3 ? 1 : ph - course;
+	const top = CAFE_TOP - 4;
+	let hand: [number, number] = rest;
+	let held: 'none' | 'burger' | 'slice' = 'none';
+	let bite = 0;
+	let boxX = BOX0;
+	if (course < 2) {
+		const spot: [number, number] = [BURG[course] - 14, top - 26];
+		if (p < 0.15) hand = lerp2(rest, spot, kk(p, 0, 0.15));
+		else if (p < 0.3) {
+			hand = lerp2(spot, mouth, kk(p, 0.15, 0.3));
+			held = 'burger';
+		} else if (p < 0.8) {
+			hand = mouth;
+			held = 'burger';
+			bite = kk(p, 0.3, 0.8);
+		} else hand = lerp2(mouth, spot, kk(p, 0.8, 1));
+		if (ph >= 0 && course === 0 && ph === 0) hand = rest;
+	} else {
+		const edge: [number, number] = [BOX0 - 72, top - 8];
+		const pulled: [number, number] = [BOX0 - 72 - BOXPULL, top - 8];
+		const sliceAt: [number, number] = [BOX0 - BOXPULL - 30, top - 14];
+		boxX = BOX0 - BOXPULL * kk(p, 0.12, 0.25);
+		if (p < 0.12) hand = lerp2(rest, edge, kk(p, 0, 0.12));
+		else if (p < 0.25) hand = lerp2(edge, pulled, kk(p, 0.12, 0.25));
+		else if (p < 0.35) hand = lerp2(pulled, sliceAt, kk(p, 0.25, 0.35));
+		else if (p < 0.5) {
+			hand = lerp2(sliceAt, mouth, kk(p, 0.35, 0.5));
+			held = 'slice';
+		} else if (p < 0.9) {
+			hand = mouth;
+			held = 'slice';
+			bite = kk(p, 0.5, 0.9);
+		} else hand = lerp2(mouth, rest, kk(p, 0.9, 1));
+	}
+	const working = ph > 0 && ph < 3;
+	const hp = reach(seated(gf, lean), 'F', [hand[0] - EX, hand[1] - SEAT], working ? 1 : 0);
+	const chew = bite > 0 && bite < 1 ? Math.abs(Math.sin(f / 3)) : 0;
+	const burgersEaten = ph >= 3 ? 2 : course + (course < 2 && p >= 0.8 ? 1 : 0);
+	const cam = usePush(camOn(1000, 600, 1.3), camOn(980, 600, 1.5));
 	return (
 		<Stage cam={cam} bg="#e8d2a8" light={{x: 60, y: 0, o: 0.45, c: '255,240,210'}}>
 			<Layer depth={1.4}>
@@ -179,69 +215,64 @@ const R017: React.FC = () => {
 			<Layer depth={1}>
 				<Svg>
 					<SeatChair x={EX - 30} c="#e4762a" />
-					<Actor who="hero" x={EX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.5, 0.3]} mouth={chew > 0.5 ? 'open' : 'smile'} pose={hp} uid="h-017" />
-					<CafeTable x={1080} w={600} />
+					<Actor who="hero" x={EX} floor={FL} seat={SEAT} s={HS} facing={1} faceTurn={0.4} look={[0.6, 0.5]} mouth={chew > 0.5 ? 'open' : 'smile'} pose={hp} uid="h-017" />
+					<CafeTable x={1150} w={640} />
 				</Svg>
 				<Prop3D
-					x={760}
+					x={780}
 					y={480}
-					w={700}
+					w={560}
 					h={320}
 					make={(): CafeW => {
 						const scene = propScene();
-						const b1 = makeBurger();
-						const b2 = makeBurger();
+						const b = [makeBurger(), makeBurger()];
+						b.forEach((x) => x.scale.setScalar(0.85));
 						const box = makePizzaBox();
-						at(box, 1240, CAFE_TOP, 0);
-						box.rotation.x = 0.45;
-						box.scale.setScalar(0.9);
-						const slice = (box.userData.slices as THREE.Mesh[])[0].clone(true);
-						const wraps: THREE.Object3D[] = [];
-						for (let i = 0; i < 6; i++) {
-							const wp = makeWrapper(['#f4efe2', '#ffd34a', '#e4503c', '#9fd8ff', '#f4efe2', '#7af0a8'][i]);
-							at(wp, 960 + (i % 3) * 26 - 10, CAFE_TOP - 12 - Math.floor(i / 3) * 20, 40 + i);
-							wp.visible = false;
-							wraps.push(wp);
-						}
-						scene.add(b1, b2, box, slice, ...wraps);
-						return {scene, b1, b2, box, slice, wraps};
+						box.scale.setScalar(0.8);
+						const slice = makePizzaSlice();
+						slice.scale.setScalar(0.8);
+						const wraps = [makeWrapper('#f4efe2'), makeWrapper('#ffd34a')];
+						scene.add(...b, box, slice, ...wraps);
+						return {scene, b, box, slice, wraps};
 					}}
 					update={(wd) => {
-						const placeFood = (o: THREE.Object3D, i: number) => {
-							const eaten = course > i || (course === i && ph >= 3);
-							o.visible = !eaten && !(course === i && bite >= 0.98);
-							if (course === i && ph > 0) {
-								at(o, hand[0] + 16, hand[1] - 10, 60);
-								o.scale.setScalar(Math.max(0.05, 1 - 0.8 * bite));
-								o.rotation.set(0.3, 0, -0.2);
+						wd.b.forEach((bg, i) => {
+							const inHand = held === 'burger' && course === i;
+							const eaten = i < burgersEaten || (inHand && bite >= 0.98);
+							bg.visible = !eaten;
+							if (inHand) {
+								at(bg, hand[0] + 14, hand[1] - 18, 60);
+								bg.scale.setScalar(0.85 * Math.max(0.15, 1 - 0.75 * bite));
+								bg.rotation.set(0.3, 0, -0.25);
 							} else {
-								at(o, grab[i][0], CAFE_TOP, 30);
-								o.scale.setScalar(1);
-								o.rotation.set(0.35, 0, 0);
+								at(bg, BURG[i], top, 30);
+								bg.scale.setScalar(0.85);
+								bg.rotation.set(0.35, 0, 0);
 							}
-						};
-						placeFood(wd.b1, 0);
-						placeFood(wd.b2, 1);
-						const slices = wd.box.userData.slices as THREE.Mesh[];
-						const gone = course < 2 ? 0 : Math.floor(p * 8);
-						slices.forEach((s, i) => (s.visible = i >= gone + (course === 2 ? 1 : 0)));
-						wd.slice.visible = course === 2 && lift > 0.05;
-						at(wd.slice, hand[0] + 70, hand[1] + 10, 70);
-						wd.slice.scale.setScalar(0.9 * (1 - 0.6 * bite));
-						wd.slice.rotation.set(1.2, 0, 0.6);
-						const nWraps = Math.min(6, (course >= 1 ? 2 : 0) + (course >= 2 ? 1 : 0) + (course === 2 ? Math.floor(p * 4) : 0));
-						wd.wraps.forEach((x, i) => (x.visible = i < nWraps));
+						});
+						wd.wraps.forEach((wp, i) => {
+							wp.visible = i < burgersEaten;
+							at(wp, BURG[i], top - 10, 40);
+						});
+						at(wd.box, boxX, top + 4, 0);
+						wd.box.rotation.set(0.45, 0, 0);
+						const taken = course === 2 && p >= 0.35;
+						(wd.box.userData.slices as THREE.Mesh[]).forEach((sl, i) => (sl.visible = !(taken && i === 6)));
+						wd.slice.visible = held === 'slice' && bite < 0.98;
+						at(wd.slice, hand[0] - 6, hand[1] - 6, 70);
+						wd.slice.scale.setScalar(0.8 * Math.max(0.2, 1 - 0.7 * bite));
+						wd.slice.rotation.set(0.9, 0, 0.5);
 					}}
 				/>
 				<Svg>
-					<HeroBadge x={EX} y={SEAT - 164 - 118} s={0.8} />
-					{chew > 0.5 ? <Onoma x={EX + 120} y={SEAT - 230} text="nom" t={(f % 18) + 4} c="#ffd34a" size={36} rot={6} /> : null}
+					<HeroBadge x={EX + 40} y={SEAT - 164 - 118} s={0.8} />
+					{chew > 0.5 ? <Onoma x={EX + 170} y={SEAT - 230} text="nom" t={(f % 18) + 4} c="#ffd34a" size={36} rot={6} /> : null}
 				</Svg>
 			</Layer>
 			<Over>
 				<Tag f={f} t={w('017', 0.35)} x={1500} y={260} text="2 BURGERS" c="#11142c" fg="#ffd34a" size={40} rot={3} />
-				<Tag f={f} t={w('017', 0.55)} x={1540} y={370} text="PIZZA" c="#11142c" fg="#ff9a6a" stroke="#ff9a6a" size={40} rot={-3} />
-				<Tag f={f} t={w('017', 0.8)} x={1460} y={480} text="½ VENDING MACHINE" c="#11142c" fg="#9fd8ff" stroke="#9fd8ff" size={36} rot={2} />
+				<Tag f={f} t={w('017', 0.62)} x={1540} y={370} text="PIZZA" c="#11142c" fg="#ff9a6a" stroke="#ff9a6a" size={40} rot={-3} />
+				<Tag f={f} t={w('017', 0.82)} x={1460} y={480} text="½ VENDING MACHINE" c="#11142c" fg="#9fd8ff" stroke="#9fd8ff" size={36} rot={2} />
 			</Over>
 		</Stage>
 	);
@@ -284,17 +315,24 @@ const R018: React.FC = () => {
 				make={() => {
 					const scene = propScene(2.2);
 					const pile: THREE.Object3D[] = [];
-					for (let i = 0; i < 5; i++) {
+					const spots: [number, number][] = [
+						[500, 660],
+						[610, 660],
+						[720, 660],
+						[555, 590],
+						[665, 590],
+					];
+					spots.forEach(([x, y], i) => {
 						const b = makeBurger();
-						b.scale.setScalar(1.3);
-						at(b, 330 + (i % 3) * 110 + (i > 2 ? 55 : 0), 650 - (i > 2 ? 80 : 0), i * 10);
+						b.scale.setScalar(1.15);
+						at(b, x, y, i * 10);
 						b.rotation.x = 0.4;
 						pile.push(b);
-					}
+					});
 					const box = makePizzaBox();
-					box.scale.setScalar(1.2);
-					at(box, 560, 560, -40);
-					box.rotation.x = 0.5;
+					box.scale.setScalar(1.05);
+					at(box, 310, 640, 0);
+					box.rotation.set(0.5, 0.3, 0);
 					scene.add(box, ...pile);
 					return {scene, pile};
 				}}

@@ -419,3 +419,23 @@ export const makeDinnerPlate = () => {
 	g.add(mesh(new THREE.SphereGeometry(10, 12, 8), toon('#5ab04a'), [28, 12, -8]));
 	return inkPx(g, 2);
 };
+/* a pizza slice lying flat: crust at x = 0, tip at +x (held by the crust) */
+export const makePizzaSlice = () => {
+	const g = new THREE.Group();
+	const sh = new THREE.Shape();
+	sh.moveTo(0, -30);
+	sh.lineTo(84, 0);
+	sh.lineTo(0, 30);
+	sh.lineTo(0, -30);
+	g.add(mesh(new THREE.ExtrudeGeometry(sh, {depth: 6, bevelEnabled: false}), toon('#f2b84a'), [0, 0, 0], [-Math.PI / 2, 0, 0]));
+	const top = mesh(new THREE.ExtrudeGeometry(sh, {depth: 1.5, bevelEnabled: false}), toon('#e4503c'), [4, 6.5, 0], [-Math.PI / 2, 0, 0], [0.88, 0.85, 1]);
+	top.userData.noInk = true;
+	g.add(top);
+	g.add(mesh(new THREE.CylinderGeometry(6, 6, 62, 10), toon('#d89a4a'), [0, 4, 0], [Math.PI / 2, 0, 0]));
+	for (const [x, z] of [[24, -8], [40, 8], [56, -2]]) {
+		const p = mesh(new THREE.CylinderGeometry(6, 6, 2, 10), toon('#b8302a'), [x, 8.5, z]);
+		p.userData.noInk = true;
+		g.add(p);
+	}
+	return inkPx(g, 2);
+};
