@@ -15,3 +15,4 @@
 | 06_car_shop.mp4 | GTA 6 vs GTA 5: Losing the Cops at the Car Shop 🎨 |
 | 07_minigames.mp4 | GTA 6 vs GTA 5: Yoga vs Building IKEA Furniture 🪑 |
 | 08_npcs_up_close.mp4 | GTA 6 vs GTA 5: NPCs Actually Talk Back Now 💀 |
+| 09_crash_physics.mp4 | GTA 6 vs GTA 5: Crash Physics Are on Another Level 💥 |

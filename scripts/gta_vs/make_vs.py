@@ -14,6 +14,7 @@ T = [
  ('07_minigames','MINIGAMES','g5_7.mp4',f'{C}/kaicenat/15_furniture_race_with_lucia.mp4',0,25,['GTA 5: yoga with Michael','GTA 6: building furniture with Lucia']),
  ('08_npcs_up_close','NPCs UP CLOSE','g5_8.mp4',f'{C}/typicalgamer/04_npc_girls_roast.mp4',15,20,['GTA 5: NPCs on a yacht party','GTA 6: NPCs talk back and roast you']),
 ]
+if os.environ.get('VS_SPEC'): T = [tuple(x) for x in json.load(open(os.environ['VS_SPEC']))]
 os.makedirs('out', exist_ok=True); os.makedirs('txt', exist_ok=True)
 def tf(name, s):
     p = f'txt/{name}.txt'; open(p, 'w').write(s); return p
