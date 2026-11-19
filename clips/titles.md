@@ -33,3 +33,4 @@
 | kaicenat/14_plane_landing_fail.mp4 | Kai Tried to Land a Plane in GTA 6… "Perfect Landing" ✈️💥 |
 | kaicenat/15_furniture_race_with_lucia.mp4 | GTA 6 Has an IKEA Minigame… and Lucia DESTROYED Kai 🪑 |
 | kaicenat/16_swamp_shootout_wasted.mp4 | Kai's First Big Shootout in GTA 6 Lasted 30 Seconds 💀 |
+| kaicenat/17_rip_donnie.mp4 | GTA 6 Just Killed Off Donnie… and the Whole Chat Said RIP 🪦 |
