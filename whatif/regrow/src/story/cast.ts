@@ -1,8 +1,9 @@
 import type {Base} from '../kit/actions';
 
-/* Cast of "What if you hiccuped for 68 years?".
-   Hero = Doctor ROO: messy ginger hair, round glasses, red scarf — now in a white lab coat
-   with a stethoscope. Nobody else wears a white coat or has ginger hair. */
+/* Cast of "What if you could regrow any body part?".
+   Hero = Doctor ROO: messy ginger hair, round glasses, red scarf, white lab coat, stethoscope.
+   Nobody else wears a white coat or has ginger hair. Dr. Reyes = navy scrubs, black ponytail;
+   the night nurse = teal scrubs, bun; Morgan (1898) = brown suit, moustache. */
 export type CastMember = Base & {sp?: string};
 
 export const CAST: Record<string, CastMember> = {
@@ -21,6 +22,8 @@ export const CAST: Record<string, CastMember> = {
 	friend40: {color: '#6a7a8a', outfit: 'vest', accent: '#3a4a5a', head: 'peach', skin: '#e8c0a0', hair: 'cap', hairColor: '#4a3a2a', rim: '#f6e6c8', rimW: 2.4, shoe: '#2a1a12', legColor: '#4a4a58'},
 	youngdoc: {color: '#5a6ad8', outfit: 'tee', head: 'peach', skin: '#a86b45', hair: 'short', hairColor: '#1d1d24', rim: '#e0ecff', rimW: 2.4, shoe: '#f4f6fb', legColor: '#5a6ad8'},
 	teen: {color: '#6a6a7a', outfit: 'hoodie', head: 'peach', skin: '#f2d0b5', hair: 'spiky', hairColor: '#2a1a12', rim: '#e0ecff', rimW: 2.4, shoe: '#f4f6fb', legColor: '#2a2f4a'},
+	reyes: {color: '#3d5fb0', outfit: 'tee', head: 'peach', skin: '#b97a52', hair: 'ponytail', hairColor: '#1d1d24', acc: ['lashes'], rim: '#e0ecff', rimW: 2.4, shoe: '#f4f6fb', legColor: '#3d5fb0'},
+	morgan: {color: '#5a4030', outfit: 'suit', head: 'peach', skin: '#f2d0b5', hair: 'short', hairColor: '#3a2418', acc: ['mustache'], rim: '#f6e6c8', rimW: 2.4, shoe: '#1b1208', legColor: '#4a3428'},
 	kid1: {color: '#3aa37a', head: 'peach', skin: '#f2d0b5', hair: 'short', hairColor: '#3a2418', rim: '#e8fff2', rimW: 2.4, shoe: '#f4f6fb'},
 	kid2: {color: '#e47a3c', head: 'peach', skin: '#f2d0b5', hair: 'ponytail', hairColor: '#3a2418', rim: '#fff0e0', rimW: 2.4, shoe: '#f4f6fb'},
 };
