@@ -526,7 +526,7 @@ const R021: React.FC = () => {
 					}}
 				/>
 				<Svg>
-					<Tag f={f} t={w('021', 0.2)} x={880} y={200} text="KYOTO · 2024" c="#11142c" fg="#f6b8cc" stroke="#f6b8cc" size={42} rot={-4} />
+					<Tag f={f} t={w('021', 0.2)} x={880} y={290} text="KYOTO · 2024" c="#11142c" fg="#f6b8cc" stroke="#f6b8cc" size={42} rot={-4} />
 					<Tag f={f} t={w('021', 0.32)} x={1380} y={560} text="FIRST HUMAN TRIAL" c="#11142c" fg="#ffd34a" size={34} rot={3} />
 					<Tag f={f} t={w('021', 0.46)} x={1300} y={660} text="TOOTH-GROWING DRUG" c="#11142c" fg="#9fd8ff" stroke="#9fd8ff" size={32} rot={-2} />
 				</Svg>
