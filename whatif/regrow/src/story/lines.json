@@ -1,0 +1,376 @@
+[
+ {
+  "id": "001_N",
+  "sp": "N",
+  "t": "It's three in the morning, and you're slicing a bagel in the hospital break room. The knife slips.",
+  "graphic": "night break room, 3D bagel and knife, the slip"
+ },
+ {
+  "id": "002_N",
+  "sp": "N",
+  "t": "Half an inch of your finger is just... gone.",
+  "graphic": "hero stares at his hand (cartoon: bandage-white stump, no blood), nurse freezes"
+ },
+ {
+  "id": "003_N",
+  "sp": "N",
+  "t": "You're a doctor. You know exactly what to do. Ice, gauze, call the surgeon. But before you can move, your finger starts to itch.",
+  "graphic": "he grabs gauze, stops, looks at the finger"
+ },
+ {
+  "id": "004_N",
+  "sp": "N",
+  "t": "Then it grows. Bone, then skin, then a tiny new nail. Forty seconds. Not even a scar.",
+  "graphic": "close-up: fingertip grows back in 3 stages, sparkle"
+ },
+ {
+  "id": "005_N",
+  "sp": "N",
+  "t": "The night nurse drops her coffee. You drop the bagel.",
+  "graphic": "two drops, coffee splash on the floor, bagel rolls and stays"
+ },
+ {
+  "id": "006_N",
+  "sp": "N",
+  "t": "So what if you could regrow any part of your body?",
+  "graphic": "title words, hero in a spotlight looking at his hand"
+ },
+ {
+  "id": "007_N",
+  "sp": "N",
+  "t": "Sounds impossible? Not for everyone. An axolotl, a smiling little salamander from Mexico, can regrow a leg, part of its heart, even pieces of its brain. Without a single scar.",
+  "graphic": "aquarium: 3D axolotl, its leg grows back; labels LEG / HEART / BRAIN"
+ },
+ {
+  "id": "008_N",
+  "sp": "N",
+  "t": "In eighteen ninety-eight, scientist Thomas Hunt Morgan cut a flatworm into tiny pieces. A piece just one two-hundred-seventy-ninth of the worm grew into a whole new worm.",
+  "graphic": "sepia lab 1898, Morgan at a microscope, worm sliced, \"1/279\" pops, piece becomes a worm"
+ },
+ {
+  "id": "009_N",
+  "sp": "N",
+  "t": "Today, that's you. Only you're a doctor.",
+  "graphic": "Doctor ROO in a white coat, \"THAT'S YOU\" / \"DOCTOR\" tags, counter appears: REGROWN 1"
+ },
+ {
+  "id": "010_N",
+  "sp": "N",
+  "t": "First, you need to know how it works. So you do what any scientist would do. You experiment on yourself.",
+  "graphic": "small lab, ROO rolls up a sleeve, notebook"
+ },
+ {
+  "id": "011_N",
+  "sp": "N",
+  "t": "Your colleague, Dr. Reyes, takes a tiny slice of skin from your arm, then stitches the wound shut, nice and neat.",
+  "graphic": "Reyes (not yellow, not ginger) with tweezers, needle and thread"
+ },
+ {
+  "id": "012_N",
+  "sp": "N",
+  "t": "Nothing happens. A week later, you just have a scar.",
+  "graphic": "calendar page flips 7 days, scar line on the arm"
+ },
+ {
+  "id": "013_N",
+  "sp": "N",
+  "t": "So she takes another slice, and this time leaves the wound open under a bandage. Twenty seconds later, the skin is back.",
+  "graphic": "bandage, timer 0:20, bandage off: clean skin"
+ },
+ {
+  "id": "014_N",
+  "sp": "N",
+  "t": "Rule number one: a stitched wound scars. An open one regrows.",
+  "graphic": "rule card: needle = scar, bandage = regrow"
+ },
+ {
+  "id": "015_N",
+  "sp": "N",
+  "t": "Weirdly, real doctors noticed something similar. In nineteen seventy-four, Dr. Cynthia Illingworth in Sheffield reported that children's cut-off fingertips often grew back, if surgeons just left them alone instead of stitching them closed.",
+  "graphic": "1974 card, children's hospital, child's finger in a dressing"
+ },
+ {
+  "id": "016_N",
+  "sp": "N",
+  "t": "It works in kids up to about eleven years old. Nail, fingerprint and all.",
+  "graphic": "age bar 0–11, fingertip with a fingerprint"
+ },
+ {
+  "id": "017_N",
+  "sp": "N",
+  "t": "Rule number two shows up at lunch. You're starving. You eat two burgers, a pizza, and half the vending machine.",
+  "graphic": "cafeteria: he eats with his hands, stack of empty plates"
+ },
+ {
+  "id": "018_N",
+  "sp": "N",
+  "t": "A new body part has to be built from something, and that something is whatever you eat. Every regrowth costs you a mountain of food.",
+  "graphic": "infographic: plate → arrow → finger"
+ },
+ {
+  "id": "019_N",
+  "sp": "N",
+  "t": "Rule number three shows up at a softball game. A ball knocks out your front tooth. By dinner, a new one has pushed in.",
+  "graphic": "park, ball hits, tooth flies and lands on the grass, dinner table, new tooth"
+ },
+ {
+  "id": "020_N",
+  "sp": "N",
+  "t": "Not a copy of the old tooth. A brand-new one. No filling, no stains. Whatever regrows comes back factory new.",
+  "graphic": "old tooth (filling, stain) vs new tooth, \"FACTORY NEW\" stamp inside the card"
+ },
+ {
+  "id": "021_N",
+  "sp": "N",
+  "t": "Real scientists are chasing this exact trick. In twenty twenty-four, doctors in Kyoto began the first human trial of a drug meant to help people grow new teeth. They hope it could reach patients around twenty thirty.",
+  "graphic": "Kyoto clinic card, 2024 → 2030 timeline"
+ },
+ {
+  "id": "022_N",
+  "sp": "N",
+  "t": "Now, a doctor who can regrow anything starts asking a dangerous question. What else could I give away?",
+  "graphic": "ROO at an X-ray light box, looking at his own body"
+ },
+ {
+  "id": "023_N",
+  "sp": "N",
+  "t": "Here's a real fact: the human liver regrows. A living donor can give part of theirs to a patient, and in about two months it grows back to almost full size.",
+  "graphic": "liver diagram: part removed, grows back, \"~2 MONTHS\""
+ },
+ {
+  "id": "024_N",
+  "sp": "N",
+  "t": "Yours grows back overnight.",
+  "graphic": "same diagram, timer \"1 NIGHT\""
+ },
+ {
+  "id": "025_N",
+  "sp": "N",
+  "t": "So you become a donor. A slice of liver in March. Another in April. By December, you've given away more than one whole liver, and you're still using yours.",
+  "graphic": "wall calendar months flip, liver icons pile up"
+ },
+ {
+  "id": "026_N",
+  "sp": "N",
+  "t": "Then you try a kidney. A normal kidney can't regrow at all. Yours is back in four days.",
+  "graphic": "kidney card, days 1–4 ticking"
+ },
+ {
+  "id": "027_N",
+  "sp": "N",
+  "t": "The waiting list at your hospital gets shorter every week. The newspapers call you \"the Spare Parts Doctor.\"",
+  "graphic": "waiting-list board losing names; newspaper held in hands"
+ },
+ {
+  "id": "028_N",
+  "sp": "N",
+  "t": "And companies come calling. A man in a very expensive suit offers you a billion dollars for a vial of your cells.",
+  "graphic": "office, 3D vial, check with many zeros"
+ },
+ {
+  "id": "029_N",
+  "sp": "N",
+  "t": "Real labs are already trying to grow body parts. In two thousand six, Dr. Anthony Atala reported seven young patients living with bladders grown from their own cells.",
+  "graphic": "lab: cells → scaffold → bladder, \"7 PATIENTS, 2006\""
+ },
+ {
+  "id": "030_N",
+  "sp": "N",
+  "t": "And in twenty twenty-two, a young woman in Texas received an ear that was 3D-printed from her own cartilage cells.",
+  "graphic": "3D printer printing an ear, 2022 tag"
+ },
+ {
+  "id": "031_N",
+  "sp": "N",
+  "t": "But real labs are slow, and you're not. You turn down the man in the suit. You've got patients waiting.",
+  "graphic": "he slides the check back, walks out to the ward"
+ },
+ {
+  "id": "032_N",
+  "sp": "N",
+  "t": "Then, one Tuesday, Dr. Reyes looks at your blood test and goes quiet.",
+  "graphic": "Reyes at a screen, her face drops"
+ },
+ {
+  "id": "033_N",
+  "sp": "N",
+  "t": "Your cells are dividing faster than anything she's ever seen. Faster than a deer antler.",
+  "graphic": "microscope view of fast-dividing cells"
+ },
+ {
+  "id": "034_N",
+  "sp": "N",
+  "t": "Antlers are one of the fastest-growing tissues of any mammal. Up to two centimeters a day.",
+  "graphic": "forest, deer, antler growing with a ruler \"2 CM/DAY\""
+ },
+ {
+  "id": "035_N",
+  "sp": "N",
+  "t": "And in twenty nineteen, scientists found that antlers grow using genes that look a lot like the genes of bone cancer. The deer just know how to keep them in check.",
+  "graphic": "gene strip: ANTLER vs BONE CANCER, matching bars"
+ },
+ {
+  "id": "036_N",
+  "sp": "N",
+  "t": "Fast growth and cancer are two sides of the same coin. In nineteen eighty-six, a doctor named Harold Dvorak described tumors as \"wounds that do not heal.\"",
+  "graphic": "quote card, sepia note"
+ },
+ {
+  "id": "037_N",
+  "sp": "N",
+  "t": "\"Every time you regrow something,\" Reyes says, \"you roll the dice.\"",
+  "graphic": "3D dice roll on the desk and stay there"
+ },
+ {
+  "id": "038_N",
+  "sp": "N",
+  "t": "You start counting. Forty-one regrowths. Forty-one rolls of the dice.",
+  "graphic": "counter above his head ticks to 41"
+ },
+ {
+  "id": "039_N",
+  "sp": "N",
+  "t": "Three weeks later, you find it. A small, hard lump on your forearm, right where that second slice of skin grew back.",
+  "graphic": "bathroom mirror, morning, he feels his arm"
+ },
+ {
+  "id": "040_N",
+  "sp": "N",
+  "t": "Your hands shake while Reyes cuts it out. It isn't cancer. Not yet. It's just skin that didn't know when to stop.",
+  "graphic": "procedure room, lab report \"BENIGN\""
+ },
+ {
+  "id": "041_N",
+  "sp": "N",
+  "t": "This time, she stitches the wound shut. On purpose. A scar is a stop sign.",
+  "graphic": "needle and thread, \"STOP\" sign-shaped scar card"
+ },
+ {
+  "id": "042_N",
+  "sp": "N",
+  "t": "Maybe that's why we scar at all. One theory says mammals traded regrowing for something faster and safer: a quick patch that stops infection, and keeps runaway growth in check.",
+  "graphic": "axolotl vs human card, \"THEORY\" label"
+ },
+ {
+  "id": "043_N",
+  "sp": "N",
+  "t": "So you decide to stop. No more regrowing. Ever.",
+  "graphic": "he puts the counter away in a drawer"
+ },
+ {
+  "id": "044_N",
+  "sp": "N",
+  "t": "And that's exactly when Lily arrives. She's seven. Her liver is failing, and there's no donor for her on the list.",
+  "graphic": "ER doors, a little girl on a raised bed, half-sitting, eyes open"
+ },
+ {
+  "id": "045_N",
+  "sp": "N",
+  "t": "Except you. Same blood type. A perfect match.",
+  "graphic": "match card: two blood bags, check mark"
+ },
+ {
+  "id": "046_N",
+  "sp": "N",
+  "t": "A normal donor would grow that piece back over a couple of months. You'll grow it back in one night. Another roll of the dice.",
+  "graphic": "dice on the table again"
+ },
+ {
+  "id": "047_N",
+  "sp": "N",
+  "t": "Reyes sits down next to you in the empty cafeteria. \"You don't owe anyone this,\" she says.",
+  "graphic": "night cafeteria, two people sitting properly on chairs"
+ },
+ {
+  "id": "048_N",
+  "sp": "N",
+  "t": "You look at the bagel on your tray. The same kind that started all of this.",
+  "graphic": "3D bagel on the tray, close-up"
+ },
+ {
+  "id": "049_N",
+  "sp": "N",
+  "t": "Then you sign the form.",
+  "graphic": "pen in hand, signature"
+ },
+ {
+  "id": "050_N",
+  "sp": "N",
+  "t": "The surgery takes nine hours. By morning, Lily's new liver is working. And yours has already grown back.",
+  "graphic": "OR, clock 9 hours, monitor beats; dawn"
+ },
+ {
+  "id": "051_N",
+  "sp": "N",
+  "t": "For a week, you check your skin every morning. No lumps. The counter stops at forty-two. And that's where you leave it.",
+  "graphic": "mirror, counter 42, he turns off the light"
+ },
+ {
+  "id": "052_N",
+  "sp": "N",
+  "t": "Here's the twist, though. You don't need a superpower to regrow body parts. You already can. A little.",
+  "graphic": "ROO faces camera, the counter fades"
+ },
+ {
+  "id": "053_N",
+  "sp": "N",
+  "t": "Your liver regrows. Your skin keeps replacing itself. A broken bone rebuilds itself, and a rib can even grow back, if surgeons leave its outer lining in place.",
+  "graphic": "x-ray infographic lighting up liver, skin, bone, rib"
+ },
+ {
+  "id": "054_N",
+  "sp": "N",
+  "t": "Cut nerves regrow too, about a millimeter a day. And kids' fingertips grow back, if we just leave them alone.",
+  "graphic": "nerve line growing, \"1 MM/DAY\""
+ },
+ {
+  "id": "055_N",
+  "sp": "N",
+  "t": "The power isn't missing. It's switched off. And scientists are looking for the switch.",
+  "graphic": "big switch in the OFF position"
+ },
+ {
+  "id": "056_N",
+  "sp": "N",
+  "t": "In twenty twenty-two, a team led by Michael Levin at Tufts University put a tiny dome filled with five drugs over a frog's cut leg, for just twenty-four hours. Over the next eighteen months, the frog regrew a working leg.",
+  "graphic": "lab: frog, dome, 24 h, months flip, leg regrows"
+ },
+ {
+  "id": "057_N",
+  "sp": "N",
+  "t": "It wasn't perfect. But a frog that shouldn't regrow a leg did. And mammals are next on the list.",
+  "graphic": "frog swims with the new leg"
+ },
+ {
+  "id": "058_N",
+  "sp": "N",
+  "t": "A year later, Lily is back in your ER. She caught her finger in a car door. The tip is gone.",
+  "graphic": "ER, Lily (same look), bandaged finger"
+ },
+ {
+  "id": "059_N",
+  "sp": "N",
+  "t": "The surgeon on duty reaches for the needle and thread. You stop him. \"Leave it open. Just a dressing.\"",
+  "graphic": "hand stops the needle"
+ },
+ {
+  "id": "060_N",
+  "sp": "N",
+  "t": "Eight weeks later, Lily shows you a brand-new fingertip. Nail and all. No superpower needed.",
+  "graphic": "Lily waves the finger, ROO smiles"
+ },
+ {
+  "id": "061_N",
+  "sp": "N",
+  "t": "So if you could regrow one body part, which one would you pick? Tell me in the comments.",
+  "graphic": "question card with ROO",
+  "gap": 0.6
+ },
+ {
+  "id": "062_N",
+  "sp": "N",
+  "t": "And subscribe.",
+  "graphic": "subscribe button (3D)",
+  "gap": 2.6
+ }
+]

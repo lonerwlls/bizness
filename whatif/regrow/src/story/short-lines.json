@@ -1,0 +1,57 @@
+[
+ {
+  "id": "s01_N",
+  "sp": "N",
+  "t": "So what if you got the hiccups, and they never went away?",
+  "reuse": "006_N"
+ },
+ {
+  "id": "s02_N",
+  "sp": "N",
+  "t": "Sounds impossible? It happened. In nineteen twenty-two, an American farmer named Charles Osborne lifted a three-hundred-and-fifty-pound hog, fell, and started to hiccup.",
+  "reuse": "007_N"
+ },
+ {
+  "id": "s03_N",
+  "sp": "N",
+  "t": "He didn't stop for sixty-eight years. Today, that's you. Only you're a doctor.",
+  "reuse": "008_N"
+ },
+ {
+  "id": "s04_N",
+  "sp": "N",
+  "t": "So you hiccup. Twenty to forty times a minute. Day and night.",
+  "reuse": "025_N"
+ },
+ {
+  "id": "s05_N",
+  "sp": "N",
+  "t": "Eating is like jumping rope with a sandwich. So you blend everything. Breakfast, lunch, steak.",
+  "reuse": "028_N"
+ },
+ {
+  "id": "s06_N",
+  "sp": "N",
+  "t": "The real Osborne wore out two blenders. You wear out three.",
+  "reuse": "029_N"
+ },
+ {
+  "id": "s07_N",
+  "sp": "N",
+  "t": "Osborne's friend once fired a shotgun behind his back. Osborne said: \"It scared me some, but it didn't scare the hiccups out of me.\"",
+  "reuse": "039_N"
+ },
+ {
+  "id": "s08_N",
+  "sp": "N",
+  "t": "So next time you get the hiccups, don't panic. Most stop in a few minutes. And you're only four hundred and thirty million behind.",
+  "reuse": "058_N"
+ },
+ {
+  "id": "s09_N",
+  "sp": "N",
+  "t": "What's the weirdest hiccup cure you've ever tried? Tell me in the comments.",
+  "reuse": "059_N",
+  "gap": 2.2
+ }
+]

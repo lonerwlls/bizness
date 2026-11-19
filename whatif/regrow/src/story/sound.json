@@ -1,0 +1,642 @@
+{
+ "ambience": [
+  {
+   "from": "001",
+   "to": "006",
+   "kind": "crowd",
+   "gain": 0.03
+  },
+  {
+   "from": "006",
+   "to": "007",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "007",
+   "to": "008",
+   "kind": "wind",
+   "gain": 0.04,
+   "birds": true
+  },
+  {
+   "from": "009",
+   "to": "014",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "014",
+   "to": "017",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "017",
+   "to": "019",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "019",
+   "to": "020",
+   "kind": "night",
+   "gain": 0.035
+  },
+  {
+   "from": "020",
+   "to": "022",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "022",
+   "to": "023",
+   "kind": "fridge",
+   "gain": 0.05
+  },
+  {
+   "from": "023",
+   "to": "024",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "024",
+   "to": "025",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "025",
+   "to": "026",
+   "kind": "wind",
+   "gain": 0.05
+  },
+  {
+   "from": "026",
+   "to": "028",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "028",
+   "to": "029",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "029",
+   "to": "030",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "030",
+   "to": "031",
+   "kind": "crowd",
+   "gain": 0.04
+  },
+  {
+   "from": "031",
+   "to": "032",
+   "kind": "wind",
+   "gain": 0.03,
+   "birds": true
+  },
+  {
+   "from": "032",
+   "to": "033",
+   "kind": "rain",
+   "gain": 0.04
+  },
+  {
+   "from": "033",
+   "to": "034",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "034",
+   "to": "035",
+   "kind": "hall",
+   "gain": 0.035
+  },
+  {
+   "from": "035",
+   "to": "036",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "036",
+   "to": "037",
+   "kind": "room",
+   "gain": 0.035
+  },
+  {
+   "from": "037",
+   "to": "039",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "039",
+   "to": "040",
+   "kind": "wind",
+   "gain": 0.04,
+   "birds": true
+  },
+  {
+   "from": "040",
+   "to": "042",
+   "kind": "fridge",
+   "gain": 0.04
+  },
+  {
+   "from": "042",
+   "to": "043",
+   "kind": "room",
+   "gain": 0.045
+  },
+  {
+   "from": "043",
+   "to": "044",
+   "kind": "hall",
+   "gain": 0.035
+  },
+  {
+   "from": "044",
+   "to": "048",
+   "kind": "night",
+   "gain": 0.03
+  },
+  {
+   "from": "048",
+   "to": "049",
+   "kind": "crowd",
+   "gain": 0.03
+  },
+  {
+   "from": "049",
+   "to": "050",
+   "kind": "room",
+   "gain": 0.03,
+   "birds": true
+  },
+  {
+   "from": "050",
+   "to": "051",
+   "kind": "fridge",
+   "gain": 0.025
+  },
+  {
+   "from": "051",
+   "to": "052",
+   "kind": "room",
+   "gain": 0.03
+  },
+  {
+   "from": "053",
+   "to": "055",
+   "kind": "room",
+   "gain": 0.025
+  },
+  {
+   "from": "055",
+   "to": "058",
+   "kind": "wind",
+   "gain": 0.03
+  },
+  {
+   "from": "058",
+   "to": "059",
+   "kind": "night",
+   "gain": 0.025
+  },
+  {
+   "from": "059",
+   "to": "end",
+   "kind": "room",
+   "gain": 0.03
+  }
+ ],
+ "music": [
+  {
+   "from": "053",
+   "to": "055",
+   "style": "pad-warm",
+   "amp": 0.05
+  }
+ ],
+ "sfx": [
+  {
+   "at": "001",
+   "off": 0,
+   "type": "applause",
+   "dur": 2.2,
+   "amp": 0.14
+  },
+  {
+   "at": "004",
+   "off": 0,
+   "type": "laugh",
+   "dur": 2.6,
+   "amp": 0.12
+  },
+  {
+   "at": "007",
+   "off": 178,
+   "type": "thud",
+   "amp": 0.45
+  },
+  {
+   "at": "007",
+   "off": 248,
+   "type": "hic",
+   "f0": 185,
+   "amp": 0.26
+  },
+  {
+   "at": "007",
+   "off": 274,
+   "type": "hic",
+   "f0": 185,
+   "amp": 0.26
+  },
+  {
+   "at": "008",
+   "off": 8,
+   "type": "hic",
+   "f0": 180,
+   "amp": 0.2
+  },
+  {
+   "at": "008",
+   "off": 34,
+   "type": "hic",
+   "f0": 175,
+   "amp": 0.2
+  },
+  {
+   "at": "008",
+   "off": 60,
+   "type": "hic",
+   "f0": 165,
+   "amp": 0.2
+  },
+  {
+   "at": "008",
+   "off": 74,
+   "type": "whooshUp",
+   "dur": 0.6,
+   "amp": 0.2
+  },
+  {
+   "at": "009",
+   "off": 0,
+   "type": "steps",
+   "dur": 3.0
+  },
+  {
+   "at": "010",
+   "off": 20,
+   "type": "heartbeat",
+   "dur": 4.5,
+   "amp": 0.14
+  },
+  {
+   "at": "011",
+   "off": 70,
+   "type": "whoosh",
+   "dur": 0.8
+  },
+  {
+   "at": "011",
+   "off": 95,
+   "type": "thud",
+   "amp": 0.4
+  },
+  {
+   "at": "012",
+   "off": 14,
+   "type": "pop",
+   "amp": 0.14
+  },
+  {
+   "at": "014",
+   "off": 70,
+   "type": "swoosh"
+  },
+  {
+   "at": "018",
+   "off": 41,
+   "type": "shot",
+   "amp": 0.3
+  },
+  {
+   "at": "019",
+   "off": 85,
+   "type": "ring",
+   "dur": 1.5,
+   "amp": 0.04
+  },
+  {
+   "at": "021",
+   "off": 62,
+   "type": "stamp",
+   "amp": 0.4
+  },
+  {
+   "at": "022",
+   "off": 10,
+   "type": "buzz",
+   "dur": 1.8,
+   "amp": 0.012
+  },
+  {
+   "at": "023",
+   "off": 61,
+   "type": "pop",
+   "amp": 0.14
+  },
+  {
+   "at": "023",
+   "off": 126,
+   "type": "switch",
+   "amp": 0.3
+  },
+  {
+   "at": "026",
+   "off": 17,
+   "type": "heartbeat",
+   "dur": 3.5,
+   "amp": 0.12
+  },
+  {
+   "at": "028",
+   "off": 81,
+   "type": "buzz",
+   "dur": 3.0,
+   "amp": 0.02
+  },
+  {
+   "at": "030",
+   "off": 91,
+   "type": "thud",
+   "amp": 0.45
+  },
+  {
+   "at": "031",
+   "off": 200,
+   "type": "applause",
+   "dur": 2.5,
+   "amp": 0.12
+  },
+  {
+   "at": "035",
+   "off": 20,
+   "type": "steps",
+   "dur": 1.6,
+   "amp": 0.12
+  },
+  {
+   "at": "035",
+   "off": 92,
+   "type": "whoosh",
+   "dur": 1.6,
+   "amp": 0.1
+  },
+  {
+   "at": "036",
+   "off": 4,
+   "type": "ding",
+   "amp": 0.08
+  },
+  {
+   "at": "037",
+   "off": 4,
+   "type": "swoosh",
+   "amp": 0.14
+  },
+  {
+   "at": "037",
+   "off": 64,
+   "type": "crackle",
+   "dur": 2.6,
+   "amp": 0.06
+  },
+  {
+   "at": "039",
+   "off": 41,
+   "type": "shot",
+   "amp": 0.45
+  },
+  {
+   "at": "039",
+   "off": 71,
+   "type": "hic",
+   "f0": 175,
+   "amp": 0.26
+  },
+  {
+   "at": "040",
+   "off": 6,
+   "type": "pop",
+   "amp": 0.1
+  },
+  {
+   "at": "044",
+   "off": 10,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "044",
+   "off": 40,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "044",
+   "off": 70,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "044",
+   "off": 100,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "044",
+   "off": 130,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "044",
+   "off": 160,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "045",
+   "off": 10,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "045",
+   "off": 40,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "045",
+   "off": 70,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "045",
+   "off": 100,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "045",
+   "off": 130,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "045",
+   "off": 160,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "046",
+   "off": 10,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "046",
+   "off": 40,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "046",
+   "off": 70,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "046",
+   "off": 100,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "046",
+   "off": 130,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "046",
+   "off": 160,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "047",
+   "off": 10,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "047",
+   "off": 40,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "047",
+   "off": 70,
+   "type": "ding",
+   "amp": 0.035
+  },
+  {
+   "at": "043",
+   "off": 0,
+   "type": "steps",
+   "dur": 4.5,
+   "amp": 0.1
+  },
+  {
+   "at": "048",
+   "off": 129,
+   "type": "applause",
+   "dur": 4.0,
+   "amp": 0.14
+  },
+  {
+   "at": "050",
+   "off": 10,
+   "type": "ring",
+   "dur": 0.2,
+   "amp": 0.02
+  },
+  {
+   "at": "053",
+   "off": 6,
+   "type": "swoosh",
+   "amp": 0.08
+  },
+  {
+   "at": "054",
+   "off": 6,
+   "type": "heartbeat",
+   "dur": 7.5,
+   "amp": 0.16
+  },
+  {
+   "at": "055",
+   "off": 0,
+   "type": "crackle",
+   "dur": 12,
+   "amp": 0.03
+  },
+  {
+   "at": "056",
+   "off": 92,
+   "type": "ding",
+   "amp": 0.1
+  },
+  {
+   "at": "057",
+   "off": 38,
+   "type": "hic",
+   "f0": 160,
+   "amp": 0.24
+  },
+  {
+   "at": "057",
+   "off": 96,
+   "type": "hic",
+   "f0": 160,
+   "amp": 0.24
+  },
+  {
+   "at": "060",
+   "off": 20,
+   "type": "click",
+   "amp": 0.3
+  }
+ ]
+}

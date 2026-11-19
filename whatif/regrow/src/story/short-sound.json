@@ -1,0 +1,43 @@
+{
+ "fromLong": true,
+ "ambience": [
+  {"from": "s01", "to": "s02", "kind": "night", "gain": 0.03},
+  {"from": "s02", "to": "s04", "kind": "wind", "gain": 0.04, "birds": true},
+  {"from": "s04", "to": "s05", "kind": "wind", "gain": 0.04},
+  {"from": "s05", "to": "s07", "kind": "room", "gain": 0.04},
+  {"from": "s07", "to": "s08", "kind": "wind", "gain": 0.04}
+ ],
+ "music": [{"from": "s08", "to": "end", "style": "pad-warm", "amp": 0.05}],
+ "sfx": [
+  {"at": "s01", "off": 0, "type": "whooshUp", "dur": 0.6, "amp": 0.2},
+  {"at": "s02", "off": -6, "type": "whoosh"},
+  {"at": "s02", "off": 4, "type": "pop"},
+  {"at": "s02", "off": 20, "type": "pop"},
+  {"at": "s03", "off": -6, "type": "whoosh"},
+  {"at": "s03", "off": 0, "type": "pop"},
+  {"at": "s03", "off": 58, "type": "stamp", "amp": 0.3},
+  {"at": "s03", "off": 80, "type": "pop"},
+  {"at": "s03", "off": 100, "type": "pop"},
+  {"at": "s04", "off": -6, "type": "whoosh"},
+  {"at": "s04", "off": 24, "type": "pop"},
+  {"at": "s04", "off": 60, "type": "pop"},
+  {"at": "s05", "off": -6, "type": "whoosh"},
+  {"at": "s06", "off": -6, "type": "whoosh"},
+  {"at": "s06", "off": 54, "type": "swoosh"},
+  {"at": "s07", "off": -6, "type": "whoosh"},
+  {"at": "s07", "off": 96, "type": "whoosh"},
+  {"at": "s08", "off": -6, "type": "whoosh"},
+  {"at": "s08", "off": 0, "type": "pop"},
+  {"at": "s08", "off": 112, "type": "pop"},
+  {"at": "s08", "off": 120, "type": "click"},
+  {"at": "s08", "off": 124, "type": "click"},
+  {"at": "s08", "off": 128, "type": "click"},
+  {"at": "s08", "off": 132, "type": "click"},
+  {"at": "s08", "off": 136, "type": "click"},
+  {"at": "s08", "off": 142, "type": "ding"},
+  {"at": "s09", "off": -6, "type": "whoosh"},
+  {"at": "s09", "off": 0, "type": "pop"},
+  {"at": "s09", "off": 34, "type": "pop"},
+  {"at": "s09", "off": 94, "type": "ding"}
+ ]
+}
