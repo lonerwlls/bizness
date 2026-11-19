@@ -36,3 +36,4 @@
 | kaicenat/17_rip_donnie.mp4 | GTA 6 Just Killed Off Donnie… and the Whole Chat Said RIP 🪦 |
 | kaicenat/18_lucia_leaves_jason.mp4 | Lucia Did WHAT to Jason?! GTA 6 Story Twist 😳 |
 | kaicenat/19_chasing_giant_peach_truck.mp4 | Kai Chased a Truck Carrying a GIANT Peach in GTA 6 🍑 |
+| kaicenat/20_tower_collectible_wasted.mp4 | Kai Climbed a Tower for a Collectible… Then Did THIS 💀 |
