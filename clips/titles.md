@@ -34,3 +34,4 @@
 | kaicenat/15_furniture_race_with_lucia.mp4 | GTA 6 Has an IKEA Minigame… and Lucia DESTROYED Kai 🪑 |
 | kaicenat/16_swamp_shootout_wasted.mp4 | Kai's First Big Shootout in GTA 6 Lasted 30 Seconds 💀 |
 | kaicenat/17_rip_donnie.mp4 | GTA 6 Just Killed Off Donnie… and the Whole Chat Said RIP 🪦 |
+| kaicenat/18_lucia_leaves_jason.mp4 | Lucia Did WHAT to Jason?! GTA 6 Story Twist 😳 |
