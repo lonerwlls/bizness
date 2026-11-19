@@ -6,6 +6,7 @@ import {Sheet, SheetProps, sheetSize} from './Sheet';
 import {PauseTime} from './reference/PauseTime';
 import {HeadsSheet} from './HeadsSheet';
 import {CastSheet} from './CastSheet';
+import {RooRef} from './RooRef';
 
 /* open-licence fonts from public/fonts, loaded before the first frame renders */
 // generous timeout: with several render tabs at once a cold font load can take a while;
@@ -58,6 +59,7 @@ export const Root: React.FC = () => {
 		/>
 		{/* the approved style reference: 10 s, built by hand, shows what "our level" means */}
 		<Composition id="CastSheet" component={CastSheet} durationInFrames={1} fps={30} width={1920} height={1080} />
+		<Composition id="RooRef" component={RooRef} durationInFrames={1} fps={30} width={1920} height={1080} defaultProps={{doctor: false}} />
 		<Composition id="Heads" component={HeadsSheet} durationInFrames={1} fps={30} width={1920} height={1080} />
 		<Composition id="Reference" component={PauseTime} durationInFrames={300} fps={30} width={1920} height={1080} />
 	</>
