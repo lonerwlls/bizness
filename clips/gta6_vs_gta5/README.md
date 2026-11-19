@@ -24,3 +24,4 @@
 | 15_carrying_guns.mp4 | GTA 6 vs GTA 5: No More Pocket Rocket Launchers 🎒 |
 | 16_robbing_a_jewelry_store.mp4 | GTA 6 vs GTA 5: Jewelry Store Robbery Is Totally Different Now 💎 |
 | 17_scooters.mp4 | GTA 6 vs GTA 5: Vice City Has E-Scooters Now 🛴 |
+| 18_underwater.mp4 | GTA 6 vs GTA 5: The Water Is Unbelievable Now 🌊 |
