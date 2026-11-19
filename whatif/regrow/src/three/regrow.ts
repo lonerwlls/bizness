@@ -680,3 +680,107 @@ export const makeDeer = (): DeerObj => {
 	g.userData = {setAntler, idle};
 	return g;
 };
+
+/* ------------------------------ part 4 ------------------------------ */
+/* a die (rounded cube with pips), centred, 40 wide */
+export const makeDie = () => {
+	const pips = (n: number) =>
+		new THREE.MeshToonMaterial({
+			map: paint(128, 128, (c) => {
+				c.fillStyle = '#fbfaf4';
+				c.fillRect(0, 0, 128, 128);
+				c.fillStyle = n === 1 ? '#d23b3b' : '#1b1a26';
+				const P: Record<number, [number, number][]> = {
+					1: [[64, 64]],
+					2: [[34, 34], [94, 94]],
+					3: [[30, 30], [64, 64], [98, 98]],
+					4: [[34, 34], [94, 34], [34, 94], [94, 94]],
+					5: [[30, 30], [98, 30], [64, 64], [30, 98], [98, 98]],
+					6: [[34, 28], [94, 28], [34, 64], [94, 64], [34, 100], [94, 100]],
+				};
+				for (const [x, y] of P[n]) {
+					c.beginPath();
+					c.arc(x, y, n === 1 ? 18 : 12, 0, Math.PI * 2);
+					c.fill();
+				}
+			}),
+		});
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.BoxGeometry(40, 40, 40), [pips(1), pips(6), pips(2), pips(5), pips(3), pips(4)]));
+	return inkPx(g, 2);
+};
+/* blood bag with a label, hanging from its top (top at y = 0) */
+export const makeBloodBag = (type: string) => {
+	const g = new THREE.Group();
+	g.add(mesh(rbox(110, 150, 26, 18), toon('#c0303a', {transparent: true, opacity: 0.92}), [0, -90, 0]));
+	g.add(mesh(rbox(124, 18, 30, 6), toon('#e8ecf2'), [0, -10, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(5, 5, 50, 8), toon('#e8ecf2'), [0, -190, 0]));
+	const lab = mesh(new THREE.PlaneGeometry(80, 60), new THREE.MeshBasicMaterial({map: labelTex(type, '#fbfaf4', '#c0303a')}), [0, -86, 13.5]);
+	lab.userData.noInk = true;
+	g.add(lab);
+	return inkPx(g, 2.2);
+};
+/* consent form on a clipboard, faces the camera; sign(k) draws the signature (0..1).
+   tipAt(k) is where the pen is, in canvas px (512×680, the paper is 270×357 units) */
+export type Form = THREE.Group & {userData: {sign: (k: number) => void}};
+const SIG = (k: number): [number, number] => [150 + 260 * k, 560 - 26 * Math.sin(k * 14) - 10 * Math.sin(k * 31)];
+export const formTipAt = (k: number) => SIG(k);
+export const makeForm = (): Form => {
+	const g = new THREE.Group() as Form;
+	g.add(mesh(rbox(300, 400, 10, 6), toon('#8a5a3a'), [0, 0, 0]));
+	g.add(mesh(rbox(110, 26, 16, 4), toon('#c8ccd8'), [0, 196, 6]));
+	const cv = document.createElement('canvas');
+	cv.width = 512;
+	cv.height = 680;
+	const tex = new THREE.CanvasTexture(cv);
+	tex.colorSpace = THREE.SRGBColorSpace;
+	const draw = (k: number) => {
+		const c = cv.getContext('2d')!;
+		c.fillStyle = '#fbfaf4';
+		c.fillRect(0, 0, 512, 680);
+		c.fillStyle = '#1d2a5a';
+		c.font = "900 40px 'Rubik', sans-serif";
+		c.textAlign = 'center';
+		c.fillText('CONSENT', 256, 80);
+		c.font = "700 28px 'Rubik', sans-serif";
+		c.fillText('LIVING LIVER DONOR', 256, 124);
+		c.fillStyle = '#c8ccd8';
+		for (let i = 0; i < 9; i++) c.fillRect(50, 170 + i * 34, 412 - (i % 3) * 60, 10);
+		c.fillStyle = '#2a2f4a';
+		c.textAlign = 'left';
+		c.font = "700 24px 'Rubik', sans-serif";
+		c.fillText('Donor signature:', 50, 520);
+		c.fillRect(50, 580, 412, 3);
+		if (k > 0) {
+			c.strokeStyle = '#1d2a8a';
+			c.lineWidth = 6;
+			c.lineCap = 'round';
+			c.beginPath();
+			const n = Math.floor(80 * k);
+			for (let i = 0; i <= n; i++) {
+				const [x, y] = SIG(i / 80);
+				if (i === 0) c.moveTo(x, y);
+				else c.lineTo(x, y);
+			}
+			c.stroke();
+		}
+		tex.needsUpdate = true;
+	};
+	draw(0);
+	const paper = mesh(new THREE.PlaneGeometry(270, 357), new THREE.MeshBasicMaterial({map: tex}), [0, -16, 6]);
+	paper.userData.noInk = true;
+	g.add(paper);
+	inkPx(g, 2.4);
+	g.userData = {sign: draw};
+	return g;
+};
+/* whiteboard marker along +x, tip at +x */
+export const makeMarker = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(7, 7, 70, 12), toon('#f4f6fa'), [0, 0, 0], [0, 0, Math.PI / 2]));
+	g.add(mesh(new THREE.CylinderGeometry(7.5, 7.5, 18, 12), toon('#2a4a9a'), [-30, 0, 0], [0, 0, Math.PI / 2]));
+	g.add(mesh(new THREE.ConeGeometry(5, 10, 10), toon('#1d2a5a'), [40, 0, 0], [0, 0, -Math.PI / 2]));
+	return inkPx(g, 1.8);
+};
+/* a cafeteria tray (top on y = 0) */
+export const makeTray2 = () => inkPx(mesh(rbox(220, 8, 150, 4), toon('#e4762a'), [0, -4, 0]), 2.2);

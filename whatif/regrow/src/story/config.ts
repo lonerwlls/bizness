@@ -32,6 +32,7 @@ export const STORY: {
 			{line: '027', off: 40, v: 25, roll: 40},
 			{line: '031', off: 60, v: 34, roll: 30},
 			{line: '038', off: 30, v: 41, roll: 30},
+			{line: '050', off: 150, v: 42, roll: 1},
 		],
 	},
 	bed: 'sfx/bed.wav',

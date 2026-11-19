@@ -29,6 +29,8 @@ export const CAST: Record<string, CastMember> = {
 	kyodoc: {color: '#2d3a6a', outfit: 'vest', accent: '#e8ecf2', head: 'peach', skin: '#f0d4b4', hair: 'short', hairColor: '#15151c', acc: ['glasses'], rim: '#e0ecff', rimW: 2.4, shoe: '#1d1d24', legColor: '#2d3a6a'},
 	kyopat: {color: '#7a8aa8', outfit: 'tee', head: 'peach', skin: '#e8c4a0', hair: 'grey', hairColor: '#d0d0d8', rim: '#e0ecff', rimW: 2.4, shoe: '#3a2a22', legColor: '#3a3a4a'},
 	suitman: {color: '#1d1d24', outfit: 'suit', accent: '#d4a83a', head: 'peach', skin: '#e8c4a0', hair: 'short', hairColor: '#d8d8e0', acc: ['bowtie'], rim: '#f6e6c8', rimW: 2.4, shoe: '#111', legColor: '#1d1d24'},
+	lily: {color: '#9a6ad0', outfit: 'tee', head: 'peach', skin: '#f2d0b5', hair: 'ponytail', hairColor: '#6a3a1a', acc: ['lashes'], rim: '#f0e0ff', rimW: 2.4, shoe: '#f4f6fb', legColor: '#9a6ad0'},
+	medic: {color: '#2a5a4a', outfit: 'vest', accent: '#d8e830', head: 'peach', skin: '#a86b45', hair: 'short', hairColor: '#1d1d24', rim: '#e0fff0', rimW: 2.4, shoe: '#1d1d24', legColor: '#1d2a2a'},
 	kid1: {color: '#3aa37a', head: 'peach', skin: '#f2d0b5', hair: 'short', hairColor: '#3a2418', rim: '#e8fff2', rimW: 2.4, shoe: '#f4f6fb'},
 	kid2: {color: '#e47a3c', head: 'peach', skin: '#f2d0b5', hair: 'ponytail', hairColor: '#3a2418', rim: '#fff0e0', rimW: 2.4, shoe: '#f4f6fb'},
 };

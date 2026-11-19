@@ -694,7 +694,7 @@ export const useFont = (q: string) => {
 };
 const useCaveat = () => useFont("700 40px 'Caveat'");
 /* 010 he takes the pen and writes — in the wide the tip is on the page */
-const PEN_TIP = 47; // pen model: tip at +47
+export const PEN_TIP = 47; // pen model: tip at +47
 const R010: React.FC = () => {
 	useCaveat();
 	const {f, gf} = useShot();
@@ -814,11 +814,11 @@ const R010b: React.FC = () => {
 };
 
 /* ---------- the arm on the bench, close: Reyes's gloved hand works on it ---------- */
-const AC: [number, number] = [880, 640]; // arm centre in the close-up
-const AS = 1.25;
-const WND: [number, number] = [AC[0] + 60 * AS, AC[1]]; // the wound spot
-type Wound = {cut: number; stitches: number; thread?: [number, number] | null; scar?: boolean; clean?: number};
-const ArmClose: React.FC<{wnd: Wound; children?: React.ReactNode; over?: React.ReactNode; props3d?: React.ReactNode}> = ({wnd, children, props3d}) => {
+export const AC: [number, number] = [880, 640]; // arm centre in the close-up
+export const AS = 1.25;
+export const WND: [number, number] = [AC[0] + 60 * AS, AC[1]]; // the wound spot
+export type Wound = {cut: number; stitches: number; thread?: [number, number] | null; scar?: boolean; clean?: number; lump?: number};
+export const ArmClose: React.FC<{wnd: Wound; children?: React.ReactNode; over?: React.ReactNode; props3d?: React.ReactNode}> = ({wnd, children, props3d}) => {
 	const {gf} = useShot();
 	const cam = usePush(camOn(980, 560, 1.0), camOn(990, 570, 1.08));
 	const L = 70 * AS;
@@ -846,6 +846,8 @@ const ArmClose: React.FC<{wnd: Wound; children?: React.ReactNode; over?: React.R
 						const x = WND[0] - L + 18 + i * ((2 * L - 36) / 3);
 						return <line key={i} x1={x - 8} y1={WND[1] - 22} x2={x + 8} y2={WND[1] + 22} stroke="#1d2236" strokeWidth={6} strokeLinecap="round" />;
 					})}
+					{wnd.lump ? <ellipse cx={WND[0]} cy={WND[1] - 6 * wnd.lump} rx={40 * wnd.lump} ry={30 * wnd.lump} fill="#f6b8a8" stroke="#2a1a14" strokeWidth={6} /> : null}
+					{wnd.scar ? <path d={`M${WND[0] - 70 * AS},${WND[1]} q${35 * AS},-8 ${70 * AS},0 q${35 * AS},8 ${70 * AS},0`} stroke="#e8a090" strokeWidth={12} fill="none" strokeLinecap="round" /> : null}
 					{wnd.thread && wnd.stitches > 0 ? <path d={`M${WND[0] - L + 18 + (wnd.stitches - 1) * ((2 * L - 36) / 3) + 8},${WND[1] + 22} Q${(wnd.thread[0] + WND[0]) / 2 + 40},${WND[1] + 60} ${wnd.thread[0]},${wnd.thread[1]}`} stroke="#1d2236" strokeWidth={4} fill="none" /> : null}
 				</Svg>
 				{props3d}
@@ -855,7 +857,7 @@ const ArmClose: React.FC<{wnd: Wound; children?: React.ReactNode; over?: React.R
 	);
 	void gf;
 };
-const SLEEVE_FROM: [number, number] = [1900, -260];
+export const SLEEVE_FROM: [number, number] = [1900, -260];
 /* 011 wide: he lays his forearm on the bench, Reyes comes over with a scalpel */
 const R011: React.FC = () => {
 	const {f, gf} = useShot();
