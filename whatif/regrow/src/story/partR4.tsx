@@ -12,7 +12,7 @@ import {Prop3D, PropWorld, at, propScene} from '../three/Prop3D';
 import {Clip, makeClipboard, makeMonitor, makeScalpel, makeWallClock, Monitor} from '../three/props';
 import {Form, makeNeedleHolder, makePen, makeAxolotl, makeBagel, makeBloodBag, makeDie, makeForm, makeMarker, makeMug, makeTray2, formTipAt, swimAxo, Axo} from '../three/regrow';
 import {FL, HS, badgeY} from './common';
-import {pop, useW} from './lib';
+import {Lying, pop, useW} from './lib';
 import {SEAT, SeatChair} from './places';
 import {ArmInset, Insert} from './placesR';
 import {CAFE_TOP, CafeTable, Cafeteria} from './placesR2';
@@ -120,9 +120,10 @@ const MarkerScene: React.FC<{n0: number; n1: number; t0: number; t1: number; wor
 		const diag = i % 5 === 4;
 		tip = diag ? [x + 86 * sub, y - 46 * sub] : [x + 3 * sub, y + 64 * sub];
 	}
-	const hx = tip[0] - 96;
+	const back = words ? kk(f, words.t1 + 2, words.t1 + 18) : 0;
+	const hx = tip[0] - 96 - 220 * back;
 	const hand: [number, number] = [tip[0] - (PEN_TIP + 22) * Math.cos((-30 * Math.PI) / 180), tip[1] - (PEN_TIP + 22) * Math.sin((-30 * Math.PI) / 180)];
-	const hp = reach(idle(gf, 2), 'F', [hand[0] - hx, hand[1] - HIP], 1);
+	const hp = reach(idle(gf, 2), 'F', [hand[0] - hx, hand[1] - HIP], 1 - back);
 	const cam = usePush(camOn(1120, 520, 1.25), camOn(1160, 520, 1.42));
 	return (
 		<Stage cam={cam} bg="#1a2240" light={{x: 40, y: 20, o: 0.45, c: '255,220,170'}}>
@@ -142,7 +143,6 @@ const MarkerScene: React.FC<{n0: number; n1: number; t0: number; t1: number; wor
 						</g>
 					) : null}
 					<Actor who="hero" x={hx} floor={FL} s={HS} facing={1} faceTurn={0.55} look={[0.8, -0.2]} expr={words ? 'sad' : 'worried'} pose={hp} uid="h-board" />
-					<HeroBadge x={hx} y={badgeY(FL)} s={0.8} />
 				</Svg>
 				<Prop3D
 					x={900}
@@ -156,6 +156,7 @@ const MarkerScene: React.FC<{n0: number; n1: number; t0: number; t1: number; wor
 						return {scene, m};
 					}}
 					update={(wd) => {
+						wd.m.visible = back < 0.05;
 						placeTool(wd.m, 45, -24, tip, -30, 1, 60);
 					}}
 				/>
@@ -249,6 +250,7 @@ const R040b: React.FC = () => {
 			<Board tint="#1d2a3a">
 				<Tag f={f} t={w('040', 0.88)} x={1440} y={760} text="NOT YET." c="#3a1d2a" fg="#ff9a8a" stroke="#ff6a5a" size={64} rot={-5} />
 				<Tag f={f} t={w('040', 0.6)} x={460} y={200} text="LAB REPORT" c="#11142c" fg="#fff" size={40} rot={-3} />
+				<Tag f={f} t={w('040', 0.76)} x={1440} y={620} text="NOT CANCER" c="#0e3a22" fg="#7af0a8" stroke="#7af0a8" size={52} rot={3} />
 			</Board>
 			<Prop3D
 				x={560}
@@ -257,7 +259,7 @@ const R040b: React.FC = () => {
 				h={960}
 				make={() => {
 					const scene = propScene(2.0);
-					const clip = makeClipboard('Dr. ROO', 'Lump, left forearm', 'NOT CANCER');
+					const clip = makeClipboard('Dr. ROO', 'Lump, left forearm', 'BENIGN');
 					clip.scale.setScalar(2.1);
 					at(clip, 960, 540, 0);
 					scene.add(clip);
@@ -712,8 +714,9 @@ const R050: React.FC = () => {
 				/>
 				<Svg>
 					<ORTable2 x={960} />
-					{/* the donor under a blue drape */}
-					<path d="M720,690 Q960,620 1200,690 L1200,700 L720,700 Z" fill="#3d6fd6" />
+					{/* the donor (you) asleep on the table under a blue drape, head on the right */}
+					<Lying who="hero" x={1060} y={690 - 30} s={0.95} f={gf} id="h-or" expr="sleepy" />
+					<path d="M700,694 Q860,610 1110,640 L1130,700 L700,700 Z" fill="#3d6fd6" stroke="#2a4a9a" strokeWidth={4} />
 					<Actor who="reyes" x={760} floor={FL} s={0.98} facing={1} faceTurn={0.5} look={[0.7, 0.8]} pose={sp} uid="reyes-050" />
 					<Tag f={f} t={6} x={1460} y={260} text="9 HOURS" c="#11142c" fg="#ffd34a" size={48} rot={3} />
 				</Svg>
