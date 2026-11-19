@@ -39,3 +39,4 @@
 | kaicenat/20_tower_collectible_wasted.mp4 | Kai Climbed a Tower for a Collectible… Then Did THIS 💀 |
 | kaicenat/21_atv_mission_disaster.mp4 | Chat Said "Unbelievably Bad"… Kai's ATV Mission Was a DISASTER 🏍️💥 |
 | kaicenat/22_crash_selfie_no_explosion.mp4 | Crashed the Ambulance, Took a Selfie… Waited for the Explosion 🤳🔥 |
+| kaicenat/23_police_chase_l_driver.mp4 | 16 Hours of GTA 6 and Kai STILL Can't Drive 🚔😭 |
