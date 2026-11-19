@@ -27,3 +27,4 @@
 | 18_underwater.mp4 | GTA 6 vs GTA 5: The Water Is Unbelievable Now 🌊 |
 | 19_fast_food.mp4 | GTA 6 vs GTA 5: You Can Finally Eat at a Fast Food Place 🍔 |
 | 20_changing_clothes.mp4 | GTA 6 vs GTA 5: Clothes Shopping Is Actually Real Now 👟 |
+| 21_new_look.mp4 | GTA 6 vs GTA 5: The Barbershop Is INSANE Now 💇 |
