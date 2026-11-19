@@ -45,3 +45,4 @@
 | kaicenat/25_stole_sheriff_car_5_stars.mp4 | 5 Stars, Stolen Sheriff Car, and Lucia Left Behind 🚨 |
 | kaicenat/26_drove_off_bridge_escape.mp4 | The Game Said "Escape Is Impossible"… So He Drove Off a Bridge 🌊 |
 | kaicenat/27_chase_finale_wasted.mp4 | Part 3: How the 6-Star Chase Ended… (He Lost ALL His Money) 💸 |
+| kaicenat/28_dirt_bike_race_wipeout.mp4 | GTA 6 Has Dirt Bike Races… Kai Finished DEAD LAST 🏍️ |
