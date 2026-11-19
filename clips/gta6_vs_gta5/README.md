@@ -20,3 +20,4 @@
 | 11_eating_out.mp4 | GTA 6 vs GTA 5: You Can Actually Order Food Now 🍽️ |
 | 12_night_driving.mp4 | GTA 6 vs GTA 5: Night Driving Looks UNREAL Now 🌃 |
 | 13_picking_a_car.mp4 | GTA 6 vs GTA 5: Stealing Cars Needs a PLAN Now 🔐 |
+| 14_gun_store.mp4 | GTA 6 vs GTA 5: The Gun Store Got a HUGE Upgrade 🔫 |
