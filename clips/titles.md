@@ -38,3 +38,4 @@
 | kaicenat/19_chasing_giant_peach_truck.mp4 | Kai Chased a Truck Carrying a GIANT Peach in GTA 6 🍑 |
 | kaicenat/20_tower_collectible_wasted.mp4 | Kai Climbed a Tower for a Collectible… Then Did THIS 💀 |
 | kaicenat/21_atv_mission_disaster.mp4 | Chat Said "Unbelievably Bad"… Kai's ATV Mission Was a DISASTER 🏍️💥 |
+| kaicenat/22_crash_selfie_no_explosion.mp4 | Crashed the Ambulance, Took a Selfie… Waited for the Explosion 🤳🔥 |
