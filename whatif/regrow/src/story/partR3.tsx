@@ -10,12 +10,12 @@ import {Board, FONT, HAND} from '../kit/ui';
 import {Onoma} from '../reference/PauseTime';
 import {Prop3D, PropWorld, at, propScene} from '../three/Prop3D';
 import {makeCalendar, makeNewspaper, makePage} from '../three/props';
-import {Printer, makeBioJar, makeCheque, makeCoin, makeCooler, makeDish, makePrinter, makeVial} from '../three/regrow';
+import {DeerObj, Printer, makeDeer, makeBioJar, makeCheque, makeCoin, makeCooler, makeDish, makePrinter, makeVial} from '../three/regrow';
 import {FL, HS, badgeY} from './common';
 import {pop, useW} from './lib';
 import {SEAT} from './places';
 import {OldFilm} from './placesH';
-import {BloodLab, Deer, EXEC_DESK_TOP, ExecDesk, ExecOffice, Forest, LAB_BENCH_TOP, LeatherChair, ListHall, PrintRoom, SteelBench, TissueLab, TransplantUnit} from './placesR3';
+import {BloodLab, EXEC_DESK_TOP, ExecDesk, ExecOffice, Forest, LAB_BENCH_TOP, LeatherChair, ListHall, PrintRoom, SteelBench, TissueLab, TransplantUnit} from './placesR3';
 import {HIP, Over, Tag, useFont} from './partR1';
 
 /* PART 3 (2:35–3:55): the Spare Parts Doctor — liver every month, a kidney, the waiting list,
@@ -489,7 +489,7 @@ const R034: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
 	const antler = interpolate(f, [w('034', 0.1), w('034', 0.85)], [0.15, 1], clamp);
-	const cam = usePush(camOn(1000, 560, 1.1), camOn(1060, 480, 1.35));
+	const cam = usePush(camOn(1000, 540, 1.05), camOn(1060, 470, 1.25));
 	return (
 		<Stage cam={cam} bg="#cfe8c0" light={{x: 70, y: 0, o: 0.35, c: '255,250,220'}}>
 			<Layer depth={1.4}>
@@ -497,8 +497,28 @@ const R034: React.FC = () => {
 			</Layer>
 			<Layer depth={1}>
 				<Svg>
-					<ellipse cx={1000} cy={FL + 4} rx={220} ry={20} fill="#000" opacity={0.2} />
-					<Deer x={960} y={FL} antler={antler} f={gf} s={1.25} />
+					<ellipse cx={980} cy={FL + 4} rx={280} ry={22} fill="#000" opacity={0.22} />
+				</Svg>
+				<Prop3D
+					x={540}
+					y={0}
+					w={1000}
+					h={940}
+					make={() => {
+						const scene = propScene(2.2);
+						const deer = makeDeer();
+						deer.scale.setScalar(1.15);
+						at(deer, 960, FL, 0);
+						deer.rotation.y = -0.35;
+						scene.add(deer);
+						return {scene, deer};
+					}}
+					update={(wd, ff) => {
+						(wd.deer as DeerObj).userData.setAntler(antler);
+						(wd.deer as DeerObj).userData.idle(ff);
+					}}
+				/>
+				<Svg>
 					{/* a ruler next to the antlers */}
 					<g transform="translate(1450,260)">
 						<rect x={-24} y={0} width={48} height={260} fill="#ffd34a" stroke="#2a1a10" strokeWidth={5} />
@@ -509,7 +529,7 @@ const R034: React.FC = () => {
 				</Svg>
 			</Layer>
 			<Over>
-				<Tag f={f} t={w('034', 0.55)} x={1440} y={200} text="UP TO 2 CM A DAY" c="#11142c" fg="#ffd34a" size={44} rot={3} />
+				<Tag f={f} t={w('034', 0.55)} x={560} y={330} text="UP TO 2 CM A DAY" c="#11142c" fg="#ffd34a" size={44} rot={3} />
 				<Tag f={f} t={w('034', 0.2)} x={420} y={180} text="FASTEST-GROWING TISSUE" c="#11142c" fg="#9ff0b0" stroke="#9ff0b0" size={32} rot={-3} />
 			</Over>
 		</Stage>

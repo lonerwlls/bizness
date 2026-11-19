@@ -566,3 +566,117 @@ export const makeCoin = (a: string, b: string) => {
 	g.add(coin);
 	return inkPx(g, 2.6);
 };
+/* ------------------------------ the deer (3D) ------------------------------ */
+/* side-on deer facing +x, hooves on y = 0, ~420 long. setAntler(k) grows the velvet antlers
+   from little buds (k = 0) to full branched antlers (k = 1); idle(f) breathes and flicks the ears/tail */
+export type DeerObj = THREE.Group & {userData: {setAntler: (k: number) => void; idle: (f: number) => void}};
+export const makeDeer = (): DeerObj => {
+	const g = new THREE.Group() as DeerObj;
+	const coat = toon('#b8743e');
+	const light = toon('#e8c8a0');
+	const dark = toon('#2a1a10');
+	const body = new THREE.Group();
+	body.position.set(0, 250, 0);
+	g.add(body);
+	body.add(mesh(new THREE.CapsuleGeometry(62, 190, 10, 24), coat, [0, 0, 0], [0, 0, Math.PI / 2], [1, 1, 0.8]));
+	const belly = mesh(new THREE.CapsuleGeometry(46, 150, 8, 20), light, [-4, -24, 0], [0, 0, Math.PI / 2], [1, 0.7, 0.72]);
+	belly.userData.noInk = true;
+	body.add(belly);
+	// rump + white tail
+	const tail = new THREE.Group();
+	tail.position.set(-150, 26, 0);
+	tail.add(mesh(new THREE.ConeGeometry(18, 46, 12), toon('#fbf6ea'), [-10, 6, 0], [0, 0, 0.9]));
+	body.add(tail);
+	// neck + head
+	const neck = new THREE.Group();
+	neck.position.set(110, 30, 0);
+	neck.rotation.z = -0.65;
+	neck.add(mesh(new THREE.CylinderGeometry(30, 44, 170, 16), coat, [0, 80, 0]));
+	const throat = mesh(new THREE.CylinderGeometry(18, 26, 120, 12), toon('#fbf6ea'), [16, 70, 0]);
+	throat.userData.noInk = true;
+	neck.add(throat);
+	body.add(neck);
+	const head = new THREE.Group();
+	head.position.set(0, 175, 0);
+	head.rotation.z = 0.95;
+	neck.add(head);
+	head.add(mesh(new THREE.SphereGeometry(40, 20, 14), coat, [0, 0, 0], undefined, [1, 0.9, 0.85]));
+	head.add(mesh(new THREE.CapsuleGeometry(24, 46, 8, 14), coat, [48, -14, 0], [0, 0, Math.PI / 2 - 0.25]));
+	head.add(mesh(new THREE.SphereGeometry(13, 12, 10), dark, [86, -24, 0]));
+	for (const z of [-24, 24]) {
+		head.add(mesh(new THREE.SphereGeometry(8, 12, 10), dark, [22, 10, z]));
+		const hl = mesh(new THREE.SphereGeometry(2.5, 8, 6), toon('#ffffff'), [27, 13, z + (z > 0 ? 3 : -3)]);
+		hl.userData.noInk = true;
+		head.add(hl);
+	}
+	const ears: THREE.Mesh[] = [];
+	for (const z of [-26, 26]) {
+		const e = mesh(new THREE.SphereGeometry(1, 14, 10), coat, [-24, 26, z], [z > 0 ? -0.5 : 0.5, 0, 0.5], [30, 12, 9]);
+		head.add(e);
+		ears.push(e);
+	}
+	// antlers: two sides, each a beam with tines; grown by scaling every segment
+	const antler = new THREE.Group();
+	antler.position.set(-8, 30, 0);
+	head.add(antler);
+	const velvet = toon('#8a5a3a');
+	const segs: {m: THREE.Object3D; len: number}[] = [];
+	const branch = (parent: THREE.Object3D, len: number, r: number, rotZ: number, rotX: number, depth: number) => {
+		const pivot = new THREE.Group();
+		pivot.rotation.set(rotX, 0, rotZ);
+		parent.add(pivot);
+		const m = mesh(new THREE.CylinderGeometry(r * 0.7, r, len, 10), velvet, [0, len / 2, 0]);
+		pivot.add(m);
+		const tip = mesh(new THREE.SphereGeometry(r * 0.7, 10, 8), velvet, [0, len, 0]);
+		tip.userData.noInk = true;
+		pivot.add(tip);
+		segs.push({m: pivot, len});
+		if (depth > 0) {
+			const end = new THREE.Group();
+			end.position.y = len;
+			pivot.add(end);
+			branch(end, len * 0.78, r * 0.8, -0.55, 0, depth - 1);
+			const mid = new THREE.Group();
+			mid.position.y = len * 0.45;
+			pivot.add(mid);
+			branch(mid, len * 0.6, r * 0.75, 0.85, 0, 0);
+		}
+	};
+	for (const z of [-18, 18]) {
+		const side = new THREE.Group();
+		side.position.z = z;
+		antler.add(side);
+		branch(side, 96, 11, -0.3, z > 0 ? -0.55 : 0.55, 2);
+	}
+	body.add(mesh(new THREE.SphereGeometry(1, 16, 12), coat, [-120, 10, 0], undefined, [70, 66, 52]));
+	// legs: upper + lower with a joint, dark hooves
+	const legs: THREE.Group[] = [];
+	for (const [x, z, back] of [
+		[110, 30, 0],
+		[110, -30, 0],
+		[-120, 30, 1],
+		[-120, -30, 1],
+	] as const) {
+		const leg = new THREE.Group();
+		leg.position.set(x, 210, z);
+		leg.add(mesh(new THREE.CylinderGeometry(back ? 26 : 18, 12, 110, 12), coat, [back ? -6 : 0, -50, 0], [0, 0, back ? -0.15 : 0.05]));
+		leg.add(mesh(new THREE.CylinderGeometry(10, 8, 100, 10), coat, [back ? 4 : 2, -150, 0], [0, 0, back ? 0.12 : 0]));
+		leg.add(mesh(new THREE.CylinderGeometry(9, 11, 16, 10), dark, [back ? 8 : 2, -204, 0]));
+		g.add(leg);
+		legs.push(leg);
+	}
+	inkPx(g, 2.6);
+	const setAntler = (k: number) => {
+		const s = Math.max(0.12, k);
+		segs.forEach(({m}) => m.scale.set(0.6 + 0.4 * s, s, 0.6 + 0.4 * s));
+	};
+	const idle = (f: number) => {
+		body.position.y = 250 + Math.sin(f / 18) * 2.5;
+		head.rotation.z = 0.95 + Math.sin(f / 40) * 0.05;
+		ears.forEach((e, i) => (e.rotation.z = 0.5 + Math.max(0, Math.sin(f / 7 + i * 2) - 0.85) * 2));
+		tail.rotation.z = Math.max(0, Math.sin(f / 9) - 0.6) * 1.2;
+	};
+	setAntler(0);
+	g.userData = {setAntler, idle};
+	return g;
+};
