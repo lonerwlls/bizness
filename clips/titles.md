@@ -43,3 +43,4 @@
 | kaicenat/24_worst_getaway_vehicle.mp4 | Kai Robbed a Store and Picked the WORST Getaway Vehicle 🚜🚔 |
 | kaicenat/24b_getaway_part2.mp4 | Part 2: Chat Begged Kai to "Just Get a Car" 😭 |
 | kaicenat/25_stole_sheriff_car_5_stars.mp4 | 5 Stars, Stolen Sheriff Car, and Lucia Left Behind 🚨 |
+| kaicenat/26_drove_off_bridge_escape.mp4 | The Game Said "Escape Is Impossible"… So He Drove Off a Bridge 🌊 |
