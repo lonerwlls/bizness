@@ -18,6 +18,11 @@ if os.environ.get('VS_SPEC'): T = [tuple(x) for x in json.load(open(os.environ['
 os.makedirs('out', exist_ok=True); os.makedirs('txt', exist_ok=True)
 def tf(name, s):
     p = f'txt/{name}.txt'; open(p, 'w').write(s); return p
+from PIL import ImageFont
+def fit(text, font, base, maxw=1010):
+    sz = base
+    while sz > 24 and ImageFont.truetype(font, sz).getlength(text) > maxw: sz -= 2
+    return sz
 def dur(f): return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',f]))
 only = sys.argv[1:] 
 for (id_, topic, g5, g6, s6, d6, cap) in T:
@@ -33,11 +38,11 @@ for (id_, topic, g5, g6, s6, d6, cap) in T:
       f"[bg][a]overlay=0:330:shortest=1[x];[x][b]overlay=0:962:shortest=1[y];"
       f"[y]drawbox=x=0:y=938:w=1080:h=24:color=0x0d0d12:t=fill,"
       f"drawtext=fontfile={FONT2}:textfile={t1}:fontsize=54:fontcolor=white:x=(w-tw)/2:y=120,"
-      f"drawtext=fontfile={FONT}:textfile={t2}:fontsize=96:fontcolor=0xFFD400:x=(w-tw)/2:y=195,"
+      f"drawtext=fontfile={FONT}:textfile={t2}:fontsize={fit(topic,FONT,96)}:fontcolor=0xFFD400:x=(w-tw)/2:y=195,"
       f"drawtext=fontfile={FONT}:textfile={l5}:fontsize=40:fontcolor=white:box=1:boxcolor=0x000000@0.75:boxborderw=14:x=24:y=352,"
       f"drawtext=fontfile={FONT}:textfile={l6}:fontsize=40:fontcolor=black:box=1:boxcolor=0xFFD400:boxborderw=14:x=24:y=984,"
-      f"drawtext=fontfile={FONT2}:textfile={c1}:fontsize=50:fontcolor=0xBBBBBB:x=(w-tw)/2:y=1615,"
-      f"drawtext=fontfile={FONT}:textfile={c2}:fontsize=54:fontcolor=white:x=(w-tw)/2:y=1690[v];"
+      f"drawtext=fontfile={FONT2}:textfile={c1}:fontsize={fit(cap[0],FONT2,50)}:fontcolor=0xBBBBBB:x=(w-tw)/2:y=1615,"
+      f"drawtext=fontfile={FONT}:textfile={c2}:fontsize={fit(cap[1],FONT,54)}:fontcolor=white:x=(w-tw)/2:y=1690[v];"
       f"[1:a]volume=1.0,apad[a6];[0:a]volume=0.35,apad[a5];[a6][a5]amix=inputs=2:duration=longest:normalize=0,atrim=0:{D}[au]"
     )
     out = f'out/{id_}.mp4'
