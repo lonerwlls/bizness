@@ -113,7 +113,7 @@ const MarkerScene: React.FC<{n0: number; n1: number; t0: number; t1: number; wor
 	let wk = 0;
 	if (words && f >= words.t0) {
 		wk = kk(f, words.t0, words.t1);
-		tip = [BOARD.x + 120 + 380 * wk, BOARD.y + 262 + Math.sin(f / 1.5) * 6];
+		tip = [BOARD.x + 120 + 380 * wk, BOARD.y + 272 + Math.sin(f / 1.5) * 6];
 	} else {
 		const i = Math.min(n, n1 - 1);
 		const [x, y] = tallyAt(i);
@@ -121,7 +121,7 @@ const MarkerScene: React.FC<{n0: number; n1: number; t0: number; t1: number; wor
 		tip = diag ? [x + 86 * sub, y - 46 * sub] : [x + 3 * sub, y + 64 * sub];
 	}
 	const back = words ? kk(f, words.t1 + 2, words.t1 + 18) : 0;
-	const hx = tip[0] - 96 - 220 * back;
+	const hx = tip[0] - 96 + 300 * back;
 	const hand: [number, number] = [tip[0] - (PEN_TIP + 22) * Math.cos((-30 * Math.PI) / 180), tip[1] - (PEN_TIP + 22) * Math.sin((-30 * Math.PI) / 180)];
 	const hp = reach(idle(gf, 2), 'F', [hand[0] - hx, hand[1] - HIP], 1 - back);
 	const cam = usePush(camOn(1120, 520, 1.25), camOn(1160, 520, 1.42));
@@ -134,10 +134,10 @@ const MarkerScene: React.FC<{n0: number; n1: number; t0: number; t1: number; wor
 						<g>
 							<defs>
 								<clipPath id="words-clip">
-									<rect x={BOARD.x + 100} y={BOARD.y + 190} width={420 * wk} height={110} />
+									<rect x={BOARD.x + 100} y={BOARD.y + 240} width={560 * wk} height={70} />
 								</clipPath>
 							</defs>
-							<text x={BOARD.x + 110} y={BOARD.y + 272} fontSize={84} fontFamily={HAND} fontWeight={700} fill="#d23b3b" clipPath="url(#words-clip)">
+							<text x={BOARD.x + 110} y={BOARD.y + 292} fontSize={64} fontFamily={HAND} fontWeight={700} fill="#d23b3b" clipPath="url(#words-clip)">
 								{words.text}
 							</text>
 						</g>
@@ -387,7 +387,7 @@ const R042: React.FC = () => {
 /* ================================ 043 "no more regrowing. ever." ================================ */
 const R043: React.FC = () => {
 	const w = useW();
-	return <MarkerScene n0={41} n1={41} t0={0} t1={1} words={{text: 'NO MORE. EVER.', t0: w('043', 0.2), t1: w('043', 0.85)}} />;
+	return <MarkerScene n0={41} n1={41} t0={0} t1={1} words={{text: 'NO MORE. EVER.', t0: w('043', 0.12), t1: w('043', 0.62)}} />;
 };
 
 /* ================================ 044 Lily arrives ================================ */
