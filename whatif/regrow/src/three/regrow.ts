@@ -439,3 +439,130 @@ export const makePizzaSlice = () => {
 	}
 	return inkPx(g, 2);
 };
+
+/* ------------------------------ part 3 ------------------------------ */
+/* organ transport cooler (red body, white lid, label), bottom on y = 0, 120 wide */
+export const makeCooler = () => {
+	const g = new THREE.Group();
+	g.add(mesh(rbox(120, 70, 80, 8), toon('#d23b3b'), [0, 35, 0]));
+	g.add(mesh(rbox(126, 16, 86, 6), toon('#f4f6fa'), [0, 76, 0]));
+	g.add(mesh(rbox(54, 8, 14, 4), toon('#f4f6fa'), [0, 88, 0]));
+	const lab = mesh(new THREE.PlaneGeometry(96, 36), new THREE.MeshBasicMaterial({map: paint(256, 96, (c) => {
+		c.fillStyle = '#fbfaf4';
+		c.fillRect(0, 0, 256, 96);
+		c.fillStyle = '#d23b3b';
+		c.font = '900 26px Rubik, sans-serif';
+		c.textAlign = 'center';
+		c.fillText('HUMAN ORGAN', 128, 38);
+		c.fillText('FOR TRANSPLANT', 128, 74);
+	})}), [0, 36, 40.6]);
+	lab.userData.noInk = true;
+	g.add(lab);
+	return inkPx(g, 2.4);
+};
+/* a cheque lying flat (faces the camera when rotation.x = π/2), centred */
+export const makeCheque = () => {
+	const g = new THREE.Group();
+	const tex = paint(512, 224, (c) => {
+		c.fillStyle = '#e8f4e0';
+		c.fillRect(0, 0, 512, 224);
+		c.strokeStyle = '#7ab07a';
+		c.lineWidth = 6;
+		c.strokeRect(8, 8, 496, 208);
+		c.fillStyle = '#2a4a2a';
+		c.font = '700 26px Rubik, sans-serif';
+		c.fillText('PAY TO: DR. ROO', 30, 60);
+		c.font = '900 52px Rubik, sans-serif';
+		c.fillText('$1,000,000,000', 30, 140);
+		c.font = '700 30px Caveat, cursive';
+		c.fillText('for one vial of cells', 30, 196);
+	});
+	const p = mesh(new THREE.BoxGeometry(200, 2, 88), [toon('#e8f4e0'), toon('#e8f4e0'), new THREE.MeshBasicMaterial({map: tex}), toon('#e8f4e0'), toon('#e8f4e0'), toon('#e8f4e0')], [0, 0, 0]);
+	g.add(p);
+	return inkPx(g, 1.8);
+};
+/* desktop 3D printer: frame, bed, moving nozzle; ear(k) = printed height 0..1 */
+export type Printer = THREE.Group & {userData: {set: (k: number, f: number) => void}};
+export const makePrinter = (): Printer => {
+	const g = new THREE.Group() as Printer;
+	const frame = toon('#2a2f3a');
+	for (const x of [-120, 120]) g.add(mesh(rbox(16, 300, 16, 3), frame, [x, 150, -60]));
+	g.add(mesh(rbox(256, 16, 16, 3), frame, [0, 300, -60]));
+	g.add(mesh(rbox(280, 30, 160, 6), frame, [0, 15, 0]));
+	g.add(mesh(rbox(200, 8, 130, 3), toon('#c8ccd8'), [0, 34, 0]));
+	const head = new THREE.Group();
+	head.add(mesh(rbox(50, 40, 40, 6), toon('#3d6fd6'), [0, 0, 0]));
+	head.add(mesh(new THREE.ConeGeometry(8, 20, 10), toon('#c8ccd8'), [0, -30, 0], [Math.PI, 0, 0]));
+	g.add(head);
+	const rail = mesh(rbox(256, 10, 10, 2), toon('#8a90a0'), [0, 240, -20]);
+	g.add(rail);
+	// the ear: a flat outline, extruded thick, standing on the bed; printed bottom-up (scale.y)
+	const sh = new THREE.Shape();
+	sh.moveTo(0, 0);
+	sh.bezierCurveTo(-30, 0, -40, 50, -34, 90);
+	sh.bezierCurveTo(-28, 140, 20, 160, 46, 130);
+	sh.bezierCurveTo(70, 100, 50, 60, 30, 50);
+	sh.bezierCurveTo(14, 40, 26, 10, 0, 0);
+	const hole = new THREE.Path();
+	hole.moveTo(0, 60);
+	hole.bezierCurveTo(-12, 70, -10, 110, 12, 118);
+	hole.bezierCurveTo(30, 120, 34, 96, 20, 86);
+	hole.bezierCurveTo(8, 78, 10, 64, 0, 60);
+	sh.holes.push(hole);
+	const ear = new THREE.Group();
+	ear.add(mesh(new THREE.ExtrudeGeometry(sh, {depth: 22, bevelEnabled: true, bevelSize: 4, bevelThickness: 4, bevelSegments: 3}), toon('#f2d6c4'), [-6, 0, -11]));
+	ear.position.set(0, 38, 0);
+	g.add(ear);
+	const set = (k: number, f: number) => {
+		ear.scale.set(1, Math.max(0.001, k), 1);
+		const done = k >= 1;
+		head.position.set(done ? 0 : Math.sin(f / 3) * 40, 38 + 160 * k + 30, done ? 0 : Math.cos(f / 4) * 10);
+		rail.position.y = 38 + 160 * k + 50;
+	};
+	set(0, 0);
+	inkPx(g, 2.4);
+	g.userData = {set};
+	return g;
+};
+/* bioreactor jar with a grown bladder on a scaffold, bottom on y = 0 */
+export const makeBioJar = () => {
+	const g = new THREE.Group();
+	g.add(mesh(new THREE.CylinderGeometry(70, 70, 16, 28), toon('#5a6078'), [0, 8, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(64, 64, 200, 28, 1, true), toon('#dff0fa', {transparent: true, opacity: 0.35, side: THREE.DoubleSide, depthWrite: false}), [0, 116, 0]));
+	const liquid = mesh(new THREE.CylinderGeometry(62, 62, 150, 28), toon('#f6c8a0', {transparent: true, opacity: 0.35, depthWrite: false}), [0, 92, 0]);
+	liquid.userData.noInk = true;
+	g.add(liquid);
+	g.add(mesh(new THREE.SphereGeometry(40, 24, 16), toon('#f0a0a8'), [0, 100, 0], undefined, [1, 0.9, 1]));
+	g.add(mesh(new THREE.CylinderGeometry(8, 10, 30, 12), toon('#f0a0a8'), [0, 54, 0]));
+	g.add(mesh(new THREE.CylinderGeometry(70, 70, 14, 28), toon('#5a6078'), [0, 223, 0]));
+	for (const x of [-20, 20]) g.add(mesh(new THREE.CylinderGeometry(4, 4, 60, 8), toon('#c8ccd8'), [x, 250, 0]));
+	return inkPx(g, 2.2);
+};
+/* a big coin standing up: face A / face B textures; flip with rotation.y */
+export const makeCoin = (a: string, b: string) => {
+	const face = (t: string, bg: string) =>
+		new THREE.MeshBasicMaterial({
+			map: paint(256, 256, (c) => {
+				c.fillStyle = bg;
+				c.beginPath();
+				c.arc(128, 128, 126, 0, Math.PI * 2);
+				c.fill();
+				c.strokeStyle = '#8a6a1a';
+				c.lineWidth = 10;
+				c.beginPath();
+				c.arc(128, 128, 110, 0, Math.PI * 2);
+				c.stroke();
+				c.fillStyle = '#3a2a0a';
+				c.font = "900 34px 'Rubik', sans-serif";
+				c.textAlign = 'center';
+				c.translate(128, 128);
+				c.rotate(-Math.PI / 2);
+				t.split(' ').forEach((w, i, arr) => c.fillText(w, 0, 12 + (i - (arr.length - 1) / 2) * 40));
+			}),
+		});
+	const g = new THREE.Group();
+	const rim = toon('#c99a3a');
+	const coin = mesh(new THREE.CylinderGeometry(120, 120, 18, 48), [rim, face(a, '#f2c84a'), face(b, '#e8a83a')], [0, 0, 0], [Math.PI / 2, 0, 0]);
+	g.add(coin);
+	return inkPx(g, 2.6);
+};

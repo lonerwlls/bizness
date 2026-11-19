@@ -677,8 +677,7 @@ export const PenHand: React.FC<{g: [number, number]; from: [number, number]}> = 
 };
 
 /* the handwriting font must be in before the notebook page is painted */
-const useCaveat = () => {
-	const q = "700 40px 'Caveat'";
+export const useFont = (q: string) => {
 	const [ok, setOk] = React.useState(() => document.fonts.check(q));
 	const [h] = React.useState(() => (ok ? null : delayRender('caveat', {timeoutInMilliseconds: 30000})));
 	React.useEffect(() => {
@@ -693,6 +692,7 @@ const useCaveat = () => {
 	}, [ok, h]);
 	return ok;
 };
+const useCaveat = () => useFont("700 40px 'Caveat'");
 /* 010 he takes the pen and writes — in the wide the tip is on the page */
 const PEN_TIP = 47; // pen model: tip at +47
 const R010: React.FC = () => {
