@@ -166,7 +166,7 @@ export const Short: React.FC<{sound?: boolean}> = ({sound = true}) => {
 							</Sequence>
 						))}
 			</AbsoluteFill>
-			{SHORT.hook && lines[1] ? <Caption f={f} from={0} to={lines[1].from - 4} top={190} lines={SHORT.hook} size={92} /> : null}
+			{SHORT.hook && lines[1] ? <Caption f={f} from={0} to={lines[1].from - 4} top={SHORT.hookTop ?? 190} lines={SHORT.hook} size={92} /> : null}
 			{STORY.endCaption && last ? <Caption f={f} from={last.from + last.dur + 8} to={SHORT_FRAMES} top={1450} lines={STORY.endCaption} size={72} /> : null}
 			{sound ? (
 				<>
