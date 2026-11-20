@@ -784,3 +784,91 @@ export const makeMarker = () => {
 };
 /* a cafeteria tray (top on y = 0) */
 export const makeTray2 = () => inkPx(mesh(rbox(220, 8, 150, 4), toon('#e4762a'), [0, -4, 0]), 2.2);
+
+/* ------------------------------ part 5 ------------------------------ */
+/* African clawed frog, side-on facing +x, belly on y = 0. setLeg(k): the right hind leg regrows (0..1) */
+export type Frog = THREE.Group & {userData: {setLeg: (k: number) => void; idle: (f: number) => void}};
+export const makeFrog = (): Frog => {
+	const g = new THREE.Group() as Frog;
+	const skin = toon('#7a9a4a');
+	const belly = toon('#d8d0a0');
+	const body = new THREE.Group();
+	body.position.y = 34;
+	g.add(body);
+	body.add(mesh(new THREE.SphereGeometry(60, 24, 18), skin, [0, 0, 0], undefined, [1.3, 0.62, 0.95]));
+	const bl = mesh(new THREE.SphereGeometry(56, 20, 14), belly, [4, -10, 0], undefined, [1.2, 0.45, 0.88]);
+	bl.userData.noInk = true;
+	body.add(bl);
+	// spots
+	for (const [x, z] of [[-30, 30], [10, 40], [30, -30], [-10, -42], [-40, -10]]) {
+		const sp = mesh(new THREE.SphereGeometry(9, 10, 8), toon('#4a6a2a'), [x, 26, z], undefined, [1, 0.3, 1]);
+		sp.userData.noInk = true;
+		body.add(sp);
+	}
+	// head + eyes on top (Xenopus: small eyes on top of a flat head)
+	body.add(mesh(new THREE.SphereGeometry(40, 20, 14), skin, [64, 4, 0], undefined, [1.1, 0.6, 1]));
+	for (const z of [-20, 20]) {
+		body.add(mesh(new THREE.SphereGeometry(10, 12, 10), toon('#e8e0b0'), [80, 26, z]));
+		body.add(mesh(new THREE.SphereGeometry(6, 10, 8), toon('#1b1420'), [86, 28, z]));
+	}
+	const smile = mesh(new THREE.TorusGeometry(26, 1.8, 6, 16, Math.PI * 0.6), toon('#3a4a1a'), [80, -6, 0], [0, 0, Math.PI * 1.15]);
+	smile.userData.noInk = true;
+	body.add(smile);
+	// front legs
+	for (const z of [-34, 34]) body.add(mesh(new THREE.CapsuleGeometry(7, 26, 4, 8), skin, [48, -24, z], [z > 0 ? 0.4 : -0.4, 0, 0.3]));
+	// hind legs: thigh + shin + big webbed foot
+	const hind = (z: number) => {
+		const leg = new THREE.Group();
+		leg.position.set(-60, -6, z);
+		leg.add(mesh(new THREE.CapsuleGeometry(14, 44, 6, 10), skin, [10, -10, 0], [0, 0, 1.2]));
+		leg.add(mesh(new THREE.CapsuleGeometry(10, 46, 6, 10), skin, [-24, -18, z > 0 ? 6 : -6], [0, 0, -1.3]));
+		const foot = new THREE.Shape();
+		foot.moveTo(0, 0);
+		foot.lineTo(-40, 14);
+		foot.lineTo(-50, 0);
+		foot.lineTo(-40, -14);
+		foot.lineTo(0, 0);
+		leg.add(mesh(new THREE.ExtrudeGeometry(foot, {depth: 4, bevelEnabled: false}), toon('#6a8a3a'), [-50, -24, 0], [-Math.PI / 2, 0, 0]));
+		return leg;
+	};
+	const legL = hind(-30);
+	const legR = hind(30);
+	body.add(legL, legR);
+	inkPx(g, 2.4);
+	g.userData = {
+		setLeg: (k: number) => {
+			const s = Math.max(0.05, k);
+			legR.scale.set(s, s, s);
+			legR.visible = k > 0.02;
+		},
+		idle: (f: number) => {
+			body.position.y = 34 + Math.sin(f / 16) * 2;
+		},
+	};
+	return g;
+};
+/* the BioDome: a small clear silicone cap, bottom open, sits on y = 0 */
+export const makeDome = () => {
+	const g = new THREE.Group();
+	const dome = new THREE.SphereGeometry(30, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+	g.add(mesh(dome, toon('#bfe8f8', {transparent: true, opacity: 0.55, depthWrite: false}), [0, 0, 0], undefined, [1, 1.3, 1]));
+	const liq = mesh(new THREE.SphereGeometry(26, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2), toon('#ffd08a', {transparent: true, opacity: 0.45, depthWrite: false}), [0, 0, 0], undefined, [1, 0.8, 1]);
+	liq.userData.noInk = true;
+	g.add(liq);
+	return inkPx(g, 2);
+};
+/* a big wall switch, OFF (k = 0) / ON (k = 1) */
+export type Switch = THREE.Group & {userData: {set: (k: number) => void}};
+export const makeSwitch = (): Switch => {
+	const g = new THREE.Group() as Switch;
+	g.add(mesh(rbox(200, 300, 20, 18), toon('#f4f6fa'), [0, 0, 0]));
+	g.add(mesh(rbox(90, 170, 16, 10), toon('#c8ccd8'), [0, 0, 12]));
+	const lever = new THREE.Group();
+	lever.position.z = 20;
+	lever.add(mesh(rbox(60, 110, 40, 12), toon('#d23b3b'), [0, 0, 20]));
+	g.add(lever);
+	inkPx(g, 2.6);
+	g.userData = {set: (k: number) => (lever.rotation.x = 0.45 - 0.9 * k)};
+	g.userData.set(0);
+	return g;
+};

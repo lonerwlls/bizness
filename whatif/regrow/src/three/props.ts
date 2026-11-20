@@ -470,7 +470,7 @@ export const makeSubButton = () => {
 		c.fillStyle = '#e42b2b';
 		c.fillRect(0, 0, 512, 140);
 		c.fillStyle = '#ffffff';
-		c.font = '900 80px Rubik, sans-serif';
+		c.font = "900 80px 'Rubik', sans-serif";
 		c.textAlign = 'center';
 		c.fillText('SUBSCRIBE', 256, 100);
 	});
