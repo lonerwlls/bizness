@@ -1,0 +1,244 @@
+{
+ "ambience": [
+  {
+   "from": "001",
+   "to": "004",
+   "kind": "room",
+   "gain": 0.035
+  },
+  {
+   "from": "005",
+   "to": "006",
+   "kind": "crowd",
+   "gain": 0.03
+  },
+  {
+   "from": "006",
+   "to": "007",
+   "kind": "room",
+   "gain": 0.03
+  },
+  {
+   "from": "008",
+   "to": "009",
+   "kind": "room",
+   "gain": 0.03
+  }
+ ],
+ "music": [
+  {
+   "from": "009",
+   "to": "end",
+   "style": "pad-warm",
+   "amp": 0.05
+  }
+ ],
+ "sfx": [
+  {
+   "at": "001",
+   "off": 7,
+   "type": "pop"
+  },
+  {
+   "at": "001",
+   "off": 21,
+   "type": "pop"
+  },
+  {
+   "at": "001",
+   "off": 55,
+   "type": "click",
+   "amp": 0.2
+  },
+  {
+   "at": "001",
+   "off": 83,
+   "type": "splash",
+   "amp": 0.1
+  },
+  {
+   "at": "001",
+   "off": 95,
+   "type": "pop",
+   "amp": 0.05
+  },
+  {
+   "at": "001",
+   "off": 110,
+   "type": "pop",
+   "amp": 0.05
+  },
+  {
+   "at": "001",
+   "off": 125,
+   "type": "pop",
+   "amp": 0.05
+  },
+  {
+   "at": "001",
+   "off": 95,
+   "type": "pop"
+  },
+  {
+   "at": "002",
+   "off": 8,
+   "type": "pop"
+  },
+  {
+   "at": "002",
+   "off": 57,
+   "type": "pop"
+  },
+  {
+   "at": "003",
+   "off": 4,
+   "type": "pop"
+  },
+  {
+   "at": "003",
+   "off": 32,
+   "type": "pop"
+  },
+  {
+   "at": "003",
+   "off": 68,
+   "type": "pop"
+  },
+  {
+   "at": "003",
+   "off": 141,
+   "type": "swoosh",
+   "amp": 0.1
+  },
+  {
+   "at": "003",
+   "off": 150,
+   "type": "stamp",
+   "amp": 0.2
+  },
+  {
+   "at": "004",
+   "off": 13,
+   "type": "pop"
+  },
+  {
+   "at": "004",
+   "off": 70,
+   "type": "pop"
+  },
+  {
+   "at": "005",
+   "off": 4,
+   "type": "laugh",
+   "dur": 1.6,
+   "amp": 0.12
+  },
+  {
+   "at": "005",
+   "off": 55,
+   "type": "click",
+   "amp": 0.2
+  },
+  {
+   "at": "005",
+   "off": 60,
+   "type": "pop"
+  },
+  {
+   "at": "006",
+   "off": 4,
+   "type": "pop"
+  },
+  {
+   "at": "006",
+   "off": 10,
+   "type": "thud",
+   "amp": 0.12
+  },
+  {
+   "at": "006",
+   "off": 25,
+   "type": "thud",
+   "amp": 0.12
+  },
+  {
+   "at": "006",
+   "off": 62,
+   "type": "pop"
+  },
+  {
+   "at": "007",
+   "off": 4,
+   "type": "whoosh",
+   "amp": 0.1
+  },
+  {
+   "at": "007",
+   "off": 43,
+   "type": "whooshUp",
+   "dur": 0.8,
+   "amp": 0.12
+  },
+  {
+   "at": "007",
+   "off": 72,
+   "type": "pop"
+  },
+  {
+   "at": "007",
+   "off": 103,
+   "type": "pop"
+  },
+  {
+   "at": "008",
+   "off": 12,
+   "type": "click",
+   "amp": 0.2
+  },
+  {
+   "at": "008",
+   "off": 35,
+   "type": "ding",
+   "amp": 0.12
+  },
+  {
+   "at": "009",
+   "off": 4,
+   "type": "pop"
+  },
+  {
+   "at": "009",
+   "off": 81,
+   "type": "ding",
+   "amp": 0.12
+  },
+  {
+   "at": "009",
+   "off": 96,
+   "type": "whoosh",
+   "amp": 0.1
+  },
+  {
+   "at": "009",
+   "off": 98,
+   "type": "applause",
+   "dur": 3.5,
+   "amp": 0.14
+  },
+  {
+   "at": "009",
+   "off": 102,
+   "type": "pop"
+  },
+  {
+   "at": "010",
+   "off": 4,
+   "type": "pop"
+  },
+  {
+   "at": "010",
+   "off": 53,
+   "type": "pop"
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+[
+ {"id": "001_N", "sp": "N", "t": "In nineteen eighty-four, a young doctor in Australia drank a glass of bacteria. On purpose.", "gap": 0.3},
+ {"id": "002_N", "sp": "N", "t": "His name was Barry Marshall, and almost nobody believed him."},
+ {"id": "003_N", "sp": "N", "t": "Back then, doctors were sure stomach ulcers came from stress and spicy food. Some patients even had part of their stomach removed."},
+ {"id": "004_N", "sp": "N", "t": "Marshall and his colleague Robin Warren blamed a tiny spiral bacterium."},
+ {"id": "005_N", "sp": "N", "t": "The experts laughed. So he made himself the experiment."},
+ {"id": "006_N", "sp": "N", "t": "Three days later, he was throwing up, and his mom said his breath was awful."},
+ {"id": "007_N", "sp": "N", "t": "A camera in his stomach showed it: inflamed, and full of the bacteria."},
+ {"id": "008_N", "sp": "N", "t": "A few antibiotics, and he was fine."},
+ {"id": "009_N", "sp": "N", "t": "Today, most ulcers are cured in about two weeks. And in two thousand five, Marshall and Warren won the Nobel Prize."},
+ {"id": "010_N", "sp": "N", "t": "Would you drink it to prove you're right? Tell me in the comments.", "gap": 2.0}
+]
