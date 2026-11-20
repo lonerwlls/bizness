@@ -362,8 +362,8 @@ const R057: React.FC = () => {
 };
 
 /* ================================ 058–060 Lily, a year later ================================ */
-const BEDX = 1180;
-const LX = 1120; // Lily sitting on the exam bed edge
+const BEDX = 1060;
+const LX = 1000; // Lily sitting on the exam bed edge
 const lilySit: Pose = {...SIT, lean: 0, head: 4};
 const R058: React.FC = () => {
 	const {f, gf} = useShot();
@@ -392,17 +392,27 @@ const R058: React.FC = () => {
 const R059: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
-	const SX = 1380; // surgeon on duty
+	const SX = 1190; // surgeon on duty, on the far side of the exam bed
 	const fingerP: [number, number] = [LX - 60 * 0.72, BAY_TOP - 4 - 60 * 0.72];
-	const come = kk(f, w('059', 0.05), w('059', 0.35));
-	const tip: [number, number] = [fingerP[0] + 140 - 100 * come, fingerP[1] - 30 + 20 * come];
-	const stop = f > w('059', 0.4);
-	const stopK = env(f, w('059', 0.38), 1e9, 6, 1);
-	const surgHand: [number, number] = [tip[0] + 50, tip[1] - 30];
-	const sp = reach({...idle(gf, 5), lean: 10}, 'F', [SX - surgHand[0], surgHand[1] - HIP], 1);
-	const HX = 860;
-	const hp = reach(idle(gf, 2), 'F', [surgHand[0] - HX - 10, surgHand[1] - HIP + 4], stopK);
-	const cam = usePush(camOn(1120, 560, 1.3), camOn(1120, 560, 1.45));
+	// the needle holder lives in his fist: the grip moves, the tool follows; tip ends near her finger
+	const TH = 160;
+	const S = 1.1;
+	const len = (48 + 40) * S;
+	const r = (TH * Math.PI) / 180;
+	const restGrip: [number, number] = [SX - 50, HIP - 50];
+	const tipTarget: [number, number] = [fingerP[0] + 22, fingerP[1] - 8];
+	const gripTarget: [number, number] = [tipTarget[0] - len * Math.cos(r), tipTarget[1] - len * Math.sin(r)];
+	const come = kk(f, w('059', 0.05), w('059', 0.36));
+	const stopT = w('059', 0.4);
+	const back = kk(f, stopT + 6, stopT + 22) * 0.45;
+	const k = come * (1 - back);
+	const grip: [number, number] = [restGrip[0] + (gripTarget[0] - restGrip[0]) * k, restGrip[1] + (gripTarget[1] - restGrip[1]) * k];
+	const tip: [number, number] = [grip[0] + len * Math.cos(r), grip[1] + len * Math.sin(r)];
+	const stop = f > stopT;
+	const sp = reach({...idle(gf, 5), lean: 8 * k}, 'F', [SX - grip[0], grip[1] - HIP], 1);
+	const HX = 780;
+	const hp = gesture('stop', idle(gf, 2), env(f, stopT - 4, 1e9, 6, 1), f);
+	const cam = usePush(camOn(1060, 560, 1.3), camOn(1060, 560, 1.45));
 	return (
 		<>
 			<Stage cam={cam} bg="#d0e8ec" light={{x: 30, y: 0, o: 0.45, c: '255,250,230'}}>
@@ -411,11 +421,7 @@ const R059: React.FC = () => {
 				</Layer>
 				<Layer depth={1}>
 					<Svg>
-						<ExamBed x={BEDX} />
-						<Actor who="lily" x={LX} floor={FL} seat={BAY_TOP - 4} s={0.72} facing={-1} faceTurn={0.4} look={[0.6, -0.2]} expr="worried" pose={reach(lilySit, 'F', [-60, -60], 1)} uid="lily-059" />
-						<circle cx={fingerP[0] + 6} cy={fingerP[1] - 4} r={9} fill="#fbfaf2" stroke="#2a1a14" strokeWidth={3} />
-						<Actor who="colleague" x={SX} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.7, 0.4]} expr={stop ? 'wide' : 'normal'} pose={sp} uid="surg-059" />
-						<Actor who="hero" x={HX} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0]} mouth={stop ? 'open' : undefined} pose={hp} uid="h-059" />
+						<Actor who="colleague" x={SX} floor={FL} s={0.98} facing={-1} faceTurn={0.4} look={[-0.7, 0.5]} expr={stop ? 'wide' : 'normal'} pose={sp} uid="surg-059" />
 					</Svg>
 					<Prop3D
 						x={760}
@@ -428,8 +434,16 @@ const R059: React.FC = () => {
 							scene.add(nh);
 							return {scene, nh};
 						}}
-						update={(wd) => placeTool(wd.nh, 48, -40, tip, 160, 1.1, 60)}
+						update={(wd) => placeTool(wd.nh, 48, -40, tip, TH, S, 60)}
 					/>
+					<Svg>
+						{/* his fist drawn over the tool's finger rings */}
+						<circle cx={grip[0]} cy={grip[1]} r={10} fill="#e8c4a0" stroke="#2a1a14" strokeWidth={3} />
+						<ExamBed x={BEDX} />
+						<Actor who="lily" x={LX} floor={FL} seat={BAY_TOP - 4} s={0.72} facing={-1} faceTurn={0.4} look={[0.6, -0.2]} expr="worried" pose={reach(lilySit, 'F', [-60, -60], 1)} uid="lily-059" />
+						<circle cx={fingerP[0] + 6} cy={fingerP[1] - 4} r={9} fill="#fbfaf2" stroke="#2a1a14" strokeWidth={3} />
+						<Actor who="hero" x={HX} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0]} mouth={stop ? 'open' : undefined} pose={hp} uid="h-059" />
+					</Svg>
 				</Layer>
 			</Stage>
 			<Over>
@@ -450,7 +464,7 @@ const R060: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
 	const wave = env(f, w('060', 0.3), 1e9, 8, 1);
-	const lp = gesture('wave', idle(gf, 7), wave, f);
+	const lp = reach({...idle(gf, 7), armB: [-24, 20]}, 'F', [70 + 14 * Math.sin(f / 2.4), -175], wave);
 	const grow = kk(f, w('060', 0.35), w('060', 0.6));
 	const cam = usePush(camOn(1000, 600, 1.25), camOn(980, 600, 1.4));
 	return (
@@ -462,7 +476,7 @@ const R060: React.FC = () => {
 				<Layer depth={1}>
 					<Svg>
 						<Actor who="hero" x={760} floor={FL} s={HS} facing={1} faceTurn={0.4} look={[0.7, 0.3]} mouth="smile" pose={idle(gf, 2)} uid="h-060" />
-						<Actor who="lily" x={1080} floor={FL} s={0.72} facing={-1} faceTurn={0.4} look={[-0.7, -0.3]} mouth="open" pose={lp} uid="lily-060" />
+						<Actor who="lily" x={1080} floor={FL} s={0.72} facing={-1} faceTurn={0.4} look={[-0.7, -0.3]} mouth="smile" pose={lp} uid="lily-060" />
 					</Svg>
 				</Layer>
 			</Stage>
