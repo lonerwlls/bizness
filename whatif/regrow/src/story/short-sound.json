@@ -1,34 +1,209 @@
 {
  "fromLong": true,
  "ambience": [
-  {"from": "s01", "to": "s04", "kind": "room", "gain": 0.04},
-  {"from": "s05", "to": "s06", "kind": "room", "gain": 0.035},
-  {"from": "s07", "to": "s08", "kind": "hall", "gain": 0.04},
-  {"from": "s09", "to": "s10", "kind": "fridge", "gain": 0.03}
+  {
+   "from": "s01",
+   "to": "s04",
+   "kind": "room",
+   "gain": 0.04
+  },
+  {
+   "from": "s05",
+   "to": "s06",
+   "kind": "room",
+   "gain": 0.035
+  },
+  {
+   "from": "s07",
+   "to": "s08",
+   "kind": "hall",
+   "gain": 0.04
+  },
+  {
+   "from": "s09",
+   "to": "s10",
+   "kind": "fridge",
+   "gain": 0.03
+  }
  ],
- "music": [{"from": "s08", "to": "s10", "style": "pad-tense", "amp": 0.05}, {"from": "s10", "to": "end", "style": "pad-warm", "amp": 0.05}],
+ "music": [
+  {
+   "from": "s08",
+   "to": "s10",
+   "style": "pad-tense",
+   "amp": 0.05
+  },
+  {
+   "from": "s10",
+   "to": "end",
+   "style": "pad-warm",
+   "amp": 0.05
+  }
+ ],
  "sfx": [
-  {"at": "s02", "off": -6, "type": "whoosh"},
-  {"at": "s02", "off": 14, "type": "stamp", "amp": 0.3},
-  {"at": "s03", "off": -6, "type": "whoosh"},
-  {"at": "s03", "off": 12, "type": "whooshUp", "dur": 1.2, "amp": 0.18},
-  {"at": "s03", "off": 47, "type": "swoosh", "amp": 0.12},
-  {"at": "s03", "off": 79, "type": "ding", "amp": 0.14},
-  {"at": "s03", "off": 128, "type": "stamp", "amp": 0.35},
-  {"at": "s04", "off": -6, "type": "whooshUp", "dur": 0.8, "amp": 0.2},
-  {"at": "s04", "off": 2, "type": "pop"},
-  {"at": "s04", "off": 22, "type": "pop"},
-  {"at": "s05", "off": -6, "type": "whoosh"},
-  {"at": "s06", "off": -6, "type": "whoosh"},
-  {"at": "s07", "off": -6, "type": "whoosh"},
-  {"at": "s07", "off": 86, "type": "pop"},
-  {"at": "s08", "off": -6, "type": "whoosh"},
-  {"at": "s09", "off": -6, "type": "whoosh"},
-  {"at": "s09", "off": 4, "type": "pop"},
-  {"at": "s10", "off": -6, "type": "whoosh"},
-  {"at": "s10", "off": 0, "type": "pop"},
-  {"at": "s10", "off": 10, "type": "pop"},
-  {"at": "s10", "off": 44, "type": "pop"},
-  {"at": "s10", "off": 84, "type": "ding", "amp": 0.12}
+  {
+   "at": "s02",
+   "off": -6,
+   "type": "whoosh"
+  },
+  {
+   "at": "s02",
+   "off": 14,
+   "type": "stamp",
+   "amp": 0.3
+  },
+  {
+   "at": "s03",
+   "off": -6,
+   "type": "whoosh"
+  },
+  {
+   "at": "s03",
+   "off": 12,
+   "type": "whooshUp",
+   "dur": 1.2,
+   "amp": 0.18
+  },
+  {
+   "at": "s03",
+   "off": 47,
+   "type": "swoosh",
+   "amp": 0.12
+  },
+  {
+   "at": "s03",
+   "off": 79,
+   "type": "ding",
+   "amp": 0.14
+  },
+  {
+   "at": "s03",
+   "off": 128,
+   "type": "stamp",
+   "amp": 0.35
+  },
+  {
+   "at": "s04",
+   "off": -6,
+   "type": "whooshUp",
+   "dur": 0.8,
+   "amp": 0.2
+  },
+  {
+   "at": "s04",
+   "off": 2,
+   "type": "pop"
+  },
+  {
+   "at": "s04",
+   "off": 22,
+   "type": "pop"
+  },
+  {
+   "at": "s05",
+   "off": -6,
+   "type": "whoosh"
+  },
+  {
+   "at": "s06",
+   "off": -6,
+   "type": "whoosh"
+  },
+  {
+   "at": "s07",
+   "off": -6,
+   "type": "whoosh"
+  },
+  {
+   "at": "s07",
+   "off": 86,
+   "type": "pop"
+  },
+  {
+   "at": "s08",
+   "off": -6,
+   "type": "whoosh"
+  },
+  {
+   "at": "s09",
+   "off": -6,
+   "type": "whoosh"
+  },
+  {
+   "at": "s09",
+   "off": 4,
+   "type": "pop"
+  },
+  {
+   "at": "s10",
+   "off": -6,
+   "type": "whoosh"
+  },
+  {
+   "at": "s10",
+   "off": 0,
+   "type": "pop"
+  },
+  {
+   "at": "s10",
+   "off": 10,
+   "type": "pop"
+  },
+  {
+   "at": "s10",
+   "off": 44,
+   "type": "pop"
+  },
+  {
+   "at": "s10",
+   "off": 84,
+   "type": "ding",
+   "amp": 0.12
+  },
+  {
+   "at": "s06",
+   "off": 2,
+   "type": "pop"
+  },
+  {
+   "at": "s06",
+   "off": 20,
+   "type": "stamp",
+   "amp": 0.25
+  },
+  {
+   "at": "s06",
+   "off": 52,
+   "type": "pop"
+  },
+  {
+   "at": "s06",
+   "off": 73,
+   "type": "click",
+   "amp": 0.18
+  },
+  {
+   "at": "s06",
+   "off": 92,
+   "type": "click",
+   "amp": 0.18
+  },
+  {
+   "at": "s06",
+   "off": 111,
+   "type": "click",
+   "amp": 0.18
+  },
+  {
+   "at": "s06",
+   "off": 124,
+   "type": "ding",
+   "amp": 0.13
+  },
+  {
+   "at": "s08",
+   "off": 24,
+   "type": "pop"
+  }
  ]
 }

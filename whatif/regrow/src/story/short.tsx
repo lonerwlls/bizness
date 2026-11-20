@@ -153,12 +153,38 @@ const ListV: React.FC<{f: number; dur: number}> = ({f}) => {
 		</AbsoluteFill>
 	);
 };
+/* s06 the kidney: a normal one can't regrow, yours is back in four days */
+const KIDNEY = 'M0,-150 C90,-160 150,-80 140,10 C130,100 60,160 -10,150 C-80,140 -110,80 -60,40 C-20,10 -30,-30 -70,-60 C-110,-100 -70,-150 0,-150 Z';
+const KidneyV: React.FC<{f: number; dur: number}> = ({f, dur}) => {
+	const grow = interpolate(f, [0.45 * dur, 0.8 * dur], [0, 1], clamp);
+	const day = Math.min(4, 1 + Math.floor(grow * 3.99));
+	const g = 0.15 + 0.85 * grow;
+	return (
+		<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 40%, #3a2a5a 0%, #140a24 85%)'}}>
+			<svg viewBox="0 0 1080 1920" width={1080} height={1920} style={{position: 'absolute', inset: 0}}>
+				<g transform={`translate(540,560) scale(${pop(f, 2)})`}>
+					<rect x={-420} y={-300} width={840} height={600} rx={44} fill="#11142c" stroke="#8a90a0" strokeWidth={8} />
+					<text y={-220} textAnchor="middle" fontSize={56} fontFamily={FONT} fontWeight={900} fill="#c8ccd8">NORMAL KIDNEY</text>
+					<g transform="translate(0,20) scale(0.9)"><path d={KIDNEY} fill="#8a6a6a" stroke="#2a1a14" strokeWidth={10} /></g>
+					<text y={250} textAnchor="middle" fontSize={54} fontFamily={FONT} fontWeight={900} fill="#ff9a8a">CAN'T REGROW</text>
+				</g>
+				<g transform={`translate(540,1300) scale(${pop(f, 0.35 * dur)})`}>
+					<rect x={-420} y={-300} width={840} height={600} rx={44} fill="#11142c" stroke="#7af0a8" strokeWidth={8} />
+					<text y={-220} textAnchor="middle" fontSize={56} fontFamily={FONT} fontWeight={900} fill="#7af0a8">YOURS</text>
+					<g transform={`translate(0,20) scale(${0.9 * g})`}><path d={KIDNEY} fill="#c06a6a" stroke="#2a1a14" strokeWidth={10 / g} /></g>
+					<text y={250} textAnchor="middle" fontSize={64} fontFamily={FONT} fontWeight={900} fill="#ffd34a">DAY {day}</text>
+				</g>
+			</svg>
+		</AbsoluteFill>
+	);
+};
 /* overlays over cropped shots (labels the crop cuts off) */
 const Spare: React.FC<{f: number; dur: number}> = ({f}) => <Chip f={f} t={20} top={260} text={'"THE SPARE PARTS DOCTOR"'} fg="#ffd34a" size={48} rot={-3} />;
 const Dice: React.FC<{f: number; dur: number}> = ({f}) => <Chip f={f} t={kk(f, 0, 1) >= 0 ? 10 : 10} top={260} text="YOU ROLL THE DICE" bg="#fbfaf4" fg="#13203a" size={58} rot={-2} />;
 
-const CARDS: Record<string, React.FC<{f: number; dur: number}>> = {gone: GoneV, grow: GrowV, question: QuestionV, end: EndV, list: ListV};
-const OVERS: Record<string, React.FC<{f: number; dur: number}>> = {spare: Spare, dice: Dice};
+const CARDS: Record<string, React.FC<{f: number; dur: number}>> = {gone: GoneV, grow: GrowV, question: QuestionV, end: EndV, list: ListV, kidney: KidneyV};
+const Antler: React.FC<{f: number; dur: number}> = ({f}) => <Chip f={f} t={30} top={240} text="FASTER THAN A DEER ANTLER" fg="#ffd34a" size={46} rot={-2} />;
+const OVERS: Record<string, React.FC<{f: number; dur: number}>> = {spare: Spare, dice: Dice, antler: Antler};
 type RawSeg = Omit<Seg, 'C' | 'O'> & {card?: string; over?: string; hic?: boolean; sfx?: boolean};
 export const SHORT: {mode: 'crop'; hook?: string[]; bed?: string; hookTop?: number} | {mode: 'recut'; segs: Seg[]; hook?: string[]; bed?: string; hookTop?: number} = {
 	mode: 'recut',
