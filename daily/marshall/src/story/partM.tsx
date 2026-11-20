@@ -197,9 +197,9 @@ const M004: React.FC = () => {
 				))}
 			</g>
 			<Tag f={f} t={w('004', 0.1)} x={960} y={130} text="DR. ROBIN WARREN" c="#11142c" fg="#ffd34a" size={42} rot={-3} />
-			<Tag f={f} t={w('004', 0.55)} x={960} y={920} text="A SPIRAL BACTERIUM" c="#0e3a22" fg="#7ad0a0" stroke="#7ad0a0" size={44} rot={2} />
-			<ellipse cx={1170} cy={1004} rx={70} ry={10} fill="#000" opacity={0.3} />
-			<Actor who="warren" x={1170} floor={1000} s={0.5} facing={-1} faceTurn={0.3} look={[-0.5, -0.4]} pose={gesture('point', idle(gf, 4), 1, f)} uid="warren-004" />
+			<Tag f={f} t={w('004', 0.55)} x={1010} y={900} text="SPIRAL BACTERIUM" c="#0e3a22" fg="#7ad0a0" stroke="#7ad0a0" size={38} rot={2} />
+			<ellipse cx={760} cy={1004} rx={70} ry={10} fill="#000" opacity={0.3} />
+			<Actor who="warren" x={760} floor={1000} s={0.5} facing={1} faceTurn={0.3} look={[0.5, -0.4]} pose={gesture('point', idle(gf, 4), 1, f)} uid="warren-004" />
 		</Board>
 	);
 };
