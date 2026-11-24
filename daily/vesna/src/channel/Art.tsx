@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, random} from 'remotion';
 import {Stickman, Pose} from '../engine/Stickman';
-import {idle} from '../kit/actions';
+import {gesture, idle} from '../kit/actions';
 import {CAST} from '../story/cast';
 
 /* Channel art: avatar (800x800) and banner (2560x1440, safe area 1546x423 in the middle).
@@ -111,21 +111,22 @@ export const Avatar: React.FC = () => (
 	</AbsoluteFill>
 );
 
-/* banner: the hero waving in the middle, doodle wallpaper on a deep night-blue */
+/* banner: 2560x1440 for TV; desktop shows the middle 2560x423 band (y 508–931), phones show
+   1546x423 (x 507–2053). The hero stands fully inside that safe band, waving. */
 export const Banner: React.FC = () => (
 	<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 50%, #33408f 0%, #1c2462 50%, #0d1236 100%)'}}>
 		<svg viewBox="0 0 2560 1440" width={2560} height={1440}>
-			<Doodles w={2560} h={1440} c="#9fd8ff" step={230} o={0.14} seed="bn" />
+			<Doodles w={2560} h={1440} c="#9fd8ff" step={150} o={0.13} seed="bn" />
 			<defs>
 				<radialGradient id="glow">
-					<stop offset="0" stopColor="#ffd88a" stopOpacity={0.55} />
-					<stop offset="0.55" stopColor="#ffb85a" stopOpacity={0.18} />
+					<stop offset="0" stopColor="#ffd88a" stopOpacity={0.5} />
+					<stop offset="0.55" stopColor="#ffb85a" stopOpacity={0.16} />
 					<stop offset="1" stopColor="#ffb85a" stopOpacity={0} />
 				</radialGradient>
 			</defs>
-			<circle cx={1280} cy={700} r={560} fill="url(#glow)" />
-			<ellipse cx={1280} cy={1390} rx={260} ry={36} fill="#000" opacity={0.35} />
-			<Stickman id="ban" x={1280} y={1390 - 157 * 2.3} scale={2.3} facing={1} pose={{...idle(8, 3), armF: [86, 82]}} {...ROO} color="#f6f0e4" look={[0.05, -0.05]} faceTurn={0.15} mouth="smile" expr="normal" t={20} />
+			<ellipse cx={1280} cy={720} rx={620} ry={260} fill="url(#glow)" />
+			<ellipse cx={1280} cy={912} rx={130} ry={16} fill="#000" opacity={0.35} />
+			<Stickman id="ban" x={1280} y={912 - 157 * 0.9} scale={0.9} facing={1} pose={gesture('wave', idle(9, 4), 1, 12)} {...ROO} color="#f6f0e4" look={[0.05, -0.05]} faceTurn={0.15} mouth="smile" expr="normal" t={20} />
 		</svg>
 	</AbsoluteFill>
 );
