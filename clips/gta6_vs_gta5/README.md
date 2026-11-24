@@ -29,3 +29,4 @@
 | 20_changing_clothes.mp4 | GTA 6 vs GTA 5: Clothes Shopping Is Actually Real Now 👟 |
 | 21_new_look.mp4 | GTA 6 vs GTA 5: The Barbershop Is INSANE Now 💇 |
 | 22_the_metro.mp4 | GTA 6 vs GTA 5: The Metro Is Actually Alive Now 🚇 |
+| 23_boat_ride.mp4 | GTA 6 vs GTA 5: A Night Boat Ride Hits Different Now 🚤 |
