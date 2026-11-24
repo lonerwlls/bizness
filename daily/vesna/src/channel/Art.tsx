@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, random} from 'remotion';
+import {AbsoluteFill, Img, random, staticFile} from 'remotion';
 import {Stickman, Pose} from '../engine/Stickman';
 import {gesture, idle, reach} from '../kit/actions';
 import {CAST} from '../story/cast';
@@ -352,6 +352,45 @@ export const Banner: React.FC = () => {
 					t={20}
 				/>
 			</svg>
+		</AbsoluteFill>
+	);
+};
+
+/* banner from the user's "WHAT IF...?" art: the picture sits in the safe band, the sides are the same
+   night lab wallpaper drawn sharp (no blur): medical doodles, sparkles, a heartbeat line. */
+const Sparkle: React.FC<{x: number; y: number; r: number; c: string}> = ({x, y, r, c}) => (
+	<path d={`M${x},${y - r} Q${x},${y} ${x + r},${y} Q${x},${y} ${x},${y + r} Q${x},${y} ${x - r},${y} Q${x},${y} ${x},${y - r} Z`} fill={c} />
+);
+export const BannerArt: React.FC = () => {
+	const s = 423 / 520;
+	const fw = 1376 * s;
+	const fh = 768 * s;
+	const left = 1280 - 640 * s;
+	const top = 508 - 62 * s;
+	const mask = 'linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 9%, #000 91%, transparent 100%)';
+	const sparks = Array.from({length: 46}).map((_, i) => {
+		const x = random('sx' + i) * 2560;
+		const y = random('sy' + i) * 1440;
+		if (x > left - 20 && x < left + fw + 20 && y > top - 20 && y < top + fh + 20) return null;
+		return <Sparkle key={i} x={x} y={y} r={8 + random('sr' + i) * 16} c={i % 5 === 0 ? '#ffb85a' : '#e8f6ff'} />;
+	});
+	return (
+		<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 50%, #1a2760 0%, #111a48 45%, #070f2e 100%)'}}>
+			<svg viewBox="0 0 2560 1440" width={2560} height={1440} style={{position: 'absolute'}}>
+				<defs>
+					<filter id="ng" x="-10%" y="-50%" width="120%" height="200%">
+						<feGaussianBlur stdDeviation="7" />
+					</filter>
+				</defs>
+				<MedDoodles w={2560} h={1440} c="#5fd8ff" step={160} o={0.2} seed="art" />
+				<g opacity={0.9}>{sparks}</g>
+				<path d={ecgPath(2560, 820)} stroke="#4fe0ff" strokeWidth={12} fill="none" opacity={0.45} filter="url(#ng)" />
+				<path d={ecgPath(2560, 820)} stroke="#bff4ff" strokeWidth={4} fill="none" opacity={0.8} strokeLinejoin="round" />
+			</svg>
+			<Img
+				src={staticFile('banner_art.jpg')}
+				style={{position: 'absolute', left, top, width: fw, height: fh, WebkitMaskImage: mask, WebkitMaskComposite: 'source-in', maskImage: mask, maskComposite: 'intersect'}}
+			/>
 		</AbsoluteFill>
 	);
 };
