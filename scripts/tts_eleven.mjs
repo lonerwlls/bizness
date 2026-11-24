@@ -28,6 +28,21 @@ if (mode === "sample") {
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, Buffer.from(j.audio_base64, "base64"));
   console.log("ok", out);
+} else if (mode === "line") {
+  // node scripts/tts_eleven.mjs line <out.mp3> <voice_id> "текст"  → out.mp3 + out.json (слова с таймингами)
+  const [out, voice, text] = a;
+  const j = await tts(voice, text);
+  fs.writeFileSync(out, Buffer.from(j.audio_base64, "base64"));
+  const { characters: C, character_start_times_seconds: S, character_end_times_seconds: E } = j.alignment;
+  const words = []; let i = 0;
+  while (i < C.length) {
+    while (i < C.length && !/[\p{L}\p{N}]/u.test(C[i])) i++;
+    if (i >= C.length) break;
+    const s = i; while (i < C.length && /[\p{L}\p{N}\-]/u.test(C[i])) i++;
+    words.push({ w: C.slice(s, i).join(""), t: +S[s].toFixed(3), e: +E[i - 1].toFixed(3) });
+  }
+  fs.writeFileSync(out.replace(/\.mp3$/, ".json"), JSON.stringify(words));
+  console.log("ok", out, words.length);
 } else {
   const [OUT, TS, SCRIPT, voice] = a;
   const text = fs.readFileSync(SCRIPT, "utf8").replace(/́/g, "").replace(/\s+/g, " ").trim();
