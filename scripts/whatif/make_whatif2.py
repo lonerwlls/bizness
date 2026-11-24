@@ -37,14 +37,14 @@ for i, sh in enumerate(shots):
     f = f'[{i}:v]fps=30'
     for (y0, y1) in o.get('blur', []):  # размыть полосы источника (чужие субтитры)
         f += f'[p{i}];[p{i}]split[q{i}][r{i}];[r{i}]crop=iw:{y1 - y0}:0:{y0},boxblur=luma_radius=18:luma_power=2:chroma_radius=10:chroma_power=2[bb{i}];[q{i}][bb{i}]overlay=0:{y0}'
-    cx = o.get('cx', 0.5); fx, fy = o.get('focus', [0.5, 0.5]); Z = zexpr(o.get('zoom', [[0, 1]]))
+    cx = o.get('cx', 0.5); fx, fy = o.get('focus', [0.5, 0.5]); Z = zexpr([[t, min(z, S.get('max_zoom', 1.25))] for t, z in o.get('zoom', [[0, 1]])])
     f += (f",setpts=(PTS-STARTPTS)/{sp},crop=ih*9/16:ih:'max(0,min(iw-ow,{cx}*iw-ow/2))':0,scale=1080:1920:flags=lanczos,"
           f"scale=w='2*trunc(1080*({Z})/2)':h='2*trunc(1920*({Z})/2)':eval=frame,crop=1080:1920:'(2*trunc(1080*({Z})/2)-1080)*{fx}':'(2*trunc(1920*({Z})/2)-1920)*{fy}',"
           f"setsar=1,fps=30,trim=0:{dd:.3f},setpts=PTS-STARTPTS[s{i}]")
     parts.append(f); cuts.append(t0)
 gl = '+'.join(f'between(t,{c:.3f},{c + 0.12:.3f})' for c in cuts[1:]) or '0'
-fc = ';'.join(parts) + ';' + ''.join(f'[s{i}]' for i in range(len(shots))) + f"concat=n={len(shots)}:v=1:a=0,rgbashift=rh=-14:bh=14:enable='{gl}',eq=saturation=1.08:contrast=1.04[v]"
-subprocess.run(['ffmpeg','-loglevel','error','-y',*ins,'-filter_complex',fc,'-map','[v]','-c:v','libx264','-preset','veryfast','-crf','14',f'{D}/_main.mp4'], check=True)
+fc = ';'.join(parts) + ';' + ''.join(f'[s{i}]' for i in range(len(shots))) + f"concat=n={len(shots)}:v=1:a=0,rgbashift=rh=-14:bh=14:enable='{gl}',eq=saturation=1.08:contrast=1.04,unsharp=5:5:0.7:5:5:0[v]"
+subprocess.run(['ffmpeg','-loglevel','error','-y',*ins,'-filter_complex',fc,'-map','[v]','-c:v','libx264','-preset','veryfast','-crf','12',f'{D}/_main.mp4'], check=True)
 # --- 3) звук основной части: реплики на местах + звуки (whoosh на резких зумах, hit на ударах)
 ain = []; af = []; n = 0
 for (t0, mp3, _, _) in lines:
@@ -94,6 +94,6 @@ fc = (f"[0:v]trim=0:{TA:.3f},setpts=PTS-STARTPTS[a];[0:v]trim={TA:.3f},setpts=PT
       f"[va][ba][vb]concat=n=3:v=0:a=1,apad,atrim=0:{L + BD:.3f},loudnorm=I=-14:TP=-1.5:LRA=7[au]").replace('v=0+1', 'v=1')
 out = f"{D}/{S['out']}"
 subprocess.run(['ffmpeg','-loglevel','error','-y','-i',f'{D}/_main.mp4','-i',f'{D}/_main.wav','-i',BANNER,'-filter_complex',fc,
-                '-map','[v]','-map','[au]','-c:v','libx264','-preset','medium','-crf','19','-pix_fmt','yuv420p','-r','30',
+                '-map','[v]','-map','[au]','-c:v','libx264','-preset','slow','-crf','16','-pix_fmt','yuv420p','-r','30',
                 '-c:a','aac','-b:a','192k','-ar','48000','-movflags','+faststart',out], check=True)
 print('OK', out, f'len {L + BD:.1f}s')
