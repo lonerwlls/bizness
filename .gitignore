@@ -5,3 +5,6 @@ out/
 # кадры чужого канала — только для изучения стиля, в репозиторий не выкладываем
 .claude/skills/cartoon-3d-short/references/frames/
 .claude/skills/cartoon-3d-short/references/sheets/
+shorts/**/_main.mp4
+shorts/**/sh/
+shorts/**/sheet_*.jpg
