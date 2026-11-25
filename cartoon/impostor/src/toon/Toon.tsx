@@ -80,7 +80,7 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 	};
 	const ex = look[0] * 9;
 	const ey = look[1] * 7;
-	const bt = {flat: [0, 0], up: [-8, 0], down: [3, 10], worried: [-4, -10], sly: [0, 8]}[brows];
+	const bt = {flat: [0, 0], up: [-8, 0], down: [3, -10], worried: [-4, 10], sly: [0, -8]}[brows];
 	const clip = `${id}-head`;
 	const step = pose.step ?? 0;
 	const legs =
