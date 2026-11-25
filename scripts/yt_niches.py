@@ -25,7 +25,7 @@ for name, queries in niches.items():
     for q in queries:
       for d in DURS:
         r = api("search", part="id", q=q, type="video", order="viewCount", publishedAfter=after,
-                maxResults=50, relevanceLanguage="en", videoDuration=d)
+                maxResults=50, relevanceLanguage=os.environ.get("LANG_YT", "en"), videoDuration=d, **({"regionCode": os.environ["REGION"]} if os.environ.get("REGION") else {}))
         for it in r.get("items", []): vids[it["id"]["videoId"]] = 1
     ids = list(vids); vd = []
     for i in range(0, len(ids), 50):
