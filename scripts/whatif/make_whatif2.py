@@ -37,11 +37,11 @@ for i, sh in enumerate(shots):
     f = f'[{i}:v]fps=30'
     for (y0, y1) in o.get('blur', []):  # размыть полосы источника (чужие субтитры)
         f += f'[p{i}];[p{i}]split[q{i}][r{i}];[r{i}]crop=iw:{y1 - y0}:0:{y0},boxblur=luma_radius=18:luma_power=2:chroma_radius=10:chroma_power=2[bb{i}];[q{i}][bb{i}]overlay=0:{y0}'
-    cx = o.get('cx', 0.5); fx, fy = o.get('focus', [0.5, 0.5]); Z = zexpr([[t, min(z, S.get('max_zoom', 1.25))] for t, z in o.get('zoom', [[0, 1]])])
-    if o.get('fit'):  # весь кадр 16:9 по ширине на размытом фоне (чтобы крупные надписи вроде WASTED влезли целиком)
-        fx0, fy0, fw, fh = o.get('fitcrop', [0, 0, 1, 1])
+    cx = o.get('cx', 0.5); fx, fy = o.get('focus', [0.5, 0.5]); Z = zexpr([[t, min(z, S.get('max_zoom', 1.1))] for t, z in o.get('zoom', [[0, 1]])])
+    if not o.get('fill', S.get('layout') == 'fill'):  # весь кадр 16:9 по ширине на размытом фоне (чтобы крупные надписи вроде WASTED влезли целиком)
+        fx0, fy0, fw, fh = o.get('fitcrop', S.get('fitcrop', [0, 0, 1, 1]))
         f += (f",setpts=(PTS-STARTPTS)/{sp},crop=iw*{fw}:ih*{fh}:iw*{fx0}:ih*{fy0},split[fa{i}][fb{i}];[fa{i}]crop=ih*9/16:ih,scale=1080:1920,boxblur=luma_radius=30:luma_power=2:chroma_radius=15:chroma_power=2[fbg{i}];"
-              f"[fb{i}]scale=1080:-2:flags=lanczos[ffg{i}];[fbg{i}][ffg{i}]overlay=0:(H-h)/2")
+              f"[fb{i}]scale=w='2*trunc(1080*({Z})/2)':h=-2:eval=frame:flags=lanczos,crop=1080:ih:'(iw-1080)*{fx}':0[ffg{i}];[fbg{i}][ffg{i}]overlay=0:'(H-h)/2':eval=frame")
         f += f",setsar=1,fps=30,trim=0:{dd:.3f},setpts=PTS-STARTPTS[s{i}]"; parts.append(f); cuts.append(t0); continue
     f += (f",setpts=(PTS-STARTPTS)/{sp},crop=ih*9/16:ih:'max(0,min(iw-ow,{cx}*iw-ow/2))':0,scale=1080:1920:flags=lanczos,"
           f"scale=w='2*trunc(1080*({Z})/2)':h='2*trunc(1920*({Z})/2)':eval=frame,crop=1080:1920:'(2*trunc(1080*({Z})/2)-1080)*{fx}':'(2*trunc(1920*({Z})/2)-1920)*{fy}',"
@@ -54,8 +54,11 @@ subprocess.run(['ffmpeg','-loglevel','error','-y',*ins,'-filter_complex',fc,'-ma
 ain = []; af = []; n = 0
 for (t0, mp3, _, _) in lines:
     ain += ['-i', mp3]; af.append(f'[{n}:a]aresample=44100,adelay={int(t0 * 1000)}:all=1[l{n}]'); n += 1
-for (t0, kind) in S.get('sfx', []):
-    if kind == 'whoosh': src = 'anoisesrc=c=pink:a=0.5:d=0.45,bandpass=f=1800:w=1600,afade=t=in:d=0.25,afade=t=out:st=0.25:d=0.2,volume=0.6'
+for (t0, kind) in ([] if S.get('no_boom') else [[0.0, 'boom']]) + S.get('sfx', []):
+    if kind == 'boom':
+        src = ('aevalsrc=exprs=0.9*sin(2*PI*(40+60*exp(-8*t))*t)*exp(-3*t)+0.25*(random(0)*2-1)*exp(-18*t):d=1.4:s=44100,'
+               'lowpass=f=400,volume=2.2')
+    elif kind == 'whoosh': src = 'anoisesrc=c=pink:a=0.5:d=0.45,bandpass=f=1800:w=1600,afade=t=in:d=0.25,afade=t=out:st=0.25:d=0.2,volume=0.6'
     else: src = 'sine=f=55:d=0.6,afade=t=out:st=0.05:d=0.55,volume=2.2'
     ain += ['-f', 'lavfi', '-i', src]; af.append(f'[{n}:a]aresample=44100,aformat=channel_layouts=stereo,adelay={int(t0 * 1000)}:all=1[l{n}]'); n += 1
 af.append(''.join(f'[l{k}]' for k in range(n)) + f'amix=inputs={n}:normalize=0:duration=longest,apad,atrim=0:{L}[am]')
