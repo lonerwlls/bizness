@@ -5,7 +5,9 @@ import {SHOT_TIMES, WHIPS, cutsFor} from './kit/coverage';
 
 /* inside one place (no whip) the shot change is a fast camera push: the old view rushes in
    for a few frames, the new one settles from slightly closer — reads as one camera move */
-const PUSHES = SHOT_TIMES.filter((s, i) => i > 0 && !s.whip).map((s) => s.start);
+// explainer look: hard cuts between shots, no camera push
+const PUSHES: number[] = [];
+void SHOT_TIMES;
 const PUSH_OUT = 5;
 const PUSH_IN = 7;
 export const pushAt = (f: number) => {
