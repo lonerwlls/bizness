@@ -38,6 +38,11 @@ for i, sh in enumerate(shots):
     for (y0, y1) in o.get('blur', []):  # размыть полосы источника (чужие субтитры)
         f += f'[p{i}];[p{i}]split[q{i}][r{i}];[r{i}]crop=iw:{y1 - y0}:0:{y0},boxblur=luma_radius=18:luma_power=2:chroma_radius=10:chroma_power=2[bb{i}];[q{i}][bb{i}]overlay=0:{y0}'
     cx = o.get('cx', 0.5); fx, fy = o.get('focus', [0.5, 0.5]); Z = zexpr([[t, min(z, S.get('max_zoom', 1.25))] for t, z in o.get('zoom', [[0, 1]])])
+    if o.get('fit'):  # весь кадр 16:9 по ширине на размытом фоне (чтобы крупные надписи вроде WASTED влезли целиком)
+        fx0, fy0, fw, fh = o.get('fitcrop', [0, 0, 1, 1])
+        f += (f",setpts=(PTS-STARTPTS)/{sp},crop=iw*{fw}:ih*{fh}:iw*{fx0}:ih*{fy0},split[fa{i}][fb{i}];[fa{i}]crop=ih*9/16:ih,scale=1080:1920,boxblur=luma_radius=30:luma_power=2:chroma_radius=15:chroma_power=2[fbg{i}];"
+              f"[fb{i}]scale=1080:-2:flags=lanczos[ffg{i}];[fbg{i}][ffg{i}]overlay=0:(H-h)/2")
+        f += f",setsar=1,fps=30,trim=0:{dd:.3f},setpts=PTS-STARTPTS[s{i}]"; parts.append(f); cuts.append(t0); continue
     f += (f",setpts=(PTS-STARTPTS)/{sp},crop=ih*9/16:ih:'max(0,min(iw-ow,{cx}*iw-ow/2))':0,scale=1080:1920:flags=lanczos,"
           f"scale=w='2*trunc(1080*({Z})/2)':h='2*trunc(1920*({Z})/2)':eval=frame,crop=1080:1920:'(2*trunc(1080*({Z})/2)-1080)*{fx}':'(2*trunc(1920*({Z})/2)-1920)*{fy}',"
           f"setsar=1,fps=30,trim=0:{dd:.3f},setpts=PTS-STARTPTS[s{i}]")
