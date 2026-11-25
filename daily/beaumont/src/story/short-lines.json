@@ -1,0 +1,63 @@
+[
+ {
+  "id": "s01_N",
+  "sp": "N",
+  "t": "It's three in the morning, and you're slicing a bagel in the hospital break room. The knife slips.",
+  "reuse": "001_N"
+ },
+ {
+  "id": "s02_N",
+  "sp": "N",
+  "t": "Half an inch of your finger is just... gone.",
+  "reuse": "002_N"
+ },
+ {
+  "id": "s03_N",
+  "sp": "N",
+  "t": "Then it grows. Bone, then skin, then a tiny new nail. Forty seconds. Not even a scar.",
+  "reuse": "004_N"
+ },
+ {
+  "id": "s04_N",
+  "sp": "N",
+  "t": "So what if you could regrow any part of your body?",
+  "reuse": "006_N"
+ },
+ {
+  "id": "s05_N",
+  "sp": "N",
+  "t": "So you become a donor. A slice of liver in March. Another in April. By December, you've given away more than one whole liver, and you're still using yours.",
+  "reuse": "025_N"
+ },
+ {
+  "id": "s06_N",
+  "sp": "N",
+  "t": "Then you try a kidney. A normal kidney can't regrow at all. Yours is back in four days.",
+  "reuse": "026_N"
+ },
+ {
+  "id": "s07_N",
+  "sp": "N",
+  "t": "The waiting list at your hospital gets shorter every week. The newspapers call you \"the Spare Parts Doctor.\"",
+  "reuse": "027_N"
+ },
+ {
+  "id": "s08_N",
+  "sp": "N",
+  "t": "Your cells are dividing faster than anything she's ever seen. Faster than a deer antler.",
+  "reuse": "033_N"
+ },
+ {
+  "id": "s09_N",
+  "sp": "N",
+  "t": "\"Every time you regrow something,\" Reyes says, \"you roll the dice.\"",
+  "reuse": "037_N"
+ },
+ {
+  "id": "s10_N",
+  "sp": "N",
+  "t": "So if you could regrow one body part, which one would you pick? Tell me in the comments.",
+  "reuse": "061_N",
+  "gap": 2.4
+ }
+]
