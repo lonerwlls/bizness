@@ -136,6 +136,7 @@ export const Part2: React.FC<{ fade?: boolean }> = ({ fade }) => {
       <Photo src={img("steppe.jpg")} from={c[2]} dur={c[3] - c[2]} z0={1.4} z1={1.45} blur={8} filter="brightness(0.7)" />
       <Card x={960} y={540} w={1100} start={c[2] + 2}>
         <H>KÄLTE-MODELL DER FORSCHER</H>
+        <Line show={c[2] + 4}>Wie lange hält ein Mensch das aus?</Line>
         <Line show={at("Mit")} mark="✓">−20 °C</Line>
         <Line show={at("zwei")} mark="✓">2 lockere Kleidungsschichten</Line>
         <Line show={at("Wind")} mark="✓">fast kein Wind</Line>
@@ -308,7 +309,7 @@ export const Part3: React.FC<{ fade?: boolean }> = ({ fade }) => {
     <AbsoluteFill key="g">
       <Photo src={img("steppe.jpg")} from={c[6]} dur={110} z0={1.15} z1={1.25} filter={`brightness(${interpolate(f, [c[6], c[6] + 100], [0.9, 0.35], clamp)}) saturate(${interpolate(f, [c[6], c[6] + 100], [1, 0.5], clamp)})`} />
       <Snow n={180} wind={10} fall={3} seed="q7" />
-      <Vignette s={0.7} frost={interpolate(f, [at("kalt") - 10, at("kalt") + 20], [0.2, 0.8], clamp)} />
+      <Vignette s={0.7} frost={interpolate(f, [at("kalt") - 10, at("kalt") + 20], [0.1, 0.35], clamp)} />
     </AbsoluteFill>,
   ];
   return (
@@ -423,6 +424,7 @@ export const Part5: React.FC<{ fade?: boolean }> = ({ fade }) => {
       <Photo src={img("steppe.jpg")} from={c[1]} dur={c[2] - c[1]} z0={1.4} z1={1.45} blur={8} filter="brightness(0.65)" />
       <Card x={960} y={500} w={1200} start={at("Schnee")}>
         <H>SCHNEE ESSEN?</H>
+        <Line show={at("isst")}>Mund trocken → du isst Schnee</Line>
         <Line show={at("Schlechte")} mark="✗">kostet Körperwärme</Line>
         <Line show={at("Feuer")} mark="✓">besser: am Feuer schmelzen</Line>
       </Card>
@@ -433,6 +435,7 @@ export const Part5: React.FC<{ fade?: boolean }> = ({ fade }) => {
       <Photo src={img("steppe.jpg")} from={c[2]} dur={c[3] - c[2]} z0={1.6} z1={1.7} y0={-14} y1={-15} />
       <Card x={960} y={500} w={900} start={at("Hunger")}>
         <H>ESSEN IM WINTER</H>
+        <Line show={at("nichts")} mark="✗">Pflanzen: wächst nichts</Line>
         <Line show={at("Beeren")} mark="✗">Beeren</Line>
         <Line show={at("Früchte")} mark="✗">Früchte</Line>
         <Line show={at("Beinen")} mark="✓">nur auf vier Beinen</Line>
