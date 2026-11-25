@@ -1,0 +1,30 @@
+{
+ "N": {
+  "fish": "0327fdb5da9e4fd782899a8058c8ae2b",
+  "speed": 0.92
+ },
+ "FRED": {
+  "fish": "48b83695ea7f4b2d8ebcd63a0775a3bd",
+  "speed": 0.95
+ },
+ "CAPT": {
+  "fish": "4ded85577e3243dcae310903d0ae75cc",
+  "speed": 0.95
+ },
+ "CYR": {
+  "fish": "683788ea516848b2ba8f9c2cedbc4b45",
+  "speed": 0.95
+ },
+ "REC": {
+  "fish": "817997e55c764f708c154d0637b30624",
+  "speed": 0.95
+ },
+ "SAIL": {
+  "fish": "a944c8e3d6274910ac6bd084ad467117",
+  "speed": 0.95
+ },
+ "CON": {
+  "fish": "3d40669a01e045329ab4d6d7e25ce10e",
+  "speed": 0.95
+ }
+}
