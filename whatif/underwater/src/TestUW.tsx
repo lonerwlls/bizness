@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
-import {gesture, idle, reach} from './kit/actions';
-import {Actor, ShotCtx} from './kit/core';
+import {ShotCtx} from './kit/core';
+import {KazRoo} from './kaz/Roo';
 import {Layer, Stage, Svg, camOn, clamp} from './kit/kit';
 import {HAND} from './kit/ui';
 import TL from './story/timeline.json';
@@ -183,7 +183,7 @@ const ShotA: React.FC<{f: number; dur: number}> = ({f, dur}) => {
 	const gf = f;
 	const point = kk(f, at('001', 0.3) , at('001', 0.3) + 10);
 	const z = 1.32 + 0.05 * (f / dur);
-	const pose = reach(idle(gf, 2), 'F', [105, 40], point);
+	const hand: [number, number] = [62 + (150 - 62) * point, -190 + (-250 + 190) * point];
 	return (
 		<Wobble seed={3}>
 			<Stage still cam={camOn(820, 690, z)} bg="#5f6d76" light={{x: 70, y: 0, o: 0.25, c: '200,235,240'}} grain={0.12} vig={0.6}>
@@ -193,7 +193,7 @@ const ShotA: React.FC<{f: number; dur: number}> = ({f, dur}) => {
 						<MoonPool gf={gf} fish={kk(f, at('001', 0.75), at('001', 0.95))} />
 						<Label f={f} t={at('001', 0.22)} x={560} y={700} text="your front door" to={[640, 915]} bend={-60} size={62} />
 						<Label f={f} t={at('001', 0.7)} x={1240} y={1010} text="the open ocean" to={[880, 960]} bend={40} c="#9fe0e8" rot={2} size={56} />
-						<Actor who="hero" x={RX} floor={FLOOR} s={1} facing={-1} faceTurn={0.4} look={[-0.6, 0.5]} expr={f > at('001', 0.75) ? 'wide' : 'normal'} mouth={f > at('001', 0.75) ? 'open' : 'smile'} pose={pose} uid="roo-a" />
+						<KazRoo x={RX} y={FLOOR} s={0.66} facing={-1} t={gf} pose={{hand}} face={{look: [0.6, 0.5], mouth: f > at('001', 0.75) ? 'open' : 'smile', brows: f > at('001', 0.75) ? 'up' : 'flat'}} />
 					</Svg>
 				</Layer>
 			</Stage>
@@ -265,7 +265,6 @@ const ShotB2: React.FC<{f: number; dur: number}> = ({f, dur}) => {
 	const gf = f + 200;
 	const z = 1.55 + 0.05 * (f / dur);
 	const push = kk(f, 8, 24);
-	const pose = reach(idle(gf, 2), 'F', [70, 60], 0.0);
 	return (
 		<Wobble seed={7}>
 			<Stage still cam={camOn(760, 820, z)} bg="#5f6d76" light={{x: 70, y: 0, o: 0.25, c: '200,235,240'}} grain={0.12} vig={0.6}>
@@ -273,7 +272,7 @@ const ShotB2: React.FC<{f: number; dur: number}> = ({f, dur}) => {
 					<Habitat gf={gf} />
 					<Svg>
 						<MoonPool gf={gf} />
-						<Actor who="hero" x={RX - 60} floor={FLOOR} s={1} facing={-1} faceTurn={0.4} look={[-0.6, 0.8]} expr="wide" mouth="open" pose={pose} uid="roo-b" />
+						<KazRoo x={RX - 60} y={FLOOR} s={0.66} facing={-1} t={gf} pose={{head: 8}} face={{look: [0.5, 0.9], mouth: 'open', brows: 'up'}} />
 						{/* pressure arrows: the air presses down, the sea presses up */}
 						<g opacity={push} strokeLinecap="round">
 							{[600, 690, 780].map((x, i) => (
@@ -315,7 +314,7 @@ const ShotD: React.FC<{f: number; dur: number}> = ({f, dur}) => {
 					<Layer depth={1}>
 						<Habitat gf={gf} />
 						<Svg>
-							<Actor who="hero" x={1350} floor={FLOOR} s={1} facing={1} faceTurn={0.5} look={[0.7, -0.9]} expr="sad" mouth="line" pose={{...idle(gf, 2), head: -14}} uid="roo-d" />
+							<KazRoo x={1330} y={FLOOR} s={0.66} facing={1} t={gf} pose={{head: -12}} face={{look: [0.6, -0.9], mouth: 'flat', brows: 'worried'}} />
 						</Svg>
 					</Layer>
 				</Stage>
