@@ -8,11 +8,11 @@ import { BatteryHud, FPS, ICE, INK, Notif, PAPER, PhoneInHand, Photo, RED, Shake
 const LEAD = 6;
 const at = makeAt(VOICE, LEAD);
 export const P1_FRAMES = Math.ceil((VOICE.dur + 1.6) * FPS) + LEAD;
-const ease = (t: number) => t * t * (3 - 2 * t);
+export const ease = (t: number) => t * t * (3 - 2 * t);
 
 // ---------- карта Европы 20 000 лет назад ----------
-type Cam = { f: number; s: number; x: number; y: number };
-const camAt = (f: number, keys: Cam[]) => {
+export type Cam = { f: number; s: number; x: number; y: number };
+export const camAt = (f: number, keys: Cam[]) => {
   if (f <= keys[0].f) return keys[0];
   for (let i = 1; i < keys.length; i++) {
     if (f <= keys[i].f) {
@@ -23,9 +23,9 @@ const camAt = (f: number, keys: Cam[]) => {
   }
   return keys[keys.length - 1];
 };
-const toScreen = (c: Cam, p: number[]) => [960 + (p[0] - c.x) * c.s, 540 + (p[1] - c.y) * c.s];
+export const toScreen = (c: Cam, p: number[]) => [960 + (p[0] - c.x) * c.s, 540 + (p[1] - c.y) * c.s];
 
-const EuropeMap: React.FC<{ cam: Cam; ice: number; alps: number; dogger?: number; deLine?: number }> = ({ cam, ice, alps, dogger = 0, deLine = 1 }) => {
+export const EuropeMap: React.FC<{ cam: Cam; ice: number; alps: number; dogger?: number; deLine?: number }> = ({ cam, ice, alps, dogger = 0, deLine = 1 }) => {
   const f = useCurrentFrame();
   const sk = MAP.skandi, mu = MAP.muenchen;
   return (
@@ -54,7 +54,7 @@ const EuropeMap: React.FC<{ cam: Cam; ice: number; alps: number; dogger?: number
   );
 };
 
-const Dot: React.FC<{ p: number[]; start: number; label: string; dx?: number; dy?: number }> = ({ p, start, label, dx = 0, dy = -70 }) => {
+export const Dot: React.FC<{ p: number[]; start: number; label: string; dx?: number; dy?: number }> = ({ p, start, label, dx = 0, dy = -70 }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   if (f < start) return null;
@@ -112,7 +112,7 @@ const SDogger: React.FC<{ a: number }> = ({ a }) => {
 };
 
 // ---------- сцены ----------
-const Eyelids: React.FC<{ open: number }> = ({ open }) => {
+export const Eyelids: React.FC<{ open: number }> = ({ open }) => {
   const h = interpolate(open, [0, 1], [560, 0]);
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
@@ -317,7 +317,7 @@ const SRun: React.FC<{ a: number }> = ({ a }) => (
   </AbsoluteFill>
 );
 
-export const Part1: React.FC = () => {
+export const Part1: React.FC<{ fade?: boolean }> = ({ fade = true }) => {
   const f = useCurrentFrame();
   const c = {
     today: at("Genau") - 2, map: at("Von") - 2, steppe: at("Steppe") - 3, clothes: at("Du") - 2, phone: at("Und", 2) - 2,
@@ -341,7 +341,7 @@ export const Part1: React.FC = () => {
       {(f < c.tafel || f >= c.run) && <Timer appear={at("Uhr", 1)} run={at("läuft")} move={at("läuft") + 8} />}
       <BatteryHud appear={at("Akku", 2)} pct={interpolate(f, [at("läuft"), P1_FRAMES], [100, 99], clamp)} big={interpolate(f, [at("Akku", 2), at("Akku", 2) + 6, at("Am") - 10, at("Am")], [0, 0.8, 0.8, 0], clamp)} />
       <Grain />
-      <AbsoluteFill style={{ background: "black", opacity: interpolate(f, [P1_FRAMES - 10, P1_FRAMES], [0, 1], clamp) }} />
+      {fade && <AbsoluteFill style={{ background: "black", opacity: interpolate(f, [P1_FRAMES - 10, P1_FRAMES], [0, 1], clamp) }} />}
       {/* звук: голос главный, фон тихо */}
       <Sequence from={LEAD}><Audio src={staticFile("eiszeit/p1/voice.mp3")} /></Sequence>
       <Audio src={staticFile("iceage/wind.mp3")} loop volume={0.15} />
