@@ -7,7 +7,7 @@ import json, os, sys, subprocess
 from PIL import ImageFont
 D = os.path.abspath(sys.argv[1]); S = json.load(open(f'{D}/spec.json'))
 ROOT = '/home/user/bizness'; FONT = f'{ROOT}/shorts/fonts/MontserratBlackSC.ttf'
-BANNER = S.get('banner', f'{ROOT}/shorts/ads/banner_green.mp4'); VOICE = S.get('voice', 'JBFqnCBsd6RMkjVDRZzb')
+BANNER = S.get('banner', f'{ROOT}/shorts/ads/banner2_green.mp4'); VOICE = S.get('voice', 'JBFqnCBsd6RMkjVDRZzb')
 def dur(f): return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',f]))
 L = S['length']; TA = S['ad_at']; BD = dur(BANNER)
 # --- 1) реплики
@@ -92,10 +92,10 @@ Style: S,Montserrat Black SC,160,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """ + '\n'.join(ev) + '\n')
 # --- 5) пауза под рекламу и финал
-BW = S.get('banner_w', 1080); crop = S.get('banner_crop', '1200:780:360:135')
+BW = S.get('banner_w', 1060); crop = S.get('banner_crop', 'iw:ih:0:0'); KEY = S.get('banner_key', '0x00FC00:0.12:0.04')
 fc = (f"[0:v]trim=0:{TA:.3f},setpts=PTS-STARTPTS[a];[0:v]trim={TA:.3f},setpts=PTS-STARTPTS[b];"
       f"[0:v]trim={TA - 0.04:.3f}:{TA:.3f},setpts=PTS-STARTPTS,tpad=stop_mode=clone:stop_duration={BD:.3f},trim=0:{BD:.3f}[f];"
-      f"[2:v]fps=30,chromakey=0x2A8539:0.08:0.03,despill=type=green,crop={crop},scale={BW}:-2,format=yuva420p[k];"
+      f"[2:v]fps=30,chromakey={KEY},despill=type=green,crop={crop},scale={BW}:-2,format=yuva420p[k];"
       f"[f][k]overlay=(W-w)/2:(H-h)/2[fa];[a][fa][b]concat=n=3:v=0+1:a=0,ass={D}/_subs.ass:fontsdir={ROOT}/shorts/fonts[v];"
       f"[1:a]atrim=0:{TA:.3f},asetpts=PTS-STARTPTS[va];[1:a]atrim={TA:.3f},asetpts=PTS-STARTPTS[vb];"
       f"[2:a]aresample=44100,aformat=channel_layouts=stereo,apad,atrim=0:{BD:.3f},volume={S.get('banner_gain', 2.0)}[ba];"
