@@ -249,27 +249,85 @@ const BOOTH_SPOTS: [number, number, number][] = [
 	[P(725, 135)[0], P(725, 135)[1] + 60, 220],
 	[P(380, 290)[0], P(380, 290)[1], 260],
 ];
+/* a film reel: dark disc with holes, spinning */
+const Reel: React.FC<{x: number; y: number; r: number; a: number}> = ({x, y, r, a}) => (
+	<g transform={`translate(${x},${y}) rotate(${a})`}>
+		<circle r={r} fill="#3a2e28" stroke={INK} strokeWidth={5} />
+		<circle r={r * 0.82} fill="none" stroke="#5a4a40" strokeWidth={3} />
+		{[0, 1, 2, 3, 4].map((i) => (
+			<circle key={i} cx={Math.cos((i / 5) * Math.PI * 2) * r * 0.52} cy={Math.sin((i / 5) * Math.PI * 2) * r * 0.52} r={r * 0.18} fill="#1d1612" stroke={INK} strokeWidth={2} />
+		))}
+		<circle r={r * 0.14} fill="#8a8078" stroke={INK} strokeWidth={3} />
+	</g>
+);
+/* the projectors in the picture come alive: reels spin, the beam flickers, dust floats in it */
+const LENS = P(820, 280);
+const WIN = P(338, 292);
+const BoothLife: React.FC<{f: number; on: number}> = ({f, on}) => {
+	const spin = f * 9 * on;
+	const flick = 0.1 + 0.08 * Math.abs(Math.sin(f * 1.7) * Math.sin(f * 0.6));
+	return (
+		<g>
+			<Reel x={P(870, 153)[0]} y={P(870, 153)[1]} r={80} a={spin} />
+			<Reel x={P(865, 425)[0]} y={P(865, 425)[1]} r={77} a={-spin * 1.1} />
+			<Reel x={P(1070, 120)[0]} y={P(1070, 120)[1]} r={96} a={spin * 0.8} />
+			<Reel x={P(1075, 450)[0]} y={P(1075, 450)[1]} r={96} a={-spin * 0.9} />
+			{on < 1 ? (
+				<g opacity={1 - on}>
+					{/* the light is off: cover the beam and the bright window of the picture */}
+					<polygon points={`${LENS[0] + 30},${LENS[1] - 40} ${LENS[0] + 30},${LENS[1] + 40} ${WIN[0] - 30},${WIN[1] + 110} ${WIN[0] - 30},${WIN[1] - 110}`} fill="#160e0a" opacity={0.8} />
+					<rect x={WIN[0] - 90} y={WIN[1] - 80} width={190} height={170} fill="#120c08" opacity={0.85} />
+					<circle cx={LENS[0]} cy={LENS[1]} r={40} fill="#1a120d" />
+				</g>
+			) : null}
+			{on > 0 ? (
+				<g opacity={on}>
+					<polygon points={`${LENS[0]},${LENS[1] - 14} ${LENS[0]},${LENS[1] + 14} ${WIN[0] + 40},${WIN[1] + 70} ${WIN[0] + 40},${WIN[1] - 70}`} fill="#fff1c8" opacity={flick} />
+					{Array.from({length: 14}).map((_, i) => {
+						const t = ((f * 0.6 + i * 37) % 100) / 100;
+						return <circle key={i} cx={LENS[0] - (LENS[0] - WIN[0]) * t} cy={LENS[1] + Math.sin(i * 2.1 + f / 20) * 40 * t} r={2.5} fill="#fff6d8" opacity={0.7} />;
+					})}
+				</g>
+			) : null}
+		</g>
+	);
+};
+/* a loose reel in someone's hands, with a strip of film hanging from it */
+const HandReel: React.FC<{x: number; y: number; a: number}> = ({x, y, a}) => (
+	<g>
+		<path d={`M${x + 30},${y + 20} q20,60 -10,110 q-20,30 10,60`} stroke="#2a2420" strokeWidth={12} fill="none" />
+		<path d={`M${x + 30},${y + 20} q20,60 -10,110 q-20,30 10,60`} stroke="#6a5a48" strokeWidth={6} fill="none" strokeDasharray="6 6" />
+		<Reel x={x} y={y} r={52} a={a} />
+	</g>
+);
 const C006: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
-	const proj = w('006', 0.45);
-	const boy = walk(f, 4, 40, 560, 800);
-	const cam = usePush(camOn(960, 660, 1.2), camOn(1010, 650, 1.26));
+	const show = w('006', 0.45);
+	const lift = snap(f, show);
+	const boy = walk(f, 4, 36, 300, 700);
+	const jump = f > show + 8 ? Math.abs(Math.sin((f - show) / 4)) * 22 : 0;
+	const reelHand: [number, number] = mixP([70, -110], [125, -190], Math.min(lift, 1.12));
+	const DX = 980;
 	return (
 		<>
-			<Stage cam={cam} bg="#2a2a2e" light={false} grain={0} vig={0}>
+			<Stage cam={usePush(camOn(820, 600, 1.08), camOn(900, 610, 1.16))} bg="#2a2a2e" light={false} grain={0} vig={0}>
 				<Layer depth={1}>
 					<Bg src="bg/booth.jpg" />
 					<Svg>
-						<Toon id="dad6" r={CAST.father} x={1180} y={1000} s={S} facing={1} t={gf} pose={{hand: [95 + 14 * Math.cos(f / 4), -175 + 14 * Math.sin(f / 4)], handB: [-50, -120], head: -4}} face={{look: [0.7, -0.2], mouth: snap(f, proj) > 0 ? 'grin' : 'smile', brows: 'up'}} />
-						<Toon id="boy6" r={CAST.fredBoy} x={boy.x} y={1000 - boy.bob} s={S} facing={1} t={gf} pose={{step: boy.step, hand: boy.step ? [40, -120] : [20, -150], handB: boy.step ? [-40, -120] : [-20, -150]}} face={{look: [0.8, -0.5], mouth: 'grin', brows: 'up'}} />
+						<BoothLife f={gf} on={1} />
+						<Toon id="dad6" r={CAST.father} x={DX} y={1000} s={S} facing={-1} t={gf} pose={{hand: reelHand, handB: [-60, -150]}} face={{look: [0.8, 0], mouth: lift > 0 ? 'grin' : 'smile', brows: 'up'}} />
+						<HandReel x={DX - reelHand[0] * S} y={1000 + reelHand[1] * S} a={gf * 8} />
+						<Toon id="boy6" r={CAST.fredBoy} x={boy.x} y={1000 - boy.bob - jump} s={S} facing={1} t={gf} pose={{step: boy.step, hand: jump ? [60, -230] : [30, -140], handB: jump ? [-60, -230] : [-30, -140]}} face={{look: [0.9, -0.4], mouth: 'grin', brows: 'up'}} />
+						{/* the flicker of the film on the boy's face */}
+						<ellipse cx={boy.x} cy={1000 - 230 * S - jump} rx={70} ry={70} fill="#fff1c8" opacity={0.08 + 0.06 * Math.abs(Math.sin(gf * 1.3))} />
 					</Svg>
 					<Light id="l006" spots={BOOTH_SPOTS} dark={0.3} />
 				</Layer>
 			</Stage>
 			<Paper />
 			<Tag f={f} t={4} x={70} y={860} sub="1930s" text="LAWRENCE, MASSACHUSETTS" size={50} />
-			<Tag f={f} t={proj} x={1250} y={100} text="DAD: PROJECTIONIST" size={42} />
+			<Tag f={f} t={show + 4} x={1250} y={100} text="DAD: PROJECTIONIST" size={42} />
 		</>
 	);
 };
@@ -277,29 +335,40 @@ const C007: React.FC = () => {
 	const {f, gf} = useShot();
 	const w = useW();
 	const hit = w('007', 0.42);
-	const cam = usePush(camOn(1020, 660, 1.22), camOn(1030, 660, 1.3));
 	const poor = f > hit;
+	const stop = kk(f, hit, hit + 14);
+	const on = 1 - stop;
+	// the reel drops out of his hands, bounces and rolls away, then lies on the floor
+	const drop = kk(f, hit + 4, hit + 12);
+	const roll = kk(f, hit + 12, hit + 40);
+	const DX = 1040;
+	const held: [number, number] = [DX - 90 * S, 1000 - 200 * S];
+	const rx = held[0] - 80 * drop - 360 * (1 - (1 - roll) * (1 - roll));
+	const ry = drop < 1 ? held[1] + (1000 - 52 - held[1]) * drop * drop : 1000 - 52 - Math.abs(Math.sin(roll * Math.PI * 2)) * 18 * (1 - roll);
 	return (
 		<>
-			<Stage cam={cam} bg="#2a2a2e" light={false} grain={0} vig={0}>
+			<Stage cam={usePush(camOn(900, 640, 1.18), camOn(880, 650, 1.26))} bg="#2a2a2e" light={false} grain={0} vig={0}>
 				<Layer depth={1}>
-					<Bg src="bg/booth.jpg" dim={poor ? 0.45 : 0} />
+					<Bg src="bg/booth.jpg" dim={0.45 * stop} />
 					<Svg>
-						<Toon id="dad7" r={CAST.father} x={1180} y={1000} s={S} t={gf} pose={poor ? {hand: [30, -40], handB: [-30, -40], head: 12} : {hand: [115, -200], handB: [-115, -200]}} face={{look: poor ? [0, 0.6] : [0.2, -0.3], mouth: poor ? 'frown' : 'grin', brows: poor ? 'worried' : 'up', lids: poor ? 'sleepy' : undefined}} />
-						<Toon id="boy7" r={CAST.fredBoy} x={880} y={1000 - (poor ? 0 : Math.abs(Math.sin(f / 4)) * 14)} s={S} t={gf} pose={poor ? {head: 8, hand: [20, -70], handB: [-20, -70]} : {hand: [90, -230], handB: [-90, -230]}} face={{look: [0.7, poor ? 0.1 : -0.4], mouth: poor ? 'frown' : 'grin', brows: poor ? 'worried' : 'up'}} />
-						{!poor ? <Icon kind="crown" x={1190} y={598} f={f} t={w('007', 0.08)} s={0.9} /> : null}
+						<BoothLife f={poor ? hit : gf} on={on} />
+						<Toon id="dad7" r={CAST.father} x={DX} y={1000} s={S} facing={-1} t={gf} pose={poor ? {hand: [40, -50], handB: [-30, -50], head: 12} : {hand: [90, -200], handB: [-115, -200]}} face={{look: poor ? [0, 0.6] : [0.6, -0.3], mouth: poor ? 'frown' : 'grin', brows: poor ? 'worried' : 'up', lids: poor ? 'sleepy' : undefined}} />
+						<HandReel x={poor ? rx : held[0]} y={poor ? ry : held[1]} a={poor ? -720 * roll : gf * 8} />
+						<Toon id="boy7" r={CAST.fredBoy} x={700} y={1000 - (poor ? 0 : Math.abs(Math.sin(f / 4)) * 16)} s={S} t={gf} pose={poor ? {head: 8, hand: [20, -70], handB: [-20, -70]} : {hand: [90, -230], handB: [-90, -230]}} face={{look: [0.7, poor ? 0.3 : -0.4], mouth: poor ? 'frown' : 'grin', brows: poor ? 'worried' : 'up'}} />
+						{!poor ? <Icon kind="crown" x={DX + 10} y={598} f={f} t={w('007', 0.08)} s={1.0} /> : null}
 						{!poor
-							? [0, 1, 2].map((j) => (
-									<text key={j} x={1060 + j * 120} y={430 - ((f * 3 + j * 40) % 120)} fontFamily={FONT} fontWeight={900} fontSize={56} fill="#7ad07a" stroke={INK} strokeWidth={4} style={{paintOrder: 'stroke'}} opacity={0.9}>
+							? [0, 1, 2, 3].map((j) => (
+									<text key={j} x={620 + j * 160} y={260 + ((f * 4 + j * 60) % 300)} fontFamily={FONT} fontWeight={900} fontSize={60} fill="#7ad07a" stroke={INK} strokeWidth={4} style={{paintOrder: 'stroke'}}>
 										$
 									</text>
 								))
 							: null}
 					</Svg>
-					{!poor ? <Light id="l007" spots={BOOTH_SPOTS} dark={0.3} /> : null}
+					{on > 0 ? <Light id="l007" spots={BOOTH_SPOTS} dark={0.3 + 0.3 * stop} /> : null}
 				</Layer>
 			</Stage>
 			<Paper />
+			{!poor ? <Tag f={f} t={w('007', 0.1)} x={70} y={860} text="LIFE IS GOOD" size={52} /> : null}
 			{poor ? <Tag f={f} t={hit + 2} x={70} y={100} text="THE GREAT DEPRESSION" size={50} /> : null}
 		</>
 	);
