@@ -55,23 +55,23 @@ Which of his fake jobs would you have believed? Tell me in the comments 👇
 
 ---
 
-## Обложка — промпт (Google Flow / любая нейросеть)
+## Обложка — промпт (стиль «EXPOSED»: чёрно-белый портрет, красная полоса на глазах)
 
 ```
-YouTube thumbnail, 16:9, flat 2D cartoon in a hand-drawn comic style with thick dark ink outlines,
-warm cinematic lighting, film grain. Interior of a 1950s warship operating room: riveted steel walls,
-a round porthole with stormy sea, a big surgical lamp glowing warm yellow above.
-On the left third, a chubby man in green surgical scrubs (round white-skinned head with a hard shadow
-on one side, slick dark brown hair, capsule-shaped body, stick arms): he holds an open thick textbook
-"GENERAL SURGERY" hidden behind his back with one hand, and raises shiny forceps with a bullet in the other.
-Sly squint, sweaty forehead, a nervous grin. Behind him, slightly blurred, two sailors in white caps stare at him in awe.
-Lighting: three quarters of the image in dark teal shadow, light only on his face, the forceps and the lamp.
-Large 3D text in the top right corner, two lines: "NOT A" in glossy white, "DOCTOR" in glossy golden yellow,
-chunky rounded 3D letters with bevel and soft drop shadow, slight tilt, NO black outline around the letters.
-Bottom right corner empty. High contrast, vivid, readable on a phone.
+YouTube thumbnail, 16:9, dark dramatic poster style. Center: a large close-up portrait of a cartoon man
+from a 2D animated series: a round head with a hard shadow on one side, slick dark brown hair, a chubby face,
+thick ink outlines, wearing a navy officer uniform collar with a white surgical mask hanging under his chin.
+The whole character is in gritty black and white, high contrast, with dust and scratch texture, like an old print.
+A bright red horizontal bar across his eyes; inside the bar his eyes glow red and look straight at the viewer.
+Behind his head: huge distressed white stencil letters "IMPOSTOR" across the whole width, worn grunge texture,
+the middle letters hidden behind his head. Background: the operating room of a 1950s warship
+(steel walls, a surgical lamp, an operating table, a porthole), fully tinted deep red and black, slightly blurred.
+Red and black and white only, strong contrast, cinematic, readable on a phone, the bottom right corner kept clear.
 ```
 
-Вариант надписи: **"NOT A DOCTOR"** (основной) или **"FAKE SURGEON"**.
+Если нейросеть рисует живого человека вместо мультяшного, добавь в конец: `cartoon character, not a real person, not photorealistic`.
+
+Без персонажа (запасной вариант): вместо лица в центре окровавленный зажим с пулей, крупно и в ч/б, и красная полоса по центру кадра. Но с героем обложка цепляет сильнее.
 
 ---
 
