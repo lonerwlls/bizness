@@ -2,9 +2,9 @@
 // тёмный контур, белая светящаяся обводка (rim). Вид спереди, по пояс. Координаты: центр лица = (0,0).
 import React from "react";
 
-export type Expr = "neutral" | "sad" | "hurt" | "angry" | "stern" | "laugh" | "shocked" | "focus" | "sneak";
+export type Expr = "neutral" | "sad" | "hurt" | "angry" | "stern" | "laugh" | "shocked" | "focus" | "sneak" | "smirk" | "joy" | "cry" | "smile" | "determined";
 export type Hair = "spiky" | "short" | "long" | "messy";
-export type Pose = "down" | "desk" | "cord" | "crossed" | "point" | "belly";
+export type Pose = "down" | "desk" | "cord" | "crossed" | "point" | "belly" | "phone" | "trophy" | "fist" | "run" | "give";
 
 export type Look = {
   skin: string; skinSh: string;
@@ -19,7 +19,7 @@ type P = {
   look: Look; x: number; y: number; s?: number; t: number;
   expr?: Expr; pose?: Pose; gaze?: [number, number]; tilt?: number; headDown?: number;
   blink?: boolean; rim?: string; rimW?: number; mirror?: boolean; id: string;
-  hoodUp?: boolean; phones?: boolean; eyeGlow?: string; cordLift?: number; mouthAmt?: number; side?: number;
+  hoodUp?: boolean; phones?: boolean; eyeGlow?: string; cordLift?: number; mouthAmt?: number; side?: number; tears?: number; phase?: number;
 };
 
 const sw = 5;
@@ -81,7 +81,9 @@ const Eye: React.FC<{ look: Look; expr: Expr; gaze: [number, number]; open: numb
   const ir = look.adult ? 16 : 21;
   let o = open;
   if (expr === "laugh") o = Math.min(o, 0.14);
-  if (expr === "focus" || expr === "sneak") o *= 0.72;
+  if (expr === "focus" || expr === "sneak" || expr === "determined") o *= 0.72;
+  if (expr === "smirk" || expr === "smile") o *= 0.85;
+  if (expr === "cry") o *= 0.6;
   if (expr === "stern" || expr === "angry") o *= 0.8;
   if (expr === "shocked") o *= 1.1;
   const [gx, gy] = gaze;
@@ -114,7 +116,7 @@ const Brow: React.FC<{ expr: Expr; flip?: boolean; look: Look }> = ({ expr, flip
   // внутренний край = x>0 для левого глаза (смотрим на лицо): угол
   const m: Record<Expr, [number, number]> = {
     neutral: [-46, -46], sad: [-40, -60], hurt: [-38, -62], angry: [-56, -32], stern: [-52, -38], laugh: [-56, -52],
-    shocked: [-60, -64], focus: [-48, -40], sneak: [-48, -44],
+    shocked: [-60, -64], focus: [-48, -40], sneak: [-48, -44], smirk: [-50, -42], joy: [-60, -58], cry: [-40, -62], smile: [-50, -50], determined: [-54, -34],
   };
   const [outer, inner] = m[expr];
   const d = `M -38,${outer} Q 0,${(outer + inner) / 2 - 8} 34,${inner}`;
@@ -132,6 +134,22 @@ const Mouth: React.FC<{ expr: Expr; amt: number }> = ({ expr, amt }) => {
           <path d="M -28,88 L 28,88 L 24,95 L -24,95 Z" fill="#fff" />
         </g>
       );
+    case "joy":
+      return (
+        <g>
+          <path d={`M -38,84 Q 0,${96 + 56 * amt} 38,84 Z`} fill="#6b1d2a" {...st} />
+          <path d="M -30,86 L 30,86 L 26,94 L -26,94 Z" fill="#fff" />
+          <ellipse cx={0} cy={104 + 30 * amt} rx={14} ry={8} fill="#e0707c" />
+        </g>
+      );
+    case "smirk":
+      return <path d="M -22,98 Q 6,104 26,88" fill="none" {...st} />;
+    case "smile":
+      return <path d="M -22,94 Q 0,110 22,94" fill="none" {...st} />;
+    case "determined":
+      return <path d="M -20,98 L 20,96" fill="none" {...st} />;
+    case "cry":
+      return <path d={`M -22,104 Q 0,${88 - 6 * amt} 22,104`} fill="#5a1a26" {...st} />;
     case "shocked":
       return <ellipse cx={0} cy={98} rx={12} ry={10 + 10 * amt} fill="#5a1a26" {...st} />;
     case "angry":
@@ -197,6 +215,15 @@ export const AnimeChar: React.FC<P> = (p) => {
   if (pose === "desk") { armL = [shoulderL, [-270, 560], [-150, 690]]; armR = [shoulderR, [270, 560], [150, 690]]; }
   if (pose === "crossed") { armL = [shoulderL, [-250, 540], [90, 520]]; armR = [shoulderR, [250, 500], [-90, 480]]; }
   if (pose === "belly") { armL = [shoulderL, [-262, 520], [-90, 600]]; armR = [shoulderR, [262, 520], [90, 600]]; }
+  if (pose === "phone") { armL = [shoulderL, [-250, 560], [-60, 560]]; armR = [shoulderR, [250, 560], [60, 560]]; }
+  if (pose === "trophy") { armL = [shoulderL, [-300, 60], [-120, -230]]; armR = [shoulderR, [300, 60], [120, -230]]; }
+  if (pose === "fist") armR = [shoulderR, [330, 60], [300, -200 + 10 * Math.sin(t / 3)]];
+  if (pose === "give") armR = [shoulderR, [360, 420], [470, 440]];
+  if (pose === "run") {
+    const ph = Math.sin((p.phase ?? t) / 3.2);
+    armL = [shoulderL, [-300, 470 + 60 * ph], [-200, 420 - 160 * ph]];
+    armR = [shoulderR, [300, 470 - 60 * ph], [200, 420 + 160 * ph]];
+  }
   if (pose === "point") armR = [shoulderR, [330, 470], [430 + 10 * Math.sin(t / 4), 380]];
   if (pose === "cord") armR = [shoulderR, [270, 520 - cord * 60], [150, 420 - cord * 120]];
   const handR = armR[armR.length - 1];
@@ -264,6 +291,14 @@ export const AnimeChar: React.FC<P> = (p) => {
             <path d="M 4,40 L -4,62 L 6,64" fill="none" stroke={look.skinSh} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
             {expr === "hurt" || expr === "shocked" ? <path d="M -78,48 L -62,58 M -70,44 L -54,54" stroke="#e07a7a" strokeWidth={3} opacity={0.7} /> : null}
             <Mouth expr={expr} amt={amt} />
+            {p.tears ? (
+              <g opacity={p.tears}>
+                <path d={`M -62,26 C -66,60 -60,${70 + 30 * p.tears} -64,${90 + 50 * p.tears}`} stroke="#9fe0ff" strokeWidth={9} fill="none" strokeLinecap="round" />
+                <path d={`M 62,26 C 66,60 60,${70 + 30 * p.tears} 64,${90 + 50 * p.tears}`} stroke="#9fe0ff" strokeWidth={9} fill="none" strokeLinecap="round" />
+                <ellipse cx={-48} cy={30} rx={30} ry={8} fill="#bfefff" opacity={0.7} />
+                <ellipse cx={48} cy={30} rx={30} ry={8} fill="#bfefff" opacity={0.7} />
+              </g>
+            ) : null}
           </g>
           {p.hoodUp ? <HairFront look={look} bangsOnly /> : null}
           {p.hoodUp ? <path d="M -140,-40 C -150,-200 150,-200 140,-40 C 120,-120 60,-140 0,-142 C -60,-140 -120,-120 -140,-40 Z" fill={look.top} stroke={INK} strokeWidth={sw} /> : <HairFront look={look} />}

@@ -14,14 +14,14 @@ const at = (w: string, n = 1) => {
   const m = VOICE.words.filter((x) => x.w.toLowerCase().replace(/[^a-z']/g, "") === w.toLowerCase());
   return Math.round((m[n - 1].t + LEAD) * FPS);
 };
-const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const ease = Easing.bezier(0.2, 0.8, 0.2, 1);
+export const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
+export const ease = Easing.bezier(0.2, 0.8, 0.2, 1);
 
 // ---------- общие эффекты ----------
-const Vignette: React.FC<{ k?: number }> = ({ k = 0.75 }) => (
+export const Vignette: React.FC<{ k?: number }> = ({ k = 0.75 }) => (
   <AbsoluteFill style={{ background: `radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,${k}) 100%)` }} />
 );
-const Grain: React.FC<{ f: number }> = ({ f }) => (
+export const Grain: React.FC<{ f: number }> = ({ f }) => (
   <AbsoluteFill style={{ opacity: 0.08, mixBlendMode: "overlay" }}>
     <svg width={W} height={H}>
       <filter id="gr"><feTurbulence type="fractalNoise" baseFrequency="0.9" seed={f % 7} numOctaves={2} /></filter>
@@ -29,7 +29,7 @@ const Grain: React.FC<{ f: number }> = ({ f }) => (
     </svg>
   </AbsoluteFill>
 );
-const Dust: React.FC<{ f: number; color?: string; n?: number; seed?: string }> = ({ f, color = "#fff6dc", n = 40, seed = "d" }) => (
+export const Dust: React.FC<{ f: number; color?: string; n?: number; seed?: string }> = ({ f, color = "#fff6dc", n = 40, seed = "d" }) => (
   <AbsoluteFill>
     <svg width={W} height={H}>
       {Array.from({ length: n }).map((_, i) => {
@@ -42,7 +42,7 @@ const Dust: React.FC<{ f: number; color?: string; n?: number; seed?: string }> =
     </svg>
   </AbsoluteFill>
 );
-const Rays: React.FC<{ f: number; color?: string; o?: number }> = ({ f, color = "#fff4d6", o = 0.22 }) => (
+export const Rays: React.FC<{ f: number; color?: string; o?: number }> = ({ f, color = "#fff4d6", o = 0.22 }) => (
   <AbsoluteFill style={{ mixBlendMode: "screen", filter: "blur(18px)" }}>
     <svg width={W} height={H}>
       {[0, 1, 2, 3].map((i) => {
@@ -53,7 +53,7 @@ const Rays: React.FC<{ f: number; color?: string; o?: number }> = ({ f, color = 
   </AbsoluteFill>
 );
 // Ударное кольцо + искры (как «POP!» в образце)
-const Burst: React.FC<{ f: number; x: number; y: number; color?: string; size?: number }> = ({ f, x, y, color = "#bff6ff", size = 1 }) => {
+export const Burst: React.FC<{ f: number; x: number; y: number; color?: string; size?: number }> = ({ f, x, y, color = "#bff6ff", size = 1 }) => {
   if (f < 0 || f > 26) return null;
   const p = interpolate(f, [0, 26], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
   const r = (60 + 520 * p) * size;
@@ -74,7 +74,7 @@ const Burst: React.FC<{ f: number; x: number; y: number; color?: string; size?: 
   );
 };
 // Красная «ярость» из треугольных языков (фон в образце на «усилии»)
-const RedRage: React.FC<{ f: number; k: number }> = ({ f, k }) => (
+export const RedRage: React.FC<{ f: number; k: number }> = ({ f, k }) => (
   <AbsoluteFill style={{ opacity: k }}>
     <AbsoluteFill style={{ background: "radial-gradient(ellipse 60% 55% at 50% 50%, #ff6a6a 0%, #e02838 45%, #6d0a1a 100%)" }} />
     <svg width={W} height={H}>
@@ -90,7 +90,7 @@ const RedRage: React.FC<{ f: number; k: number }> = ({ f, k }) => (
 );
 
 // ---------- фоны ----------
-const Hallway: React.FC<{ f: number }> = ({ f }) => (
+export const Hallway: React.FC<{ f: number }> = ({ f }) => (
   <svg width={W} height={H}>
     <defs>
       <linearGradient id="hw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#d9d2c0" /><stop offset="1" stopColor="#a89c86" /></linearGradient>
@@ -118,7 +118,7 @@ const Hallway: React.FC<{ f: number }> = ({ f }) => (
   </svg>
 );
 
-const LivingRoom: React.FC = () => (
+export const LivingRoom: React.FC = () => (
   <svg width={W} height={H}>
     <defs>
       <linearGradient id="lr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#4c3a5e" /><stop offset="1" stopColor="#2a1f36" /></linearGradient>
@@ -136,7 +136,7 @@ const LivingRoom: React.FC = () => (
   </svg>
 );
 
-const NightRoom: React.FC<{ f: number }> = ({ f }) => (
+export const NightRoom: React.FC<{ f: number }> = ({ f }) => (
   <svg width={W} height={H}>
     <defs>
       <linearGradient id="nr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#1a2150" /><stop offset="1" stopColor="#0c0f2a" /></linearGradient>
@@ -160,7 +160,7 @@ const NightRoom: React.FC<{ f: number }> = ({ f }) => (
   </svg>
 );
 
-const Club: React.FC<{ f: number; lamp: number }> = ({ f, lamp }) => (
+export const Club: React.FC<{ f: number; lamp: number }> = ({ f, lamp }) => (
   <svg width={W} height={H}>
     <defs>
       <linearGradient id="cb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#1a0f38" /><stop offset="1" stopColor="#0a0618" /></linearGradient>
@@ -197,23 +197,23 @@ const Club: React.FC<{ f: number; lamp: number }> = ({ f, lamp }) => (
 
 // ---------- сцены ----------
 type SP = { f: number; d: number };
-const cam = (f: number, d: number, punch = 0) => {
+export const cam = (f: number, d: number, punch = 0) => {
   const z = 1 + interpolate(f, [0, d], [0, 0.07], clamp) + punch;
   const inz = interpolate(f, [0, 6], [0.1, 0], { ...clamp, easing: ease });
   return { z: z + inz, blur: interpolate(f, [0, 5], [10, 0], clamp) };
 };
-const shake = (f: number, from: number, amp = 18, len = 12) => {
+export const shake = (f: number, from: number, amp = 18, len = 12) => {
   const k = f - from;
   if (k < 0 || k > len) return [0, 0];
   const a = amp * (1 - k / len);
   return [(random("sx" + f) - 0.5) * 2 * a, (random("sy" + f) - 0.5) * 2 * a];
 };
-const Cam: React.FC<{ z: number; blur: number; sx?: number; sy?: number; ox?: number; oy?: number; children: React.ReactNode }> = ({ z, blur, sx = 0, sy = 0, ox = 50, oy = 42, children }) => (
+export const Cam: React.FC<{ z: number; blur: number; sx?: number; sy?: number; ox?: number; oy?: number; children: React.ReactNode }> = ({ z, blur, sx = 0, sy = 0, ox = 50, oy = 42, children }) => (
   <AbsoluteFill style={{ transform: `translate(${sx}px,${sy}px) scale(${z})`, transformOrigin: `${ox}% ${oy}%`, filter: blur > 0.3 ? `blur(${blur}px)` : undefined }}>{children}</AbsoluteFill>
 );
 
 // 1. Коридор: все смеются
-const S1: React.FC<SP> = ({ f, d }) => {
+export const S1: React.FC<SP> = ({ f, d }) => {
   const hit = at("talentless") - 0; // локально: сцена начинается с 0
   const k = f - hit;
   const punch = k >= 0 ? interpolate(k, [0, 4, 30], [0, 0.09, 0.06], clamp) : 0;
@@ -243,7 +243,7 @@ const S1: React.FC<SP> = ({ f, d }) => {
 };
 
 // 2. Родители выдёргивают шнур
-const S2: React.FC<SP & { hit: number }> = ({ f, d, hit }) => {
+export const S2: React.FC<SP & { hit: number }> = ({ f, d, hit }) => {
   const k = f - hit;
   const rage = k >= 0 ? interpolate(k, [0, 3, 20], [0, 1, 0.85], clamp) : 0;
   const glow = k >= 0 ? interpolate(k, [0, 2], [1, 0], clamp) : 1;
@@ -270,7 +270,7 @@ const S2: React.FC<SP & { hit: number }> = ({ f, d, hit }) => {
 };
 
 // 3. Ночь, окно открыто — он уходит
-const S3: React.FC<SP> = ({ f, d }) => {
+export const S3: React.FC<SP> = ({ f, d }) => {
   const { z, blur } = cam(f, d);
   const look = interpolate(f, [6, 18], [0, 1], { ...clamp, easing: ease });
   return (
@@ -288,7 +288,7 @@ const S3: React.FC<SP> = ({ f, d }) => {
 };
 
 // 4. Компьютерный клуб
-const S4: React.FC<SP & { hit: number }> = ({ f, d, hit }) => {
+export const S4: React.FC<SP & { hit: number }> = ({ f, d, hit }) => {
   const k = f - hit;
   const lamp = k >= 0 ? interpolate(k, [0, 2, 4, 5, 8], [0, 1, 0.3, 1, 1], clamp) : 0;
   const punch = k >= 0 ? interpolate(k, [0, 4, 40], [0, 0.07, 0.04], clamp) : 0;

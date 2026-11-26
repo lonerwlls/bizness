@@ -18,3 +18,15 @@ export const KIDS: Look[] = [
   { skin: "#f2cfb0", skinSh: "#d7a586", hair: "#3b2a24", hairSh: "#21150f", hairStyle: "long", top: "#d1873a", topSh: "#9a5f24", iris: "#5a3a20" },
   { skin: "#8f5e44", skinSh: "#6e4430", hair: "#141010", hairSh: "#050303", hairStyle: "spiky", top: "#6a4aa0", topSh: "#47317a", iris: "#2b1d14" },
 ];
+export const MAX: Look = {
+  skin: "#f0c4a0", skinSh: "#d29776", hair: "#e8c24a", hairSh: "#a77f1c", hairStyle: "spiky",
+  top: "#b3242e", topSh: "#7d1720", iris: "#3c7fb0",
+};
+export const OWNER: Look = {
+  skin: "#e3b18e", skinSh: "#c08566", hair: "#c9c6c2", hairSh: "#8f8b87", hairStyle: "short",
+  top: "#6b4a2e", topSh: "#4a321e", iris: "#3b2a20", adult: true, stubble: true,
+};
+export const MATE: Look = {
+  skin: "#d9a27c", skinSh: "#b47b5a", hair: "#222", hairSh: "#0e0e0e", hairStyle: "messy",
+  top: "#2e3a72", topSh: "#1e2552", iris: "#2b1d14",
+};
