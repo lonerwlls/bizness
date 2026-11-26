@@ -5,6 +5,7 @@ import {Composition, continueRender, delayRender, staticFile} from 'remotion';
 import {Long, LONG_FRAMES} from './Long';
 import {Short, SHORT_FRAMES} from './Short';
 import {ImpostorShort, IMPOSTOR_SHORT_FRAMES} from './ImpostorShort';
+import {FredRef} from './FredRef';
 import {Sheet, SheetProps, sheetSize} from './Sheet';
 import {PauseTime} from './reference/PauseTime';
 import {HeadsSheet} from './HeadsSheet';
@@ -45,7 +46,8 @@ export const Root: React.FC = () => {
 	return (
 	<>
 		<Composition id="Long" component={Long} durationInFrames={Math.max(1, LONG_FRAMES)} fps={30} width={1920} height={1080} />
-<Composition id="ImpostorShort" component={ImpostorShort} durationInFrames={IMPOSTOR_SHORT_FRAMES} fps={30} width={1080} height={1920} />
+<Composition id="FredRef" component={FredRef} durationInFrames={1} fps={30} width={1920} height={1080} />
+		<Composition id="ImpostorShort" component={ImpostorShort} durationInFrames={IMPOSTOR_SHORT_FRAMES} fps={30} width={1080} height={1920} />
 		<Composition id="Short" component={Short} durationInFrames={Math.max(1, SHORT_FRAMES)} fps={30} width={1080} height={1920} />
 		<Composition
 			id="Sheet"
