@@ -697,28 +697,43 @@ const C021: React.FC = () => {
 			</>
 		);
 	}
-	const door = kk(f, gone, gone + 10);
+	const panic = gone + 2;
+	const run0 = gone + 12;
+	const run = kk(f, run0, run0 + 14);
+	const fx = 900 + 1300 * run * run;
+	const running = f >= run0 && run < 1;
+	const step = running ? Math.sin(f * 1.4) : 0;
+	const hand: [number, number] = f < panic ? [72, -86] : [80, -70];
 	return (
 		<>
-			<Stage cam={usePush(camOn(960, 640, 1.08), camOn(960, 640, 1.14))} bg="#2a2a2e" light={false} grain={0} vig={0}>
+			<Stage cam={usePush(camOn(960, 650, 1.18), camOn(960, 650, 1.24))} bg="#2a2a2e" light={false} grain={0} vig={0}>
 				<Layer depth={1}>
 					<Bg src="bg/lecture.jpg" />
 					<Svg>
 						<Board f={f} t={0} text="Psychology 101" brain={0} />
-						{/* the doctor's hat spinning on the floor where he stood */}
-						<g transform={`translate(${960 + 300 * door},${990}) rotate(${720 * door})`} opacity={1 - kk(f, gone + 10, gone + 20)}>
-							<ellipse rx={50} ry={10} fill="#3d4250" stroke={INK} strokeWidth={4} />
-						</g>
-						<text x={1260} y={760} fontFamily={HAND} fontWeight={700} fontSize={70} fill="#f2c94c" style={{paintOrder: 'stroke'}} stroke={INK} strokeWidth={8} opacity={kk(f, gone + 6, gone + 10)}>
-							poof
-						</text>
+						{run < 1 ? (
+							<g>
+								<Toon id="fred21" r={CAST.fredProf} x={fx} y={1000 - (running ? Math.abs(step) * 10 : 0)} s={S} t={gf} pose={{hand, handB: f < panic ? [-72, -86] : [-90, -200], lean: running ? 14 : 0, step}} face={{look: f < panic ? [0.2, -0.1] : [0.9, -0.1], mouth: f < panic ? 'smirk' : 'o', brows: f < panic ? 'sly' : 'worried', lids: f < panic ? 'sly' : undefined, sweat: f >= panic}} />
+								{/* his suitcase */}
+								{f >= panic ? <rect x={fx + 70 * S} y={1000 - 70 * S} width={70 * S} height={52 * S} rx={6} fill="#7a4e2a" stroke={INK} strokeWidth={4} /> : null}
+								{running
+									? [0, 1, 2].map((j) => <line key={j} x1={fx - 120 - j * 30} y1={760 + j * 60} x2={fx - 260 - j * 40} y2={760 + j * 60} stroke="#f4efe2" strokeWidth={6} strokeLinecap="round" opacity={0.7} />)
+									: null}
+							</g>
+						) : null}
+						{/* dust settling where he stood */}
+						{f > run0
+							? [0, 1, 2, 3].map((j) => {
+									const k = kk(f, run0 + j * 2, run0 + 26 + j * 2);
+									return <circle key={j} cx={900 + j * 70 + 40 * k} cy={980 - 30 * k} r={22 + 30 * k} fill="#d8c8a8" opacity={0.6 * (1 - k)} />;
+								})
+							: null}
 					</Svg>
 					<Light id="l021" spots={LEC_SPOTS} dark={0.22} glow="#ffe2a8" />
 				</Layer>
 			</Stage>
 			<Paper />
-			<Tag f={f} t={gone + 8} x={70} y={860} text="DR. FRENCH" box="cross" size={52} />
-			{void gf}
+			<Tag f={f} t={run0 + 16} x={70} y={860} text="DR. FRENCH" box="cross" size={52} />
 		</>
 	);
 };
