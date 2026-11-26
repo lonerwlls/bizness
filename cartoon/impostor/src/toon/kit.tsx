@@ -147,3 +147,37 @@ export const BlackCard: React.FC<{f: number; text: string}> = ({f, text}) => (
 		<div style={{fontFamily: HAND, fontWeight: 700, fontSize: 96, color: '#f4efe2', textTransform: 'uppercase', letterSpacing: 3}}>{text.slice(0, Math.floor(f * 1.5))}</div>
 	</AbsoluteFill>
 );
+
+/* background picture pixel (1376×768 source) → world coordinates of <Bg> */
+export const P = (xi: number, yi: number): [number, number] => [-129 + 1.5833 * xi, -68 + 1.5833 * yi];
+
+/* green felt desk with documents (screen space) */
+export const Felt: React.FC<{children: React.ReactNode}> = ({children}) => (
+	<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 45%, #2f6a4a 0%, #1d4a32 70%, #0f2a1c 100%)'}}>
+		<svg viewBox="0 0 1920 1080" width={1920} height={1080} style={{position: 'absolute', inset: 0}}>
+			{children}
+		</svg>
+	</AbsoluteFill>
+);
+/* a sheet of paper on the felt */
+export const Sheet: React.FC<{x: number; y: number; w: number; h: number; rot?: number; k?: number; children?: React.ReactNode}> = ({x, y, w, h, rot = 0, k = 1, children}) => (
+	<g transform={`translate(${x},${y}) rotate(${rot}) scale(${0.7 + 0.3 * Math.min(k, 1.1)})`} opacity={Math.min(1, k * 2)}>
+		<rect x={-w / 2 + 10} y={-h / 2 + 14} width={w} height={h} fill="#000" opacity={0.3} />
+		<rect x={-w / 2} y={-h / 2} width={w} height={h} fill="#f4efe2" stroke="#1d1a1f" strokeWidth={4} />
+		{children}
+	</g>
+);
+/* red rubber stamp */
+export const Stamp: React.FC<{f: number; t: number; x: number; y: number; text: string; rot?: number; size?: number}> = ({f, t, x, y, text, rot = -12, size = 70}) => {
+	if (f < t) return null;
+	const k = interpolate(f, [t, t + 5], [1.7, 1], clamp);
+	const w = text.length * size * 0.62 + 50;
+	return (
+		<g transform={`translate(${x},${y}) rotate(${rot}) scale(${k})`} opacity={0.92}>
+			<rect x={-w / 2} y={-size * 0.75} width={w} height={size * 1.5} rx={10} fill="none" stroke="#d23b3b" strokeWidth={9} />
+			<text y={size * 0.35} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={size} fill="#d23b3b">
+				{text}
+			</text>
+		</g>
+	);
+};
