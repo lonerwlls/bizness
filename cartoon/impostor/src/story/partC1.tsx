@@ -56,7 +56,7 @@ const C001: React.FC = () => {
 							<Toon id="pat1" r={CAST.soldier} x={0} y={0} s={0.9} t={gf} face={{blink: true}} />
 						</g>
 						<path d="M1300,660 q10,-8 20,0 q10,8 20,0 q10,-8 20,0 q10,8 20,0 q10,-8 20,0 q12,8 22,2 L1446,600 Q1450,556 1426,550 L1338,548 Q1302,552 1300,592 Z" fill="#eef0ec" stroke={INK} strokeWidth={4} />
-						<Toon id="fred1" r={CAST.fredSurg} x={FX} y={FY} s={SO} t={gf} pose={{hand: loc(hw), handB: [-60, -120]}} face={{look: k > 0.5 ? [0.3, -0.7] : [0.7, 0.4], mouth: k > 0.8 ? 'smile' : 'closed', brows: k > 0.8 ? 'up' : 'flat'}} />
+						<Toon id="fred1" r={CAST.fredSurg} x={FX} y={FY} s={SO} t={gf} pose={{hand: loc(hw), handB: [-60, -120]}} face={{look: k > 0.5 ? [0.3, -0.7] : [0.7, 0.5], mouth: k > 0.8 ? 'grin' : 'closed', brows: k > 0.8 ? 'up' : 'down'}} />
 						<g transform={`translate(${hw[0]},${hw[1]}) rotate(${-25 + 35 * (1 - Math.min(k, 1))})`}>
 							<path d="M0,0 L55,-5 M0,5 L55,3" stroke="#c8ccd6" strokeWidth={5} strokeLinecap="round" />
 							{k > 0.2 ? <ellipse cx={63} cy={0} rx={10} ry={6} fill="#c9873a" stroke={INK} strokeWidth={3} /> : null}
@@ -141,14 +141,14 @@ const C003: React.FC = () => {
 	const w = useW();
 	const not = w('003', 0.5);
 	const cam = usePush(camOn(1080, 640, 1.45), camOn(1080, 630, 1.55));
-	const pose: Pose = f < not ? {hand: [40, -150], handB: [-40, -150]} : {hand: [70, -240], handB: [-80, -240], head: 6};
+	const pose: Pose = f < not ? {hand: [72, -86], handB: [-72, -86], head: -4} : {hand: [90, -250], handB: [-90, -250], head: 6};
 	return (
 		<>
 			<Stage cam={cam} bg="#2a2a2e" light={false} grain={0} vig={0}>
 				<Layer depth={1}>
 					<Bg src="bg/or.jpg" />
 					<Svg>
-						<Toon id="fred3" r={CAST.fredSurg} x={1080} y={1000} s={1.4} t={gf} pose={pose} face={{look: f < not ? [0.1, -0.2] : [0.6, 0], mouth: f < not ? 'smile' : 'o', brows: f < not ? 'flat' : 'worried', sweat: f > not + 5}} />
+						<Toon id="fred3" r={CAST.fredSurg} x={1080} y={1000} s={1.4} t={gf} pose={pose} face={{look: f < not ? [0.2, -0.2] : [0.7, 0], mouth: f < not ? 'grin' : 'o', brows: f < not ? 'sly' : 'worried', lids: f < not ? 'sly' : undefined, sweat: f > not + 5}} />
 						<Icon kind="halo" x={1092} y={545} f={f} t={w('003', 0.05)} s={0.75} out={not} />
 					</Svg>
 					<Light id="l003" spots={OR_SPOTS} />
@@ -200,7 +200,7 @@ const C004: React.FC = () => {
 					<Stamp f={f} t={w('004', 0.28)} x={620} y={480} text="NEVER" rot={-14} />
 					<Polaroid x={1300} y={520} rot={4} k={snap(f, w('004', 0.52))} label="a few months ago">
 						<rect x={-176} y={-206} width={352} height={340} fill="#7a6a58" />
-						<Toon id="monk4" r={CAST.fredMonk} x={0} y={250} s={1.15} t={gf} face={{mouth: 'smile'}} pose={{hand: [30, -160], handB: [-30, -160]}} />
+						<Toon id="monk4" r={CAST.fredMonk} x={0} y={250} s={1.15} t={gf} face={{mouth: 'smile', lids: 'sleepy'}} pose={{hand: [18, -135], handB: [-18, -135]}} />
 					</Polaroid>
 				</svg>
 				<Tag f={f} t={w('004', 0.72)} x={1160} y={880} text="A MONK" size={56} />
@@ -218,7 +218,10 @@ const C005: React.FC = () => {
 	const swap = w('005', 0.5);
 	const i = f < swap ? -1 : Math.min(LOOKS.length - 1, Math.floor((f - swap) / 12));
 	const look = i < 0 ? 'fredNavy' : LOOKS[i];
-	const pop = i < 0 ? 1 : snap((f - swap) % 12, 0, 0.2);
+	const changing = i >= 0 && f - swap < LOOKS.length * 12;
+	const pop = changing ? snap((f - swap) % 12, 0, 0.2) : 1;
+	const P5: Pose[] = [{hand: [18, -135], handB: [-18, -135]}, {hand: [60, -270], handB: [-55, -120]}, {hand: [40, -300], handB: [-60, -110]}, {hand: [110, -190], handB: [-110, -190]}];
+	const F5 = [{mouth: 'smile' as const, lids: 'sleepy' as const}, {mouth: 'grin' as const, brows: 'up' as const}, {mouth: 'closed' as const, brows: 'down' as const}, {mouth: 'grin' as const, lids: 'sly' as const, brows: 'sly' as const}];
 	const cam = usePush(camOn(960, 680, 1.1), camOn(960, 660, 1.18));
 	return (
 		<>
@@ -227,9 +230,9 @@ const C005: React.FC = () => {
 					<Bg src="bg/deck.jpg" />
 					<Svg>
 						<g transform={`translate(960,990) scale(${0.9 + 0.1 * Math.min(pop, 1.15)}) translate(-960,-990)`}>
-							<Toon id="fred5" r={CAST[look]} x={960} y={990} s={S} t={gf} pose={{hand: [55, -140], handB: [-55, -140]}} face={{look: [0.15, -0.1], mouth: 'smirk', brows: 'sly'}} />
+							<Toon id="fred5" r={CAST[look]} x={960} y={990} s={S} t={gf} pose={i < 0 ? {hand: [72, -86], handB: [-72, -86]} : P5[i]} face={i < 0 ? {look: [0.3, -0.1], mouth: 'smirk', brows: 'sly', lids: 'sly'} : {look: [0.2, -0.1], ...F5[i]}} />
 						</g>
-						{i >= 0 && (f - swap) % 12 < 4 ? <circle cx={960} cy={760} r={190} fill="#fff" opacity={0.25 * (1 - ((f - swap) % 12) / 4)} /> : null}
+						{changing && (f - swap) % 12 < 4 ? <circle cx={960} cy={760} r={190} fill="#fff" opacity={0.25 * (1 - ((f - swap) % 12) / 4)} /> : null}
 					</Svg>
 				</Layer>
 			</Stage>
@@ -258,8 +261,8 @@ const C006: React.FC = () => {
 				<Layer depth={1}>
 					<Bg src="bg/booth.jpg" />
 					<Svg>
-						<Toon id="dad6" r={CAST.father} x={1180} y={1000} s={S} facing={1} t={gf} pose={{hand: snap(f, proj) > 0 ? [80, -170] : [60, -110], handB: [-50, -120]}} face={{look: [0.6, -0.3], mouth: 'smile'}} />
-						<Toon id="boy6" r={CAST.fredBoy} x={boy.x} y={1000 - boy.bob} s={S} facing={1} t={gf} pose={{step: boy.step, hand: [40, -120]}} face={{look: [0.7, -0.4], mouth: 'smile', brows: 'up'}} />
+						<Toon id="dad6" r={CAST.father} x={1180} y={1000} s={S} facing={1} t={gf} pose={{hand: [95 + 14 * Math.cos(f / 4), -175 + 14 * Math.sin(f / 4)], handB: [-50, -120], head: -4}} face={{look: [0.7, -0.2], mouth: snap(f, proj) > 0 ? 'grin' : 'smile', brows: 'up'}} />
+						<Toon id="boy6" r={CAST.fredBoy} x={boy.x} y={1000 - boy.bob} s={S} facing={1} t={gf} pose={{step: boy.step, hand: boy.step ? [40, -120] : [20, -150], handB: boy.step ? [-40, -120] : [-20, -150]}} face={{look: [0.8, -0.5], mouth: 'grin', brows: 'up'}} />
 					</Svg>
 					<Light id="l006" spots={BOOTH_SPOTS} dark={0.3} />
 				</Layer>
@@ -282,8 +285,8 @@ const C007: React.FC = () => {
 				<Layer depth={1}>
 					<Bg src="bg/booth.jpg" dim={poor ? 0.45 : 0} />
 					<Svg>
-						<Toon id="dad7" r={CAST.father} x={1180} y={1000} s={S} t={gf} pose={poor ? {hand: [30, -40], handB: [-30, -40], head: 10} : {hand: [70, -230], handB: [-70, -230]}} face={{look: poor ? [0, 0.6] : [0.2, -0.3], mouth: poor ? 'frown' : 'wide', brows: poor ? 'worried' : 'up'}} />
-						<Toon id="boy7" r={CAST.fredBoy} x={880} y={1000} s={S} t={gf} pose={poor ? {head: 8} : {hand: [50, -200]}} face={{look: [0.6, poor ? 0.2 : -0.4], mouth: poor ? 'closed' : 'smile', brows: poor ? 'worried' : 'flat'}} />
+						<Toon id="dad7" r={CAST.father} x={1180} y={1000} s={S} t={gf} pose={poor ? {hand: [30, -40], handB: [-30, -40], head: 12} : {hand: [115, -200], handB: [-115, -200]}} face={{look: poor ? [0, 0.6] : [0.2, -0.3], mouth: poor ? 'frown' : 'grin', brows: poor ? 'worried' : 'up', lids: poor ? 'sleepy' : undefined}} />
+						<Toon id="boy7" r={CAST.fredBoy} x={880} y={1000 - (poor ? 0 : Math.abs(Math.sin(f / 4)) * 14)} s={S} t={gf} pose={poor ? {head: 8, hand: [20, -70], handB: [-20, -70]} : {hand: [90, -230], handB: [-90, -230]}} face={{look: [0.7, poor ? 0.1 : -0.4], mouth: poor ? 'frown' : 'grin', brows: poor ? 'worried' : 'up'}} />
 						{!poor ? <Icon kind="crown" x={1190} y={598} f={f} t={w('007', 0.08)} s={0.9} /> : null}
 						{!poor
 							? [0, 1, 2].map((j) => (
@@ -320,7 +323,7 @@ const C008: React.FC = () => {
 				<Layer depth={1}>
 					<Bg src="bg/monastery.jpg" />
 					<Svg>
-						<Toon id="boy8" r={robe ? CAST.fredMonk : CAST.fredBoy} x={run.x} y={995 - run.bob} s={S * 0.95} t={gf} pose={{step: run.step, hand: [44, -110]}} face={{look: [0.7, -0.1], mouth: 'smile', brows: 'up'}} />
+						<Toon id="boy8" r={robe ? CAST.fredMonk : CAST.fredBoy} x={run.x} y={995 - run.bob} s={S * 0.95} t={gf} pose={{step: run.step, hand: [44, -110]}} face={{look: [0.7, -0.1], mouth: robe ? 'smile' : 'grin', brows: 'up', lids: robe ? 'sleepy' : undefined}} />
 						{/* a little bundle on a stick */}
 						{!robe ? <g transform={`translate(${run.x + 40},${995 - run.bob - 120})`}>
 							<line x1={0} y1={0} x2={-60} y2={-70} stroke="#7a5232" strokeWidth={6} />
@@ -348,8 +351,8 @@ const C009: React.FC = () => {
 				<Layer depth={1}>
 					<Bg src="bg/monastery.jpg" />
 					<Svg>
-						<Toon id="fred9" r={CAST.fredMonk} x={920} y={995} s={S} t={gf} facing={1} pose={{hand: [40, -120], handB: [-40, -120], head: f > no ? 8 : 0}} face={{look: [0.7, 0], mouth: f > no ? 'o' : 'smile', brows: f > no ? 'worried' : 'flat'}} />
-						<Toon id="abbot9" r={CAST.monk} x={1240} y={995} s={S} t={gf} facing={-1} pose={{head: shake, hand: snap(f, no) > 0 ? [70, -200] : [40, -110]}} face={{look: [0.6, 0], mouth: 'frown', brows: 'down'}} />
+						<Toon id="fred9" r={CAST.fredMonk} x={920} y={995} s={S} t={gf} facing={1} pose={f > no ? {hand: [70, -240], handB: [-70, -240], head: 8} : {hand: [18, -135], handB: [-18, -135]}} face={{look: [0.7, 0], mouth: f > no ? 'o' : 'smile', brows: f > no ? 'worried' : 'flat', lids: f > no ? undefined : 'sleepy', sweat: f > no + 8}} />
+						<Toon id="abbot9" r={CAST.monk} x={1240} y={995} s={S} t={gf} facing={-1} pose={{head: shake, hand: snap(f, no) > 0 ? [70, -200] : [40, -110]}} face={{look: [0.6, 0], mouth: 'frown', brows: 'down', talk: f > w('009', 0.1) && f < no ? Math.abs(Math.sin(f / 3.2)) * 0.7 : 0}} />
 					</Svg>
 					<Light id="l009" spots={MON_SPOTS} dark={0.35} glow="#ffb860" />
 				</Layer>
@@ -371,12 +374,12 @@ const C010: React.FC = () => {
 				<svg viewBox="0 0 1920 1080" width={1920} height={1080} style={{position: 'absolute', inset: 0}}>
 					<Polaroid x={760} y={520} rot={-4} k={snap(f, 2)} label="U.S. Army, 1941">
 						<rect x={-176} y={-206} width={352} height={340} fill="#8a8a68" />
-						<Toon id="army10" r={CAST.fredArmy} x={0} y={250} s={1.15} t={gf} face={{mouth: 'closed', look: [0.2, 0]}} pose={{hand: [40, -150]}} />
+						<Toon id="army10" r={CAST.fredArmy} x={0} y={250} s={1.15} t={gf} face={{mouth: 'smirk', look: [0.2, 0], brows: 'down'}} pose={{hand: [40, -300]}} />
 					</Polaroid>
 					<Stamp f={f} t={w('010', 0.55)} x={760} y={470} text="NOPE" rot={-10} />
 					<Polaroid x={1300} y={540} rot={6} k={snap(f, 10)} label="the monastery">
 						<rect x={-176} y={-206} width={352} height={340} fill="#7a6a58" />
-						<Toon id="monk10" r={CAST.fredMonk} x={0} y={250} s={1.15} t={gf} face={{mouth: 'closed'}} />
+						<Toon id="monk10" r={CAST.fredMonk} x={0} y={250} s={1.15} t={gf} face={{mouth: 'smile', lids: 'sleepy'}} pose={{hand: [18, -135], handB: [-18, -135]}} />
 					</Polaroid>
 					<Stamp f={f} t={10} x={1300} y={490} text="NOPE" rot={8} size={56} />
 				</svg>
@@ -454,7 +457,7 @@ const C012: React.FC = () => {
 					<Layer depth={1}>
 						<Bg src="bg/deck.jpg" />
 						<Svg>
-							<Toon id="fred12n" r={CAST.fredSailor} x={960} y={990} s={S} t={gf} pose={{hand: salute > 0 ? mixP([50, -120], [40, -300], Math.min(salute, 1.1)) : [50, -120]}} face={{look: [0.2, -0.1], mouth: 'smile'}} />
+							<Toon id="fred12n" r={CAST.fredSailor} x={960} y={990} s={S} t={gf} pose={{hand: salute > 0 ? mixP([50, -120], [40, -300], Math.min(salute, 1.1)) : [50, -120]}} face={{look: [0.2, -0.1], mouth: salute > 0 ? 'grin' : 'smile', brows: 'up'}} />
 						</Svg>
 					</Layer>
 				</Stage>
@@ -473,7 +476,7 @@ const C012: React.FC = () => {
 				<Layer depth={1}>
 					<Bg src="bg/monastery.jpg" dim={0.15} />
 					<Svg>
-						<Toon id="fred12m" r={CAST.fredMonk} x={run.x} y={995 - run.bob} s={S} t={gf} pose={{step: run.step}} face={{look: [0.7, 0], mouth: 'closed'}} />
+						<Toon id="fred12m" r={CAST.fredMonk} x={run.x} y={995 - run.bob} s={S} t={gf} pose={{step: run.step, hand: [18, -135], handB: [-18, -135]}} face={{look: [0.7, 0], mouth: 'smile', lids: 'sleepy'}} />
 					</Svg>
 					<Light id="l012" spots={MON_SPOTS} dark={0.35} glow="#ffb860" />
 				</Layer>
@@ -498,16 +501,12 @@ const C013: React.FC = () => {
 				<Layer depth={1}>
 					<Bg src="bg/or.jpg" />
 					<Svg>
-						<Toon id="fred13" r={CAST.fredSailor} x={run.x} y={985 - run.bob} s={S} t={gf} pose={{step: run.step, hand: [60, -130], handB: [-60, -130]}} face={{look: [0.6, -0.1], mouth: 'smile'}} />
+						<Toon id="fred13" r={CAST.fredSailor} x={run.x} y={985 - run.bob} s={S} t={gf} pose={{step: run.step, hand: [60, -130], handB: [-60, -130]}} face={{look: [0.6, -0.1], mouth: 'grin', brows: 'up'}} />
 						{/* red-cross armband and a tray of bandages */}
 						<g transform={`translate(${run.x},${985 - run.bob - 130})`}>
 							<rect x={-75} y={-12} width={150} height={20} rx={5} fill="#f4f4f0" stroke={INK} strokeWidth={4} />
 							<rect x={-60} y={-34} width={30} height={24} rx={4} fill="#f4f4f0" stroke={INK} strokeWidth={3} />
 							<rect x={10} y={-30} width={36} height={20} rx={4} fill="#c8ccd6" stroke={INK} strokeWidth={3} />
-						</g>
-						<g transform={`translate(${run.x - 30},${985 - 230})`}>
-							<rect x={-14} y={-12} width={28} height={24} fill="#fff" stroke={INK} strokeWidth={3} />
-							<path d="M-6,0 h12 M0,-6 v12" stroke="#d23b3b" strokeWidth={5} />
 						</g>
 						{ring > 0 ? <ellipse cx={run.x} cy={800} rx={210} ry={250} fill="none" stroke="#d23b3b" strokeWidth={10} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - ring} /> : null}
 					</Svg>
@@ -531,7 +530,7 @@ const C014: React.FC = () => {
 				<Layer depth={1}>
 					<Bg src="bg/deck.jpg" />
 					<Svg>
-						<Toon id="fred14" r={CAST.fredSailor} x={820} y={990} s={S} t={gf} pose={{hand: [60, -170]}} face={{look: [0.7, -0.1], mouth: 'open', brows: 'up'}} />
+						<Toon id="fred14" r={CAST.fredSailor} x={820} y={990} s={S} t={gf} pose={f < w('014', 0.45) ? {hand: [70, -230], handB: [-60, -110]} : {hand: [30, -60], handB: [-30, -60], head: 10}} face={{look: [0.7, -0.1], mouth: f < w('014', 0.45) ? 'grin' : 'frown', brows: f < w('014', 0.45) ? 'up' : 'worried'}} />
 						<Toon id="off14" r={CAST.officerUS} x={1120} y={990} s={S} facing={-1} t={gf} pose={{hand: snap(f, w('014', 0.4)) > 0 ? [80, -170] : [40, -110], head: Math.sin(f / 3) * 5 * kk(f, w('014', 0.4), w('014', 0.6))}} face={{look: [0.6, 0], mouth: 'frown', brows: 'down'}} />
 					</Svg>
 				</Layer>
@@ -576,7 +575,7 @@ const C016: React.FC = () => {
 					<Svg>
 						{pop > 0 ? (
 							<g transform={`translate(960,1000) scale(${Math.min(pop, 1.2)}) translate(-960,-1000)`}>
-								<Toon id="fred16" r={CAST.fredProf} x={960} y={1000} s={S} t={gf} pose={{hand: [60, -250], handB: [-50, -120]}} face={{look: [0.2, -0.2], mouth: 'smile', brows: 'up'}} />
+								<Toon id="fred16" r={CAST.fredProf} x={960} y={1000} s={S} t={gf} pose={{hand: [115, -200], handB: [-115, -200]}} face={{look: [0.2, -0.2], mouth: 'grin', brows: 'sly', lids: 'sly'}} />
 							</g>
 						) : null}
 						{f > w('016', 0.08) && f < w('016', 0.08) + 6 ? <circle cx={960} cy={760} r={200} fill="#fff" opacity={0.4} /> : null}
@@ -601,7 +600,7 @@ const C017: React.FC = () => {
 					<Bg src="bg/lecture.jpg" />
 					<Svg>
 						<Board f={f} t={w('017', 0.1)} text="Psychology 101" brain={w('017', 0.55)} />
-						<Toon id="fred17" r={CAST.fredProf} x={880} y={1000} s={S} t={gf} pose={{hand: point > 0 ? mixP([60, -150], [150, -330], Math.min(point, 1.1)) : [60, -150], handB: [-50, -120]}} face={{look: [0.5, -0.4], mouth: mouthOf('FRED', gf, 'smile'), brows: 'up'}} />
+						<Toon id="fred17" r={CAST.fredProf} x={880} y={1000} s={S} t={gf} pose={{hand: point > 0 ? mixP([60, -150], [150, -330], Math.min(point, 1.1)) : [60, -150], handB: [-50, -120]}} face={{look: [0.5, -0.4], mouth: 'smile', talk: talkOf('FRED', gf - (gf % 3)), brows: 'up'}} />
 					</Svg>
 					<Light id="l017" spots={LEC_SPOTS} dark={0.22} glow="#ffe2a8" />
 				</Layer>
@@ -623,7 +622,7 @@ const C018: React.FC = () => {
 					<Bg src="bg/lecture.jpg" />
 					<Svg>
 						<Board f={f} t={0} text="Psychology 101" brain={0} />
-						<Toon id="fred18" r={CAST.fredProf} x={walkIn.x} y={1000 - walkIn.bob} s={S} t={gf} pose={{step: walkIn.step, hand: [50, -140], handB: [-50, -140]}} face={{look: [0.3, -0.1], mouth: 'smile', brows: crown ? 'sly' : 'flat'}} />
+						<Toon id="fred18" r={CAST.fredProf} x={walkIn.x} y={1000 - walkIn.bob} s={S} t={gf} pose={{step: walkIn.step, hand: [50, -140], handB: [-50, -140]}} face={{look: [0.3, -0.1], mouth: crown ? 'smirk' : 'grin', brows: crown ? 'sly' : 'up', lids: crown ? 'sly' : undefined}} />
 						<Icon kind="crown" x={walkIn.x + 8} y={598} f={f} t={deanT} s={1.0} />
 					</Svg>
 					<Light id="l018" spots={LEC_SPOTS} dark={0.22} glow="#ffe2a8" />

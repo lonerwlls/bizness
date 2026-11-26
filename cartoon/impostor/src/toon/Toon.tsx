@@ -28,8 +28,8 @@ export type Recipe = {
 	seed: number;
 };
 
-export type Mouth = 'closed' | 'smile' | 'smirk' | 'frown' | 'open' | 'wide' | 'o';
-export type Face = {look?: [number, number]; brows?: 'flat' | 'up' | 'down' | 'worried' | 'sly'; mouth?: Mouth; blink?: boolean; sweat?: boolean};
+export type Mouth = 'closed' | 'smile' | 'smirk' | 'frown' | 'open' | 'wide' | 'o' | 'grin';
+export type Face = {look?: [number, number]; brows?: 'flat' | 'up' | 'down' | 'worried' | 'sly'; mouth?: Mouth; blink?: boolean; sweat?: boolean; lids?: 'sly' | 'sleepy'; turn?: number; dollar?: boolean; talk?: number};
 export type Pose = {
 	hand?: [number, number]; // front hand (local, before facing); undefined = hanging
 	handB?: [number, number];
@@ -63,7 +63,9 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 	const HC: [number, number] = [4, hip - bodyH - HEAD_R + 24 + breathe];
 	const look = face.look ?? [0.35, 0];
 	const blink = face.blink ?? (t + Math.floor(random('b' + r.seed) * 80)) % 110 < 4;
-	const mouth = face.mouth ?? 'closed';
+	const talk = face.talk ?? 0;
+	const mouth: Mouth = talk > 0.5 ? (face.mouth === 'smile' || face.mouth === 'grin' ? 'grin' : 'wide') : talk > 0.16 ? 'open' : face.mouth ?? 'closed';
+	const turn = (face.turn ?? look[0] * 0.6) * 14;
 	const brows = face.brows ?? 'flat';
 	const shF: [number, number] = [bw * 0.62, shoulderY + 6];
 	const shB: [number, number] = [-bw * 0.62, shoulderY + 6];
@@ -126,7 +128,7 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 				{outfit === 'scrubs' ? <path d={`M-18,${hip - bodyH + 10} L0,${hip - bodyH + 40} L18,${hip - bodyH + 10}`} stroke={INK} strokeWidth={3.5} fill="none" /> : null}
 				{outfit === 'prison' ? [0, 1, 2, 3].map((i) => <line key={i} x1={-bw + 4} y1={hip - bodyH + 30 + i * 22} x2={bw - 4} y2={hip - bodyH + 30 + i * 22} stroke={darker(r.body, 0.35)} strokeWidth={8} />) : null}
 				{/* head */}
-				<g transform={`rotate(${pose.head ?? 0},${HC[0]},${HC[1] + HEAD_R})`}>
+				<g transform={`rotate(${(pose.head ?? 0) + talk * 4 * Math.sin(t / 3)},${HC[0]},${HC[1] + HEAD_R})`}>
 					<defs>
 						<clipPath id={clip}>
 							<circle cx={HC[0]} cy={HC[1]} r={HEAD_R} />
@@ -158,16 +160,29 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 							})
 						: null}
 					<circle cx={HC[0]} cy={HC[1]} r={HEAD_R} fill="none" stroke={INK} strokeWidth={5} />
+					<g transform={`translate(${turn},0)`}>
 					{/* face */}
 					{[-22, 26].map((exx, i) => (
 						<g key={i}>
 							{blink ? (
 								<path d={`M${HC[0] + exx - 9 + ex},${HC[1] - 2 + ey} q9,6 18,0`} stroke={INK} strokeWidth={4} fill="none" />
 							) : (
+								face.dollar ? (
+									<text x={HC[0] + exx} y={HC[1] + 10} textAnchor="middle" fontFamily="'Rubik', sans-serif" fontWeight={900} fontSize={34} fill="#3fae4a" stroke={INK} strokeWidth={2} style={{paintOrder: 'stroke'}}>
+										$
+									</text>
+								) : (
 								<g>
 									<ellipse cx={HC[0] + exx + ex} cy={HC[1] - 4 + ey} rx={8.5} ry={11.5} fill={INK} />
 									<circle cx={HC[0] + exx + ex + 3} cy={HC[1] - 8 + ey} r={3.2} fill="#fff" />
+									{face.lids ? (
+										<g>
+											<rect x={HC[0] + exx - 14} y={HC[1] - 24} width={28} height={(face.lids === 'sly' ? 19 : 23) + ey} fill={r.skin} />
+											<line x1={HC[0] + exx - 12} y1={HC[1] - 5 + (face.lids === 'sly' ? 0 : 4) + ey} x2={HC[0] + exx + 12} y2={HC[1] - 5 + (face.lids === 'sly' ? 0 : 4) + ey} stroke={INK} strokeWidth={4} />
+										</g>
+									) : null}
 								</g>
+								)
 							)}
 							<line
 								x1={HC[0] + exx - 11}
@@ -185,6 +200,7 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 					{r.beard ? <path d={`M${HC[0] - 56},${HC[1] + 20} Q${HC[0]},${HC[1] + 100} ${HC[0] + 60},${HC[1] + 20} Q${HC[0] + 2},${HC[1] + 60} ${HC[0] - 56},${HC[1] + 20} Z`} fill={r.beard} stroke={INK} strokeWidth={3.5} /> : null}
 					<MouthShape m={mouth} cx={HC[0] + 4} cy={HC[1] + 36} />
 					{face.sweat ? <path d={`M${HC[0] - 60},${HC[1] - 20} q-8,14 0,18 q8,-4 0,-18 Z`} fill="#9fd8ff" stroke={INK} strokeWidth={2.5} /> : null}
+					</g>
 					{/* hats */}
 					{r.hat === 'fedora' ? (
 						<g fill={r.hatColor ?? '#2a2a30'} stroke={INK} strokeWidth={4.5}>
@@ -227,6 +243,14 @@ const MouthShape: React.FC<{m: Mouth; cx: number; cy: number}> = ({m, cx, cy}) =
 	if (m === 'smile') return <path d={`M${cx - 18},${cy - 4} Q${cx},${cy + 14} ${cx + 18},${cy - 4}`} stroke={INK} strokeWidth={4.5} fill="none" />;
 	if (m === 'smirk') return <path d={`M${cx - 14},${cy + 2} Q${cx + 4},${cy + 6} ${cx + 18},${cy - 8}`} stroke={INK} strokeWidth={4.5} fill="none" />;
 	if (m === 'frown') return <path d={`M${cx - 14},${cy + 6} Q${cx},${cy - 6} ${cx + 14},${cy + 6}`} stroke={INK} strokeWidth={4.5} fill="none" />;
+	if (m === 'grin')
+		return (
+			<g>
+				<path d={`M${cx - 24},${cy - 8} Q${cx},${cy - 2} ${cx + 24},${cy - 8} Q${cx + 20},${cy + 24} ${cx},${cy + 26} Q${cx - 20},${cy + 24} ${cx - 24},${cy - 8} Z`} fill="#6a1e24" stroke={INK} strokeWidth={4} />
+				<path d={`M${cx - 18},${cy - 5} L${cx + 18},${cy - 5} L${cx + 16},${cy + 2} L${cx - 16},${cy + 2} Z`} fill="#fff" />
+				<ellipse cx={cx} cy={cy + 18} rx={11} ry={5} fill="#e0606a" />
+			</g>
+		);
 	if (m === 'o') return <ellipse cx={cx} cy={cy + 2} rx={8} ry={10} fill="#5a1a1e" stroke={INK} strokeWidth={4} />;
 	const h = m === 'wide' ? 24 : 14;
 	return (
