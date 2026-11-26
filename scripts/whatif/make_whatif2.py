@@ -16,8 +16,13 @@ for k, (t0, text) in enumerate(S['lines']):
     mp3 = f'{D}/lines/{k:02d}.mp3'
     tf = f'{D}/lines/{k:02d}.txt'
     if not (os.path.exists(mp3) and os.path.exists(tf) and open(tf).read() == text):
-        env = dict(os.environ, EL_SPEED=str(S.get('speed', 1.12)))
-        subprocess.run(['node', f'{ROOT}/scripts/tts_eleven.mjs', 'line', mp3, VOICE, text], check=True, env=env)
+        if S.get('tts', 'fish') == 'fish':  # Fish Audio (с 26.11 — решение пользователя), тайминги слов по аудио
+            say = text
+            for a_, b_ in S.get('say', {'GTA 6': 'ГэТэА шесть', 'GTA': 'ГэТэА'}).items(): say = say.replace(a_, b_)
+            subprocess.run(['python3', f'{ROOT}/scripts/tts_fish_line.py', mp3, S.get('fish_voice', '48ec28a45588422b977a86460c11977f'), say, text], check=True)
+        else:
+            env = dict(os.environ, EL_SPEED=str(S.get('speed', 1.12)))
+            subprocess.run(['node', f'{ROOT}/scripts/tts_eleven.mjs', 'line', mp3, VOICE, text], check=True, env=env)
         open(tf, 'w').write(text)
     lines.append((t0, mp3, json.load(open(mp3[:-4] + '.json')), dur(mp3)))
 for (a, _, _, d), nxt in zip(lines, lines[1:] + [(L, 0, 0, 0)]):
