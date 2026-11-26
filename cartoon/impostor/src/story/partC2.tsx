@@ -350,7 +350,7 @@ const C033: React.FC = () => {
 /* ================================ 036–039 the recruiting office in Saint John ================================ */
 const REC_SPOTS: [number, number, number][] = [[P(505, 75)[0], P(505, 75)[1] + 80, 300], [P(730, 360)[0], P(730, 360)[1], 160]];
 /* the 1951 Canadian Red Ensign over the flag in the picture */
-const Ensign: React.FC = () => {
+export const Ensign: React.FC = () => {
 	const [x0, y0] = P(712, 178);
 	const [x1, y1] = P(768, 420);
 	return (

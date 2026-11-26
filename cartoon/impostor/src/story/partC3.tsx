@@ -510,5 +510,4 @@ export const SHOTS_C3: ShotDef[] = [
 	{at: '060', C: C060},
 	{at: '062', C: C062},
 	{at: '063', C: C063},
-	{at: '065', C: () => null},
 ];
