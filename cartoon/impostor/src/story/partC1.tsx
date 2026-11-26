@@ -14,23 +14,23 @@ import {useW} from './lib';
    the navy corpsman, the fake suicide, Dr. Robert Linton French, the forged checks.
    Rules: heroes ~1/3 of the frame, something new every 1.5–2 s, snap poses. */
 
-const T = (id: string, k: number) => Math.round(TL.lines.find((x) => x.id.startsWith(id))!.dur * k);
-const kk = (x: number, a: number, b: number) => Math.max(0, Math.min(1, (x - a) / (b - a)));
+export const T = (id: string, k: number) => Math.round(TL.lines.find((x) => x.id.startsWith(id))!.dur * k);
+export const kk = (x: number, a: number, b: number) => Math.max(0, Math.min(1, (x - a) / (b - a)));
 /* mouth by voice loudness, holding each shape 3 frames */
 const mouthOf = (sp: string, gf: number, rest: Mouth = 'closed'): Mouth => {
 	const v = talkOf(sp, gf - (gf % 3));
 	return v > 0.5 ? 'wide' : v > 0.16 ? 'open' : rest;
 };
 /* walking: x along a path and a leg swing */
-const walk = (f: number, t0: number, t1: number, x0: number, x1: number) => {
+export const walk = (f: number, t0: number, t1: number, x0: number, x1: number) => {
 	const k = kk(f, t0, t1);
 	return {x: x0 + (x1 - x0) * k, step: k > 0 && k < 1 ? Math.sin(f / 3) : 0, bob: k > 0 && k < 1 ? Math.abs(Math.sin(f / 3)) * 6 : 0};
 };
-const OR_SPOTS: [number, number, number][] = [
+export const OR_SPOTS: [number, number, number][] = [
 	[1233, 190, 280],
 	[1811, 304, 200],
 ];
-const S = 1.18; // hero scale (~40 % of the frame height)
+export const S = 1.18; // hero scale (~40 % of the frame height)
 
 /* ================================ 001 a surgeon pulls a bullet ================================ */
 const C001: React.FC = () => {
@@ -161,7 +161,7 @@ const C003: React.FC = () => {
 };
 
 /* ================================ 004 never medical school; a monk ================================ */
-const Polaroid: React.FC<{x: number; y: number; rot: number; k: number; label: string; children: React.ReactNode}> = ({x, y, rot, k, label, children}) => {
+export const Polaroid: React.FC<{x: number; y: number; rot: number; k: number; label: string; children: React.ReactNode}> = ({x, y, rot, k, label, children}) => {
 	const id = 'pc' + label.replace(/\W/g, '');
 	return (
 		<g transform={`translate(${x},${y}) rotate(${rot}) scale(${0.6 + 0.4 * Math.min(k, 1.1)})`} opacity={Math.min(1, k * 2)}>
@@ -375,7 +375,7 @@ const C007: React.FC = () => {
 };
 
 /* ================================ 008–009 runs away to the monks; not suited ================================ */
-const MON_SPOTS: [number, number, number][] = [
+export const MON_SPOTS: [number, number, number][] = [
 	[P(1345, 330)[0], P(1345, 330)[1], 200],
 	[P(1040, 380)[0], P(1040, 380)[1], 160],
 	[P(500, 390)[0], P(500, 390)[1], 160],
@@ -615,7 +615,7 @@ const C015: React.FC = () => {
 };
 
 /* ================================ 016–019 Doctor Robert Linton French ================================ */
-const LEC_SPOTS: [number, number, number][] = [
+export const LEC_SPOTS: [number, number, number][] = [
 	[P(100, 200)[0], P(100, 200)[1], 300],
 	[P(690, 60)[0], P(690, 60)[1], 200],
 ];
@@ -829,7 +829,6 @@ export const SHOTS_C1: ShotDef[] = [
 	{at: '018', C: C018},
 	{at: '020', C: C020},
 	{at: '021', C: C021},
-	{at: '022', C: () => <AbsoluteFill style={{background: '#000'}} />},
 ];
 void interpolate;
 void clamp;
