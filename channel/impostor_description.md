@@ -75,7 +75,7 @@ Red and black and white only, strong contrast, cinematic, readable on a phone, t
 
 ---
 
-## Шортс (57 с) — `videos/impostor_short.mp4`
+## Шортс (55 с) — `videos/impostor_short.mp4`
 
 **Title:**
 He Wasn't a Surgeon… But He Operated Anyway 😳
