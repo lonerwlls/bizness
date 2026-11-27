@@ -11,14 +11,17 @@ import {random} from 'remotion';
 export const INK = '#1d1a1f';
 export type Recipe = {
 	skin: string;
-	hair: 'slick' | 'crew' | 'side' | 'bald' | 'tonsure' | 'curly' | 'none';
+	hair: 'slick' | 'crew' | 'side' | 'bald' | 'tonsure' | 'curly' | 'none' | 'bun';
 	hairColor: string;
 	body: string; // jacket / uniform / robe colour
 	shirt?: string;
 	tie?: string;
-	hat?: 'fedora' | 'navycap' | 'sailor' | 'none';
+	hat?: 'fedora' | 'navycap' | 'sailor' | 'none' | 'mob' | 'helmet' | 'bowler';
 	hatColor?: string;
-	outfit?: 'suit' | 'uniform' | 'robe' | 'coat' | 'shirt' | 'scrubs' | 'prison' | 'gown';
+	outfit?: 'suit' | 'uniform' | 'robe' | 'coat' | 'shirt' | 'scrubs' | 'prison' | 'gown' | 'dress';
+	skirt?: string; // dress: skirt colour (default body)
+	apron?: string;
+	lashes?: boolean;
 	stripes?: number; // gold rings on the sleeves (navy officer)
 	glasses?: boolean;
 	mustache?: string;
@@ -110,6 +113,9 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 				{/* back arm behind the body */}
 				<path d={arm(shB, handB, -1)} stroke={INK} strokeWidth={6} fill="none" />
 				<circle cx={handB[0]} cy={handB[1]} r={9} fill={r.skin} stroke={INK} strokeWidth={3.5} />
+				{outfit === 'dress' ? (
+					<path d={`M${-bw * 0.95},${hip - 30} L${bw * 0.95},${hip - 30} L${bw * 1.3},-12 Q0,-2 ${-bw * 1.3},-12 Z`} fill={r.skirt ?? r.body} stroke={INK} strokeWidth={5} />
+				) : null}
 				{/* body capsule */}
 				<rect x={-bw} y={hip - bodyH + breathe} width={bw * 2} height={bodyH - breathe + 6} rx={bw * 0.9} fill={r.body} stroke={INK} strokeWidth={5} />
 				<path d={`M${bw * 0.35},${hip - bodyH + 30} Q${bw * 0.95},${hip - bodyH / 2} ${bw * 0.6},${hip}`} stroke={darker(r.body, 0.25)} strokeWidth={14} fill="none" opacity={0.5} />
@@ -127,6 +133,12 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 				{outfit === 'robe' ? <rect x={-bw} y={hip - 52} width={bw * 2} height={9} fill={darker(r.body, 0.45)} /> : null}
 				{outfit === 'scrubs' ? <path d={`M-18,${hip - bodyH + 10} L0,${hip - bodyH + 40} L18,${hip - bodyH + 10}`} stroke={INK} strokeWidth={3.5} fill="none" /> : null}
 				{outfit === 'prison' ? [0, 1, 2, 3].map((i) => <line key={i} x1={-bw + 4} y1={hip - bodyH + 30 + i * 22} x2={bw - 4} y2={hip - bodyH + 30 + i * 22} stroke={darker(r.body, 0.35)} strokeWidth={8} />) : null}
+				{r.apron ? (
+					<g>
+						<rect x={-bw * 0.55} y={hip - bodyH + 40} width={bw * 1.1} height={bodyH - 40} rx={8} fill={r.apron} stroke={INK} strokeWidth={3.5} />
+						{outfit === 'dress' ? <path d={`M${-bw * 0.6},${hip - 6} L${bw * 0.6},${hip - 6} L${bw * 0.75},-26 L${-bw * 0.75},-26 Z`} fill={r.apron} stroke={INK} strokeWidth={3.5} /> : null}
+					</g>
+				) : null}
 				{/* head */}
 				<g transform={`rotate(${(pose.head ?? 0) + talk * 4 * Math.sin(t / 3)},${HC[0]},${HC[1] + HEAD_R})`}>
 					<defs>
@@ -134,6 +146,7 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 							<circle cx={HC[0]} cy={HC[1]} r={HEAD_R} />
 						</clipPath>
 					</defs>
+					{r.hair === 'bun' ? <circle cx={HC[0] - 10} cy={HC[1] - 78} r={30} fill={r.hairColor} stroke={INK} strokeWidth={4} /> : null}
 					<circle cx={HC[0]} cy={HC[1]} r={HEAD_R} fill={r.skin} />
 					{/* hard shadow on the far side of the face */}
 					<g clipPath={`url(#${clip})`}>
@@ -152,6 +165,9 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 							<path d={`M${HC[0] + 74},${HC[1] + 10} Q${HC[0] + 78},${HC[1] - 40} ${HC[0] + 50},${HC[1] - 56} Q${HC[0] + 54},${HC[1] - 20} ${HC[0] + 58},${HC[1] + 16} Z`} />
 							{r.hair === 'tonsure' ? <path d={`M${HC[0] - 50},${HC[1] - 56} Q${HC[0]},${HC[1] - 86} ${HC[0] + 50},${HC[1] - 56} Q${HC[0]},${HC[1] - 70} ${HC[0] - 50},${HC[1] - 56} Z`} /> : null}
 						</g>
+					) : null}
+					{r.hair === 'bun' ? (
+						<path d={`M${HC[0] - 74},${HC[1] + 14} Q${HC[0] - 80},${HC[1] - 74} ${HC[0]},${HC[1] - 76} Q${HC[0] + 80},${HC[1] - 74} ${HC[0] + 74},${HC[1] + 14} Q${HC[0] + 66},${HC[1] - 30} ${HC[0] + 30},${HC[1] - 44} Q${HC[0]},${HC[1] - 34} ${HC[0] - 30},${HC[1] - 44} Q${HC[0] - 66},${HC[1] - 30} ${HC[0] - 74},${HC[1] + 14} Z`} fill={r.hairColor} stroke={INK} strokeWidth={4} />
 					) : null}
 					{r.hair === 'curly'
 						? Array.from({length: 9}).map((_, i) => {
@@ -175,6 +191,7 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 								<g>
 									<ellipse cx={HC[0] + exx + ex} cy={HC[1] - 4 + ey} rx={8.5} ry={11.5} fill={INK} />
 									<circle cx={HC[0] + exx + ex + 3} cy={HC[1] - 8 + ey} r={3.2} fill="#fff" />
+									{r.lashes && !face.lids ? <path d={`M${HC[0] + exx + ex + (i ? 6 : -6)},${HC[1] - 14 + ey} l${i ? 8 : -8},-7 M${HC[0] + exx + ex + (i ? 2 : -2)},${HC[1] - 15 + ey} l${i ? 4 : -4},-9`} stroke={INK} strokeWidth={3} /> : null}
 									{face.lids ? (
 										<g>
 											<rect x={HC[0] + exx - 14} y={HC[1] - 24} width={28} height={(face.lids === 'sly' ? 19 : 23) + ey} fill={r.skin} />
@@ -215,6 +232,25 @@ export const Toon: React.FC<{r: Recipe; x: number; y: number; s?: number; facing
 							<rect x={HC[0] - 66} y={HC[1] - 50} width={136} height={14} fill="#1d2236" />
 							<path d={`M${HC[0] - 10},${HC[1] - 38} Q${HC[0] + 40},${HC[1] - 30} ${HC[0] + 82},${HC[1] - 42}`} fill="none" stroke={INK} strokeWidth={8} />
 							<circle cx={HC[0] + 2} cy={HC[1] - 66} r={9} fill="#e8c24a" />
+						</g>
+					) : null}
+					{r.hat === 'mob' ? (
+						<g stroke={INK} strokeWidth={4} fill="#fbf8ef">
+							<path d={`M${HC[0] - 70},${HC[1] - 34} Q${HC[0] - 74},${HC[1] - 104} ${HC[0]},${HC[1] - 102} Q${HC[0] + 74},${HC[1] - 104} ${HC[0] + 70},${HC[1] - 34} Q${HC[0]},${HC[1] - 60} ${HC[0] - 70},${HC[1] - 34} Z`} />
+							{[-50, -25, 0, 25, 50].map((dx) => <circle key={dx} cx={HC[0] + dx} cy={HC[1] - 50 - Math.abs(dx) * -0.1} r={7} />)}
+						</g>
+					) : null}
+					{r.hat === 'helmet' ? (
+						<g stroke={INK} strokeWidth={4.5} fill={r.hatColor ?? '#1f2a4a'}>
+							<path d={`M${HC[0] - 74},${HC[1] - 40} Q${HC[0] - 70},${HC[1] - 140} ${HC[0]},${HC[1] - 140} Q${HC[0] + 70},${HC[1] - 140} ${HC[0] + 74},${HC[1] - 40} Z`} />
+							<rect x={HC[0] - 84} y={HC[1] - 48} width={168} height={14} rx={6} />
+							<path d={`M${HC[0]},${HC[1] - 112} l10,14 l-10,14 l-10,-14 Z`} fill="#e8c24a" />
+						</g>
+					) : null}
+					{r.hat === 'bowler' ? (
+						<g stroke={INK} strokeWidth={4.5} fill={r.hatColor ?? '#2a2a30'}>
+							<ellipse cx={HC[0]} cy={HC[1] - 52} rx={92} ry={14} />
+							<path d={`M${HC[0] - 60},${HC[1] - 56} Q${HC[0] - 62},${HC[1] - 128} ${HC[0]},${HC[1] - 128} Q${HC[0] + 62},${HC[1] - 128} ${HC[0] + 60},${HC[1] - 56} Z`} />
 						</g>
 					) : null}
 					{r.hat === 'sailor' ? (

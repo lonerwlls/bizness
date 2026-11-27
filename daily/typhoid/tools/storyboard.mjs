@@ -13,12 +13,12 @@ const require = createRequire(path.join(ROOT, 'package.json'));
 const {bundle} = require('@remotion/bundler');
 const {selectComposition, renderStill} = require('@remotion/renderer');
 const args = process.argv.slice(2);
-const comp = args[0] === 'Short' ? 'Short' : 'Long';
+const comp = args[0] === 'Short' || args[0] === 'Daily' ? 'Short' : 'Long';
 const every = Number(args[args.indexOf('--every') + 1]) || 0;
 const list = args.includes('--frames') ? args[args.indexOf('--frames') + 1].split(',').map(Number) : null;
 
 const serveUrl = await bundle({entryPoint: path.join(ROOT, 'src', 'index.ts')});
-const target = await selectComposition({serveUrl, id: comp, chromiumOptions: {gl: (process.env.GL ?? 'angle')}});
+const target = await selectComposition({serveUrl, id: comp === 'Short' ? 'Daily' : comp, chromiumOptions: {gl: (process.env.GL ?? 'angle')}});
 let frames = list;
 if (!frames && every) frames = Array.from({length: Math.floor(target.durationInFrames / (every * 30))}, (_, i) => Math.round((i + 0.5) * every * 30));
 if (!frames) {

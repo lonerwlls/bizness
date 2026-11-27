@@ -4,217 +4,55 @@
 			"from": "001",
 			"to": "002",
 			"kind": "room",
-			"gain": 0.03
+			"gain": 0.025
 		},
 		{
 			"from": "003",
 			"to": "004",
 			"kind": "room",
-			"gain": 0.03
+			"gain": 0.025
 		},
 		{
-			"from": "005",
+			"from": "004",
 			"to": "006",
 			"kind": "wind",
-			"gain": 0.02
+			"gain": 0.025
 		},
 		{
 			"from": "006",
-			"to": "008",
+			"to": "009",
 			"kind": "room",
-			"gain": 0.03
+			"gain": 0.025
 		},
 		{
-			"from": "008",
+			"from": "009",
 			"to": "010",
-			"kind": "night",
+			"kind": "wind",
 			"gain": 0.025
 		},
 		{
-			"from": "012",
+			"from": "010",
+			"to": "012",
+			"kind": "room",
+			"gain": 0.025
+		},
+		{
+			"from": "013",
 			"to": "015",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "016",
-			"to": "020",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "022",
-			"to": "025",
-			"kind": "room",
-			"gain": 0.03
-		},
-		{
-			"from": "026",
-			"to": "027",
-			"kind": "night",
-			"gain": 0.025
-		},
-		{
-			"from": "029",
-			"to": "030",
-			"kind": "night",
-			"gain": 0.025
-		},
-		{
-			"from": "031",
-			"to": "036",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "036",
-			"to": "040",
-			"kind": "rain",
-			"gain": 0.03
-		},
-		{
-			"from": "041",
-			"to": "044",
-			"kind": "rain",
-			"gain": 0.03
-		},
-		{
-			"from": "044",
-			"to": "045",
-			"kind": "wind",
-			"gain": 0.02
-		},
-		{
-			"from": "045",
-			"to": "048",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "048",
-			"to": "049",
-			"kind": "night",
-			"gain": 0.025
-		},
-		{
-			"from": "050",
-			"to": "052",
-			"kind": "wind",
-			"gain": 0.03
-		},
-		{
-			"from": "053",
-			"to": "062",
-			"kind": "room",
-			"gain": 0.03
-		},
-		{
-			"from": "063",
-			"to": "065",
 			"kind": "sea",
 			"gain": 0.03
 		},
 		{
-			"from": "065",
-			"to": "067",
+			"from": "015",
+			"to": "017",
+			"kind": "room",
+			"gain": 0.025
+		},
+		{
+			"from": "017",
+			"to": "end",
 			"kind": "sea",
 			"gain": 0.03
-		},
-		{
-			"from": "067",
-			"to": "069",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "069",
-			"to": "070",
-			"kind": "sea",
-			"gain": 0.03
-		},
-		{
-			"from": "070",
-			"to": "076",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "076",
-			"to": "078",
-			"kind": "sea",
-			"gain": 0.03
-		},
-		{
-			"from": "078",
-			"to": "079",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "081",
-			"to": "084",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "084",
-			"to": "087",
-			"kind": "sea",
-			"gain": 0.03
-		},
-		{
-			"from": "087",
-			"to": "089",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "090",
-			"to": "091",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "092",
-			"to": "094",
-			"kind": "rain",
-			"gain": 0.025
-		},
-		{
-			"from": "095",
-			"to": "096",
-			"kind": "rain",
-			"gain": 0.025
-		},
-		{
-			"from": "100",
-			"to": "104",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "105",
-			"to": "107",
-			"kind": "crowd",
-			"gain": 0.03
-		},
-		{
-			"from": "109",
-			"to": "111",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "113",
-			"to": "115",
-			"kind": "room",
-			"gain": 0.025
-		},
-		{
-			"from": "117",
-			"to": "118",
-			"kind": "night",
-			"gain": 0.025
 		}
 	],
 	"music": [
@@ -231,2532 +69,355 @@
 			"at": "001",
 			"off": 0,
 			"type": "pop",
-			"amp": 0.06
+			"amp": 0.05
 		},
 		{
 			"at": "001",
-			"off": 36,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "001",
-			"off": 76,
-			"type": "click",
-			"amp": 0.2
-		},
-		{
-			"at": "001",
-			"off": 134,
-			"type": "ding",
-			"amp": 0.18
-		},
-		{
-			"at": "002",
-			"off": 0,
-			"type": "pop"
-		},
-		{
-			"at": "002",
-			"off": 46,
-			"type": "pop"
-		},
-		{
-			"at": "002",
-			"off": 49,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 51,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 52,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 54,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 55,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 57,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 59,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 60,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 62,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 63,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 65,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 67,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 68,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 70,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 71,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 73,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "002",
-			"off": 92,
-			"type": "ding",
-			"amp": 0.15
-		},
-		{
-			"at": "003",
-			"off": 4,
-			"type": "ding",
-			"amp": 0.08
-		},
-		{
-			"at": "003",
-			"off": 45,
-			"type": "thud",
-			"amp": 0.15
-		},
-		{
-			"at": "003",
-			"off": 48,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "004",
-			"off": 0,
-			"type": "pop"
-		},
-		{
-			"at": "004",
-			"off": 36,
-			"type": "stamp",
-			"amp": 0.25
-		},
-		{
-			"at": "004",
-			"off": 67,
-			"type": "pop"
-		},
-		{
-			"at": "004",
-			"off": 92,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "005",
-			"off": 5,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "005",
-			"off": 52,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "005",
-			"off": 64,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "005",
-			"off": 76,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "005",
-			"off": 88,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "008",
-			"off": 2,
-			"type": "steps",
-			"dur": 2.5,
-			"amp": 0.05
-		},
-		{
-			"at": "008",
-			"off": 80,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "009",
-			"off": 51,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "009",
-			"off": 55,
-			"type": "stamp",
-			"amp": 0.12
-		},
-		{
-			"at": "010",
-			"off": 2,
-			"type": "pop"
-		},
-		{
-			"at": "010",
-			"off": 10,
-			"type": "stamp",
-			"amp": 0.2
-		},
-		{
-			"at": "010",
-			"off": 52,
-			"type": "stamp",
-			"amp": 0.25
-		},
-		{
-			"at": "011",
-			"off": 2,
-			"type": "pop"
-		},
-		{
-			"at": "011",
-			"off": 54,
-			"type": "swoosh",
-			"amp": 0.08
-		},
-		{
-			"at": "011",
-			"off": 76,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "011",
-			"off": 78,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "011",
-			"off": 80,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "011",
 			"off": 82,
-			"type": "click",
+			"type": "pop",
 			"amp": 0.05
 		},
 		{
-			"at": "011",
-			"off": 84,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "011",
-			"off": 86,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "011",
+			"at": "001",
 			"off": 88,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "011",
-			"off": 90,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "011",
-			"off": 148,
-			"type": "whoosh",
-			"amp": 0.1
-		},
-		{
-			"at": "012",
-			"off": 0,
-			"type": "steps",
-			"dur": 1.5,
-			"amp": 0.05
-		},
-		{
-			"at": "012",
-			"off": 31,
-			"type": "steps",
-			"dur": 1.5,
-			"amp": 0.05
-		},
-		{
-			"at": "012",
-			"off": 63,
-			"type": "pop"
-		},
-		{
-			"at": "012",
-			"off": 71,
-			"type": "ding",
-			"amp": 0.08
-		},
-		{
-			"at": "013",
-			"off": 2,
-			"type": "steps",
-			"dur": 1.5,
-			"amp": 0.05
-		},
-		{
-			"at": "013",
-			"off": 13,
 			"type": "pop",
-			"amp": 0.06
+			"amp": 0.05
 		},
 		{
-			"at": "013",
-			"off": 110,
-			"type": "whooshUp",
-			"dur": 0.4,
-			"amp": 0.08
-		},
-		{
-			"at": "013",
-			"off": 116,
-			"type": "ding",
-			"amp": 0.12
-		},
-		{
-			"at": "014",
-			"off": 28,
-			"type": "thud",
-			"amp": 0.12
-		},
-		{
-			"at": "014",
-			"off": 31,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "015",
-			"off": 0,
-			"type": "thud",
-			"amp": 0.2
-		},
-		{
-			"at": "015",
-			"off": 3,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "015",
-			"off": 6,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "015",
-			"off": 9,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "015",
-			"off": 12,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "015",
-			"off": 15,
-			"type": "click",
-			"amp": 0.06
-		},
-		{
-			"at": "016",
-			"off": 11,
-			"type": "pop",
-			"amp": 0.15
-		},
-		{
-			"at": "016",
-			"off": 27,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "016",
+			"at": "001",
 			"off": 94,
 			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "017",
-			"off": 9,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 12,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 15,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 18,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 21,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 24,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 27,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 30,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 33,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "017",
-			"off": 36,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "018",
-			"off": 2,
-			"type": "steps",
-			"dur": 0.9,
 			"amp": 0.05
 		},
 		{
-			"at": "018",
-			"off": 6,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "019",
-			"off": 4,
-			"type": "ding",
-			"amp": 0.12
-		},
-		{
-			"at": "020",
-			"off": 3,
+			"at": "002",
+			"off": 0,
 			"type": "swoosh",
-			"amp": 0.08
+			"amp": 0.06
 		},
 		{
-			"at": "021",
+			"at": "002",
 			"off": 2,
-			"type": "pop"
-		},
-		{
-			"at": "021",
-			"off": 7,
-			"type": "pop"
-		},
-		{
-			"at": "021",
-			"off": 12,
-			"type": "pop"
-		},
-		{
-			"at": "021",
-			"off": 33,
 			"type": "stamp",
-			"amp": 0.28
-		},
-		{
-			"at": "021",
-			"off": 66,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "021",
-			"off": 76,
-			"type": "whoosh",
 			"amp": 0.12
 		},
 		{
-			"at": "021",
-			"off": 76,
-			"type": "steps",
-			"dur": 0.5,
-			"amp": 0.08
+			"at": "002",
+			"off": 18,
+			"type": "stamp",
+			"amp": 0.12
 		},
 		{
-			"at": "006",
-			"off": 0,
-			"type": "buzz",
-			"dur": 7.633333333333334,
-			"amp": 0.025
+			"at": "002",
+			"off": 34,
+			"type": "stamp",
+			"amp": 0.12
 		},
 		{
-			"at": "006",
-			"off": 4,
-			"type": "steps",
-			"dur": 1.1,
-			"amp": 0.05
-		},
-		{
-			"at": "006",
-			"off": 72,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "006",
-			"off": 76,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "007",
-			"off": 10,
-			"type": "ding",
-			"amp": 0.1
-		},
-		{
-			"at": "007",
-			"off": 13,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "007",
-			"off": 53,
-			"type": "switch",
-			"amp": 0.15
-		},
-		{
-			"at": "007",
-			"off": 65,
-			"type": "thud",
-			"amp": 0.15
-		},
-		{
-			"at": "007",
-			"off": 73,
-			"type": "thud",
-			"amp": 0.06
-		},
-		{
-			"at": "022",
-			"off": -6,
-			"type": "steps",
-			"dur": 0.5,
-			"amp": 0.07
-		},
-		{
-			"at": "022",
-			"off": 8,
-			"type": "thud",
-			"amp": 0.18
-		},
-		{
-			"at": "022",
-			"off": 10,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "023",
-			"off": 0,
-			"type": "thud",
-			"amp": 0.2
-		},
-		{
-			"at": "023",
-			"off": 5,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 8,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 11,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 14,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 17,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 20,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 23,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 26,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
+			"at": "003",
 			"off": 29,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 32,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 35,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 38,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 41,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 44,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 47,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 50,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 53,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "023",
-			"off": 56,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "024",
-			"off": 14,
-			"type": "ding",
-			"amp": 0.12
-		},
-		{
-			"at": "025",
-			"off": 5,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "025",
-			"off": 10,
-			"type": "swoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "025",
-			"off": 30,
-			"type": "swoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "025",
-			"off": 50,
-			"type": "swoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "025",
-			"off": 59,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "026",
-			"off": 2,
-			"type": "steps",
-			"dur": 1,
-			"amp": 0.05
-		},
-		{
-			"at": "026",
-			"off": 72,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "027",
-			"off": 2,
-			"type": "pop"
-		},
-		{
-			"at": "027",
-			"off": 42,
-			"type": "swoosh",
-			"amp": 0.06
-		},
-		{
-			"at": "028",
-			"off": 2,
-			"type": "pop"
-		},
-		{
-			"at": "028",
-			"off": 45,
-			"type": "stamp",
-			"amp": 0.28
-		},
-		{
-			"at": "029",
-			"off": 33,
 			"type": "thud",
-			"amp": 0.12
-		},
-		{
-			"at": "029",
-			"off": 36,
-			"type": "pop",
 			"amp": 0.06
 		},
 		{
-			"at": "029",
-			"off": 74,
-			"type": "steps",
-			"dur": 0.8,
+			"at": "003",
+			"off": 34,
+			"type": "thud",
 			"amp": 0.06
 		},
 		{
-			"at": "030",
-			"off": 2,
-			"type": "pop"
+			"at": "003",
+			"off": 39,
+			"type": "thud",
+			"amp": 0.06
 		},
 		{
-			"at": "030",
-			"off": 60,
-			"type": "pop"
-		},
-		{
-			"at": "030",
-			"off": 68,
+			"at": "003",
+			"off": 37,
 			"type": "ding",
-			"amp": 0.08
-		},
-		{
-			"at": "031",
-			"off": 4,
-			"type": "steps",
-			"dur": 1,
 			"amp": 0.05
 		},
 		{
-			"at": "031",
-			"off": 54,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "032",
-			"off": 6,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "034",
-			"off": 21,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "035",
+			"at": "004",
 			"off": 0,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "035",
-			"off": 68,
 			"type": "steps",
-			"dur": 0.9,
-			"amp": 0.07
-		},
-		{
-			"at": "035",
-			"off": 82,
-			"type": "pop",
 			"amp": 0.06
 		},
 		{
-			"at": "036",
-			"off": 0,
-			"type": "buzz",
-			"dur": 0.1,
-			"amp": 0
-		},
-		{
-			"at": "036",
-			"off": 77,
-			"type": "steps",
-			"dur": 1.1,
-			"amp": 0.06
-		},
-		{
-			"at": "036",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "038",
-			"off": 8,
-			"type": "ding",
-			"amp": 0.08
-		},
-		{
-			"at": "039",
-			"off": 47,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "040",
-			"off": 3,
-			"type": "pop",
-			"amp": 0.1
-		},
-		{
-			"at": "040",
+			"at": "004",
 			"off": 28,
 			"type": "pop",
-			"amp": 0.1
-		},
-		{
-			"at": "040",
-			"off": 54,
-			"type": "pop",
-			"amp": 0.1
-		},
-		{
-			"at": "041",
-			"off": 0,
-			"type": "pop",
-			"amp": 0.1
-		},
-		{
-			"at": "042",
-			"off": 16,
-			"type": "stamp",
-			"amp": 0.3
-		},
-		{
-			"at": "043",
-			"off": 6,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "043",
-			"off": 14,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "043",
-			"off": 22,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "043",
-			"off": 30,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "044",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "044",
-			"off": 10,
-			"type": "swoosh",
-			"amp": 0.08
-		},
-		{
-			"at": "044",
-			"off": 65,
-			"type": "ding",
-			"amp": 0.1
-		},
-		{
-			"at": "045",
-			"off": 2,
-			"type": "steps",
-			"dur": 0.9,
 			"amp": 0.05
 		},
 		{
-			"at": "045",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "046",
-			"off": 18,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "046",
-			"off": 47,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "046",
-			"off": 89,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "047",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "047",
-			"off": 52,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "047",
-			"off": 105,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "048",
-			"off": 8,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "048",
-			"off": 4,
+			"at": "004",
+			"off": 64,
 			"type": "ding",
-			"amp": 0.04
+			"amp": 0.06
 		},
 		{
-			"at": "048",
-			"off": 18,
-			"type": "ding",
-			"amp": 0.04
-		},
-		{
-			"at": "048",
-			"off": 32,
-			"type": "ding",
-			"amp": 0.04
-		},
-		{
-			"at": "048",
-			"off": 46,
-			"type": "ding",
-			"amp": 0.04
-		},
-		{
-			"at": "049",
+			"at": "005",
 			"off": 0,
-			"type": "thud",
-			"amp": 0.18
+			"type": "click",
+			"amp": 0.06
 		},
 		{
-			"at": "049",
+			"at": "005",
 			"off": 3,
 			"type": "click",
-			"amp": 0.05
+			"amp": 0.06
 		},
 		{
-			"at": "049",
+			"at": "005",
 			"off": 6,
 			"type": "click",
-			"amp": 0.05
+			"amp": 0.06
 		},
 		{
-			"at": "049",
+			"at": "005",
 			"off": 9,
 			"type": "click",
-			"amp": 0.05
+			"amp": 0.06
 		},
 		{
-			"at": "049",
+			"at": "005",
 			"off": 12,
 			"type": "click",
-			"amp": 0.05
+			"amp": 0.06
 		},
 		{
-			"at": "049",
+			"at": "005",
 			"off": 15,
 			"type": "click",
-			"amp": 0.05
+			"amp": 0.06
 		},
 		{
-			"at": "049",
+			"at": "005",
 			"off": 18,
 			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "050",
-			"off": 4,
-			"type": "steps",
-			"dur": 3,
-			"amp": 0.05
-		},
-		{
-			"at": "051",
-			"off": 9,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "051",
-			"off": 18,
-			"type": "clap",
 			"amp": 0.06
 		},
 		{
-			"at": "051",
-			"off": 64,
-			"type": "pop"
-		},
-		{
-			"at": "051",
-			"off": 131,
-			"type": "ding",
-			"amp": 0.12
-		},
-		{
-			"at": "052",
-			"off": 4,
-			"type": "whoosh",
-			"amp": 0.06
-		},
-		{
-			"at": "053",
-			"off": 61,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "053",
-			"off": 95,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "053",
-			"off": 130,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "054",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "054",
-			"off": 53,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "054",
-			"off": 59,
-			"type": "steps",
-			"dur": 0.8,
-			"amp": 0.06
-		},
-		{
-			"at": "054",
-			"off": 92,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "054",
-			"off": 97,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "054",
-			"off": 102,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "054",
-			"off": 107,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "054",
-			"off": 112,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "054",
-			"off": 117,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "055",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "058",
-			"off": 12,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "059",
-			"off": 0,
-			"type": "steps",
-			"dur": 0.6,
-			"amp": 0.05
-		},
-		{
-			"at": "059",
-			"off": 32,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "059",
-			"off": 65,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "059",
-			"off": 69,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "059",
-			"off": 73,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "059",
-			"off": 77,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "059",
-			"off": 81,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "059",
-			"off": 85,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "059",
-			"off": 89,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "059",
-			"off": 93,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "060",
-			"off": 51,
-			"type": "pop",
-			"amp": 0.2
-		},
-		{
-			"at": "060",
-			"off": 67,
-			"type": "click",
-			"amp": 0.1
-		},
-		{
-			"at": "060",
-			"off": 57,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "061",
-			"off": 11,
-			"type": "ding",
-			"amp": 0.12
-		},
-		{
-			"at": "062",
-			"off": 10,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "062",
-			"off": 30,
-			"type": "thud",
-			"amp": 0.15
-		},
-		{
-			"at": "062",
+			"at": "005",
 			"off": 38,
-			"type": "thud",
-			"amp": 0.12
-		},
-		{
-			"at": "062",
-			"off": 46,
-			"type": "thud",
-			"amp": 0.12
-		},
-		{
-			"at": "063",
-			"off": 0,
-			"type": "splash",
-			"amp": 0.05
-		},
-		{
-			"at": "063",
-			"off": 33,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "064",
-			"off": 2,
-			"type": "pop",
-			"amp": 0.1
-		},
-		{
-			"at": "064",
-			"off": 44,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "065",
-			"off": 0,
-			"type": "steps",
-			"amp": 0.06
-		},
-		{
-			"at": "065",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "066",
-			"off": 5,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "066",
-			"off": 32,
-			"type": "switch",
-			"amp": 0.06
-		},
-		{
-			"at": "066",
-			"off": 48,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "068",
-			"off": 5,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "068",
-			"off": 23,
-			"type": "click",
-			"amp": 0.08
-		},
-		{
-			"at": "068",
-			"off": 50,
-			"type": "ding",
-			"amp": 0.06
-		},
-		{
-			"at": "069",
-			"off": 0,
-			"type": "steps",
-			"amp": 0.06
-		},
-		{
-			"at": "069",
-			"off": 44,
-			"type": "clap",
-			"amp": 0.08
-		},
-		{
-			"at": "069",
-			"off": 82,
-			"type": "whoosh",
-			"amp": 0.06
-		},
-		{
-			"at": "070",
-			"off": 0,
-			"type": "steps",
-			"amp": 0.07
-		},
-		{
-			"at": "070",
-			"off": 61,
-			"type": "swoosh",
-			"amp": 0.06
-		},
-		{
-			"at": "071",
-			"off": 1,
-			"type": "whooshUp",
-			"amp": 0.06
-		},
-		{
-			"at": "072",
-			"off": 0,
-			"type": "steps",
-			"amp": 0.05
-		},
-		{
-			"at": "072",
-			"off": 34,
-			"type": "swoosh",
-			"amp": 0.08
-		},
-		{
-			"at": "072",
-			"off": 65,
-			"type": "ding",
-			"amp": 0.06
-		},
-		{
-			"at": "073",
-			"off": 0,
-			"type": "switch",
-			"amp": 0.08
-		},
-		{
-			"at": "073",
-			"off": 55,
-			"type": "buzz",
-			"amp": 0.05
-		},
-		{
-			"at": "073",
-			"off": 94,
-			"type": "whoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "074",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.15
-		},
-		{
-			"at": "075",
-			"off": 4,
-			"type": "ding",
-			"amp": 0.12
-		},
-		{
-			"at": "075",
-			"off": 20,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "075",
-			"off": 27,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "075",
-			"off": 33,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "075",
-			"off": 40,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "075",
-			"off": 46,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "075",
-			"off": 53,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "075",
-			"off": 74,
 			"type": "ding",
 			"amp": 0.08
 		},
 		{
-			"at": "076",
-			"off": 48,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "076",
+			"at": "005",
 			"off": 68,
 			"type": "pop",
-			"amp": 0.06
+			"amp": 0.08
 		},
 		{
-			"at": "076",
-			"off": 93,
+			"at": "006",
+			"off": 46,
+			"type": "pop",
+			"amp": 0.05
+		},
+		{
+			"at": "007",
+			"off": 4,
 			"type": "swoosh",
-			"amp": 0.06
+			"amp": 0.08
 		},
 		{
-			"at": "076",
-			"off": 144,
-			"type": "stamp",
-			"amp": 0.15
-		},
-		{
-			"at": "077",
+			"at": "008",
 			"off": 0,
-			"type": "clap",
+			"type": "steps",
 			"amp": 0.1
 		},
 		{
-			"at": "077",
-			"off": 2,
-			"type": "pop",
+			"at": "008",
+			"off": 12,
+			"type": "thud",
 			"amp": 0.08
 		},
 		{
-			"at": "078",
-			"off": 10,
-			"type": "ding",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 42,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 47,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 52,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 57,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 62,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 67,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 72,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 77,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 82,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "078",
-			"off": 87,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "079",
+			"at": "009",
 			"off": 0,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "079",
-			"off": 10,
-			"type": "thud",
-			"amp": 0.08
-		},
-		{
-			"at": "079",
-			"off": 28,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "079",
-			"off": 38,
-			"type": "thud",
-			"amp": 0.08
-		},
-		{
-			"at": "079",
-			"off": 56,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "079",
-			"off": 66,
-			"type": "thud",
-			"amp": 0.08
-		},
-		{
-			"at": "080",
-			"off": 49,
-			"type": "whoosh",
-			"amp": 0.05
-		},
-		{
-			"at": "080",
-			"off": 104,
-			"type": "thud",
-			"amp": 0.08
-		},
-		{
-			"at": "081",
-			"off": 65,
-			"type": "ding",
-			"amp": 0.05
-		},
-		{
-			"at": "082",
-			"off": 33,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "082",
-			"off": 70,
-			"type": "swoosh",
-			"amp": 0.05
-		},
-		{
-			"at": "083",
-			"off": 34,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "084",
-			"off": 0,
-			"type": "buzz",
-			"amp": 0.03
-		},
-		{
-			"at": "084",
-			"off": 4,
-			"type": "buzz",
-			"amp": 0.03
-		},
-		{
-			"at": "084",
-			"off": 14,
-			"type": "buzz",
-			"amp": 0.03
-		},
-		{
-			"at": "084",
-			"off": 24,
-			"type": "buzz",
-			"amp": 0.03
-		},
-		{
-			"at": "084",
-			"off": 8,
 			"type": "steps",
+			"amp": 0.08
+		},
+		{
+			"at": "009",
+			"off": 22,
+			"type": "pop",
+			"amp": 0.05
+		},
+		{
+			"at": "009",
+			"off": 28,
+			"type": "pop",
+			"amp": 0.05
+		},
+		{
+			"at": "009",
+			"off": 38,
+			"type": "pop",
 			"amp": 0.06
 		},
 		{
-			"at": "084",
-			"off": 71,
+			"at": "009",
+			"off": 44,
 			"type": "click",
 			"amp": 0.04
 		},
 		{
-			"at": "084",
+			"at": "009",
+			"off": 50,
+			"type": "click",
+			"amp": 0.04
+		},
+		{
+			"at": "009",
+			"off": 56,
+			"type": "click",
+			"amp": 0.04
+		},
+		{
+			"at": "009",
+			"off": 62,
+			"type": "click",
+			"amp": 0.04
+		},
+		{
+			"at": "009",
+			"off": 68,
+			"type": "click",
+			"amp": 0.04
+		},
+		{
+			"at": "009",
 			"off": 74,
 			"type": "click",
 			"amp": 0.04
 		},
 		{
-			"at": "084",
-			"off": 77,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
+			"at": "009",
 			"off": 80,
 			"type": "click",
 			"amp": 0.04
 		},
 		{
-			"at": "084",
-			"off": 83,
-			"type": "click",
-			"amp": 0.04
+			"at": "010",
+			"off": 29,
+			"type": "whoosh",
+			"amp": 0.06
 		},
 		{
-			"at": "084",
-			"off": 86,
-			"type": "click",
-			"amp": 0.04
+			"at": "010",
+			"off": 35,
+			"type": "ding",
+			"amp": 0.05
 		},
 		{
-			"at": "084",
-			"off": 89,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
-			"off": 92,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
-			"off": 95,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
-			"off": 98,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
-			"off": 101,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
-			"off": 104,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
-			"off": 107,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
-			"off": 110,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "084",
-			"off": 154,
-			"type": "stamp",
-			"amp": 0.15
-		},
-		{
-			"at": "085",
-			"off": 15,
+			"at": "012",
+			"off": 19,
 			"type": "pop",
 			"amp": 0.05
 		},
 		{
-			"at": "085",
-			"off": 45,
-			"type": "whoosh",
+			"at": "012",
+			"off": 21,
+			"type": "pop",
 			"amp": 0.05
 		},
 		{
-			"at": "085",
-			"off": 57,
-			"type": "click",
+			"at": "012",
+			"off": 23,
+			"type": "pop",
 			"amp": 0.05
 		},
 		{
-			"at": "085",
+			"at": "012",
 			"off": 60,
 			"type": "ding",
-			"amp": 0.04
+			"amp": 0.06
 		},
 		{
-			"at": "085",
-			"off": 94,
-			"type": "ding",
-			"amp": 0.04
-		},
-		{
-			"at": "086",
+			"at": "013",
 			"off": 0,
-			"type": "steps",
+			"type": "whoosh",
 			"amp": 0.08
 		},
 		{
-			"at": "088",
-			"off": 0,
+			"at": "013",
+			"off": 36,
+			"type": "splash",
+			"amp": 0.05
+		},
+		{
+			"at": "013",
+			"off": 50,
 			"type": "steps",
 			"amp": 0.05
 		},
 		{
-			"at": "088",
-			"off": 10,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "088",
-			"off": 14,
-			"type": "ding",
-			"amp": 0.05
-		},
-		{
-			"at": "089",
+			"at": "014",
 			"off": 0,
 			"type": "swoosh",
 			"amp": 0.06
 		},
 		{
-			"at": "089",
-			"off": 6,
+			"at": "014",
+			"off": 22,
 			"type": "click",
-			"amp": 0.04
+			"amp": 0.05
 		},
 		{
-			"at": "089",
-			"off": 9,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 12,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 15,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 18,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 21,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 24,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 27,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
+			"at": "014",
 			"off": 30,
 			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 33,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 36,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 39,
-			"type": "click",
-			"amp": 0.04
-		},
-		{
-			"at": "089",
-			"off": 74,
-			"type": "stamp",
-			"amp": 0.15
-		},
-		{
-			"at": "090",
-			"off": 0,
-			"type": "steps",
-			"amp": 0.06
-		},
-		{
-			"at": "090",
-			"off": 10,
-			"type": "click",
-			"amp": 0.12
-		},
-		{
-			"at": "090",
-			"off": 58,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "091",
-			"off": 0,
-			"type": "splash",
-			"amp": 0.04
-		},
-		{
-			"at": "091",
-			"off": 16,
-			"type": "pop",
 			"amp": 0.05
 		},
 		{
-			"at": "092",
-			"off": 52,
-			"type": "thud",
-			"amp": 0.18
-		},
-		{
-			"at": "093",
-			"off": 4,
-			"type": "ding",
-			"amp": 0.06
-		},
-		{
-			"at": "093",
-			"off": 40,
-			"type": "ding",
-			"amp": 0.05
-		},
-		{
-			"at": "094",
-			"off": 0,
-			"type": "swoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "094",
-			"off": 7,
-			"type": "swoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "094",
-			"off": 17,
-			"type": "swoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "094",
-			"off": 27,
-			"type": "swoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "094",
-			"off": 37,
-			"type": "swoosh",
-			"amp": 0.04
-		},
-		{
-			"at": "094",
-			"off": 24,
-			"type": "ding",
-			"amp": 0.05
-		},
-		{
-			"at": "095",
-			"off": 39,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "095",
-			"off": 62,
-			"type": "ding",
-			"amp": 0.06
-		},
-		{
-			"at": "096",
-			"off": 0,
-			"type": "steps",
-			"amp": 0.06
-		},
-		{
-			"at": "096",
-			"off": 46,
-			"type": "ding",
-			"amp": 0.05
-		},
-		{
-			"at": "096",
-			"off": 78,
-			"type": "switch",
-			"amp": 0.08
-		},
-		{
-			"at": "096",
-			"off": 88,
-			"type": "switch",
-			"amp": 0.08
-		},
-		{
-			"at": "096",
-			"off": 102,
-			"type": "switch",
-			"amp": 0.08
-		},
-		{
-			"at": "096",
-			"off": 112,
-			"type": "switch",
-			"amp": 0.08
-		},
-		{
-			"at": "096",
-			"off": 126,
-			"type": "switch",
-			"amp": 0.08
-		},
-		{
-			"at": "096",
-			"off": 136,
-			"type": "switch",
-			"amp": 0.08
-		},
-		{
-			"at": "097",
-			"off": 0,
-			"type": "swoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "098",
-			"off": 9,
+			"at": "014",
+			"off": 41,
 			"type": "stamp",
 			"amp": 0.14
 		},
 		{
-			"at": "098",
-			"off": 40,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "098",
-			"off": 43,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "098",
-			"off": 46,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "098",
-			"off": 49,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "098",
-			"off": 52,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "098",
-			"off": 55,
-			"type": "pop",
-			"amp": 0.04
-		},
-		{
-			"at": "099",
-			"off": 0,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "099",
-			"off": 6,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "099",
-			"off": 14,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "099",
-			"off": 22,
-			"type": "swoosh",
-			"amp": 0.03
-		},
-		{
-			"at": "099",
-			"off": 50,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "099",
-			"off": 54,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "099",
-			"off": 58,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "099",
-			"off": 62,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "099",
-			"off": 66,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "100",
-			"off": 0,
-			"type": "swoosh",
-			"amp": 0.06
-		},
-		{
-			"at": "100",
-			"off": 23,
-			"type": "stamp",
-			"amp": 0.14
-		},
-		{
-			"at": "100",
-			"off": 46,
-			"type": "steps",
-			"amp": 0.06
-		},
-		{
-			"at": "100",
-			"off": 86,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "100",
-			"off": 92,
-			"type": "click",
-			"amp": 0.05
-		},
-		{
-			"at": "101",
-			"off": 57,
-			"type": "swoosh",
-			"amp": 0.05
-		},
-		{
-			"at": "101",
-			"off": 88,
-			"type": "pop",
-			"amp": 0.05
-		},
-		{
-			"at": "102",
-			"off": 0,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "103",
-			"off": 2,
-			"type": "thud",
-			"amp": 0.1
-		},
-		{
-			"at": "103",
-			"off": 40,
-			"type": "whoosh",
-			"amp": 0.1
-		},
-		{
-			"at": "104",
-			"off": 22,
-			"type": "pop",
-			"amp": 0.1
-		},
-		{
-			"at": "104",
-			"off": 85,
-			"type": "swoosh",
-			"amp": 0.06
-		},
-		{
-			"at": "104",
-			"off": 99,
-			"type": "whoosh",
-			"amp": 0.06
-		},
-		{
-			"at": "105",
-			"off": 139,
-			"type": "ding",
-			"amp": 0.1
-		},
-		{
-			"at": "105",
-			"off": 141,
-			"type": "clap",
-			"amp": 0.12
-		},
-		{
-			"at": "106",
-			"off": 0,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "106",
+			"at": "014",
 			"off": 53,
-			"type": "clap",
-			"amp": 0.1
+			"type": "steps",
+			"amp": 0.06
 		},
 		{
-			"at": "107",
-			"off": 0,
-			"type": "thud",
-			"amp": 0.1
+			"at": "015",
+			"off": 13,
+			"type": "click",
+			"amp": 0.06
 		},
 		{
-			"at": "107",
-			"off": 32,
-			"type": "stamp",
-			"amp": 0.14
-		},
-		{
-			"at": "107",
-			"off": 108,
+			"at": "015",
+			"off": 23,
 			"type": "pop",
 			"amp": 0.06
 		},
 		{
-			"at": "107",
-			"off": 116,
-			"type": "click",
-			"amp": 0.15
-		},
-		{
-			"at": "108",
-			"off": 0,
-			"type": "whoosh",
-			"amp": 0.07
-		},
-		{
-			"at": "109",
-			"off": 72,
-			"type": "ding",
-			"amp": 0.06
-		},
-		{
-			"at": "110",
-			"off": 4,
-			"type": "clap",
-			"amp": 0.1
-		},
-		{
-			"at": "110",
-			"off": 79,
-			"type": "click",
-			"amp": 0.08
-		},
-		{
-			"at": "110",
-			"off": 91,
-			"type": "click",
-			"amp": 0.08
-		},
-		{
-			"at": "110",
-			"off": 103,
-			"type": "click",
-			"amp": 0.08
-		},
-		{
-			"at": "110",
-			"off": 115,
-			"type": "click",
-			"amp": 0.08
-		},
-		{
-			"at": "110",
-			"off": 127,
-			"type": "click",
-			"amp": 0.08
-		},
-		{
-			"at": "110",
-			"off": 139,
-			"type": "click",
-			"amp": 0.08
-		},
-		{
-			"at": "110",
-			"off": 151,
-			"type": "click",
-			"amp": 0.08
-		},
-		{
-			"at": "110",
-			"off": 108,
-			"type": "buzz",
-			"amp": 0.06
-		},
-		{
-			"at": "111",
+			"at": "015",
 			"off": 45,
 			"type": "swoosh",
 			"amp": 0.05
 		},
 		{
-			"at": "111",
-			"off": 57,
+			"at": "015",
+			"off": 79,
 			"type": "ding",
-			"amp": 0.04
-		},
-		{
-			"at": "112",
-			"off": 8,
-			"type": "stamp",
-			"amp": 0.08
-		},
-		{
-			"at": "112",
-			"off": 14,
-			"type": "stamp",
-			"amp": 0.08
-		},
-		{
-			"at": "112",
-			"off": 20,
-			"type": "stamp",
-			"amp": 0.08
-		},
-		{
-			"at": "112",
-			"off": 51,
-			"type": "whoosh",
-			"amp": 0.06
-		},
-		{
-			"at": "112",
-			"off": 61,
-			"type": "pop",
-			"amp": 0.06
-		},
-		{
-			"at": "112",
-			"off": 75,
-			"type": "ding",
-			"amp": 0.06
-		},
-		{
-			"at": "113",
-			"off": 0,
-			"type": "steps",
 			"amp": 0.05
 		},
 		{
-			"at": "114",
-			"off": 4,
-			"type": "pop",
-			"amp": 0.06
+			"at": "016",
+			"off": 0,
+			"type": "thud",
+			"amp": 0.1
 		},
 		{
-			"at": "114",
-			"off": 45,
-			"type": "steps",
-			"amp": 0.06
-		},
-		{
-			"at": "114",
-			"off": 120,
-			"type": "ding",
-			"amp": 0.06
-		},
-		{
-			"at": "116",
-			"off": 2,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "116",
-			"off": 23,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "116",
-			"off": 59,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "116",
-			"off": 82,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "116",
-			"off": 110,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "116",
-			"off": 149,
-			"type": "pop",
-			"amp": 0.08
-		},
-		{
-			"at": "117",
-			"off": 124,
-			"type": "ding",
-			"amp": 0.08
+			"at": "017",
+			"off": 36,
+			"type": "whooshUp",
+			"amp": 0.05
 		}
 	]
 }

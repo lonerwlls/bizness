@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Freeze} from 'remotion';
 import {Long} from './Long';
 import {Short} from './Short';
+import {Daily} from './Daily';
 import {FONT} from './kit/ui';
 
 /* Storyboard / contact sheet: many frames of Long or Short in one picture.
@@ -25,7 +26,7 @@ export const Sheet: React.FC<SheetProps> = (p) => {
 			{p.frames.map((fr, i) => (
 				<div key={i} style={{position: 'absolute', left: (i % p.cols) * cw, top: top + Math.floor(i / p.cols) * ch, width: cw, height: ch, overflow: 'hidden', outline: '2px solid #000'}}>
 					<div style={{width: W, height: p.comp === 'Long' ? 1080 : 1920, transform: `scale(${s})`, transformOrigin: '0 0', position: 'relative'}}>
-						<Freeze frame={fr}>{p.comp === 'Long' ? <Long sound={false} /> : <Short sound={false} />}</Freeze>
+						<Freeze frame={fr}>{p.comp === 'Long' ? <Long sound={false} /> : <Daily sound={false} />}</Freeze>
 					</div>
 					<div style={{position: 'absolute', left: 6, top: 4, color: '#ffe04a', fontFamily: FONT, fontSize: 20, fontWeight: 800, textShadow: '0 1px 3px #000'}}>
 						{i + 1} · {(fr / 30).toFixed(1)}s
