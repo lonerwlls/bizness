@@ -6,15 +6,15 @@ import { Vignette, Grain, Dust, Rays, Burst, RedRage, clamp } from "../esport/sa
 import { ONODA, ONODA_OLD, CMDR, SOLDIERS } from "./looks";
 import { VOICE } from "./voice_ru";
 
-const FPS = 30, LEAD = 0.25, W = 1080, H = 1920;
-const F = (i: number) => Math.round((VOICE.words[i].t + LEAD) * FPS); // кадр слова по номеру
+export const FPS = 30, LEAD = 0.25, W = 1080, H = 1920;
+export const F = (i: number) => Math.round((VOICE.words[i].t + LEAD) * FPS); // кадр слова по номеру
 export const P1_END = F(80) - 2; // «Проходят»
 export const P1_FRAMES = P1_END;
 
 // ---------- камера ----------
-type Key = [number, number, number, number, number?]; // кадр, x, y, zoom, поворот
-const EZ = Easing.bezier(0.45, 0, 0.2, 1);
-const camAt = (f: number, keys: Key[]) => {
+export type Key = [number, number, number, number, number?]; // кадр, x, y, zoom, поворот
+export const EZ = Easing.bezier(0.45, 0, 0.2, 1);
+export const camAt = (f: number, keys: Key[]) => {
   if (f <= keys[0][0]) return { x: keys[0][1], y: keys[0][2], z: keys[0][3], r: keys[0][4] ?? 0 };
   for (let i = 0; i < keys.length - 1; i++) {
     const a = keys[i], b = keys[i + 1];
@@ -26,18 +26,18 @@ const camAt = (f: number, keys: Key[]) => {
   const l = keys[keys.length - 1];
   return { x: l[1], y: l[2], z: l[3], r: l[4] ?? 0 };
 };
-type C = ReturnType<typeof camAt>;
-const speed = (f: number, keys: Key[]) => {
+export type C = ReturnType<typeof camAt>;
+export const speed = (f: number, keys: Key[]) => {
   const a = camAt(f - 1, keys), b = camAt(f, keys);
   return Math.hypot(b.x - a.x, b.y - a.y) * b.z + Math.abs(Math.log(b.z / a.z)) * 900;
 };
 // слой с параллаксом: k=1 — мир героев, k<1 — дальний фон, k>1 — передний план
-const Layer: React.FC<{ c: C; k?: number; blur?: number; children: React.ReactNode; style?: React.CSSProperties }> = ({ c, k = 1, blur = 0, children, style }) => (
+export const Layer: React.FC<{ c: C; k?: number; blur?: number; children: React.ReactNode; style?: React.CSSProperties }> = ({ c, k = 1, blur = 0, children, style }) => (
   <svg width={W} height={H} style={{ position: "absolute", filter: blur ? `blur(${blur}px)` : undefined, ...style }}>
     <g transform={`translate(540,960) rotate(${c.r * k}) scale(${Math.pow(c.z, k)}) translate(${-c.x * k},${-c.y * k})`}>{children}</g>
   </svg>
 );
-const Shot: React.FC<{ f: number; keys: Key[]; shake?: number[]; children: (c: C) => React.ReactNode }> = ({ f, keys, shake = [], children }) => {
+export const Shot: React.FC<{ f: number; keys: Key[]; shake?: number[]; children: (c: C) => React.ReactNode }> = ({ f, keys, shake = [], children }) => {
   const c = { ...camAt(f, keys) };
   for (const s of shake) {
     const k = f - s;
@@ -49,14 +49,14 @@ const Shot: React.FC<{ f: number; keys: Key[]; shake?: number[]; children: (c: C
 
 // ---------- природа ----------
 const leafPath = (L: number) => `M 0,0 C ${L * 0.25},${-L * 0.32} ${L * 0.75},${-L * 0.3} ${L},0 C ${L * 0.75},${L * 0.3} ${L * 0.25},${L * 0.32} 0,0 Z`;
-const Leaf: React.FC<{ x: number; y: number; L: number; a: number; c: string; c2?: string }> = ({ x, y, L, a, c, c2 }) => (
+export const Leaf: React.FC<{ x: number; y: number; L: number; a: number; c: string; c2?: string }> = ({ x, y, L, a, c, c2 }) => (
   <g transform={`translate(${x},${y}) rotate(${a})`}>
     <path d={leafPath(L)} fill={c} stroke={INK} strokeWidth={Math.max(3, L / 80)} />
     <path d={`M ${L * 0.05},0 L ${L * 0.95},0`} stroke={c2 ?? "#0f3a20"} strokeWidth={Math.max(2, L / 90)} />
     {[0.25, 0.45, 0.65].map((q) => <path key={q} d={`M ${L * q},0 L ${L * (q + 0.12)},${-L * 0.14} M ${L * q},0 L ${L * (q + 0.12)},${L * 0.14}`} stroke={c2 ?? "#0f3a20"} strokeWidth={Math.max(1.5, L / 140)} />)}
   </g>
 );
-const Palm: React.FC<{ x: number; y: number; h: number; lean?: number; f: number; dark?: boolean }> = ({ x, y, h, lean = 0.15, f, dark }) => {
+export const Palm: React.FC<{ x: number; y: number; h: number; lean?: number; f: number; dark?: boolean }> = ({ x, y, h, lean = 0.15, f, dark }) => {
   const tx = x + h * lean, ty = y - h;
   const sway = Math.sin(f / 25 + x) * 4;
   return (
@@ -66,7 +66,7 @@ const Palm: React.FC<{ x: number; y: number; h: number; lean?: number; f: number
     </g>
   );
 };
-const JungleWall: React.FC<{ seed: string; w: number; y: number; dark?: number; f: number }> = ({ seed, w, y, dark = 0, f }) => (
+export const JungleWall: React.FC<{ seed: string; w: number; y: number; dark?: number; f: number }> = ({ seed, w, y, dark = 0, f }) => (
   <g>
     {Array.from({ length: 40 }).map((_, i) => {
       const x = -w / 2 + random(seed + i) * w, yy = y + random(seed + "y" + i) * 500;
@@ -76,7 +76,7 @@ const JungleWall: React.FC<{ seed: string; w: number; y: number; dark?: number; 
     })}
   </g>
 );
-const Leaflet: React.FC<{ x: number; y: number; s: number; a: number; crumple?: number }> = ({ x, y, s, a, crumple = 0 }) => (
+export const Leaflet: React.FC<{ x: number; y: number; s: number; a: number; crumple?: number }> = ({ x, y, s, a, crumple = 0 }) => (
   <g transform={`translate(${x},${y}) rotate(${a}) scale(${s * (1 - crumple * 0.75)},${s * (1 - crumple * 0.6)})`}>
     <path d={crumple > 0.3 ? "M -60,-80 L 50,-90 L 70,-20 L 40,60 L 60,90 L -50,85 L -70,10 L -40,-30 Z" : "M -60,-85 L 60,-85 L 60,85 L -60,85 Z"} fill="#f4ecd6" stroke={INK} strokeWidth={4} />
     {crumple < 0.3 ? (
@@ -420,17 +420,17 @@ const S6: React.FC<{ f: number }> = ({ f }) => {
 };
 
 // ---------- сборка части 1 ----------
-const PLAN: [number, React.FC<{ f: number }>][] = [
+export const PLAN1: [number, React.FC<{ f: number }>][] = [
   [0, S1], [F(10), S2], [F(19), S2b], [F(24) - 6, S3], [F(42) - 4, S4], [F(55), S5], [F(62), S6],
 ];
 export const OnodaPart1: React.FC = () => {
   const f = useCurrentFrame();
   let i = 0;
-  for (let j = 0; j < PLAN.length; j++) if (f >= PLAN[j][0]) i = j;
-  const S = PLAN[i][1];
+  for (let j = 0; j < PLAN1.length; j++) if (f >= PLAN1[j][0]) i = j;
+  const S = PLAN1[i][1];
   return (
     <AbsoluteFill style={{ background: "#000" }}>
-      <S f={f - PLAN[i][0]} />
+      <S f={f - PLAN1[i][0]} />
       <Vignette k={0.7} />
       <Grain f={f} />
       <Sequence from={Math.round(LEAD * FPS)}><Audio src={staticFile("onoda/voice_ru.mp3")} /></Sequence>
