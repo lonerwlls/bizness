@@ -4,13 +4,14 @@ import React from "react";
 
 export type Expr = "neutral" | "sad" | "hurt" | "angry" | "stern" | "laugh" | "shocked" | "focus" | "sneak" | "smirk" | "joy" | "cry" | "smile" | "determined";
 export type Hair = "spiky" | "short" | "long" | "messy";
-export type Pose = "down" | "desk" | "cord" | "crossed" | "point" | "belly" | "phone" | "trophy" | "fist" | "run" | "give";
+export type Pose = "down" | "desk" | "cord" | "crossed" | "point" | "belly" | "phone" | "trophy" | "fist" | "run" | "give" | "rifle" | "salute" | "reach" | "paper" | "crumple";
 
 export type Look = {
   skin: string; skinSh: string;
   hair: string; hairSh: string; hairStyle: Hair;
   top: string; topSh: string; hood?: boolean;
   iris: string; adult?: boolean; stubble?: boolean;
+  pants?: string; pantsSh?: string; shoe?: string; beard?: boolean; uniform?: boolean; glasses?: boolean; mustache?: boolean;
 };
 
 export const INK = "#1b1222";
@@ -20,6 +21,7 @@ type P = {
   expr?: Expr; pose?: Pose; gaze?: [number, number]; tilt?: number; headDown?: number;
   blink?: boolean; rim?: string; rimW?: number; mirror?: boolean; id: string;
   hoodUp?: boolean; phones?: boolean; eyeGlow?: string; cordLift?: number; mouthAmt?: number; side?: number; tears?: number; phase?: number;
+  legs?: { ph: number; mode: "walk" | "run" | "stand" }; cap?: boolean; rifle?: boolean; talk?: boolean; children?: React.ReactNode;
 };
 
 const sw = 5;
@@ -224,9 +226,34 @@ export const AnimeChar: React.FC<P> = (p) => {
     armL = [shoulderL, [-300, 470 + 60 * ph], [-200, 420 - 160 * ph]];
     armR = [shoulderR, [300, 470 - 60 * ph], [200, 420 + 160 * ph]];
   }
+  if (pose === "rifle") { armL = [shoulderL, [-240, 560], [-120, 640]]; armR = [shoulderR, [250, 500], [130, 430]]; }
+  if (pose === "salute") armR = [shoulderR, [330, 220], [140, -60]];
+  if (pose === "reach") armR = [shoulderR, [380, 300], [500, 260]];
+  if (pose === "paper") { armL = [shoulderL, [-250, 520], [-110, 470]]; armR = [shoulderR, [250, 520], [110, 470]]; }
+  if (pose === "crumple") { armL = [shoulderL, [-262, 560], [-268, 760]]; armR = [shoulderR, [280, 460], [120, 380]]; }
   if (pose === "point") armR = [shoulderR, [330, 470], [430 + 10 * Math.sin(t / 4), 380]];
   if (pose === "cord") armR = [shoulderR, [270, 520 - cord * 60], [150, 420 - cord * 120]];
   const handR = armR[armR.length - 1];
+  const LG = p.legs ? 1 : 0;
+  const Bt = p.legs ? 880 : 1100;
+  const legEl = p.legs ? (() => {
+    const { ph, mode } = p.legs!;
+    const A = mode === "run" ? 140 : mode === "walk" ? 70 : 0;
+    const pants = look.pants ?? look.topSh, pSh = look.pantsSh ?? INK;
+    return [-1, 1].map((sd) => {
+      const up = Math.max(0, Math.sin(ph / 3.2 + (sd > 0 ? Math.PI : 0))) * A;
+      const hip = [sd * 100, 840], knee = [sd * (112 + up * 0.25), 1250 - up * 0.9], foot = [sd * 108, 1660 - up * 1.3];
+      const d = `M ${hip.join(",")} L ${knee.join(",")} L ${foot.join(",")}`;
+      return (
+        <g key={sd}>
+          <path d={d} fill="none" stroke={INK} strokeWidth={118} strokeLinecap="round" strokeLinejoin="round" />
+          <path d={d} fill="none" stroke={pants} strokeWidth={106} strokeLinecap="round" strokeLinejoin="round" />
+          <path d={d} fill="none" stroke={pSh} strokeWidth={26} opacity={0.35} strokeLinecap="round" transform={`translate(${sd * 24},0)`} />
+          <ellipse cx={foot[0] + sd * 6} cy={foot[1] + 60} rx={74} ry={44 - up * 0.08} fill={look.shoe ?? "#2a2018"} stroke={INK} strokeWidth={sw} />
+        </g>
+      );
+    });
+  })() : null;
 
   return (
     <g transform={`translate(${p.x},${p.y}) scale(${(p.mirror ? -1 : 1) * s},${s})`}>
@@ -242,17 +269,18 @@ export const AnimeChar: React.FC<P> = (p) => {
           <path d="M -110,-30 C -112,-120 -60,-165 0,-165 C 60,-165 112,-120 110,-30 L 104,40 C 96,95 50,140 0,152 C -50,140 -96,95 -104,40 Z" />
         </clipPath>
         <clipPath id={`body-${p.id}`}>
-          <path d="M -50,170 C -150,185 -232,215 -248,310 L -262,1100 L 262,1100 L 248,310 C 232,215 150,185 50,170 Z" />
+          <path d={`M -50,170 C -150,185 -232,215 -248,310 L ${-262 + 40 * LG},${Bt} L ${262 - 40 * LG},${Bt} L 248,310 C 232,215 150,185 50,170 Z`} />
         </clipPath>
       </defs>
       <g filter={`url(#${fid})`}>
+        {legEl}
         {/* тело */}
         <g transform={`translate(0,180) scale(1,${1 + breath}) translate(0,-180)`}>
           {p.hoodUp ? null : <path d="M -120,190 C -150,120 150,120 120,190 L 90,230 L -90,230 Z" fill={look.topSh} stroke={INK} strokeWidth={sw} />}
-          <path d="M -50,170 C -150,185 -232,215 -248,310 L -262,1100 L 262,1100 L 248,310 C 232,215 150,185 50,170 Z" fill={look.top} stroke={INK} strokeWidth={sw} />
+          <path d={`M -50,170 C -150,185 -232,215 -248,310 L ${-262 + 40 * LG},${Bt} L ${262 - 40 * LG},${Bt} L 248,310 C 232,215 150,185 50,170 Z`} fill={look.top} stroke={INK} strokeWidth={sw} />
           <g clipPath={`url(#body-${p.id})`}>
-            <path d="M 90,170 C 200,200 250,260 262,400 L 262,1100 L 150,1100 C 170,700 160,400 90,170 Z" fill={look.topSh} opacity={0.85} />
-            <path d="M -40,180 L -20,1100" stroke={INK} strokeWidth={3} opacity={0.5} />
+            <path d={`M 90,170 C 200,200 250,260 262,400 L 262,${Bt} L 150,${Bt} C 170,700 160,400 90,170 Z`} fill={look.topSh} opacity={0.85} />
+            <path d={`M -40,180 L -20,${Bt}`} stroke={INK} strokeWidth={3} opacity={0.5} />
             <path d="M -230,320 C -150,300 -100,240 -60,190" stroke="#fff" strokeWidth={6} opacity={0.15} fill="none" />
           </g>
           {look.hood ? (
@@ -261,6 +289,24 @@ export const AnimeChar: React.FC<P> = (p) => {
               <path d="M 50,200 L 40,330" stroke="#e9e3da" strokeWidth={6} strokeLinecap="round" />
             </g>
           ) : null}
+          {p.legs || look.uniform ? <rect x={-232} y={Bt - 70} width={464} height={44} fill="#5a3d22" stroke={INK} strokeWidth={4} opacity={p.legs ? 1 : 0} /> : null}
+          {look.uniform ? (
+            <g>
+              <path d="M -60,175 L 0,300 L 60,175" fill="none" stroke={INK} strokeWidth={5} />
+              <rect x={-130} y={360} width={90} height={70} rx={6} fill={look.topSh} stroke={INK} strokeWidth={4} />
+              <rect x={40} y={360} width={90} height={70} rx={6} fill={look.topSh} stroke={INK} strokeWidth={4} />
+              {[0, 1, 2, 3].map((i) => <circle key={i} cx={0} cy={330 + i * 120} r={9} fill="#c9a24a" stroke={INK} strokeWidth={3} />)}
+            </g>
+          ) : null}
+          {p.rifle ? (
+            <g transform="rotate(-38 0 520)">
+              <rect x={-420} y={505} width={760} height={26} rx={8} fill="#3a2a1c" stroke={INK} strokeWidth={5} />
+              <path d="M -420,505 L -560,500 L -580,560 L -420,540 Z" fill="#6a4426" stroke={INK} strokeWidth={5} />
+              <rect x={-200} y={498} width={300} height={40} rx={10} fill="#7a5030" stroke={INK} strokeWidth={5} />
+              <rect x={-40} y={530} width={20} height={40} fill={INK} />
+            </g>
+          ) : null}
+          {p.children}
           <Arm pts={armL} look={look} />
           {pose !== "cord" ? <Arm pts={armR} look={look} /> : null}
         </g>
@@ -290,7 +336,7 @@ export const AnimeChar: React.FC<P> = (p) => {
             </g>
             <path d="M 4,40 L -4,62 L 6,64" fill="none" stroke={look.skinSh} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
             {expr === "hurt" || expr === "shocked" ? <path d="M -78,48 L -62,58 M -70,44 L -54,54" stroke="#e07a7a" strokeWidth={3} opacity={0.7} /> : null}
-            <Mouth expr={expr} amt={amt} />
+            {p.talk && Math.floor(t / 3) % 3 !== 0 ? <ellipse cx={0} cy={98} rx={16} ry={6 + 6 * Math.abs(Math.sin(t * 1.7))} fill="#5a1a26" stroke={INK} strokeWidth={4} /> : <Mouth expr={expr} amt={amt} />}
             {p.tears ? (
               <g opacity={p.tears}>
                 <path d={`M -62,26 C -66,60 -60,${70 + 30 * p.tears} -64,${90 + 50 * p.tears}`} stroke="#9fe0ff" strokeWidth={9} fill="none" strokeLinecap="round" />
@@ -302,6 +348,22 @@ export const AnimeChar: React.FC<P> = (p) => {
           </g>
           {p.hoodUp ? <HairFront look={look} bangsOnly /> : null}
           {p.hoodUp ? <path d="M -140,-40 C -150,-200 150,-200 140,-40 C 120,-120 60,-140 0,-142 C -60,-140 -120,-120 -140,-40 Z" fill={look.top} stroke={INK} strokeWidth={sw} /> : <HairFront look={look} />}
+          {look.beard ? <path d="M -104,40 C -96,95 -50,150 0,160 C 50,150 96,95 104,40 C 90,110 60,128 30,120 C 10,112 -10,112 -30,120 C -60,128 -90,110 -104,40 Z" fill={look.hairSh} opacity={0.85} /> : null}
+          {look.mustache ? <path d="M -46,78 C -30,66 -8,70 0,76 C 8,70 30,66 46,78 C 30,84 10,82 0,80 C -10,82 -30,84 -46,78 Z" fill={look.hairSh} stroke={INK} strokeWidth={3} /> : null}
+          {look.glasses ? (
+            <g fill="none" stroke={INK} strokeWidth={6}>
+              <circle cx={-48} cy={8} r={34} fill="#ffffff22" /><circle cx={48} cy={8} r={34} fill="#ffffff22" />
+              <path d="M -14,4 Q 0,-4 14,4 M -82,4 L -108,0 M 82,4 L 108,0" />
+            </g>
+          ) : null}
+          {p.cap ? (
+            <g>
+              <path d="M -142,-60 C -150,-230 150,-230 142,-60 Z" fill={look.top} stroke={INK} strokeWidth={sw} />
+              <path d="M -142,-60 C -60,-90 60,-90 142,-60 L 142,-40 C 60,-70 -60,-70 -142,-40 Z" fill={look.topSh} stroke={INK} strokeWidth={4} />
+              <path d="M -120,-56 C -60,-20 60,-20 120,-56 C 60,-40 -60,-40 -120,-56 Z" fill="#3a3020" stroke={INK} strokeWidth={4} />
+              <polygon points="0,-150 8,-132 28,-132 12,-120 18,-100 0,-112 -18,-100 -12,-120 -28,-132 -8,-132" fill="#e6c84a" stroke={INK} strokeWidth={3} />
+            </g>
+          ) : null}
           {p.phones ? (
             <g>
               <path d="M -150,10 C -175,-250 175,-250 150,10" fill="none" stroke={INK} strokeWidth={26} />
