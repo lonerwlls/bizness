@@ -71,7 +71,7 @@ if EM:
     for j, e in enumerate(EM):
         t0, name = e[0], e[1]; x = e[2] if len(e) > 2 else 540; y = e[3] if len(e) > 3 else 330
         sz = e[4] if len(e) > 4 else 230; dd = e[5] if len(e) > 5 else 1.6
-        ein += ['-loop', '1', '-t', str(dd), '-i', f'{ROOT}/shorts/emoji/{name}.png']
+        ein += ['-loop', '1', '-t', str(dd), '-i', f'{ROOT}/shorts/{S.get('emoji_dir', 'emoji_apple')}/{name}.png']
         sc = f"max(2,{sz}*if(lt(t,0.12),t/0.12*1.2,if(lt(t,0.24),1.2-(t-0.12)/0.12*0.2,if(gt(t,{dd - 0.15}),max(0.01,({dd}-t)/0.15),1))))"
         ef.append(f"[{j + 1}:v]format=rgba,scale=w='2*trunc({sc}/2)':h=-1:eval=frame,setpts=PTS-STARTPTS+{t0}/TB[e{j}]")
         ef.append(f"[{last}][e{j}]overlay=x='{x}-w/2':y='{y}-h/2':eval=frame:enable='between(t,{t0},{t0 + dd})'[o{j}]"); last = f'o{j}'
