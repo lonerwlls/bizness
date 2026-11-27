@@ -596,7 +596,7 @@ const S014: React.FC = () => {
 			</>
 		);
 	}
-	const go = walk(f, walkT + 2, w('014', 1), 380, 1300);
+	const go = walk(f, walkT + 2, w('014', 1) + 8, 260, 860);
 	const sp = hp(go.x, FLOOR - go.bob, [70, -80]);
 	return (
 		<>
