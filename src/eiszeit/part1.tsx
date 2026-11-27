@@ -113,7 +113,8 @@ const SDogger: React.FC<{ a: number }> = ({ a }) => {
 
 // ---------- сцены ----------
 export const Eyelids: React.FC<{ open: number }> = ({ open }) => {
-  const h = interpolate(open, [0, 1], [560, 0]);
+  const h = interpolate(open, [0, 1], [560, -90]);
+  if (open >= 0.999) return null;
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
       <div style={{ position: "absolute", left: -200, right: -200, top: 0, height: h + 60, background: "#000", borderRadius: "0 0 50% 50%", filter: "blur(18px)" }} />
