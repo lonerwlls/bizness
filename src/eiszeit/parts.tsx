@@ -8,17 +8,17 @@ import { ATS, FRAMES, LEAD, OFF, STORY, batteryAt } from "./timeline";
 
 
 // ---------- общие куски ----------
-const Card: React.FC<{ x: number; y: number; w: number; start: number; rot?: number; pad?: number; children: React.ReactNode }> = ({ x, y, w, start, rot = -1.5, pad = 40, children }) => {
+export const Card: React.FC<{ x: number; y: number; w: number; start: number; rot?: number; pad?: number; children: React.ReactNode }> = ({ x, y, w, start, rot = -1.5, pad = 40, children }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   if (f < start) return null;
   const s = pop(f, start, fps, 13);
   return <div style={{ position: "absolute", left: x, top: y, width: w, transform: `translate(-50%,-50%) rotate(${rot}deg) scale(${s})`, background: PAPER, padding: pad, boxShadow: "0 26px 56px rgba(0,0,0,0.55)", color: INK }}>{children}</div>;
 };
-const H: React.FC<{ children: React.ReactNode; size?: number }> = ({ children, size = 52 }) => (
+export const H: React.FC<{ children: React.ReactNode; size?: number }> = ({ children, size = 52 }) => (
   <div style={{ fontFamily: "IceMont", fontWeight: 900, fontSize: size, letterSpacing: 3, textAlign: "center", borderBottom: `5px solid ${INK}`, paddingBottom: 10, marginBottom: 16 }}>{children}</div>
 );
-const Line: React.FC<{ show: number; mark?: "✓" | "✗" | ""; children: React.ReactNode; size?: number }> = ({ show, mark = "", children, size = 50 }) => {
+export const Line: React.FC<{ show: number; mark?: "✓" | "✗" | ""; children: React.ReactNode; size?: number }> = ({ show, mark = "", children, size = 50 }) => {
   const f = useCurrentFrame();
   return (
     <div style={{ fontFamily: "IceType", fontSize: size, height: size * 1.45, display: "flex", alignItems: "center", gap: 20, opacity: f >= show ? 1 : 0, transform: `translateX(${interpolate(f, [show, show + 6], [-30, 0], clamp)}px)` }}>
@@ -28,7 +28,7 @@ const Line: React.FC<{ show: number; mark?: "✓" | "✗" | ""; children: React.
   );
 };
 
-const Thermo: React.FC<{ x: number; y: number; start: number; from: number; to: number; t0: number; t1: number; sc?: number }> = ({ x, y, start, from, to, t0, t1, sc = 0.8 }) => {
+export const Thermo: React.FC<{ x: number; y: number; start: number; from: number; to: number; t0: number; t1: number; sc?: number }> = ({ x, y, start, from, to, t0, t1, sc = 0.8 }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   if (f < start) return null;
@@ -51,7 +51,7 @@ const Thermo: React.FC<{ x: number; y: number; start: number; from: number; to: 
   );
 };
 
-const HudTimer: React.FC<{ sec: number; stopped?: boolean }> = ({ sec, stopped }) => {
+export const HudTimer: React.FC<{ sec: number; stopped?: boolean }> = ({ sec, stopped }) => {
   const f = useCurrentFrame();
   const blink = !stopped && Math.floor(f / 15) % 2 === 0;
   return (
@@ -86,7 +86,7 @@ const Shell: React.FC<{ i: number; fade?: boolean; wind?: number; noHud?: boolea
   );
 };
 
-const scenes = (f: number, cuts: number[], list: React.ReactNode[]) => {
+export const scenes = (f: number, cuts: number[], list: React.ReactNode[]) => {
   let k = 0;
   while (k + 1 < cuts.length && f >= cuts[k + 1]) k++;
   return list[k];
