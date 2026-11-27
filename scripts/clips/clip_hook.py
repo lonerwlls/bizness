@@ -23,9 +23,11 @@ def camvf(cam):  # вебка сверху во всю ширину, под не
 def vid(src, s, e, out, cam=None):
     run("-ss", f"{s}", "-t", f"{e - s}", "-i", src, "-filter_complex", camvf(cam) if cam else VF, "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "15", "-r", "30", out)
 for c in C["clips"]:
-    n, src = c["name"], c["src"]; (h0, h1), (m0, m1), X = c["hook"], c["main"], c["ad"]
-    p = [f"{O}/_{i}.mp4" for i in range(4)]
-    cam = c.get("cam"); vid(src, h0, h1, p[0], cam); vid(src, m0, X, p[1], cam); vid(src, X, m1, p[3], cam)
+    n, src = c["name"], c["src"]; (h0, h1), (m0, m1), X = c.get("hook") or [0, 0], c["main"], c["ad"]
+    p = [f"{O}/_{i}.mp4" for i in range(4)]; HK = h1 > h0   # хук по умолчанию НЕ ставим (правило 26.11.2026)
+    cam = c.get("cam"); vid(src, m0, X, p[1], cam); vid(src, X, m1, p[3], cam)
+    if HK: vid(src, h0, h1, p[0], cam)
+    else: p = p[1:]
     run("-sseof", "-0.05", "-i", p[1], "-frames:v", "1", f"{O}/_last.png")
     bk = f"colorkey={KEY}:0.09:0.04,despill=type=green:mix=0.6:expand=0," if KEY else ""
     bw = 1766 if KEY else 1112   # без зелёного фона баннер во всю ширину (>30% экрана)
@@ -39,11 +41,12 @@ for c in C["clips"]:
     def T(t): return HL + (t - m0) + (HOLD if t >= X else 0)   # время источника -> время ролика
     ms = lambda t: int(t * 1000)
     VO = "highpass=f=110,equalizer=f=250:t=o:w=1.2:g=-3,equalizer=f=2600:t=o:w=1.5:g=5,acompressor=threshold=-26dB:ratio=4:attack=5:release=120:makeup=6"  # голос разборчивее и громче
-    af = (f"[0:a]{VO},asplit=3[s0][s1][s2];[s0]atrim={h0}:{h1},asetpts=PTS-STARTPTS,afade=t=out:st={HL - 0.08}:d=0.08[gh];"
+    af = ((f"[0:a]{VO},asplit=3[s0][s1][s2];[s0]atrim={h0}:{h1},asetpts=PTS-STARTPTS,afade=t=out:st={HL - 0.08}:d=0.08[gh];") if HK
+          else f"[0:a]{VO},asplit=2[s1][s2];") + (
           f"[s1]atrim={m0}:{X},asetpts=PTS-STARTPTS,adelay={ms(HL)}|{ms(HL)}[ga];"
           f"[s2]atrim={X}:{m1},asetpts=PTS-STARTPTS,adelay={ms(LA + HOLD)}|{ms(LA + HOLD)}[gb];"
           f"[1:a]volume=1.3,adelay={ms(LA)}|{ms(LA)}[ad];"
-          f"[gh][ga][gb][ad]amix=inputs=4:duration=longest:normalize=0,atrim=0:{TOT},loudnorm=I=-14:TP=-1.5,alimiter=limit=0.9,afade=t=out:st={TOT - 0.3}:d=0.3[a]")
+          f"{'[gh]' if HK else ''}[ga][gb][ad]amix=inputs={4 if HK else 3}:duration=longest:normalize=0,atrim=0:{TOT},loudnorm=I=-14:TP=-1.5,alimiter=limit=0.9,afade=t=out:st={TOT - 0.3}:d=0.3[a]")
     run("-i", src, "-i", BAN, "-i", f"{O}/_v.mp4", "-filter_complex", af,
         "-map", "2:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-t", f"{TOT}", f"{O}/{n}.mp4")
     for x in p + [f"{O}/_last.png", f"{O}/_l.txt", f"{O}/_v.mp4"]: os.remove(x)
