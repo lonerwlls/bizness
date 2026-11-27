@@ -1,0 +1,104 @@
+[
+ {
+  "id": "001_N",
+  "sp": "N",
+  "t": "New York, nineteen oh six. The best cook in town carries a deadly secret.",
+  "gap": 0.3
+ },
+ {
+  "id": "002_N",
+  "sp": "N",
+  "t": "Wherever Mary Mallon cooks, people get typhoid.",
+  "gap": 0.3
+ },
+ {
+  "id": "003_N",
+  "sp": "N",
+  "t": "A banker's summer house. Six of eleven fall sick.",
+  "gap": 0.3
+ },
+ {
+  "id": "004_N",
+  "sp": "N",
+  "t": "An investigator, George Soper, tracks down her old jobs.",
+  "gap": 0.3
+ },
+ {
+  "id": "005_SOPER",
+  "sp": "SOPER",
+  "t": "Seven families. Twenty-two cases. One cook.",
+  "gap": 0.3
+ },
+ {
+  "id": "006_SOPER",
+  "sp": "SOPER",
+  "t": "Miss Mallon, I'll need samples. Of... everything.",
+  "gap": 0.3
+ },
+ {
+  "id": "007_MARY",
+  "sp": "MARY",
+  "t": "(angry) Get out of my kitchen!",
+  "gap": 0.3
+ },
+ {
+  "id": "008_N",
+  "sp": "N",
+  "t": "She chases him out with a carving fork.",
+  "gap": 0.3
+ },
+ {
+  "id": "009_N",
+  "sp": "N",
+  "t": "Then the police come. Mary hides for five hours.",
+  "gap": 0.3
+ },
+ {
+  "id": "010_N",
+  "sp": "N",
+  "t": "The tests are clear. She's full of typhoid germs.",
+  "gap": 0.3
+ },
+ {
+  "id": "011_MARY",
+  "sp": "MARY",
+  "t": "(angry) I've never been sick a day in my life!",
+  "gap": 0.3
+ },
+ {
+  "id": "012_N",
+  "sp": "N",
+  "t": "True. She's a healthy carrier. The first one found in America.",
+  "gap": 0.3
+ },
+ {
+  "id": "013_N",
+  "sp": "N",
+  "t": "The papers call her Typhoid Mary. And they lock her on an island.",
+  "gap": 0.3
+ },
+ {
+  "id": "014_N",
+  "sp": "N",
+  "t": "Three years later, she's freed. On one condition: no more cooking.",
+  "gap": 0.3
+ },
+ {
+  "id": "015_N",
+  "sp": "N",
+  "t": "So she becomes Mary Brown. A cook. At a maternity hospital.",
+  "gap": 0.3
+ },
+ {
+  "id": "016_N",
+  "sp": "N",
+  "t": "Twenty-five people get sick.",
+  "gap": 0.3
+ },
+ {
+  "id": "017_N",
+  "sp": "N",
+  "t": "Back to the island. For twenty-three years. Until she dies.",
+  "gap": 0.3
+ }
+]

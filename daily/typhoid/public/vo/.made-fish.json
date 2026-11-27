@@ -1,0 +1,19 @@
+{
+ "001_N": "[\"New York, nineteen oh six. The best cook in town carries a deadly secret.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "002_N": "[\"Wherever Mary Mallon cooks, people get typhoid.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "003_N": "[\"A banker's summer house. Six of eleven fall sick.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "004_N": "[\"An investigator, George Soper, tracks down her old jobs.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "005_SOPER": "[\"Seven families. Twenty-two cases. One cook.\",{\"fish\":\"4ded85577e3243dcae310903d0ae75cc\",\"speed\":1.05}]",
+ "006_SOPER": "[\"Miss Mallon, I'll need samples. Of... everything.\",{\"fish\":\"4ded85577e3243dcae310903d0ae75cc\",\"speed\":1.05}]",
+ "007_MARY": "[\"(angry) Get out of my kitchen!\",{\"fish\":\"29509e20f1a14a8698ffb42134fc944d\",\"speed\":1}]",
+ "008_N": "[\"She chases him out with a carving fork.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "009_N": "[\"Then the police come. Mary hides for five hours.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "010_N": "[\"The tests are clear. She's full of typhoid germs.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "011_MARY": "[\"(angry) I've never been sick a day in my life!\",{\"fish\":\"29509e20f1a14a8698ffb42134fc944d\",\"speed\":1}]",
+ "012_N": "[\"True. She's a healthy carrier. The first one found in America.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "013_N": "[\"The papers call her Typhoid Mary. And they lock her on an island.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "014_N": "[\"Three years later, she's freed. On one condition: no more cooking.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "015_N": "[\"So she becomes Mary Brown. A cook. At a maternity hospital.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "016_N": "[\"Twenty-five people get sick.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]",
+ "017_N": "[\"Back to the island. For twenty-three years. Until she dies.\",{\"fish\":\"0327fdb5da9e4fd782899a8058c8ae2b\",\"speed\":1.1}]"
+}
