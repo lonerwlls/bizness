@@ -27,7 +27,6 @@ for c in C["clips"]:
     p = [f"{O}/_{i}.mp4" for i in range(4)]; HK = h1 > h0   # хук по умолчанию НЕ ставим (правило 26.11.2026)
     cam = c.get("cam"); vid(src, m0, X, p[1], cam); vid(src, X, m1, p[3], cam)
     if HK: vid(src, h0, h1, p[0], cam)
-    else: p = p[1:]
     run("-sseof", "-0.05", "-i", p[1], "-frames:v", "1", f"{O}/_last.png")
     bk = f"colorkey={KEY}:0.09:0.04,despill=type=green:mix=0.6:expand=0," if KEY else ""
     bw = 1766 if KEY else 1112   # без зелёного фона баннер во всю ширину (>30% экрана)
@@ -35,6 +34,7 @@ for c in C["clips"]:
           f"[1:v]format=rgba,{bk}scale={bw}:-2,fade=in:st=0:d=0.1:alpha=1,fade=out:st={BLEN - 0.15}:d=0.15:alpha=1[bn];"
           f"[bg][bn]overlay=(W-w)/2:(H-h)/2:eof_action=pass,format=yuv420p[v]")
     run("-i", f"{O}/_last.png", "-i", BAN, "-filter_complex", fc, "-map", "[v]", "-t", f"{HOLD}", "-c:v", "libx264", "-preset", "slow", "-crf", "15", "-r", "30", p[2])
+    if not HK: p = p[1:]   # без хука: кусок до рекламы, реклама, кусок после
     open(f"{O}/_l.txt", "w").write("".join(f"file '{x}'\n" for x in p))
     run("-f", "concat", "-safe", "0", "-i", f"{O}/_l.txt", "-c", "copy", f"{O}/_v.mp4")
     HL = h1 - h0; LA = HL + (X - m0); TOT = HL + (m1 - m0) + HOLD
