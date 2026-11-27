@@ -1,0 +1,1154 @@
+{
+ "Tiefsee / Marianengraben": {
+  "de_n": 8,
+  "de_max": 5763798,
+  "de_top": [
+   {
+    "t": "Was verbirgt sich am tiefsten Punkt des Ozeans?",
+    "ch": "Dinge Erklärt – Kurzgesagt",
+    "v": 5763798,
+    "sec": 631
+   },
+   {
+    "t": "Was wirklich in der Tiefsee auf uns wartet",
+    "ch": "Niklas Kolorz",
+    "v": 519675,
+    "sec": 1077
+   },
+   {
+    "t": "Jäger der Tiefsee - Ganze Dokumentation | National Geographic WILD",
+    "ch": "National Geographic Deutschland",
+    "v": 39079,
+    "sec": 2654
+   }
+  ],
+  "en_max": 25840580,
+  "en_top": [
+   {
+    "t": "What’s Hiding at the Most Solitary Place on Earth? The Deep Sea",
+    "ch": "Kurzgesagt – In a Nutshell",
+    "v": 25840580,
+    "sec": 680
+   },
+   {
+    "t": "Fascinating 3D Journey to the Ocean Depths",
+    "ch": "BRIGHT SIDE",
+    "v": 12674419,
+    "sec": 575
+   },
+   {
+    "t": "How Long Can You Survive In The Middle Of The Ocean?",
+    "ch": "Nick Kratka",
+    "v": 10761467,
+    "sec": 1777
+   }
+  ]
+ },
+ "Venus": {
+  "de_n": 2,
+  "de_max": 1033,
+  "de_top": [
+   {
+    "t": "464 °C: Was passiert, wenn du auf der Venus landest?",
+    "ch": "Grenzwelten",
+    "v": 1033,
+    "sec": 199
+   },
+   {
+    "t": "Was passiert, wenn du aus Versehen auf der Venus landest?",
+    "ch": "Unentdeckt",
+    "v": 108,
+    "sec": 490
+   }
+  ],
+  "en_max": 22823334,
+  "en_top": [
+   {
+    "t": "How To Terraform Venus (Quickly)",
+    "ch": "Kurzgesagt – In a Nutshell",
+    "v": 22823334,
+    "sec": 762
+   },
+   {
+    "t": "What If You Spent 5 Seconds on Venus?",
+    "ch": "What If",
+    "v": 6372383,
+    "sec": 487
+   },
+   {
+    "t": "How Long Could You Survive on Venus?",
+    "ch": "Kian Odyssey",
+    "v": 37142,
+    "sec": 647
+   }
+  ]
+ },
+ "Jupiter": {
+  "de_n": 12,
+  "de_max": 273989,
+  "de_top": [
+   {
+    "t": "Was würde passieren, wenn du auf den Jupiter fallen würdest?",
+    "ch": "TopWelt",
+    "v": 273989,
+    "sec": 606
+   },
+   {
+    "t": "Was passiert wenn DU durch den JUPITER fällst? | Marius Angeschrien Twitch Story",
+    "ch": "MARIUS",
+    "v": 41642,
+    "sec": 633
+   },
+   {
+    "t": "Das passiert, wenn du in Jupiter hinein fällst!",
+    "ch": "Astro-Tim",
+    "v": 8060,
+    "sec": 335
+   }
+  ],
+  "en_max": 12142244,
+  "en_top": [
+   {
+    "t": "What If You Fell Into Jupiter and Sank Into Metallic Hydrogen?",
+    "ch": "What If",
+    "v": 12142244,
+    "sec": 263
+   },
+   {
+    "t": "What If You Fell Into Jupiter on 1 Nanosecond ?",
+    "ch": "Meet Arnold",
+    "v": 11213530,
+    "sec": 191
+   },
+   {
+    "t": "Falling Into Jupiter (Simulation)",
+    "ch": "Stargaze",
+    "v": 10905781,
+    "sec": 304
+   }
+  ]
+ },
+ "Mond ohne Raumanzug": {
+  "de_n": 6,
+  "de_max": 5125995,
+  "de_top": [
+   {
+    "t": "Was passiert, wenn der Mond in die Erde kracht?",
+    "ch": "Dinge Erklärt – Kurzgesagt",
+    "v": 5125995,
+    "sec": 721
+   },
+   {
+    "t": "Würdest du auf dem Mond überleben? - Can you survive? | Galileo | ProSieben",
+    "ch": "Galileo",
+    "v": 1275457,
+    "sec": 1889
+   },
+   {
+    "t": "Wo warst Du als der erste Mensch den Mond betrat",
+    "ch": "ReiterMarion",
+    "v": 814,
+    "sec": 1704
+   }
+  ],
+  "en_max": 9197148,
+  "en_top": [
+   {
+    "t": "Could you survive a nanosecond on the Sun?",
+    "ch": "xkcd's What If?",
+    "v": 9197148,
+    "sec": 209
+   },
+   {
+    "t": "What If You Spend Just 30 Seconds on the Moon Without a Spacesuit?",
+    "ch": "Ridddle",
+    "v": 4182662,
+    "sec": 655
+   },
+   {
+    "t": "How Long Could You Survive on Each Planet Without a Spacesuit?",
+    "ch": "Ridddle",
+    "v": 2084198,
+    "sec": 626
+   }
+  ]
+ },
+ "Tschernobyl Sperrzone": {
+  "de_n": 9,
+  "de_max": 2431743,
+  "de_top": [
+   {
+    "t": "Die mutierten Tiere von Tschernobyl",
+    "ch": "Simplicissimus",
+    "v": 2431743,
+    "sec": 1161
+   },
+   {
+    "t": "Time Freeze: Hätte Tschernobyl verhindert werden können? | Galileo | ProSieben",
+    "ch": "Galileo",
+    "v": 1189691,
+    "sec": 835
+   },
+   {
+    "t": "Er verbringt 72 STUNDEN im SPERRGEBIET (Tschernobyl)",
+    "ch": "King Crimax",
+    "v": 664113,
+    "sec": 856
+   }
+  ],
+  "en_max": 6277048,
+  "en_top": [
+   {
+    "t": "Chernobyl's Explosion, Minute by Minute",
+    "ch": "The Infographics Show",
+    "v": 6277048,
+    "sec": 1766
+   },
+   {
+    "t": "Can you survive nuclear fallout? -  Brooke Buddemeier and Jessica S. Wieder",
+    "ch": "TED-Ed",
+    "v": 2149889,
+    "sec": 325
+   },
+   {
+    "t": "How You Could Survive the Chernobyl Incident | Hilarious History For Sleep",
+    "ch": "The Sleep Guidance",
+    "v": 9380,
+    "sec": 10567
+   }
+  ]
+ },
+ "Titanic 1912": {
+  "de_n": 6,
+  "de_max": 58825,
+  "de_top": [
+   {
+    "t": "Titanic | Historikerin checkt Jacks Überlebenschancen (feat. @GigaTVMag)",
+    "ch": "Science vs. Fiction",
+    "v": 58825,
+    "sec": 1115
+   },
+   {
+    "t": "Du wachst auf der Titanic auf – würdest du überleben?",
+    "ch": "Leicht Erklärt",
+    "v": 55946,
+    "sec": 456
+   },
+   {
+    "t": "Du bist 1912 auf der Titanic – Hättest du überlebt?",
+    "ch": "Historix",
+    "v": 227,
+    "sec": 482
+   }
+  ],
+  "en_max": 4852903,
+  "en_top": [
+   {
+    "t": "Titanic survivor recalls harrowing moment ship sank | BBC Global",
+    "ch": "BBC Global",
+    "v": 4852903,
+    "sec": 443
+   },
+   {
+    "t": "Could You Survive TITANIC?",
+    "ch": "Vsauce3",
+    "v": 3753109,
+    "sec": 1159
+   },
+   {
+    "t": "Was Anyone Alive Inside Titanic After She Sank?",
+    "ch": "RabbitWorks",
+    "v": 2330138,
+    "sec": 270
+   }
+  ]
+ },
+ "Pest 1349": {
+  "de_n": 16,
+  "de_max": 2227367,
+  "de_top": [
+   {
+    "t": "Hättest du die Pest überlebt? Can you survive history? | Galileo | ProSieben",
+    "ch": "Galileo",
+    "v": 2227367,
+    "sec": 618
+   },
+   {
+    "t": "Der schwarze Tod - 1347 | Zahlen schreiben Geschichte Reupload | ARTE",
+    "ch": "ARTEde",
+    "v": 1527723,
+    "sec": 1574
+   },
+   {
+    "t": "War die Pest die größte Seuche aller Zeiten? | Stimmt es, dass...? | ARTE",
+    "ch": "ARTEde",
+    "v": 1289331,
+    "sec": 1438
+   }
+  ],
+  "en_max": 9157711,
+  "en_top": [
+   {
+    "t": "What Made The Black Death (The Plague) so Deadly?",
+    "ch": "The Infographics Show",
+    "v": 9157711,
+    "sec": 658
+   },
+   {
+    "t": "How You Could Have Survived the Black Plague",
+    "ch": "Weird History",
+    "v": 5058855,
+    "sec": 687
+   },
+   {
+    "t": "Boring History For Sleep | How You Could Have SURVIVED the Black Plague and more",
+    "ch": "Sleepless Historian",
+    "v": 270509,
+    "sec": 8329
+   }
+  ]
+ },
+ "Sahara ohne Wasser": {
+  "de_n": 4,
+  "de_max": 527328,
+  "de_top": [
+   {
+    "t": "Überlebenstraining: 24 Stunden in der Wüste ohne Wasser | Terra X plus",
+    "ch": "Terra X Nature",
+    "v": 527328,
+    "sec": 723
+   },
+   {
+    "t": "Was, wenn du mitten in der Wüste feststeckst und überleben musst",
+    "ch": "SONNENSEITE",
+    "v": 7433,
+    "sec": 507
+   },
+   {
+    "t": "Wie du in einer Wüste überleben würdest",
+    "ch": "So überlebst du",
+    "v": 6,
+    "sec": 553
+   }
+  ],
+  "en_max": 4508597,
+  "en_top": [
+   {
+    "t": "What If You Were Stranded In the Sahara Alone?",
+    "ch": "RealLifeLore",
+    "v": 4508597,
+    "sec": 1116
+   },
+   {
+    "t": "Antarctica vs Sahara - Could You Survive 1 Year In Extreme Temperatures",
+    "ch": "The Infographics Show",
+    "v": 656757,
+    "sec": 1009
+   },
+   {
+    "t": "How Does Life Survive in the Sahara | 4K Travel Documentary",
+    "ch": "Earth in Focus",
+    "v": 391,
+    "sec": 611
+   }
+  ]
+ },
+ "Antarktis": {
+  "de_n": 13,
+  "de_max": 865437,
+  "de_top": [
+   {
+    "t": "Zu Besuch auf der Neumayer-Station in der Antarktis | Galileo | ProSieben",
+    "ch": "Galileo",
+    "v": 865437,
+    "sec": 1370
+   },
+   {
+    "t": "Antarktis-Trip bei -50°C: Wo Forscher für den Mars trainieren | Galileo Travel",
+    "ch": "Galileo Travel",
+    "v": 88893,
+    "sec": 1375
+   },
+   {
+    "t": "Ein Tag im Leben auf der Antarktis",
+    "ch": "Wissenswert",
+    "v": 72981,
+    "sec": 683
+   }
+  ],
+  "en_max": 263865289,
+  "en_top": [
+   {
+    "t": "I Survived 50 Hours In Antarctica",
+    "ch": "MrBeast",
+    "v": 263865289,
+    "sec": 730
+   },
+   {
+    "t": "How 28 Men Survived 500 Days Trapped in Antarctica",
+    "ch": "The Great Explorers",
+    "v": 693972,
+    "sec": 11379
+   },
+   {
+    "t": "Antarctica vs Sahara - Could You Survive 1 Year In Extreme Temperatures",
+    "ch": "The Infographics Show",
+    "v": 656757,
+    "sec": 1009
+   }
+  ]
+ },
+ "Yellowstone Ausbruch": {
+  "de_n": 14,
+  "de_max": 2256682,
+  "de_top": [
+   {
+    "t": "Was passiert, wenn ein Supervulkan ausbricht?",
+    "ch": "Dinge Erklärt – Kurzgesagt",
+    "v": 2256682,
+    "sec": 738
+   },
+   {
+    "t": "Amerikas Supervulkan Yellowstone: Welche Folgen hätte ein Ausbruch? | ZDFinfo Doku",
+    "ch": "ZDFinfo Dokus & Reportagen",
+    "v": 1179290,
+    "sec": 2631
+   },
+   {
+    "t": "Countdown zum Weltuntergang Der Super Vulkan",
+    "ch": "Salz Mann",
+    "v": 764234,
+    "sec": 2836
+   }
+  ],
+  "en_max": 13662825,
+  "en_top": [
+   {
+    "t": "What Happens If Yellowstone Blows Up Tomorrow?",
+    "ch": "RealLifeLore",
+    "v": 13662825,
+    "sec": 882
+   },
+   {
+    "t": "Yellowstone Won't Explode And End Civilisation (Sorry) | The Deep Dive",
+    "ch": "Soup Emporium",
+    "v": 7957912,
+    "sec": 1562
+   },
+   {
+    "t": "What If the Yellowstone Volcano Erupted Tomorrow?",
+    "ch": "What If",
+    "v": 5304591,
+    "sec": 300
+   }
+  ]
+ },
+ "Erde hört auf sich zu drehen": {
+  "de_n": 16,
+  "de_max": 2860263,
+  "de_top": [
+   {
+    "t": "Was passiert wenn die Erde aus dem Sonnensystem fliegt? - Einzelgänger-Erde",
+    "ch": "Dinge Erklärt – Kurzgesagt",
+    "v": 2860263,
+    "sec": 542
+   },
+   {
+    "t": "Wenn die Erde aufhoert sich zu drehen",
+    "ch": "TheNobody2012",
+    "v": 2125412,
+    "sec": 2816
+   },
+   {
+    "t": "Was passiert, wenn die Erde aufhört sich zu drehen?!",
+    "ch": "Made My Day",
+    "v": 1654921,
+    "sec": 272
+   }
+  ],
+  "en_max": 21524527,
+  "en_top": [
+   {
+    "t": "What If The Earth Stopped Spinning?",
+    "ch": "Vsauce",
+    "v": 21524527,
+    "sec": 584
+   },
+   {
+    "t": "What Would Happen If The Earth Stopped Spinning? | Unveiled",
+    "ch": "Unveiled",
+    "v": 14197730,
+    "sec": 466
+   },
+   {
+    "t": "Neil deGrasse Tyson: If Earth Stopped Rotating For a Second",
+    "ch": "Larry King",
+    "v": 6774475,
+    "sec": 261
+   }
+  ]
+ },
+ "Sonne verschwindet": {
+  "de_n": 12,
+  "de_max": 361986,
+  "de_top": [
+   {
+    "t": "Was wäre wenn die SONNE VERSCHWINDET? // Marius Angeschrien",
+    "ch": "Marius Angeschrien",
+    "v": 361986,
+    "sec": 734
+   },
+   {
+    "t": "Was wäre, wenn die Sonne plötzlich verschwinden würde?",
+    "ch": "SONNENSEITE",
+    "v": 258960,
+    "sec": 576
+   },
+   {
+    "t": "Was wäre, wenn die SONNE verschwinden würde? Das Ende der Welt",
+    "ch": "SONNENSEITE Serie",
+    "v": 3267,
+    "sec": 4492
+   }
+  ],
+  "en_max": 20883391,
+  "en_top": [
+   {
+    "t": "What If The Sun Disappeared?",
+    "ch": "Vsauce",
+    "v": 20883391,
+    "sec": 703
+   },
+   {
+    "t": "If The Sun Goes Out For 24 Hours",
+    "ch": "Ridddle",
+    "v": 19819166,
+    "sec": 433
+   },
+   {
+    "t": "What If the Sun Exploded Tomorrow?",
+    "ch": "What If",
+    "v": 11402754,
+    "sec": 313
+   }
+  ]
+ },
+ "1 Million Jahre Zukunft": {
+  "de_n": 11,
+  "de_max": 51248,
+  "de_top": [
+   {
+    "t": "66 Millionen Jahre zurück: Der T. rex ist dein kleinstes Problem",
+    "ch": "Leicht Erklärt",
+    "v": 51248,
+    "sec": 1048
+   },
+   {
+    "t": "E-AUTOS: 15 Millionen bis 2030? Die Skepsis wächst! Ladestruktur hinkt - und die Kosten zu hoch!",
+    "ch": "WELT Nachrichtensender",
+    "v": 37867,
+    "sec": 284
+   },
+   {
+    "t": "Von den Anfängen Asiens | Kontinente in Bewegung | ARTE Fernweh",
+    "ch": "ARTE Fernweh",
+    "v": 35282,
+    "sec": 2613
+   }
+  ],
+  "en_max": 10852120,
+  "en_top": [
+   {
+    "t": "What If You Traveled One Billion Years Into the Future?",
+    "ch": "What If",
+    "v": 10852120,
+    "sec": 527
+   },
+   {
+    "t": "What If You Woke Up 5 Billion Years in the Future?",
+    "ch": "What If",
+    "v": 586132,
+    "sec": 1208
+   },
+   {
+    "t": "What If You Traveled One Million Years Into the Future?",
+    "ch": "What If",
+    "v": 519510,
+    "sec": 3109
+   }
+  ]
+ },
+ "So klein wie eine Ameise": {
+  "de_n": 1,
+  "de_max": 35,
+  "de_top": [
+   {
+    "t": "Was wäre, wenn du plötzlich so klein wärst wie eine Ameise?",
+    "ch": "Whatifinity",
+    "v": 35,
+    "sec": 356
+   }
+  ],
+  "en_max": 1205362,
+  "en_top": [
+   {
+    "t": "What If You Shrunk 1cm Every Second?",
+    "ch": "What If",
+    "v": 1205362,
+    "sec": 1077
+   },
+   {
+    "t": "What If You Shrunk to the Size of an Ant?",
+    "ch": "Rudy Finch",
+    "v": 87521,
+    "sec": 727
+   },
+   {
+    "t": "What If You Were Shrunk to the Size of an Ant?",
+    "ch": "Stickysimples",
+    "v": 379,
+    "sec": 662
+   }
+  ]
+ },
+ "Römische Armee / Legionär": {
+  "de_n": 25,
+  "de_max": 485999,
+  "de_top": [
+   {
+    "t": "Wie kämpfte ein römischer Legionär? | History Quest | Terra X",
+    "ch": "Terra X History",
+    "v": 485999,
+    "sec": 853
+   },
+   {
+    "t": "Wie war das Leben als Centurio im römischen Imperium?",
+    "ch": "History Check",
+    "v": 162176,
+    "sec": 751
+   },
+   {
+    "t": "So Isst Du Wie Ein Römischer Soldat – Die Diät, Die Ein Imperium Schuf Und Die Welt Prägte",
+    "ch": "Der natürliche Weg",
+    "v": 91705,
+    "sec": 1160
+   }
+  ],
+  "en_max": 12022760,
+  "en_top": [
+   {
+    "t": "A day in the life of a Roman soldier - Robert Garland",
+    "ch": "TED-Ed",
+    "v": 12022760,
+    "sec": 300
+   },
+   {
+    "t": "What If a Single Modern Marine Platoon Fought An Entire Roman Legion",
+    "ch": "The Paint Explainer",
+    "v": 3362509,
+    "sec": 441
+   },
+   {
+    "t": "Why You Wouldn't Survive The Roman Empire",
+    "ch": "Chat History",
+    "v": 2396912,
+    "sec": 909
+   }
+  ]
+ },
+ "Wikinger-Überfall": {
+  "de_n": 9,
+  "de_max": 692787,
+  "de_top": [
+   {
+    "t": "Hättest du als Wikinger überlebt? | Galileo | ProSieben",
+    "ch": "Galileo",
+    "v": 692787,
+    "sec": 688
+   },
+   {
+    "t": "Mit Pfefferspray bei den Wikingern: Sie halten es für Magie",
+    "ch": "Leicht Erklärt",
+    "v": 78534,
+    "sec": 609
+   },
+   {
+    "t": "Du wirst als Wikinger geboren. Wie lange überlebst du?",
+    "ch": "Hans Von Pest",
+    "v": 22388,
+    "sec": 766
+   }
+  ],
+  "en_max": 237986,
+  "en_top": [
+   {
+    "t": "Could You Survive as a Viking Raider? | Great Heathen Army",
+    "ch": "Survive History",
+    "v": 237986,
+    "sec": 2478
+   },
+   {
+    "t": "Could You Survive as a Viking Pioneer?",
+    "ch": "Survive History",
+    "v": 80713,
+    "sec": 2383
+   },
+   {
+    "t": "Could You Survive a Viking Winter? | Boring History for Sleep",
+    "ch": "Boring History",
+    "v": 1790,
+    "sec": 9535
+   }
+  ]
+ },
+ "Steinzeit-Jagd Mammut": {
+  "de_n": 11,
+  "de_max": 1484864,
+  "de_top": [
+   {
+    "t": "DOKU: Wiedergeburt des Mammuts - DNA ermöglicht Erzeugung eines Klons | Dokumentation 2015 Deutsch",
+    "ch": "Dokumentation",
+    "v": 1484864,
+    "sec": 3144
+   },
+   {
+    "t": "Ein Mammut-Projekt - Wiedergeburt ausgestorbener Arten | Doku HD | ARTE",
+    "ch": "ARTEde",
+    "v": 829815,
+    "sec": 3159
+   },
+   {
+    "t": "Warum sind die Mammuts ausgestorben? | Terra X",
+    "ch": "Terra X History",
+    "v": 209734,
+    "sec": 306
+   }
+  ],
+  "en_max": 11955316,
+  "en_top": [
+   {
+    "t": "10,000 BC | The Hunt for The Mammoth | ClipZone: High Octane Hits",
+    "ch": "ClipZone: High Octane Hits",
+    "v": 11955316,
+    "sec": 404
+   },
+   {
+    "t": "The Great Mammoth Hunters",
+    "ch": "NORTH 02",
+    "v": 790447,
+    "sec": 1283
+   },
+   {
+    "t": "I HUNTED A WOOLLY MAMMOTH! Farcry Primal Ep.2 - Kendall Gray",
+    "ch": "KG Gaming",
+    "v": 694600,
+    "sec": 646
+   }
+  ]
+ },
+ "Kreidezeit Dinos": {
+  "de_n": 18,
+  "de_max": 921034,
+  "de_top": [
+   {
+    "t": "Du wachst auf im Jahr 1500. Wie lange überlebst du?",
+    "ch": "Leicht Erklärt",
+    "v": 921034,
+    "sec": 1026
+   },
+   {
+    "t": "Wie lange würde ein Mensch in jeder Epoche der Erdgeschichte überleben?",
+    "ch": "Extremwelt",
+    "v": 554151,
+    "sec": 1518
+   },
+   {
+    "t": "So sahen 24 Stunden in der Kreidezeit aus | Der Alltag eines Dinosauriers",
+    "ch": "Extinct Primal Deutsch",
+    "v": 70837,
+    "sec": 5195
+   }
+  ],
+  "en_max": 13569204,
+  "en_top": [
+   {
+    "t": "How Long You’d Last in Every Prehistoric Era",
+    "ch": "Fossil",
+    "v": 13569204,
+    "sec": 971
+   },
+   {
+    "t": "Could Humans Survive the Mesozoic? Neanderthals vs Dinosaurs",
+    "ch": "Vividen: Paleontology Evolved",
+    "v": 279147,
+    "sec": 978
+   },
+   {
+    "t": "Could You Survive the Dinosaur Era?",
+    "ch": "Hypothetically",
+    "v": 233452,
+    "sec": 1224
+   }
+  ]
+ },
+ "Perm Massensterben": {
+  "de_n": 23,
+  "de_max": 62367,
+  "de_top": [
+   {
+    "t": "Die Erde nach dem schlimmsten Massensterben aller Zeiten",
+    "ch": "AusgestorbenerZoo",
+    "v": 62367,
+    "sec": 1794
+   },
+   {
+    "t": "Vom Perm zur Trias – Die Welt vor den Dinosauriern | Teil 1 | Doku",
+    "ch": "Jurassic Stories",
+    "v": 61515,
+    "sec": 1055
+   },
+   {
+    "t": "Das schlimmste Massenaussterben der Erdgeschichte",
+    "ch": "AusgestorbenerZoo",
+    "v": 43813,
+    "sec": 1353
+   }
+  ],
+  "en_max": 9197148,
+  "en_top": [
+   {
+    "t": "Could you survive a nanosecond on the Sun?",
+    "ch": "xkcd's What If?",
+    "v": 9197148,
+    "sec": 209
+   },
+   {
+    "t": "How long would you survive with no DNA?",
+    "ch": "xkcd's What If?",
+    "v": 2592078,
+    "sec": 196
+   },
+   {
+    "t": "How Long Would You Survive in Every Era of Earth?",
+    "ch": "Ink Explainer",
+    "v": 1391281,
+    "sec": 1280
+   }
+  ]
+ },
+ "Schneeball-Erde": {
+  "de_n": 17,
+  "de_max": 2514714,
+  "de_top": [
+   {
+    "t": "Neues aus der letzten Eiszeit in Europa | Ganze Folge | Terra X",
+    "ch": "Terra X History",
+    "v": 2514714,
+    "sec": 2593
+   },
+   {
+    "t": "DIE EISZEIT KOMMT!😨 Wissenschaftler haben einen GEHEIMEN ERDZYKLUS entdeckt...",
+    "ch": "Astro-Tim",
+    "v": 195916,
+    "sec": 2216
+   },
+   {
+    "t": "Katastrophen der Erdgeschichte E02 Planet in Gefahr",
+    "ch": "DokuMobil",
+    "v": 130555,
+    "sec": 2632
+   }
+  ],
+  "en_max": 3367168,
+  "en_top": [
+   {
+    "t": "Why Did The Earth Totally Freeze For 100 Million Years?",
+    "ch": "History of the Earth",
+    "v": 3367168,
+    "sec": 2952
+   },
+   {
+    "t": "Catastrophe - Episode 2 - Snowball Earth",
+    "ch": "Naked Science",
+    "v": 2105039,
+    "sec": 2883
+   },
+   {
+    "t": "A Snowball Earth: How The Ice Age Nearly Wiped Out All Of Life | Catastrophe",
+    "ch": "Naked Science",
+    "v": 496288,
+    "sec": 2881
+   }
+  ]
+ },
+ "Karbon Riesen-Insekten": {
+  "de_n": 14,
+  "de_max": 415325,
+  "de_top": [
+   {
+    "t": "Die vergessene Urzeit | Folge 1: Als Insekten die Erde dominierten | Slice Doku",
+    "ch": "Slice Doku",
+    "v": 415325,
+    "sec": 3027
+   },
+   {
+    "t": "Vor den Dinosauriern gab es Riesen – Die Welt des Karbon erklärt",
+    "ch": "Geheimnisse der Antike",
+    "v": 28218,
+    "sec": 8700
+   },
+   {
+    "t": "Nichts an der Ära der Rieseninsekten war normal … das ist der Grund 🦂 | DOKU",
+    "ch": "Evolution X",
+    "v": 24944,
+    "sec": 554
+   }
+  ],
+  "en_max": 9985670,
+  "en_top": [
+   {
+    "t": "The Terrifying World of Giant Insects: What Was Earth Like During the Carboniferous Period?",
+    "ch": "Destiny",
+    "v": 9985670,
+    "sec": 2089
+   },
+   {
+    "t": "The Age of Giant Insects",
+    "ch": "PBS Eons",
+    "v": 3076195,
+    "sec": 414
+   },
+   {
+    "t": "What Was Earth Like in the Age of Giant Insects?",
+    "ch": "What If",
+    "v": 1708369,
+    "sec": 541
+   }
+  ]
+ },
+ "Meteorit trifft Deutschland": {
+  "de_n": 17,
+  "de_max": 1016173,
+  "de_top": [
+   {
+    "t": "Countdown zum Weltuntergang   Der Killer Asteroid Doku",
+    "ch": "Salz Mann",
+    "v": 1016173,
+    "sec": 2660
+   },
+   {
+    "t": "Kann die Menschheit einen Riesen-Asteroiden stoppen?",
+    "ch": "Dinge Erklärt – Kurzgesagt",
+    "v": 1010380,
+    "sec": 768
+   },
+   {
+    "t": "Was Ist, Wenn Der Größte Asteroid Die Erde Trifft?",
+    "ch": "Ridddle DE",
+    "v": 864116,
+    "sec": 647
+   }
+  ],
+  "en_max": 5859965,
+  "en_top": [
+   {
+    "t": "What If Asteroid Apophis Hit Earth? Scientists Mapped Where It Lands",
+    "ch": "Tracer Project",
+    "v": 5859965,
+    "sec": 809
+   },
+   {
+    "t": "Will An Asteroid Hit Earth in 2032?",
+    "ch": "StarTalk",
+    "v": 4278897,
+    "sec": 698
+   },
+   {
+    "t": "What If the Largest Asteroid Hit Earth and BOILED the Oceans?",
+    "ch": "What If",
+    "v": 1928259,
+    "sec": 491
+   }
+  ]
+ },
+ "Tsunami Nordsee": {
+  "de_n": 10,
+  "de_max": 3576077,
+  "de_top": [
+   {
+    "t": "Tsunami - Terror in der Nordsee | Ganzer Spielfilm über eine tödliche Tsunami-Katastrophe auf Sylt",
+    "ch": "wocomoMOVIES",
+    "v": 3576077,
+    "sec": 6083
+   },
+   {
+    "t": "Tödliche Welle überlebt! Tsunami 2004 | Terra X",
+    "ch": "Terra X History",
+    "v": 975011,
+    "sec": 1864
+   },
+   {
+    "t": "TSUNAMI IN DER NORDSEE! Wissenschaftler sind besorgt...😳",
+    "ch": "Astro-Tim",
+    "v": 177080,
+    "sec": 632
+   }
+  ],
+  "en_max": 3731572,
+  "en_top": [
+   {
+    "t": "The North Sea Tsunami: Britain’s Deadliest Disaster",
+    "ch": "Geographics",
+    "v": 3731572,
+    "sec": 1227
+   },
+   {
+    "t": "What Happens to Cruise Ships During a Tsunami?",
+    "ch": "Midships",
+    "v": 2626397,
+    "sec": 465
+   },
+   {
+    "t": "The Tsunami That Could Destroy The US East Coast!",
+    "ch": "Earthly",
+    "v": 247274,
+    "sec": 598
+   }
+  ]
+ },
+ "Zeitreise ins Jahr 1000 Deutschland": {
+  "de_n": 11,
+  "de_max": 921034,
+  "de_top": [
+   {
+    "t": "Du wachst auf im Jahr 1500. Wie lange überlebst du?",
+    "ch": "Leicht Erklärt",
+    "v": 921034,
+    "sec": 1026
+   },
+   {
+    "t": "Jeden Morgen 100 Jahre zurück. Wie weit kommst du mit Deutsch?",
+    "ch": "Leicht Erklärt",
+    "v": 331490,
+    "sec": 1187
+   },
+   {
+    "t": "Du wachst bei den Neandertalern auf – würdest du überleben?",
+    "ch": "Leicht Erklärt",
+    "v": 263787,
+    "sec": 945
+   }
+  ],
+  "en_max": 356755,
+  "en_top": [
+   {
+    "t": "What If You Woke Up in a Zoo in the Year 3026?",
+    "ch": "Not an Extra",
+    "v": 356755,
+    "sec": 445
+   },
+   {
+    "t": "What If You Woke Up 1000 Years in the Future",
+    "ch": "Oddline",
+    "v": 133433,
+    "sec": 448
+   },
+   {
+    "t": "What If You Woke Up 1,000 Years After Humanity Left Earth?",
+    "ch": "TIMEDROP",
+    "v": 91380,
+    "sec": 1022
+   }
+  ]
+ },
+ "Neutronenstern": {
+  "de_n": 8,
+  "de_max": 2860263,
+  "de_top": [
+   {
+    "t": "Was passiert wenn die Erde aus dem Sonnensystem fliegt? - Einzelgänger-Erde",
+    "ch": "Dinge Erklärt – Kurzgesagt",
+    "v": 2860263,
+    "sec": 542
+   },
+   {
+    "t": "Was passiert, wenn ein winziges schwarzes Loch neben dir auftaucht?",
+    "ch": "Dinge Erklärt – Kurzgesagt",
+    "v": 2597039,
+    "sec": 216
+   },
+   {
+    "t": "Ungewöhnliche Gravitationswellen: Crash von Schwarzem Loch mit Neutronenstern?!",
+    "ch": "Clixoom vorn mit e",
+    "v": 41952,
+    "sec": 377
+   }
+  ],
+  "en_max": 23769108,
+  "en_top": [
+   {
+    "t": "Neutron Stars – The Most Extreme Things that are not Black Holes",
+    "ch": "Kurzgesagt – In a Nutshell",
+    "v": 23769108,
+    "sec": 446
+   },
+   {
+    "t": "Warning: DO NOT TRY—Seeing How Close I Can Get To a Drop of Neutrons",
+    "ch": "The Action Lab",
+    "v": 20561975,
+    "sec": 506
+   },
+   {
+    "t": "What If a 6 BILLION Ton Spoonful of Neutron Star Appeared on Earth?",
+    "ch": "What If",
+    "v": 2577648,
+    "sec": 240
+   }
+  ]
+ },
+ "Atom-U-Boot / Tiefe": {
+  "de_n": 17,
+  "de_max": 2238326,
+  "de_top": [
+   {
+    "t": "1 Tag im U-Boot: So ist es wirklich!",
+    "ch": "tomatolix",
+    "v": 2238326,
+    "sec": 1207
+   },
+   {
+    "t": "Die fürchterlichen letzten Stunden im Titanic U Boot",
+    "ch": "Wissenswert",
+    "v": 2086863,
+    "sec": 589
+   },
+   {
+    "t": "24H EINGESPERRT im U-BOOT",
+    "ch": "The Real Life Guys",
+    "v": 1594719,
+    "sec": 539
+   }
+  ],
+  "en_max": 8626733,
+  "en_top": [
+   {
+    "t": "How Submarine Sailors Eat, Sleep & Survive for 3 Months Underwater",
+    "ch": "Submarine Insider",
+    "v": 8626733,
+    "sec": 1494
+   },
+   {
+    "t": "Would a Submarine Work as a Spaceship?",
+    "ch": "xkcd's What If?",
+    "v": 5837147,
+    "sec": 263
+   },
+   {
+    "t": "How Submarine Sailors Sleep, Eat, and Survive for Months Underwater",
+    "ch": "IMD Aviation",
+    "v": 4011625,
+    "sec": 981
+   }
+  ]
+ }
+}
